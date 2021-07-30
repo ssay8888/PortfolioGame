@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MainGame">
+      <UniqueIdentifier>{559245c8-e057-487f-a0ae-ed8c30cb5188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{62e8cabf-a15a-4e3f-8ad2-360482d9db3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{5c44c6f6-9452-47c4-a9cf-dc88ecaabeeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PublicHeader">
+      <UniqueIdentifier>{25c7a9db-9116-48ae-8539-80df9d34ac0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{f7a1755b-e351-46b6-a122-a560db092044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\Skins">
+      <UniqueIdentifier>{d97bfbff-6eac-47c5-9753-8deef7df0673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{6b386ff0-3402-4fb9-89b6-91f5a9af4cd6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainGame\main_game.h">
+      <Filter>MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\xml_reader.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="PublicHeader\all_extern.h">
+      <Filter>PublicHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="portfolio_game.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Skins\skin_manager.h">
+      <Filter>Managers\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Skins\skin_info.h">
+      <Filter>Managers\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\game_object.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PublicHeader\all_struct.h">
+      <Filter>PublicHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\game_player.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\sprite_component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\anim_sprite_component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Skins\skin_item.h">
+      <Filter>Managers\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\base64.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Skins\skin_frame.h">
+      <Filter>Managers\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\string_tools.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainGame\main_game.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\xml_reader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="portfolio_game.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Skins\skin_manager.cpp">
+      <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Skins\skin_info.cpp">
+      <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\game_object.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\game_player.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\sprite_component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\anim_sprite_component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Skins\skin_item.cpp">
+      <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\base64.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Skins\skin_frame.cpp">
+      <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\string_tools.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PortfolioGame.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="PortfolioGame.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
