@@ -14,5 +14,7 @@ private:
 	HDC _hdc_buffer;
 	HBITMAP _hBitmap;
 	HBITMAP _oldBitmap;
+
+	uint64_t _ticksCount;
 };
 

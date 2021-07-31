@@ -26,6 +26,18 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{6b386ff0-3402-4fb9-89b6-91f5a9af4cd6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Base">
+      <UniqueIdentifier>{9b400fe5-7f8b-4fe5-849a-d7104d6a3ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Player">
+      <UniqueIdentifier>{1351584c-6879-476d-8318-6f9065c2c9e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\KeyManager">
+      <UniqueIdentifier>{1c5394ad-6dc7-4709-85b5-7e71616f4b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ObjectManager">
+      <UniqueIdentifier>{b740a3f5-1687-4830-9686-092651cb1a8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -58,23 +70,8 @@
     <ClInclude Include="Managers\Skins\skin_info.h">
       <Filter>Managers\Skins</Filter>
     </ClInclude>
-    <ClInclude Include="Components\component.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\game_object.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="PublicHeader\all_struct.h">
       <Filter>PublicHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\game_player.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\sprite_component.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\anim_sprite_component.h">
-      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Managers\Skins\skin_item.h">
       <Filter>Managers\Skins</Filter>
@@ -87,6 +84,24 @@
     </ClInclude>
     <ClInclude Include="Utility\string_tools.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Base\component.h">
+      <Filter>Components\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Base\game_object.h">
+      <Filter>Components\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\KeyManaer\key_manager.h">
+      <Filter>Managers\KeyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ObjectManager\object_manager.h">
+      <Filter>Managers\ObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Player\player.h">
+      <Filter>Components\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PublicHeader\all_enum.h">
+      <Filter>PublicHeader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,21 +123,6 @@
     <ClCompile Include="Managers\Skins\skin_info.cpp">
       <Filter>Managers\Skins</Filter>
     </ClCompile>
-    <ClCompile Include="Components\component.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\game_object.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\game_player.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\sprite_component.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\anim_sprite_component.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Managers\Skins\skin_item.cpp">
       <Filter>Managers\Skins</Filter>
     </ClCompile>
@@ -134,6 +134,21 @@
     </ClCompile>
     <ClCompile Include="Utility\string_tools.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Base\component.cpp">
+      <Filter>Components\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Base\game_object.cpp">
+      <Filter>Components\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\KeyManaer\key_manager.cpp">
+      <Filter>Managers\KeyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ObjectManager\object_manager.cpp">
+      <Filter>Managers\ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Player\player.cpp">
+      <Filter>Components\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

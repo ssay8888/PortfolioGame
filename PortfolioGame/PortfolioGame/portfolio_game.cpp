@@ -58,7 +58,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //ULONG_PTR                            m_GdiplusToken;
     //Gdiplus::GdiplusStartup(&m_GdiplusToken, &m_GdiplusStartupInput, NULL);
     maingame.ReadeyGame();
-    ULONGLONG dwOldTime = GetTickCount64();
+   // ULONGLONG dwOldTime = GetTickCount64();
     while (WM_QUIT != msg.message)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -69,12 +69,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
-		if (dwOldTime + 10 < GetTickCount64())
-		{
+		//if (dwOldTime + 16 < GetTickCount64())
+		//{
 			maingame.UpdateGame();
 			maingame.RenderGame();
-			dwOldTime = GetTickCount64();
-		}
+			//dwOldTime = GetTickCount64();
+		//}
     }
 
     return (int) msg.wParam;

@@ -11,6 +11,7 @@
 #include "framework.h"
 #include "PublicHeader/all_extern.h"
 #include "PublicHeader/all_struct.h"
+#include "PublicHeader/all_enum.h"
 #include "Utility/string_tools.h"
 
 #endif //PCH_H

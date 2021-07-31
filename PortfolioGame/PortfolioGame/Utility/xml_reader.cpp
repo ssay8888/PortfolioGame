@@ -10,6 +10,125 @@
 #include "../Managers/Skins/skin_manager.h"
 
 using namespace pugi;
+std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
+{
+	pugi::xml_document doc;
+	//int id= 2000;
+	//char buffer[150];
+	//snprintf(buffer, 150, "Character\\000%05d.img.xml", id);
+	//xml_path.append("000").append(std::to_string(id));
+	auto err = doc.load_file(path.c_str());
+	std::vector<std::string> list;
+	if (err.status == status_ok)
+	{
+		auto data = doc.select_nodes("imgdir/imgdir/canvas");
+		for (auto first = data.begin(); first != data.end(); ++first)
+		{
+			std::string str(doc.select_node("imgdir").node().attribute("name").value());
+			str.append("/");
+			str.append(first->node().parent().attribute("name").value()).append("/");
+			str.append(first->node().attribute("name").value());
+
+			std::string path("Character\\");
+			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
+			path.append(first->node().parent().attribute("name").value()).append(".");
+			path.append(first->node().attribute("name").value()).append(".png");
+
+			SkinInfo* skininfo = new SkinInfo(str);
+			SkinItem* item = new SkinItem();
+			SkinFrame* frame = new SkinFrame();
+
+			frame->SetPath(path);
+			SetCanvasInfo(first->node(), "", frame);
+			item->AddFrame(frame);
+
+			skininfo->SetSkinItem(item);
+			SkinManager::GetInstance()->AddSkin(skininfo);
+		}
+
+		data = doc.select_nodes("imgdir/imgdir/imgdir/uol");
+		for (auto first = data.begin(); first != data.end(); ++first)
+		{
+			std::string str(doc.select_node("imgdir").node().attribute("name").value());
+			str.append("/");
+			str.append(first->node().parent().parent().attribute("name").value()).append("/");
+			str.append(first->node().parent().attribute("name").value());
+			//00012000.img/front/head
+			std::string path("Character\\");
+			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
+			path.append(first->node().parent().parent().attribute("name").value()).append(".");
+			path.append(first->node().attribute("name").value()).append(".png");
+			//Character\00012000.img\front.head
+
+			SkinInfo* skininfo = new SkinInfo(str);
+			SkinItem* item = new SkinItem();
+			SkinFrame* frame = new SkinFrame();
+
+			frame->SetPath(path);
+
+			std::string name(first->node().parent().attribute("name").value());
+			name.append("/").append(first->node().attribute("name").value());
+			frame->SetName(name);
+
+			std::string str2(first->node().attribute("value").value());
+			std::string mod("../");
+			size_t start_pos = 0;
+
+			while ((start_pos = str2.find(mod, start_pos)) != std::string::npos)
+			{
+				str2.replace(start_pos, mod.length(), "");
+			}
+			frame->SetUol(str2);
+
+			item->AddFrame(frame);
+			skininfo->SetSkinItem(item);
+			SkinManager::GetInstance()->AddSkin(skininfo);
+		}
+
+
+		data = doc.select_nodes("imgdir/imgdir/imgdir/canvas");
+		for (auto first = data.begin(); first != data.end(); ++first)
+		{
+			std::string str(doc.select_node("imgdir").node().attribute("name").value());
+			str.append("/");
+			str.append(first->node().parent().parent().attribute("name").value()).append("/");
+			str.append(first->node().parent().attribute("name").value());
+			//00002000.img/walk1/1
+
+			std::string path("Character\\");
+			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
+			path.append(first->node().parent().parent().attribute("name").value()).append(".");
+			path.append(first->node().parent().attribute("name").value()).append(".");
+			path.append(first->node().attribute("name").value()).append(".png");
+			//Character\00002000.img\walk1.1
+			SkinInfo* skininfo = nullptr;
+			if (SkinManager::GetInstance()->GetSkinInfo(str) != nullptr)
+				skininfo = SkinManager::GetInstance()->GetSkinInfo(str);
+			else
+				skininfo = new SkinInfo(str);
+
+
+			SkinItem* item = (skininfo->GetSkinItem() == nullptr ? new SkinItem() : skininfo->GetSkinItem());
+			SkinFrame* frame = new SkinFrame();
+
+			frame->SetPath(path);
+			SetCanvasInfo(first->node(), "", frame);
+			
+			item->SetName(first->parent().attribute("name").value());
+			auto node = first->parent().select_node("int[@name='delay']").node();
+			if (!node.empty())
+			{
+				skininfo->SetDelay(std::stoi(node.attribute("value").value()));
+			}
+
+			item->AddFrame(frame);
+			skininfo->SetSkinItem(item);
+			SkinManager::GetInstance()->AddSkin(skininfo);
+		}
+	}
+	return list;
+}
+
 std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 {
 	pugi::xml_document doc;
@@ -34,11 +153,13 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 				str.append("/");
 				str.append(first->node().attribute("name").value()).append("/");
 				str.append(begin->attribute("name").value());
-
+				//00012000.img/front/head
 				std::string path("Character\\");
 				path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 				path.append(first->node().attribute("name").value()).append(".");
 				path.append(begin->attribute("name").value());
+				//Character\00012000.img\front.head
+				//Character\00012000.img\walk1.1
 				SkinInfo* skininfo = new SkinInfo(str);
 
 				//std::string path;
