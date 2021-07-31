@@ -26,6 +26,7 @@ MainGame::~MainGame()
 
 void MainGame::ReadeyGame()
 {
+	SkinManager::GetInstance()->LoadSkin();
 	_hdc_buffer = CreateCompatibleDC(_hdc);
 	_hBitmap = CreateCompatibleBitmap(_hdc, 1024, 768);
 	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
@@ -34,7 +35,6 @@ void MainGame::ReadeyGame()
 	auto object = new Player();
 	object_manager->AddGameObject(ObjectType::ObjectType::kPlayer, object);
 
-	SkinManager::GetInstance()->LoadSkin();
 	//XmlReader::GetInstance().LoadCharecterSkin(L"Character\\00002000.img.xml");
 	//XmlReader::GetInstance().LoadCharecterSkin(L"Character\\00012000.img.xml");
 	auto size = SkinManager::GetInstance()->GetSize();
@@ -55,8 +55,6 @@ void MainGame::UpdateGame()
 	_ticksCount = GetTickCount64();
 
 	ObjectManager::Get_Instance()->UpdateGameObjectManager(deltaTime);
-
-
 }
 
 void MainGame::RenderGame()

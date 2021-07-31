@@ -32,7 +32,7 @@ GameObject::State GameObject::DoUpdateObject(const float deltaTime)
 	if (this->_state == GameObject::State::kActive)
 	{
 		UpdateComponents(deltaTime);
-		UpdateActor(deltaTime);
+		UpdateGameObject(deltaTime);
 	}
 	return this->_state;
 }
@@ -91,6 +91,6 @@ void GameObject::AddComponents(Component* item)
 	_components.emplace_back(item);
 }
 
-void GameObject::UpdateActor(const float deltaTime)
+void GameObject::UpdateGameObject(const float deltaTime)
 {
 }

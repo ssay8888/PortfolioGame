@@ -38,6 +38,12 @@
     <Filter Include="Managers\ObjectManager">
       <UniqueIdentifier>{b740a3f5-1687-4830-9686-092651cb1a8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\ScrollManager">
+      <UniqueIdentifier>{e79dc335-e164-42b5-80c6-d773288decb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\MapMnager">
+      <UniqueIdentifier>{82f19d0f-c737-4296-846a-433ade876bec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -103,6 +109,18 @@
     <ClInclude Include="PublicHeader\all_enum.h">
       <Filter>PublicHeader</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\ScrollManager\scroll_manager.h">
+      <Filter>Managers\ScrollManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map_manager.h">
+      <Filter>Managers\MapMnager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map.h">
+      <Filter>Managers\MapMnager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map_object_info.h">
+      <Filter>Managers\MapMnager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -149,6 +167,18 @@
     </ClCompile>
     <ClCompile Include="Components\Player\player.cpp">
       <Filter>Components\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScrollManager\scroll_manager.cpp">
+      <Filter>Managers\ScrollManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map_manager.cpp">
+      <Filter>Managers\MapMnager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map.cpp">
+      <Filter>Managers\MapMnager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map_object_info.cpp">
+      <Filter>Managers\MapMnager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

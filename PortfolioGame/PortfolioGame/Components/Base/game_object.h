@@ -33,7 +33,7 @@ public:
 
 private:
 	virtual int ReadyGameObject() = 0;
-	virtual void UpdateActor(const float deltaTime) = 0;
+	virtual void UpdateGameObject(const float deltaTime) = 0;
 	virtual void RenderGameObject(HDC hdc) = 0;
 	virtual void LateUpdateGameObject() = 0;
 

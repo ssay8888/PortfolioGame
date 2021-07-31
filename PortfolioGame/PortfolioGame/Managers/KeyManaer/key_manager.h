@@ -5,6 +5,8 @@
 #define KEY_RIGHT	0x00000008
 #define KEY_UP		0x00000010
 #define KEY_DOWN	0x00000020
+#define KEY_A		0x00000040
+#define KEY_B		0x00000080
 
 class KeyManager
 {
