@@ -28,9 +28,13 @@ int Player::ReadyGameObject()
 void Player::UpdateActor(const float deltaTime)
 {
 	auto keymanager = KeyManager::Get_Instance();
-	if (keymanager->KeyPressing(VK_LEFT))
+	if (keymanager->KeyPressing(KEY_LEFT))
 	{
 		_info.x -= _speed * deltaTime;
+	}
+	if (keymanager->KeyPressing(KEY_RIGHT))
+	{
+		_info.x += _speed * deltaTime;
 	}
 }
 
@@ -181,7 +185,6 @@ void Player::RenderGameObject(HDC hdc)
 		destination.DrawImage(draw.first->GetImage(), rc);
 	}
 
-	frame->GetMapItem("navel");
 }
 
 void Player::LateUpdateGameObject()
