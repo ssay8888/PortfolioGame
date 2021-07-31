@@ -42,6 +42,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			SetCanvasInfo(first->node(), "", frame);
 			item->AddFrame(frame);
 
+
 			skininfo->SetSkinItem(item);
 			SkinManager::GetInstance()->AddSkin(skininfo);
 		}
@@ -126,6 +127,37 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			SkinManager::GetInstance()->AddSkin(skininfo);
 		}
 	}
+	return list;
+}
+
+std::list<std::pair<std::string, std::string>> XmlReader::LoadSmap()
+{
+	pugi::xml_document doc;
+	auto err = doc.load_file(L"Character\\Base\\smap.img.xml");
+	std::list<std::pair<std::string, std::string>> list;
+
+	auto data = doc.select_nodes("imgdir/string");
+	std::for_each(data.begin(), data.end(),
+		[&list](xpath_node item) 
+		{
+			list.emplace_back(std::make_pair(item.node().attribute("name").value(), item.node().attribute("value").value()));
+		});
+
+	return list;
+}
+
+std::list<std::string> XmlReader::LoadZmap()
+{
+	std::list<std::string> list;
+	pugi::xml_document doc;
+	auto err = doc.load_file(L"Character\\Base\\zmap.img.xml");
+
+	auto data = doc.select_nodes("imgdir/null");
+	std::for_each(data.begin(), data.end(),
+		[&list](xpath_node item)
+		{
+			list.emplace_front(item.node().attribute("name").value());
+		});
 	return list;
 }
 
@@ -334,7 +366,13 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 				++begin;
 				auto zx = std::stoi(begin->value());
 				auto xc = begin->name();
-				//item->SetDelay(zx);
+			}
+		}
+		else if (!strcmp(node->name(), "string"))
+		{
+			if (!strcmp(begin->value(), "z"))
+			{
+				item->SetZ((++begin)->value());
 			}
 		}
 

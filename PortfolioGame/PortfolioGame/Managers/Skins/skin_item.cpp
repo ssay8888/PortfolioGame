@@ -14,13 +14,18 @@ SkinItem::~SkinItem()
 
 void SkinItem::AddFrame(SkinFrame* frame)
 {
-	_frames.insert(std::make_pair(frame->GetName(), frame));
+	_skinFrames.insert(std::make_pair(frame->GetName(), frame));
 }
 
-SkinFrame* SkinItem::GetFrame(std::string key) const
+std::map<std::string, SkinFrame*>* SkinItem::GetFrames()
 {
-	auto item = _frames.find(key);
-	if (item != _frames.end())
+	return &_skinFrames;
+}
+
+SkinFrame* SkinItem::GetFindFrame(std::string key) const
+{
+	auto item = _skinFrames.find(key);
+	if (item != _skinFrames.end())
 	{
 		if (!item->second->GetUol().empty())
 		{
@@ -39,9 +44,9 @@ SkinFrame* SkinItem::GetFrame(std::string key) const
 			auto frameData = StringTools::SplitString(item->second->GetUol(), '/');
 			if (frameData.size() > 1)
 			{
-				return data->GetSkinItem()->GetFrame(frameData[frameData.size() - 1]);
+				return data->GetSkinItem()->GetFindFrame(frameData[frameData.size() - 1]);
 			}
-			return  data->GetSkinItem()->GetFrame("head");
+			return  data->GetSkinItem()->GetFindFrame("head");
 		}
 		return item->second;
 	}

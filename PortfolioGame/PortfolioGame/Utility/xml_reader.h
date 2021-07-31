@@ -14,6 +14,10 @@ public:
 	}
 	std::vector<std::string> LoadCharecterSkin(const std::wstring& path);
 	std::vector<std::string> LoadCharecterSkin2(const std::wstring& path);
+
+	std::list<std::pair<std::string, std::string>> LoadSmap();
+	std::list<std::string> LoadZmap();
+
 	const std::wstring StringToWString(const char* buffer) const;
 	void SetCanvasInfo(pugi::xml_node_iterator attributes, std::string number, SkinFrame* item);
 	void SetMapInfo(pugi::xml_node_iterator begin, pugi::xml_node_iterator end, SkinFrame* item);
