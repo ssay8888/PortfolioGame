@@ -1,4 +1,5 @@
 #pragma once
+class Player;
 class MainGame
 {
 public:
@@ -8,6 +9,8 @@ public:
 	void UpdateGame();
 	void RenderGame();
 	void ReleaseGame();
+	void SetPlayer(Player*);
+	Player* GetPlayer() const;
 
 private:
 	HDC _hdc;
@@ -16,5 +19,6 @@ private:
 	HBITMAP _oldBitmap;
 
 	uint64_t _ticksCount;
+	Player* _player;
 };
 

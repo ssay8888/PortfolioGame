@@ -12,8 +12,8 @@ SkinManager::SkinManager()
 
 void SkinManager::LoadSkin()
 {
-	XmlReader::GetInstance().LoadCharecterSkin2(L"Character\\00002000.img.xml");
-	XmlReader::GetInstance().LoadCharecterSkin2(L"Character\\00012000.img.xml");
+	XmlReader::GetInstance().LoadCharecterSkin2(L"Client\\Character\\00002000.img.xml");
+	XmlReader::GetInstance().LoadCharecterSkin2(L"Client\\Character\\00012000.img.xml");
 	LoadBase();
 	auto asd = _skins.begin();
 	for (auto skin : _skins)

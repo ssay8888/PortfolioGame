@@ -2,40 +2,48 @@
 #include "../../Components/Base/game_object.h"
 #include "object_manager.h"
 
-void ObjectManager::AddGameObject(ObjectType::ObjectType id, GameObject* object)
+void ObjectManager::AddGameObject(GameObject* object)
 {
-	_listGameObject[static_cast<uint32_t>(id)].emplace_back(object);
+	auto layer = object->GetLayer();
+	
+	for (auto iter = _listGameObject.begin(); iter != _listGameObject.end(); ++iter)
+	{
+		if (layer < (*iter)->GetLayer())
+		{
+			_listGameObject.insert(iter, object);
+			return;
+		}
+	}
+
+	_listGameObject.emplace_back(object);
 }
 
 void ObjectManager::UpdateGameObjectManager(const float deltaTime)
 {
-	for (int i = 0; i < static_cast<uint16_t>(ObjectType::ObjectType::kEnd); ++i)
+	for (auto iter = _listGameObject.begin(); iter != _listGameObject.end();)
 	{
-		for (auto iter = _listGameObject[i].begin(); iter != _listGameObject[i].end();)
+		GameObject::State iEvent = (*iter)->DoUpdateObject(deltaTime);
+		if (GameObject::State::kDead == iEvent)
 		{
-			GameObject::State iEvent = (*iter)->DoUpdateObject(deltaTime);
-			if (GameObject::State::kDead == iEvent)
+			if ((*iter))
 			{
-				if ((*iter))
-				{
-					delete (*iter);
-					(*iter) = nullptr;
-				}
-				iter = _listGameObject[i].erase(iter);
+				delete (*iter);
+				(*iter) = nullptr;
 			}
-			else
-				++iter;
+			iter = _listGameObject.erase(iter);
 		}
-
+		else
+		{
+			++iter;
+		}
 	}
 }
 
 void ObjectManager::RenderGameObjectManager(HDC hdc)
 {
-	for (int i = 0; i < static_cast<uint16_t>(ObjectType::ObjectType::kEnd); ++i)
+	for (auto& pObject : _listGameObject)
 	{
-		for (auto& pObject : _listGameObject[i])
-			pObject->DoRenderGameObject(hdc);
+		pObject->DoRenderGameObject(hdc);
 	}
 }
 

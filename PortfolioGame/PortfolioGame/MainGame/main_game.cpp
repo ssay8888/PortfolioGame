@@ -1,6 +1,6 @@
 #include "../pch.h"
 #include "main_game.h"
-#include "../Components/Player/player.h"
+#include "../Components/MapObject/player.h"
 #include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_frame.h"
 #include "../Managers/Skins/skin_item.h"
@@ -15,7 +15,8 @@ MainGame::MainGame(HDC hdc) :
 	_hdc_buffer(nullptr),
 	_hBitmap(nullptr),
 	_oldBitmap(nullptr),
-	_ticksCount(0)
+	_ticksCount(0),
+	_player(nullptr)
 {
 }
 
@@ -33,12 +34,8 @@ void MainGame::ReadeyGame()
 
 	auto object_manager = ObjectManager::Get_Instance();
 	auto object = new Player();
-	object_manager->AddGameObject(ObjectType::ObjectType::kPlayer, object);
-
-	//XmlReader::GetInstance().LoadCharecterSkin(L"Character\\00002000.img.xml");
-	//XmlReader::GetInstance().LoadCharecterSkin(L"Character\\00012000.img.xml");
-	auto size = SkinManager::GetInstance()->GetSize();
-	//auto size2 = SkinManager::GetInstance()->GetSkinInfo("");
+	this->SetPlayer(object);
+	object_manager->AddGameObject(object);
 }
 
 void MainGame::UpdateGame()
@@ -69,4 +66,14 @@ void MainGame::ReleaseGame()
 	DeleteObject(_hBitmap);
 	DeleteObject(_oldBitmap);
 	DeleteDC(_hdc_buffer);
+}
+
+void MainGame::SetPlayer(Player* player)
+{
+	_player = player;
+}
+
+Player* MainGame::GetPlayer() const
+{
+	return _player;
 }

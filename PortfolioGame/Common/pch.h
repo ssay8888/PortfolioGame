@@ -9,9 +9,5 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-#include "PublicHeader/all_extern.h"
-#include "PublicHeader/all_struct.h"
-#include "PublicHeader/all_enum.h"
-#include "../Common/Utility/string_tools.h"
 
 #endif //PCH_H

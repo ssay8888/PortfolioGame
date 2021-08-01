@@ -2,6 +2,8 @@
 #include <iostream>
 #include <pugixml.hpp>
 #include <string>
+#include <vector>
+#include <list>
 class SkinFrame;
 class SkinItem;
 class XmlReader

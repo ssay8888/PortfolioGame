@@ -9,7 +9,7 @@ public:
 		kPaused,
 		kDead
 	};
-	GameObject();
+	GameObject(uint8_t layer);
 	virtual ~GameObject();
 
 	void UpdateRectGameObject();
@@ -19,10 +19,12 @@ public:
 	void DoLateUpdateGameObject();
 	void UpdateComponents(const float deltaTime);
 
+	uint8_t GetLayer() const;
 	GameObject::State GetState() const;
 	Info GetInfo() const;
 	RECT GetRect() const;
 
+	void SetLayer(uint8_t layer);
 	void SetState(GameObject::State state);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
@@ -38,6 +40,7 @@ private:
 	virtual void LateUpdateGameObject() = 0;
 
 protected:
+	uint8_t _layer;
 	State _state;
 	Info _info;
 	RECT _rect;

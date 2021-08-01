@@ -1,8 +1,8 @@
 #include "../../pch.h"
 #include "game_object.h"
-#include "component.h"
 
-GameObject::GameObject() :
+GameObject::GameObject(uint8_t layer) :
+	_layer(layer),
 	_info({}),
 	_rect({}),
 	_speed(0),
@@ -51,6 +51,11 @@ void GameObject::UpdateComponents(const float deltaTime)
 {
 }
 
+uint8_t GameObject::GetLayer() const
+{
+	return _layer;
+}
+
 GameObject::State GameObject::GetState() const
 {
 	return _state;
@@ -64,6 +69,11 @@ Info GameObject::GetInfo() const
 RECT GameObject::GetRect() const
 {
 	return _rect;
+}
+
+void GameObject::SetLayer(uint8_t layer)
+{
+	_layer = layer;
 }
 
 void GameObject::SetState(GameObject::State state)

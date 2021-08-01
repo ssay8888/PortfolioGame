@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{6761edb5-c18d-467f-99c4-fbeaaa26b141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{3b81750e-e1cf-42b2-a864-efc50ec31d35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\CollisionManager">
+      <UniqueIdentifier>{29bad0b2-5fc9-4684-af14-571654b74c3c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Utility\base64.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\string_tools.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\file_manager.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\CollisionManager\Collision_Manager.cpp">
+      <Filter>Managers\CollisionManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utility\base64.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\string_tools.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\file_manager.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\CollisionManager\Collision_Manager.h">
+      <Filter>Managers\CollisionManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{e9437b82-a40f-41b6-8aaf-b3bd2718df3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\KeyManaer">
+      <UniqueIdentifier>{5955d0fe-a3fe-4273-b107-2dda56a27f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ScrollManager">
+      <UniqueIdentifier>{d8420e35-600f-46ac-ac08-92712598954f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{2d364719-20f1-496b-bf1c-e0c2b8528939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default">
+      <UniqueIdentifier>{d97ed45c-a0a0-4390-8459-2ac6cac261d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\MapManager">
+      <UniqueIdentifier>{56e921c9-34f9-4a6b-8764-88fa840a0568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{cb6d05c1-0b6a-4b2d-b655-0e5b24a81e6b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Managers\KeyManaer\key_manager.h">
+      <Filter>Managers\KeyManaer</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ScrollManager\scroll_manager.h">
+      <Filter>Managers\ScrollManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map_manager.h">
+      <Filter>Managers\MapManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map_object.h">
+      <Filter>Managers\MapManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\mouse.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\foot_hold.h">
+      <Filter>Managers\MapManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Managers\KeyManaer\key_manager.cpp">
+      <Filter>Managers\KeyManaer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScrollManager\scroll_manager.cpp">
+      <Filter>Managers\ScrollManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map_manager.cpp">
+      <Filter>Managers\MapManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map_object.cpp">
+      <Filter>Managers\MapManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\mouse.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\foot_hold.cpp">
+      <Filter>Managers\MapManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MapEditor.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapEditor.rc">
+      <Filter>99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

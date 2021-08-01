@@ -9,9 +9,20 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-#include "PublicHeader/all_extern.h"
-#include "PublicHeader/all_struct.h"
-#include "PublicHeader/all_enum.h"
-#include "../Common/Utility/string_tools.h"
 
+typedef struct {
+	float x;
+	float y;
+	int cx;
+	int cy;
+} Info;
+
+typedef struct {
+	float x;
+	float y;
+} ObjectInfo, ObjectPos;
+
+extern HWND _hWnd;
+extern HWND _hCombo;
+extern int SelectLayer;
 #endif //PCH_H

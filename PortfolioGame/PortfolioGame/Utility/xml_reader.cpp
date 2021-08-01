@@ -2,7 +2,6 @@
 #include <sstream>
 #include <fstream> 
 
-#include "base64.h"
 #include "xml_reader.h"
 #include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_item.h"
@@ -13,10 +12,7 @@ using namespace pugi;
 std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 {
 	pugi::xml_document doc;
-	//int id= 2000;
-	//char buffer[150];
-	//snprintf(buffer, 150, "Character\\000%05d.img.xml", id);
-	//xml_path.append("000").append(std::to_string(id));
+
 	auto err = doc.load_file(path.c_str());
 	std::vector<std::string> list;
 	if (err.status == status_ok)
@@ -29,7 +25,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			str.append(first->node().parent().attribute("name").value()).append("/");
 			str.append(first->node().attribute("name").value());
 
-			std::string path("Character\\");
+			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().attribute("name").value()).append(".");
 			path.append(first->node().attribute("name").value()).append(".png");
@@ -55,7 +51,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			str.append(first->node().parent().parent().attribute("name").value()).append("/");
 			str.append(first->node().parent().attribute("name").value());
 			//00012000.img/front/head
-			std::string path("Character\\");
+			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().parent().attribute("name").value()).append(".");
 			path.append(first->node().attribute("name").value()).append(".png");
@@ -96,7 +92,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			str.append(first->node().parent().attribute("name").value());
 			//00002000.img/walk1/1
 
-			std::string path("Character\\");
+			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().parent().attribute("name").value()).append(".");
 			path.append(first->node().parent().attribute("name").value()).append(".");
@@ -133,7 +129,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 std::list<std::pair<std::string, std::string>> XmlReader::LoadSmap()
 {
 	pugi::xml_document doc;
-	auto err = doc.load_file(L"Character\\Base\\smap.img.xml");
+	auto err = doc.load_file(L"Client\\Character\\Base\\smap.img.xml");
 	std::list<std::pair<std::string, std::string>> list;
 
 	auto data = doc.select_nodes("imgdir/string");
@@ -150,7 +146,7 @@ std::list<std::string> XmlReader::LoadZmap()
 {
 	std::list<std::string> list;
 	pugi::xml_document doc;
-	auto err = doc.load_file(L"Character\\Base\\zmap.img.xml");
+	auto err = doc.load_file(L"Client\\Character\\Base\\zmap.img.xml");
 
 	auto data = doc.select_nodes("imgdir/null");
 	std::for_each(data.begin(), data.end(),
@@ -186,7 +182,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 				str.append(first->node().attribute("name").value()).append("/");
 				str.append(begin->attribute("name").value());
 				//00012000.img/front/head
-				std::string path("Character\\");
+				std::string path("Client\\Character\\");
 				path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 				path.append(first->node().attribute("name").value()).append(".");
 				path.append(begin->attribute("name").value());
