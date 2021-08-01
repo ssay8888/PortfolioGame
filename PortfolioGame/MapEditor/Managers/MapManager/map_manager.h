@@ -3,6 +3,7 @@
 #include <map>
 class MapObject;
 class Mouse;
+class FootHold;
 class MapManager
 {
 private:
@@ -22,13 +23,18 @@ public:
 	void AddListObject();
 	void SelectImage(POINT& pt);
 	void MouseUpdate(POINT& pt);
+	void SaveData();
+	void LoadData();
+
 
 	Mouse* GetMouse();
 
 private:
 	Gdiplus::Image* _selectImage;
+	std::wstring _selectPath;
 	std::list<MapObject*> _list[7];
-	std::map<std::wstring, std::list<Gdiplus::Image*>> _images;
+	std::list<FootHold*> _foot[7];
+	std::map<std::wstring, std::map<std::wstring, Gdiplus::Image*> > _images;
 	Mouse* _mouse;
 };
 

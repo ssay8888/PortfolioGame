@@ -109,9 +109,6 @@ namespace CollisionManager
 					fY *= -1.f;
 				if (fY < 10 && fY > -10)
 				src->SetPos(fSrcX, fSrcY + fY);
-
-				if (fSrcY > 0 || fY > 0)
-					std::cout << fSrcY << " : " << fY << std::endl;
 			}
 			else
 			{

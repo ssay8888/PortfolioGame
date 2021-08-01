@@ -15,6 +15,11 @@ MapObject::~MapObject()
 		delete _image;
 }
 
+void MapObject::SetPath(std::wstring path)
+{
+	_path = path;
+}
+
 void MapObject::SetImage(Gdiplus::Image* image)
 {
 	_image = image;
@@ -64,12 +69,27 @@ void MapObject::SetInfo(Info info)
 	_info = info;
 }
 
+void MapObject::SetRect(RECT rect)
+{
+	_rect = rect;
+}
+
 Info MapObject::GetInfo() const
 {
 	return _info;
 }
 
+RECT MapObject::GetRect() const
+{
+	return _rect;
+}
+
 uint32_t MapObject::GetLayer() const
 {
 	return _layer;
+}
+
+std::wstring MapObject::GetPath() const
+{
+	return _path;
 }
