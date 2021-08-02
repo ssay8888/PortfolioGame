@@ -4,6 +4,7 @@
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Utility/file_manager.h"
+#include "../ScrollManager/scroll_manager.h"
 #include "map_manager.h"
 
 void MapManager::ReadyMapManager()
@@ -172,29 +173,34 @@ void MapManager::ReleaseGameObjectManager()
 {
 }
 
-bool MapManager::FootholdCollision(float x, float* outY)
+bool MapManager::FootholdCollision(Info& info, float* outY)
 {
+
 	if (_listFootHold.empty())
 		return false;
 
-	FootHold* pTarget = nullptr;
 
 	for (FootHold* footHold : _listFootHold)
 	{
-		if (x >= footHold->GetStartPos().x && x <= footHold->GetEndPos().x)
-			pTarget = footHold;
+		if (info.x >= footHold->GetStartPos().x && info.x <= footHold->GetEndPos().x)
+		{
+			double x1 = footHold->GetStartPos().x;
+			double y1 = footHold->GetStartPos().y;
+			double x2 = footHold->GetEndPos().x;
+			double y2 = footHold->GetEndPos().y;
+
+			double result1 = ((y2 - y1) / (x2 - x1)) * (info.x - (info.cx / 2) - x1) + y1 - (info.cy / 2);
+			double result2 = ((y2 - y1) / (x2 - x1)) * (info.x + (info.cx / 2) - x1) + y1 - (info.cy / 2);
+
+			if ((result1 < info.y && result1 + (info.cy / 2) + 1.f > info.y) ||
+				(result2 < info.y && result2 + (info.cy / 2) + 1.f > info.y))
+			{
+				float moveY = static_cast<float>((result1 + result2) / 2);
+				ScrollManager::SetScrollY(info.y - moveY);
+				info.y = moveY;
+				return true;
+			}
+		}
 	}
-	if (nullptr == pTarget)
-		return false;
-
-	// PlayerY = ((y2 - y1) / (x2 - x1)) * (PlayerX - x1) + y1
-
-	long x1 = pTarget->GetStartPos().x;
-	long y1 = pTarget->GetStartPos().y;
-	long x2 = pTarget->GetEndPos().x;
-	long y2 = pTarget->GetEndPos().y;
-
-	*outY = ((y2 - y1) / (x2 - x1)) * (x - x1) + y1;
-
-	return true;
+	return false;
 }

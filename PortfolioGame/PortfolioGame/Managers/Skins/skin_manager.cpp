@@ -43,6 +43,13 @@ void SkinManager::AddSkin(SkinInfo* skin)
 
 SkinInfo* SkinManager::GetSkinInfo(std::string key) const
 {
+	for (auto pair : _skins)
+	{
+		if (key.find(pair.first.c_str()) != std::string::npos)
+		{
+			return pair.second;
+		}
+	}
 	auto pair = _skins.find(key);
 	if (pair != _skins.end())
 	{

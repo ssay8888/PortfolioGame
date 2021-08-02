@@ -12,6 +12,7 @@
 Player::Player(uint8_t layer) :
 	GameObject(layer),
 	_frameRevers(false),
+	_thisFrameMaxCount(0),
 	_frameState("stand1"),
 	_frameTick(0)
 {
@@ -51,27 +52,27 @@ void Player::UpdateGameObject(const float deltaTime)
 	float totalMoveY = 0;
 	if (keymanager->KeyPressing(KEY_LEFT))
 	{
-		_info.x -= GetSpeed();
-		ScrollManager::GainScrollX(GetSpeed());
 		totalMoveX -= GetSpeed();
 	}
 	if (keymanager->KeyPressing(KEY_RIGHT))
 	{
-		_info.x += GetSpeed();
-		ScrollManager::GainScrollX(-GetSpeed());
 		totalMoveX += GetSpeed();
 	}
 	if (keymanager->KeyPressing(KEY_UP))
 	{
-		_info.y -= GetSpeed();
-		ScrollManager::GainScrollY(GetSpeed());
-		totalMoveY -= GetSpeed();
+		//totalMoveY -= GetSpeed();
 	}
 	if (keymanager->KeyPressing(KEY_DOWN))
 	{
-		_info.y += GetSpeed();
-		ScrollManager::GainScrollY(-GetSpeed());
-		totalMoveY += GetSpeed();
+		this->ChangeFrameState("prone");
+		_prone = true;
+		//totalMoveY += GetSpeed();
+	}
+	
+	if (keymanager->KeyUp(KEY_DOWN))
+	{
+		this->ChangeFrameState("stand1");
+		_prone = false;
 	}
 	if (totalMoveX != 0 || totalMoveY != 0)
 	{
@@ -87,10 +88,22 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->ChangeFrameState("walk1");
 		}
+
+		float outY = 0;
+		_info.x += totalMoveX;
+		_info.y += totalMoveY;
+		if (MapManager::GetInstance()->FootholdCollision(_info, &outY))
+		{
+		}
+		else
+		{
+			_info.x -= totalMoveX;
+			_info.y -= totalMoveY;
+		}
 	}
 	else 
 	{
-		if (strcmp(GetFrameState(), "stand1"))
+		if (!_prone && strcmp(GetFrameState(), "stand1"))
 		{
 			this->ChangeFrameState("stand1");
 		}
@@ -107,89 +120,94 @@ void Player::UpdateGameObject(const float deltaTime)
 	if (_frameThis != nullptr)
 	{
 		uint64_t tick = GetTickCount64();
-		if (!strcmp(GetFrameState(), "walk1") || true)
+		if (tick > _frameTick + _frameThis->GetDelay())
 		{
-			if (tick > _frameTick + _frameThis->GetDelay())
+			if (!strcmp(GetFrameState(), "stand1"))
 			{
 				if (_frameRevers)
 				{
-					_frameNummber--;
-					if (_frameNummber == 0)
+					if (--_frameNummber == 0)
 					{
 						_frameRevers = false;
 					}
-					std::cout << std::to_string(_frameNummber) << std::to_string(_frameThis->GetSkinItem()->GetFrameMaxSize()) << std::endl;
-
 				}
 				else
 				{
-					_frameNummber++;
-					if (_frameNummber >= _frameThis->GetSkinItem()->GetFrameMaxSize())
+					if (++_frameNummber >= _thisFrameMaxCount - 1)
 					{
 						_frameRevers = true;
 					}
-					std::cout << std::to_string(_frameNummber) << std::to_string(_frameThis->GetSkinItem()->GetFrameMaxSize()) << std::endl;
-
 				}
-
-				_frameTick = tick;
 			}
-		}
-		else 
-		{
-			if (tick > _frameTick + _frameThis->GetDelay())
+			else
 			{
-				_frameNummber++;
-				_frameTick = tick;
-				std::cout << std::to_string(_frameNummber) << std::endl;
+				++_frameNummber;
 			}
+			_frameTick = tick;
+			std::cout << std::to_string(_frameNummber) << std::endl;
 		}
 	}
+
 
 }
 
 void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 {
-	char findStr[20];
-	snprintf(findStr, 20, "%s/%d", frameName.c_str(), GetFrameNummber(frameCount));
-	if (_skinFrames.find(findStr) != _skinFrames.end())
+	if (_skinFrames.find(frameName) != _skinFrames.end())
 		return;
 
 	char bodyStr[100];
 	char headStr[100];
-	snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skinId + 2000, frameName.c_str(), GetFrameNummber(frameCount));
-	snprintf(headStr, 100, "000%05d.img/%s/%d", _skinId + 12000, frameName.c_str(), GetFrameNummber(frameCount));
-	auto bodySkinInfo = SkinManager::GetInstance()->GetSkinInfo(bodyStr);
-	auto headSkinInfo = SkinManager::GetInstance()->GetSkinInfo(headStr);
-	_skinFrames.insert({ findStr, { bodySkinInfo, headSkinInfo} });
+	uint16_t maxSize = 0;
+	std::vector<std::vector<SkinInfo*>> allList;
+	for (; maxSize < 100; maxSize++)
+	{
+		std::vector<SkinInfo*> tempList;
+		snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skinId + 2000, frameName.c_str(), maxSize);
+		snprintf(headStr, 100, "000%05d.img/%s/%d", _skinId + 12000, frameName.c_str(), maxSize);
+		auto bodySkinInfo = SkinManager::GetInstance()->GetSkinInfo(bodyStr);
+		auto headSkinInfo = SkinManager::GetInstance()->GetSkinInfo(headStr);
+		if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
+		{
+			tempList.push_back(SkinManager::GetInstance()->GetSkinInfo(bodyStr));
+			tempList.push_back(SkinManager::GetInstance()->GetSkinInfo(headStr));
+			allList.push_back(tempList);
+		}
+		else
+		{
+			if (allList.empty())
+			{
+				return;
+			}
+			break;
+		}
+	}
+	_skinFrames.insert({ frameName, {maxSize, allList} });
 }
 
 void Player::RenderCharacter(HDC hdc)
 {
 	this->LoadCharacterFrame(_frameState);
-	char findStr[20];
-	if (_frameThis != nullptr) 
-	{
-		snprintf(findStr, 20, "%s/%d", _frameState.c_str(), GetFrameNummber(static_cast<uint16_t>(_frameThis->GetSkinItem()->GetFrameMaxSize())));
-	}
-	else 
-	{
-		snprintf(findStr, 20, "%s/%d", _frameState.c_str(), GetFrameNummber(3));
-	}
-	auto frameItr = _skinFrames.find(findStr);
+
+	auto frameItr = _skinFrames.find(_frameState.c_str());
 	if (frameItr != _skinFrames.end())
 	{
+
 		std::vector<SkinFrame*> partsFrames;
 		std::vector<SkinFrame*> offsets;
 		SkinFrame* bodyFrame = nullptr;
 		std::map<std::string, ObjectPos> list;
 
-		for (auto skinInfo : frameItr->second)
+		_thisFrameMaxCount = frameItr->second.first;
+		
+		for (auto skinInfo : frameItr->second.second[_frameNummber % _thisFrameMaxCount])
 		{
 			auto frames = skinInfo->GetSkinItem()->GetFrames();
 			for (auto frame = frames->begin(); frame != frames->end(); ++frame) 
 			{
-				if (!strcmp(frame->second->GetName().c_str(), "body"))
+				if (frame->second->GetName().find("body", 0) != std::string::npos)
+
+				//if (!strcmp(frame->second->GetName().c_str(), "body"))
 				{
  					_frameThis = skinInfo;
 					bodyFrame = frame->second;
@@ -312,15 +330,16 @@ void Player::RenderCharacter(HDC hdc)
 
 		if (bodyFrame->GetMap().find("neck") != bodyFrame->GetMap().end())
 		{
-		/*	Rectangle(hdc, 
-				_rect.left + static_cast<int>(ScrollManager::GetScrollX()),
+			const int plus = 25;
+			Rectangle(_memDC,
+				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
 				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
 				_rect.right + static_cast<int>(ScrollManager::GetScrollX()), 
-				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));*/
+				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
 
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
-			Rectangle(_memDC, -5, -5, _info.cx + 5, _info.cy + 5);
+			Rectangle(_memDC, -30, -30, _info.cx + 30, _info.cy + 30);
 			/*
 				static_cast<int>(_rect.left + _info.cx + ScrollManager::GetScrollX() + minX),
 				static_cast<int>(_rect.top + _info.cy + ScrollManager::GetScrollY() + minY),
@@ -334,8 +353,8 @@ void Player::RenderCharacter(HDC hdc)
 			for (auto draw : positionedFramesList)
 			{
 				draw.first->GetImage()->RenderBitmapImage(_memDC,
-					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)),
-					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)),
+					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)) + plus,
+					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)) ,
 					static_cast<int>(draw.first->GetWidth()),
 					static_cast<int>(draw.first->GetHeight()));
 				/*draw.first->GetImage()->RenderBitmapImage(_memDC,
@@ -347,17 +366,17 @@ void Player::RenderCharacter(HDC hdc)
 
 			if (GetFacingDirection())
 			{
-				StretchBlt(_memDC, 0, 0, 42, 64, _memDC, 41, 0, -42, 64, SRCCOPY);
+				StretchBlt(_memDC, 0, 0, 42 + plus, 64, _memDC, 41 + plus, 0, -42 - plus, 64, SRCCOPY);
 			}
 
 			GdiTransparentBlt(hdc, 
 				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
 				static_cast<int>(std::floor(_rect.top  + ScrollManager::GetScrollY())),
-				42,
+				42 + plus,
 				64,
 				_memDC,
 				0, 0,
-				42,
+				42 + plus,
 				64,
 				RGB(255, 0, 255));
 
@@ -380,10 +399,6 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
-	float outY = 0;
-	MapManager::GetInstance()->FootholdCollision(this->GetInfo().x, &outY);
-
-	this->SetInfo({ this->GetInfo().x, outY });
 }
 
 void Player::SetFrameThis(SkinInfo* frame)
@@ -411,6 +426,7 @@ void Player::ChangeFrameState(std::string frame)
 	LoadCharacterFrame(frame);
 	_frameState = frame;
 	_frameNummber = 0;
+	_frameRevers = false;
 }
 
 const char* Player::GetFrameState() const

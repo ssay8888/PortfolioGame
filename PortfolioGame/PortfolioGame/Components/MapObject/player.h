@@ -34,11 +34,13 @@ private:
 private:
     uint16_t _skinId;
     uint16_t _frameNummber;
+    uint16_t _thisFrameMaxCount;
     bool _frameRevers;
+    bool _prone;
     uint8_t _facingDirection;
     SkinInfo* _frameThis;
     std::string _frameState;
-    std::map<std::string, std::vector<SkinInfo*>> _skinFrames;
+    std::map<std::string, std::pair<uint16_t, std::vector<std::vector<SkinInfo*>>>> _skinFrames;
     std::vector<SkinInfo*> _itemFrames;
     uint64_t _frameTick;
 

@@ -55,6 +55,12 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().parent().attribute("name").value()).append(".");
+			if (path.find("proneStab") != std::string::npos)
+			{
+				path.append(first->node().parent().attribute("name").value()).append(".");
+				std::string asdf = first->node().parent().attribute("name").value();
+				std::string asdfz = first->node().parent().attribute("name").value();
+			}
 			path.append(first->node().attribute("name").value()).append(".bmp");
 			//Character\00012000.img\front.head
 

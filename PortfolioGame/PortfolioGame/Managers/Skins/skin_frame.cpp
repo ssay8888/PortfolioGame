@@ -65,6 +65,10 @@ const std::string SkinFrame::GetName() const
 
 void SkinFrame::SetPath(const std::string path)
 {
+	if (!strcmp("Client\\Character\\00012000.img\\proneStab.head.bmp", path.c_str())) 
+	{
+		int asd = 123;
+	}
 	_path = path;
 }
 
@@ -101,9 +105,22 @@ SkinFrame* SkinFrame::FindUolFrame()
 	str.append(GetUol());
 	auto data = SkinManager::GetInstance()->GetSkinInfo(str);
 	auto frameData = StringTools::SplitString(GetUol(), '/');
+	if (!strcmp(GetUol().c_str(), "prone/0/head"))
+	{
+		int a = 123;
+
+		auto asdf = SkinManager::GetInstance()->GetSkinInfo(str);
+	}
 	if (data != nullptr) 
 	{
-		_uolFrame = data->GetSkinItem()->GetFindFrame(frameData[frameData.size() - 1]);
+		if (!strcmp(GetUol().c_str(), "prone/0/head"))
+		{
+			_uolFrame = data->GetSkinItem()->GetFindFrame("0/head");
+		}
+		else 
+		{
+			_uolFrame = data->GetSkinItem()->GetFindFrame(frameData[frameData.size() - 1]);
+		}
 		this->SetHeight(_uolFrame->GetHeight());
 		this->SetWidth(_uolFrame->GetWidth());
 		this->SetImage(_uolFrame->GetImage());

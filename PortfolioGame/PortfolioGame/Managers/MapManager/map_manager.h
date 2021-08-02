@@ -25,7 +25,7 @@ public:
 	void RenderGameObjectManager(HDC hDC);
 	void ReleaseGameObjectManager();
 
-	bool FootholdCollision(float x, float * outY);
+	bool FootholdCollision(Info& info, float * outY);
 private:
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
