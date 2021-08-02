@@ -31,10 +31,11 @@ public:
 
 private:
 	Gdiplus::Image* _selectImage;
-	std::wstring _selectPath;
+	std::string _selectFileName;
+	std::string _selectPath;
 	std::list<MapObject*> _list[7];
-	std::list<FootHold*> _foot[7];
-	std::map<std::wstring, std::map<std::wstring, Gdiplus::Image*> > _images;
+	std::list<FootHold*> _footholds;
+	std::map<std::string, std::map<std::string, Gdiplus::Image*> > _images;
 	Mouse* _mouse;
 };
 

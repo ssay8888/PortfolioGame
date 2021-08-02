@@ -6,6 +6,7 @@
 #include "../ScrollManager/scroll_manager.h"
 #include "../../Object/mouse.h"
 #include "../../../Common/Utility/file_manager.h"
+#include "../../../Common/Utility/string_tools.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 
 MapManager::MapManager() :
@@ -18,13 +19,13 @@ void MapManager::Ready_Map()
 {
 	auto asd = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
-	std::map<std::wstring, Gdiplus::Image*> list;
+	std::map<std::string, Gdiplus::Image*> list;
 	for (auto begin : asd) {
 		auto image = new Gdiplus::Image(begin.c_str());
-		list.insert({ begin.c_str(), image });
+		list.insert({ FileManager::GetInstance()->GetFileName(StringTools::WStringToString(begin.c_str())), image });
 		std::cout << begin.c_str() << std::endl;
 	}
-	_images.insert(std::make_pair(L"woodMarble.img", list));
+	_images.insert(std::make_pair("Client\\Map\\Tile\\woodMarble.img\\", list));
 
 	_mouse = new Mouse();
 }
@@ -39,7 +40,7 @@ void MapManager::Update_Map()
 	{
 		MouseUpdate(pt);
 	}
-	if (KeyManager::Get_Instance()->KeyDown(KEY_LBUTTON))
+	if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
 	{
 		if (pt.x < 800 && pt.y < 600)
 		{
@@ -50,25 +51,25 @@ void MapManager::Update_Map()
 			SelectImage(pt);
 		}
 	}
-	else if (KeyManager::Get_Instance()->KeyDown(KEY_RBUTTON))
+	else if (KeyManager::GetInstance()->KeyDown(KEY_RBUTTON))
 	{
 		auto foot = new FootHold();
 		foot->SetStartPos(pt.x, pt.y);
-		_foot[SelectLayer].emplace_back(foot);
+		_footholds.emplace_back(foot);
 	}
-	else if (KeyManager::Get_Instance()->KeyPressing(KEY_RBUTTON))
+	else if (KeyManager::GetInstance()->KeyPressing(KEY_RBUTTON))
 	{
-		_foot[SelectLayer].back()->SetEndPos(pt.x, pt.y);
+		_footholds.back()->SetEndPos(pt.x, pt.y);
 	}
-	else if (KeyManager::Get_Instance()->KeyUp(KEY_RBUTTON))
+	else if (KeyManager::GetInstance()->KeyUp(KEY_RBUTTON))
 	{
-		_foot[SelectLayer].back()->SetEndPos(pt.x, pt.y);
+		_footholds.back()->SetEndPos(pt.x, pt.y);
 	}
-	else if (KeyManager::Get_Instance()->KeyUp(KEY_S))
+	else if (KeyManager::GetInstance()->KeyUp(KEY_S))
 	{
 		SaveData();
 	}
-	else if (KeyManager::Get_Instance()->KeyUp(KEY_L))
+	else if (KeyManager::GetInstance()->KeyUp(KEY_L))
 	{
 		LoadData();
 	}
@@ -133,12 +134,9 @@ void MapManager::Render_Map(HDC hDC)
 		}
 	}
 
-	for (auto foots : _foot)
-	{ 
-		for (auto foot : foots)
-		{
-			foot->RenderFootHold(hDC);
-		}
+	for (auto foot : _footholds)
+	{
+		foot->RenderFootHold(hDC);
 	}
 
 	std::wstring str;
@@ -156,10 +154,13 @@ void MapManager::AddListObject()
 		MapObject* obj = new MapObject();
 		obj->SetLayer(SelectLayer);
 		obj->SetImage(_selectImage);
+		obj->SetFileName(_selectFileName);
 		obj->SetPath(_selectPath);
 		obj->SetPos(
 			static_cast<float>(GetMouse()->GetInfo().x),
 			static_cast<float>(GetMouse()->GetInfo().y));
+		obj->SetCX(_selectImage->GetWidth());
+		obj->SetCY(_selectImage->GetHeight());
 
 		_list[obj->GetLayer()].emplace_back(obj);
 	}
@@ -181,7 +182,8 @@ void MapManager::SelectImage(POINT& pt)
 			if (IntersectRect(&rc, &mouse_rc, &tile_rc))
 			{
 				_selectImage = tile.second;
-				_selectPath = tile.first;
+				_selectFileName = tile.first;
+				_selectPath = tiles.first;
 			}
 			if (countX++ > 0 && countX % 4 == 0)
 			{
@@ -226,12 +228,12 @@ void MapManager::MouseUpdate(POINT& pt)
 
 void MapManager::SaveData()
 {
-	HANDLE hFile = CreateFile(L"../Data/Map.dat",// 경로
-		GENERIC_WRITE,//쓸것인지 읽을 것인지 
-		0, nullptr,// 파일 공유 및 보안 속성이건 건드릴 필요 없음. 
-		CREATE_ALWAYS,// 늘 새로 만들겠다. 
-		FILE_ATTRIBUTE_NORMAL,//애는 파일 만들때 속성 어떻게 할건지. 그냥 보통. 건드릴 필요 없음. 
-		nullptr);// 이건 그냥 널널 
+	HANDLE hFile = CreateFile(L"../Data/Map.dat",
+		GENERIC_WRITE,
+		0, nullptr,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, 
+		nullptr); 
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
@@ -239,8 +241,9 @@ void MapManager::SaveData()
 
 		return;
 	}
-
+	unsigned short mark = 0xFEFF;
 	DWORD dwByte = 0;
+	WriteFile(hFile, &mark, sizeof(mark), &dwByte, nullptr);
 	for (auto objs : _list)
 	{
 		
@@ -248,18 +251,30 @@ void MapManager::SaveData()
 		WriteFile(hFile, &size, sizeof(size), &dwByte, nullptr);
 		for (auto obj : objs)
 		{
-			size_t pathsize = obj->GetPath().size();
-			WriteFile(hFile, &pathsize, sizeof(pathsize), &dwByte, nullptr);
 
+			size_t pathsize = strlen(obj->GetPath().c_str()) * sizeof(wchar_t);
+			WriteFile(hFile, &pathsize, sizeof(pathsize), &dwByte, nullptr);
 			WriteFile(hFile, obj->GetPath().c_str(), static_cast<DWORD>(pathsize), &dwByte, nullptr);
+
+			size_t filenamesize = strlen(obj->GetFileName().c_str()) * sizeof(wchar_t);
+			WriteFile(hFile, &filenamesize, sizeof(filenamesize), &dwByte, nullptr);
+			WriteFile(hFile, obj->GetFileName().c_str(), static_cast<DWORD>(filenamesize), &dwByte, nullptr);
 			auto info = obj->GetInfo();
 			WriteFile(hFile, &info, sizeof(obj->GetInfo()), &dwByte, nullptr);
 			auto rect = obj->GetRect();
 			WriteFile(hFile, &rect, sizeof(obj->GetRect()), &dwByte, nullptr);
 			uint32_t layer = obj->GetLayer();
 			WriteFile(hFile, &layer, sizeof(obj->GetLayer()), &dwByte, nullptr);
-			//WriteFile(hFile, obj->Get_LineInfo(), sizeof(LINEINFO), &dwByte, nullptr);
 		}
+	}
+	size_t footSize = _footholds.size();
+	WriteFile(hFile, &footSize, sizeof(footSize), &dwByte, nullptr);
+	for (auto foot : _footholds) 
+	{
+		auto startPos = foot->GetStartPos();
+		WriteFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
+		auto endPos = foot->GetEndPos();
+		WriteFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
 	}
 
 	CloseHandle(hFile);
@@ -268,50 +283,82 @@ void MapManager::SaveData()
 
 void MapManager::LoadData()
 {
-	HANDLE hFile = CreateFile(L"../Data/Map.dat",// 경로
-		GENERIC_READ,//쓸것인지 읽을 것인지 
-		0, nullptr,// 파일 공유 및 보안 속성이건 건드릴 필요 없음. 
-		OPEN_EXISTING,// 늘 새로 만들겠다. 
-		FILE_ATTRIBUTE_NORMAL,//애는 파일 만들때 속성 어떻게 할건지. 그냥 보통. 건드릴 필요 없음. 
-		nullptr);// 이건 그냥 널널 
+	HANDLE hFile = CreateFile(L"../Data/Map.dat",
+		GENERIC_READ,
+		0, nullptr,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL, 
+		nullptr); 
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MessageBox(nullptr, L"나랏말쌈이뒹귁에닳아 사맛디아니할세 살어리 살어리 랏다 청산에 살어리 랏다 이런들 어떠하리 저런들 어떠하리 이몸이 죽고 죽어 일백번 고쳐죽어", L"공부좀하자 애들아...", MB_OK);
+		MessageBox(nullptr, L"로드실패", L"확인", MB_OK);
 
 		return;
 	}
 
 	DWORD dwByte = 0;
 
+	unsigned short mark = 0xFEFF;
+	bool  check = ReadFile(hFile, &mark, sizeof(mark), &dwByte, nullptr);
 	for (int i = 0; i < 7; i++)
 	{
 		size_t size;
-		ReadFile(hFile, &size, sizeof(size), &dwByte, nullptr);
+		check = ReadFile(hFile, &size, sizeof(size), &dwByte, nullptr);
 		for (int i =0; i < size; i++)
 		{
 			MapObject* obj = new MapObject();
 			size_t pathSize;
-			ReadFile(hFile, &pathSize, sizeof(pathSize), &dwByte, nullptr);
-			WCHAR* path = new WCHAR[pathSize * 2];
-			ZeroMemory(path, pathSize * 2);
-			ReadFile(hFile, path, static_cast<DWORD>(pathSize), &dwByte, nullptr);
+			check = ReadFile(hFile, &pathSize, sizeof(pathSize), &dwByte, nullptr);
+			char* path = new char[pathSize];
+			ZeroMemory(path, pathSize);
+			check = ReadFile(hFile, path, static_cast<DWORD>(pathSize), &dwByte, nullptr);
 			obj->SetPath(path);
+			delete path;
+
+			size_t fileSize;
+			check = ReadFile(hFile, &fileSize, sizeof(fileSize), &dwByte, nullptr);
+			char* fileName = new char[fileSize];
+			ZeroMemory(fileName, fileSize);
+			check = ReadFile(hFile, fileName, static_cast<DWORD>(fileSize), &dwByte, nullptr);
+			obj->SetFileName(fileName);
+			delete fileName;
+
 			Info info;
-			ReadFile(hFile, &info, sizeof(info), &dwByte, nullptr);
+			check = ReadFile(hFile, &info, sizeof(info), &dwByte, nullptr);
+			obj->SetInfo(info);
 			RECT rect;
-			ReadFile(hFile, &rect, sizeof(rect), &dwByte, nullptr);
+			check = ReadFile(hFile, &rect, sizeof(rect), &dwByte, nullptr);
+			obj->SetRect(rect);
 			uint32_t layer;
-			ReadFile(hFile, &layer, sizeof(layer), &dwByte, nullptr);
+			check = ReadFile(hFile, &layer, sizeof(layer), &dwByte, nullptr);
+			obj->SetLayer(layer);
 			
+			std::string fullPath;
+			fullPath.append(obj->GetPath()).append(obj->GetFileName());
+			auto image = _images.find(obj->GetPath());
+			auto file = image->second.find(obj->GetFileName());
+			obj->SetImage(file->second);
 			_list[layer].push_back(obj);
 		}
 	}
 
-
+	size_t footSize;
+	check = ReadFile(hFile, &footSize, sizeof(footSize), &dwByte, nullptr);
+	for (int i = 0; i < footSize; i++)
+	{
+		FootHold* footHold = new FootHold();
+		POINT startPos;
+		POINT endPos;
+		check = ReadFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
+		check = ReadFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
+		footHold->SetStartPos(startPos.x, startPos.y);
+		footHold->SetEndPos(endPos.x, endPos.y);
+		_footholds.push_back(footHold);
+	}
 
 	CloseHandle(hFile);
-	MessageBox(nullptr, L"성공!", L"성공성공!!!", MB_OK);
+	MessageBox(nullptr, L"로드 성공", L"확인", MB_OK);
 }
 
 Mouse* MapManager::GetMouse()

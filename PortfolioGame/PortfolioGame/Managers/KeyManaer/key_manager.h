@@ -11,7 +11,7 @@
 class KeyManager
 {
 public:
-	static KeyManager* Get_Instance()
+	static KeyManager* GetInstance()
 	{
 		static KeyManager instance;
 		return &instance;

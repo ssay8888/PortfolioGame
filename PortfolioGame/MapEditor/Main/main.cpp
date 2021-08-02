@@ -27,7 +27,7 @@ void Main::Ready_Edit()
 
 void Main::Update_Edit()
 {
-	KeyManager::Get_Instance()->KeyUpdate();
+	KeyManager::GetInstance()->KeyUpdate();
 	MapManager::GetInstance()->Update_Map();
 }
 

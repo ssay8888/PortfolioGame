@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Components/Base/game_object.h"
-class MapObjectInfo : public GameObject
+class MapObjectInfo : 
+	public GameObject
 {
 public:
 	MapObjectInfo(uint8_t layer);
@@ -12,11 +13,7 @@ public:
 	virtual void RenderGameObject(HDC hdc) override;
 	virtual void LateUpdateGameObject() override;
 
-	void SetPath(const std::string name);
-	std::string GetPath() const;
-
 
 private:
-	std::string _path;
 
 };

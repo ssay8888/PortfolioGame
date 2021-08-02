@@ -1,5 +1,4 @@
 #pragma once
-class Component;
 class GameObject
 {
 public:
@@ -17,21 +16,20 @@ public:
 	GameObject::State DoUpdateObject(const float deltaTime);
 	void DoRenderGameObject(HDC hdc);
 	void DoLateUpdateGameObject();
-	void UpdateComponents(const float deltaTime);
 
+	std::string GetPath();
+	std::string GetFileName();
 	uint8_t GetLayer() const;
 	GameObject::State GetState() const;
 	Info GetInfo() const;
 	RECT GetRect() const;
 
+	void SetPath(std::string path);
+	void SetFileName(std::string fileName);
 	void SetLayer(uint8_t layer);
 	void SetState(GameObject::State state);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
-
-	std::list<Component*> GetComponents();
-	void AddComponents(Component* item);
-
 
 private:
 	virtual int ReadyGameObject() = 0;
@@ -40,11 +38,12 @@ private:
 	virtual void LateUpdateGameObject() = 0;
 
 protected:
+	std::string _path;
+	std::string _fileName;
 	uint8_t _layer;
 	State _state;
 	Info _info;
 	RECT _rect;
 	float _speed;
-	std::list<Component*> _components;
 };
 

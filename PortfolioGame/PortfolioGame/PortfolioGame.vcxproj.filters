@@ -29,20 +29,17 @@
     <Filter Include="Managers\KeyManager">
       <UniqueIdentifier>{1c5394ad-6dc7-4709-85b5-7e71616f4b59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Managers\ObjectManager">
-      <UniqueIdentifier>{b740a3f5-1687-4830-9686-092651cb1a8e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Managers\ScrollManager">
       <UniqueIdentifier>{e79dc335-e164-42b5-80c6-d773288decb9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Components\MapObject">
       <UniqueIdentifier>{ccc44f16-506e-4db2-bdbc-ac0a6bd158ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Map">
-      <UniqueIdentifier>{5a5cad55-a043-4bc5-ab23-1cee8de04dda}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utility">
       <UniqueIdentifier>{b25567e9-5141-4b5a-922c-836777416b4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\MapManager">
+      <UniqueIdentifier>{b740a3f5-1687-4830-9686-092651cb1a8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,9 +85,6 @@
     <ClInclude Include="Managers\KeyManaer\key_manager.h">
       <Filter>Managers\KeyManager</Filter>
     </ClInclude>
-    <ClInclude Include="Managers\ObjectManager\object_manager.h">
-      <Filter>Managers\ObjectManager</Filter>
-    </ClInclude>
     <ClInclude Include="PublicHeader\all_enum.h">
       <Filter>PublicHeader</Filter>
     </ClInclude>
@@ -105,6 +99,12 @@
     </ClInclude>
     <ClInclude Include="Utility\xml_reader.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\foot_hold.h">
+      <Filter>Components\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MapManager\map_manager.h">
+      <Filter>Managers\MapManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +135,6 @@
     <ClCompile Include="Managers\KeyManaer\key_manager.cpp">
       <Filter>Managers\KeyManager</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\ObjectManager\object_manager.cpp">
-      <Filter>Managers\ObjectManager</Filter>
-    </ClCompile>
     <ClCompile Include="Managers\ScrollManager\scroll_manager.cpp">
       <Filter>Managers\ScrollManager</Filter>
     </ClCompile>
@@ -149,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="Utility\xml_reader.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\foot_hold.cpp">
+      <Filter>Components\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\map_manager.cpp">
+      <Filter>Managers\MapManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

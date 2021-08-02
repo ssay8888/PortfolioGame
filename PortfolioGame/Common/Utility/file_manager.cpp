@@ -2,6 +2,7 @@
 #include <fstream>
 #include <Windows.h>
 #include <iostream>
+#include <string>
 
 std::string FileManager::ReadFile(const std::wstring path) const {
     std::ifstream fin(path);
@@ -50,4 +51,30 @@ std::list<std::wstring> FileManager::GetDirFileName(std::wstring folderPath)
         FindClose(hFind);
     }
     return list;
+}
+
+std::wstring FileManager::GetFileName(std::wstring path)
+{
+    auto strs = wcsrchr(path.c_str(), '\\');
+    if (strs == NULL)
+    {
+        return path;
+    }
+    else
+    {
+        return strs + 1;
+    }
+}
+
+std::string FileManager::GetFileName(std::string path)
+{
+    auto strs = strrchr(path.c_str(), '\\');
+    if (strs == NULL)
+    {
+        return path;
+    }
+    else
+    {
+        return strs + 1;
+    }
 }

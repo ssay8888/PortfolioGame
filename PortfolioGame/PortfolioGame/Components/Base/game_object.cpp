@@ -31,7 +31,6 @@ GameObject::State GameObject::DoUpdateObject(const float deltaTime)
 {
 	if (this->_state == GameObject::State::kActive)
 	{
-		UpdateComponents(deltaTime);
 		UpdateGameObject(deltaTime);
 	}
 	return this->_state;
@@ -47,8 +46,14 @@ void GameObject::DoLateUpdateGameObject()
 	LateUpdateGameObject();
 }
 
-void GameObject::UpdateComponents(const float deltaTime)
+std::string GameObject::GetPath()
 {
+	return _path;
+}
+
+std::string GameObject::GetFileName()
+{
+	return _fileName;
 }
 
 uint8_t GameObject::GetLayer() const
@@ -71,6 +76,16 @@ RECT GameObject::GetRect() const
 	return _rect;
 }
 
+void GameObject::SetPath(std::string path)
+{
+	_path = path;
+}
+
+void GameObject::SetFileName(std::string fileName)
+{
+	_fileName = fileName;
+}
+
 void GameObject::SetLayer(uint8_t layer)
 {
 	_layer = layer;
@@ -89,16 +104,6 @@ void GameObject::SetInfo(Info info)
 void GameObject::SetRect(RECT rect)
 {
 	_rect = rect;
-}
-
-std::list<Component*> GameObject::GetComponents()
-{
-	return _components;
-}
-
-void GameObject::AddComponents(Component* item)
-{
-	_components.emplace_back(item);
 }
 
 void GameObject::UpdateGameObject(const float deltaTime)

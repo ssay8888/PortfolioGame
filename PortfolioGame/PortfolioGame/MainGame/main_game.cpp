@@ -7,7 +7,7 @@
 #include "../Managers/Skins/skin_manager.h"
 #include "../Utility/xml_reader.h"
 #include "../Managers/KeyManaer/key_manager.h"
-#include "../Managers/ObjectManager/object_manager.h"
+#include "../Managers/MapManager/map_manager.h"
 #include <fstream>
 #include <algorithm>
 MainGame::MainGame(HDC hdc) :
@@ -32,7 +32,7 @@ void MainGame::ReadeyGame()
 	_hBitmap = CreateCompatibleBitmap(_hdc, 1024, 768);
 	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
 
-	auto object_manager = ObjectManager::Get_Instance();
+	auto object_manager = MapManager::GetInstance();
 	auto object = new Player();
 	this->SetPlayer(object);
 	object_manager->AddGameObject(object);
@@ -40,7 +40,7 @@ void MainGame::ReadeyGame()
 
 void MainGame::UpdateGame()
 {
-	KeyManager::Get_Instance()->KeyUpdate();
+	KeyManager::GetInstance()->KeyUpdate();
 	while (!GetTickCount64() - (_ticksCount + 16) <= 0);
 
 	float deltaTime = (GetTickCount64() - _ticksCount) / 1000.0f;
@@ -51,13 +51,13 @@ void MainGame::UpdateGame()
 	}
 	_ticksCount = GetTickCount64();
 
-	ObjectManager::Get_Instance()->UpdateGameObjectManager(deltaTime);
+	MapManager::GetInstance()->UpdateGameObjectManager(deltaTime);
 }
 
 void MainGame::RenderGame()
 {
 	Rectangle(_hdc_buffer, -10, -10, WindowCX + 10, WindowCY + 10);
-	ObjectManager::Get_Instance()->RenderGameObjectManager(_hdc_buffer);
+	MapManager::GetInstance()->RenderGameObjectManager(_hdc_buffer);
 	BitBlt(_hdc, 0, 0, WindowCX, WindowCY, _hdc_buffer, 0, 0, SRCCOPY);
 }
 

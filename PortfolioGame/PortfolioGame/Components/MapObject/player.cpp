@@ -32,7 +32,7 @@ int Player::ReadyGameObject()
 
 void Player::UpdateGameObject(const float deltaTime)
 {
-	auto keymanager = KeyManager::Get_Instance();
+	auto keymanager = KeyManager::GetInstance();
 	if (keymanager->KeyPressing(KEY_LEFT))
 	{
 		float value = _speed * deltaTime;

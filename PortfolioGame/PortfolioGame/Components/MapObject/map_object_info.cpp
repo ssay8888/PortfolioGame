@@ -26,13 +26,3 @@ void MapObjectInfo::RenderGameObject(HDC hdc)
 void MapObjectInfo::LateUpdateGameObject()
 {
 }
-
-void MapObjectInfo::SetPath(const std::string name)
-{
-	_path = name;
-}
-
-std::string MapObjectInfo::GetPath() const
-{
-	return _path;
-}

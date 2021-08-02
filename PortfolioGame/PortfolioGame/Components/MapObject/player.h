@@ -6,7 +6,7 @@ class Player :
     public GameObject
 {
 public:
-    Player(uint8_t layer = 100);
+    Player(uint8_t layer = 5);
     ~Player();
 
     virtual int ReadyGameObject() override;

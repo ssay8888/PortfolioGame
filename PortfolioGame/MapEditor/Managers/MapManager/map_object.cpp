@@ -15,7 +15,12 @@ MapObject::~MapObject()
 		delete _image;
 }
 
-void MapObject::SetPath(std::wstring path)
+void MapObject::SetFileName(std::string path)
+{
+	_fileName = path;
+}
+
+void MapObject::SetPath(std::string path)
 {
 	_path = path;
 }
@@ -89,7 +94,12 @@ uint32_t MapObject::GetLayer() const
 	return _layer;
 }
 
-std::wstring MapObject::GetPath() const
+std::string MapObject::GetFileName() const
+{
+	return _fileName;
+}
+
+std::string MapObject::GetPath() const
 {
 	return _path;
 }

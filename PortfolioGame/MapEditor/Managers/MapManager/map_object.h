@@ -13,10 +13,12 @@ public:
 	Info GetInfo() const;
 	RECT GetRect() const;
 	uint32_t GetLayer() const;
-	std::wstring GetPath() const;
+	std::string GetFileName() const;
+	std::string GetPath() const;
 
 
-	void SetPath(std::wstring path);
+	void SetFileName(std::string path);
+	void SetPath(std::string path);
 	void SetImage(Gdiplus::Image* image);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
@@ -27,7 +29,8 @@ public:
 
 private:
 	Gdiplus::Image* _image;
-	std::wstring _path;
+	std::string _path;
+	std::string _fileName;
 	Info _info;
 	RECT _rect;
 	uint32_t _layer;

@@ -7,6 +7,8 @@
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_frame.h"
 #include "../Managers/Skins/skin_manager.h"
+#include "../../Common/Managers/BitmapManager/bitmap_manager.h"
+#include "../../Common/Managers/BitmapManager/my_bitmap.h"
 
 using namespace pugi;
 std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
@@ -308,6 +310,7 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 				auto str = item->GetPath();
 				wstr.assign(str.begin(), str.end());
 				auto image = new Gdiplus::Image(wstr.c_str());
+				//BitmapManager::GetInstance()->Insert_Bitmap(_hWnd, wstr.c_str(), str);
 				item->SetImage(image);
 			}
 		}
