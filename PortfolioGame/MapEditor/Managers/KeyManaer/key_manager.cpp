@@ -29,6 +29,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_S;
 	if (GetAsyncKeyState('L') & 0x8000)
 		m_dwKey |= KEY_L;
+	if (GetAsyncKeyState('Z') & 0x8000)
+		m_dwKey |= KEY_Z;
 }
 
 bool KeyManager::KeyUp(DWORD dwKey)

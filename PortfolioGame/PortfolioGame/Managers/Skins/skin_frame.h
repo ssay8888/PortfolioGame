@@ -1,4 +1,5 @@
 #pragma once
+class MyBitmap;
 class SkinFrame
 {
 public:
@@ -42,8 +43,8 @@ public:
 	void SetHeight(const uint32_t height);
 	uint32_t GetHeight();
 
-	void SetImage(Gdiplus::Image* image);
-	Gdiplus::Image* GetImage();
+	void SetImage(MyBitmap* image);
+	MyBitmap* GetImage();
 private:
 	std::map<std::string, ObjectPos> _map;
 	std::string _name;
@@ -55,6 +56,6 @@ private:
 	ObjectPos _origin;
 	uint32_t _width;
 	uint32_t _height;
-	Gdiplus::Image* _image;
+	MyBitmap* _image;
 };
 

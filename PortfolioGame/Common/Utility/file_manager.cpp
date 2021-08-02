@@ -6,7 +6,6 @@
 
 std::string FileManager::ReadFile(const std::wstring path) const {
     std::ifstream fin(path);
-    char c;
     std::string temp, str;
     if (fin.is_open()) {
         while (std::getline(fin, temp)) {

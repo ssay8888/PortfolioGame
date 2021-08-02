@@ -7,7 +7,6 @@
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_frame.h"
 #include "../Managers/Skins/skin_manager.h"
-#include "../../Common/Managers/BitmapManager/bitmap_manager.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
 
 using namespace pugi;
@@ -30,7 +29,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().attribute("name").value()).append(".");
-			path.append(first->node().attribute("name").value()).append(".png");
+			path.append(first->node().attribute("name").value()).append(".bmp");
 
 			SkinInfo* skininfo = new SkinInfo(str);
 			SkinItem* item = new SkinItem();
@@ -56,7 +55,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			std::string path("Client\\Character\\");
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().parent().attribute("name").value()).append(".");
-			path.append(first->node().attribute("name").value()).append(".png");
+			path.append(first->node().attribute("name").value()).append(".bmp");
 			//Character\00012000.img\front.head
 
 			SkinInfo* skininfo = new SkinInfo(str);
@@ -98,7 +97,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin2(const std::wstring& path)
 			path.append(doc.select_node("imgdir").node().attribute("name").value()).append("\\");
 			path.append(first->node().parent().parent().attribute("name").value()).append(".");
 			path.append(first->node().parent().attribute("name").value()).append(".");
-			path.append(first->node().attribute("name").value()).append(".png");
+			path.append(first->node().attribute("name").value()).append(".bmp");
 			//Character\00002000.img\walk1.1
 			SkinInfo* skininfo = nullptr;
 			if (SkinManager::GetInstance()->GetSkinInfo(str) != nullptr)
@@ -210,13 +209,6 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 				{
 					SkinFrame* frame = new SkinFrame();
 					frame->SetPath(path);
-					std::cout << canvas->name() << std::endl;
-
-					if (!strcmp(first->node().attribute("name").value(), "front"))
-					{
-						std::cout << canvas->name() << std::endl;
-					}
-
 
 					if (!strcmp(canvas->name(), "canvas"))
 					{
@@ -224,7 +216,6 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 					}
 					else if (!strcmp(canvas->name(), "uol"))
 					{
-						std::cout << first->node().attribute("name").value() << std::endl;
 						std::string name(begin->attribute("name").value());
 						name.append("/").append(canvas->attribute("name").value());
 						frame->SetName(name);
@@ -238,8 +229,6 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(const std::wstring& path)
 							str.replace(start_pos, mod.length(), "");
 						}
 						frame->SetUol(str);
-						//item->SetImage(image);
-
 					}
 					else if (!strcmp(canvas->name(), "int"))
 					{
@@ -271,7 +260,6 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 {
 	for (auto begin = node->attributes().begin(); begin != node->attributes().end(); ++begin)
 	{
-		//std::cout << node->name() << " : " << begin->name() << " : " << begin->value() << std::endl;
 		if (!strcmp(node->name(), "canvas"))
 		{
 			if (!strcmp(begin->name(), "name"))
@@ -289,10 +277,10 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 					path.append(".");
 					path.append(begin->value());
 				}
-				size_t pos = item->GetPath().find(".png");
-				if (item->GetPath().find(".png") == std::string::npos)
+				size_t pos = item->GetPath().find(".bmp");
+				if (item->GetPath().find(".bmp") == std::string::npos)
 				{
-					path.append(".png");
+					path.append(".bmp");
 				}
 				item->SetPath(path);
 			}
@@ -309,14 +297,15 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 				std::wstring wstr;
 				auto str = item->GetPath();
 				wstr.assign(str.begin(), str.end());
-				auto image = new Gdiplus::Image(wstr.c_str());
-				//BitmapManager::GetInstance()->Insert_Bitmap(_hWnd, wstr.c_str(), str);
+
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, wstr.c_str());
+				//MyBitmap* image = BitmapManager::GetInstance()->Insert_Bitmap(_hWnd, wstr.c_str(), StringToWString(item->GetName().c_str()).c_str());
 				item->SetImage(image);
 			}
 		}
 		else if (!strcmp(node->name(), "vector"))
 		{
-			//std::cout << begin->value() << std::endl;
 			if (!strcmp(begin->value(), "origin"))
 			{
 				++begin;
@@ -327,11 +316,6 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 		}
 		else if (!strcmp(node->name(), "imgdir"))
 		{
-			if (item->GetPath().find("stand1") != std::string::npos)
-			{
-				int a = 123;
-				std::cout << begin->value() << std::endl;
-			}
 			if (!strcmp(begin->value(), "map"))
 			{
 				SetMapInfo(node->children().begin(), node->children().end(), item);
@@ -354,12 +338,9 @@ void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber,
 				str.replace(start_pos, mod.length(), "");
 			}
 			item->SetUol(str);
-			//item->SetImage(image);
-
 		}
 		else if (!strcmp(node->name(), "int"))
 		{
-			//std::cout << begin->value() << std::endl;
 			if (!strcmp(begin->value(), "delay"))
 			{
 				++begin;

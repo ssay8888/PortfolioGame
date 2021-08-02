@@ -2,15 +2,13 @@
 #include "portfolio_game.h"
 #include "MainGame/main_game.h"
 
-#pragma comment(lib, "Gdiplus.lib")
+#define MAX_LOADSTRING 100
+
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #else
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #endif
-
-#define MAX_LOADSTRING 100
-
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -48,15 +46,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg{0};
     MainGame maingame(GetDC(_hWnd));
-    ULONG_PTR gdiplus_token;
-    Gdiplus::GdiplusStartupInput gdiplus_startup_input;
-    if (Gdiplus::Status::Ok != Gdiplus::GdiplusStartup(&gdiplus_token, &gdiplus_startup_input, NULL))
-    {
-        return 0;
-    }
-    //Gdiplus::GdiplusStartupInput         m_GdiplusStartupInput;
-    //ULONG_PTR                            m_GdiplusToken;
-    //Gdiplus::GdiplusStartup(&m_GdiplusToken, &m_GdiplusStartupInput, NULL);
+
     maingame.ReadeyGame();
    // ULONGLONG dwOldTime = GetTickCount64();
     while (WM_QUIT != msg.message)

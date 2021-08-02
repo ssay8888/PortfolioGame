@@ -7,6 +7,7 @@
 #include "../../Object/mouse.h"
 #include "../../../Common/Utility/file_manager.h"
 #include "../../../Common/Utility/string_tools.h"
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 
 MapManager::MapManager() :
@@ -17,11 +18,14 @@ MapManager::MapManager() :
 
 void MapManager::Ready_Map()
 {
-	auto asd = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
-	std::map<std::string, Gdiplus::Image*> list;
-	for (auto begin : asd) {
-		auto image = new Gdiplus::Image(begin.c_str());
+	auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
+
+	std::map<std::string, MyBitmap*> list;
+	for (auto begin : fileNams)
+	{
+		MyBitmap* image = new MyBitmap;
+		image->Insert_Bitmap(_hWnd, begin.c_str());
 		list.insert({ FileManager::GetInstance()->GetFileName(StringTools::WStringToString(begin.c_str())), image });
 		std::cout << begin.c_str() << std::endl;
 	}
@@ -73,6 +77,10 @@ void MapManager::Update_Map()
 	{
 		LoadData();
 	}
+	else if (KeyManager::GetInstance()->KeyUp(KEY_Z))
+	{
+		_list[SelectLayer].pop_back();
+	}
 
 }
 
@@ -82,16 +90,32 @@ void MapManager::Render_Map(HDC hDC)
 	GetCursorPos(&pt);
 	ScreenToClient(_hWnd, &pt);
 
-	Gdiplus::Graphics Mouse(hDC);
+	//Gdiplus::Graphics Mouse(hDC);
 	if (_selectImage != nullptr)
 	{
-		Gdiplus::Rect rc{
+		/*Gdiplus::Rect rc{
 			static_cast<int>(GetMouse()->GetInfo().x - (_selectImage->GetWidth() / 2)),
 			static_cast<int>(GetMouse()->GetInfo().y - (_selectImage->GetHeight() / 2)),
 			static_cast<int>(_selectImage->GetWidth()),
 			static_cast<int>(_selectImage->GetHeight())
-		};
-		Mouse.DrawImage(_selectImage, rc);
+		};*/
+
+		_selectImage->RenderBitmapImage(hDC, 
+			static_cast<int>(GetMouse()->GetInfo().x - (_selectImage->GetWidth() / 2)),
+			static_cast<int>(GetMouse()->GetInfo().y - (_selectImage->GetHeight() / 2)),
+			static_cast<int>(_selectImage->GetWidth()),
+			static_cast<int>(_selectImage->GetHeight()));
+		//GdiTransparentBlt(hDC,
+		//	static_cast<int>(GetMouse()->GetInfo().x - (_selectImage->GetWidth() / 2)),
+		//	static_cast<int>(GetMouse()->GetInfo().y - (_selectImage->GetHeight() / 2)),
+		//	static_cast<int>(_selectImage->GetWidth()),
+		//	static_cast<int>(_selectImage->GetHeight()),
+		//	_selectImage->GetMemDC(),
+		//	0, 0,
+		//	static_cast<int>(_selectImage->GetWidth()),
+		//	static_cast<int>(_selectImage->GetHeight()),
+		//	RGB(255, 0, 255));
+		//Mouse.DrawImage(_selectImage, rc);
 	}
 	int countX = 0;
 	int countY = 0;
@@ -99,16 +123,24 @@ void MapManager::Render_Map(HDC hDC)
 	{
 		for (auto tile : tiles.second)
 		{
-			Gdiplus::Graphics destination(hDC);
+			
+			//Gdiplus::Graphics destination(hDC);
 
-			Gdiplus::Rect rc {
+			/*RECT rc {
 				static_cast < int>(90 + (90 * countX) + 800 ),
 				static_cast < int>(70 + (70 * countY)),
 				static_cast<int>(tile.second->GetWidth()),
 				static_cast<int>(tile.second->GetHeight())
-			};
-			Rectangle(hDC, rc.GetLeft(), rc.GetTop(), rc.GetRight(), rc.GetBottom());
-			destination.DrawImage(tile.second, rc);
+			};*/
+
+			//Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
+
+			tile.second->RenderBitmapImage(hDC,
+				static_cast <int>(90 + (90 * countX) + 800),
+				static_cast <int>(70 + (70 * countY)),
+				static_cast<int>(tile.second->GetWidth()),
+				static_cast<int>(tile.second->GetHeight()));
+			//destination.DrawImage(tile.second, rc);
 
 			if (countX++ > 0 && countX % 4 == 0)
 			{
@@ -122,15 +154,21 @@ void MapManager::Render_Map(HDC hDC)
 	{
 		for (auto& map : maps)
 		{
-			Gdiplus::Graphics destination(hDC);
+			/*Gdiplus::Graphics destination(hDC);
 
 			Gdiplus::Rect rc{
 				static_cast<int>(map->GetInfo().x + static_cast<int>(ScrollManager::GetScrollX() - (map->GetImage()->GetWidth() / 2))),
 				static_cast<int>(map->GetInfo().y + static_cast<int>(ScrollManager::GetScrollY() - (map->GetImage()->GetHeight() / 2))),
 				static_cast<int>(map->GetImage()->GetWidth()),
 				static_cast<int>(map->GetImage()->GetHeight())
-			};
-			destination.DrawImage(map->GetImage(), rc);
+			};*/
+
+			map->GetImage()->RenderBitmapImage(hDC,
+				static_cast<int>(map->GetInfo().x + static_cast<int>(ScrollManager::GetScrollX() - (map->GetImage()->GetWidth() / 2))),
+				static_cast<int>(map->GetInfo().y + static_cast<int>(ScrollManager::GetScrollY() - (map->GetImage()->GetHeight() / 2))),
+				static_cast<int>(map->GetImage()->GetWidth()),
+				static_cast<int>(map->GetImage()->GetHeight()));
+			//destination.DrawImage(map->GetImage(), rc);
 		}
 	}
 
@@ -314,7 +352,7 @@ void MapManager::LoadData()
 			ZeroMemory(path, pathSize);
 			check = ReadFile(hFile, path, static_cast<DWORD>(pathSize), &dwByte, nullptr);
 			obj->SetPath(path);
-			delete path;
+			delete[] path;
 
 			size_t fileSize;
 			check = ReadFile(hFile, &fileSize, sizeof(fileSize), &dwByte, nullptr);
@@ -322,7 +360,7 @@ void MapManager::LoadData()
 			ZeroMemory(fileName, fileSize);
 			check = ReadFile(hFile, fileName, static_cast<DWORD>(fileSize), &dwByte, nullptr);
 			obj->SetFileName(fileName);
-			delete fileName;
+			delete[] fileName;
 
 			Info info;
 			check = ReadFile(hFile, &info, sizeof(info), &dwByte, nullptr);

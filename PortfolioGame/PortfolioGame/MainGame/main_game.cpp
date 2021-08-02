@@ -33,6 +33,8 @@ void MainGame::ReadeyGame()
 	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
 
 	auto object_manager = MapManager::GetInstance();
+	object_manager->ReadyMapManager();
+	object_manager->LoadMapData();
 	auto object = new Player();
 	this->SetPlayer(object);
 	object_manager->AddGameObject(object);

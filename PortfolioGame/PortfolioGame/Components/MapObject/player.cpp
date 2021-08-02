@@ -6,9 +6,12 @@
 #include "../../Managers/Skins/skin_item.h"
 #include "../../Managers/Skins/skin_manager.h"
 #include "../../Managers/ScrollManager/scroll_manager.h"
+#include "../../Managers/MapManager/map_manager.h"
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 Player::Player(uint8_t layer) :
 	GameObject(layer),
+	_frameRevers(false),
 	_frameState("stand1"),
 	_frameTick(0)
 {
@@ -17,6 +20,9 @@ Player::Player(uint8_t layer) :
 
 Player::~Player()
 {
+	DeleteObject(_hBitmap);
+	DeleteObject(_oldBitmap);
+	DeleteDC(_memDC);
 }
 
 int Player::ReadyGameObject()
@@ -25,27 +31,71 @@ int Player::ReadyGameObject()
 	_info.y = 300.f;
 	_info.cx = 42;
 	_info.cy = 64;
-	_speed = 200.f;
+	_speed = 1;
 	LoadCharacterFrame("stand1");
+
+	HDC hDC = GetDC(_hWnd);
+
+	_memDC = CreateCompatibleDC(hDC);
+	_hBitmap = CreateCompatibleBitmap(hDC, 1024, 768);
+	_oldBitmap = (HBITMAP)SelectObject(_memDC, _hBitmap);
+	ReleaseDC(_hWnd, hDC);
+
     return 0;
 }
 
 void Player::UpdateGameObject(const float deltaTime)
 {
 	auto keymanager = KeyManager::GetInstance();
+	float totalMoveX = 0;
+	float totalMoveY = 0;
 	if (keymanager->KeyPressing(KEY_LEFT))
 	{
-		float value = _speed * deltaTime;
-		_info.x -= value;
-		ScrollManager::GainScrollX(value);
-
+		_info.x -= GetSpeed();
+		ScrollManager::GainScrollX(GetSpeed());
+		totalMoveX -= GetSpeed();
 	}
 	if (keymanager->KeyPressing(KEY_RIGHT))
 	{
-		float value = _speed * deltaTime;
-		_info.x += _speed * deltaTime;
-		ScrollManager::GainScrollX(-value);
+		_info.x += GetSpeed();
+		ScrollManager::GainScrollX(-GetSpeed());
+		totalMoveX += GetSpeed();
 	}
+	if (keymanager->KeyPressing(KEY_UP))
+	{
+		_info.y -= GetSpeed();
+		ScrollManager::GainScrollY(GetSpeed());
+		totalMoveY -= GetSpeed();
+	}
+	if (keymanager->KeyPressing(KEY_DOWN))
+	{
+		_info.y += GetSpeed();
+		ScrollManager::GainScrollY(-GetSpeed());
+		totalMoveY += GetSpeed();
+	}
+	if (totalMoveX != 0 || totalMoveY != 0)
+	{
+		if (totalMoveX < 0)
+		{
+			this->SetFacingDirection(0);
+		}
+		else 
+		{
+			this->SetFacingDirection(1);
+		}
+		if (strcmp(GetFrameState(), "walk1"))
+		{
+			this->ChangeFrameState("walk1");
+		}
+	}
+	else 
+	{
+		if (strcmp(GetFrameState(), "stand1"))
+		{
+			this->ChangeFrameState("stand1");
+		}
+	}
+
 	if (keymanager->KeyPressing(KEY_A))
 	{
 		this->ChangeFrameState("alert");
@@ -57,12 +107,45 @@ void Player::UpdateGameObject(const float deltaTime)
 	if (_frameThis != nullptr)
 	{
 		uint64_t tick = GetTickCount64();
-		if (tick > _frameTick + _frameThis->GetDelay())
+		if (!strcmp(GetFrameState(), "walk1") || true)
 		{
-			_frameNummber++;
-			_frameTick = tick;
+			if (tick > _frameTick + _frameThis->GetDelay())
+			{
+				if (_frameRevers)
+				{
+					_frameNummber--;
+					if (_frameNummber == 0)
+					{
+						_frameRevers = false;
+					}
+					std::cout << std::to_string(_frameNummber) << std::to_string(_frameThis->GetSkinItem()->GetFrameMaxSize()) << std::endl;
+
+				}
+				else
+				{
+					_frameNummber++;
+					if (_frameNummber >= _frameThis->GetSkinItem()->GetFrameMaxSize())
+					{
+						_frameRevers = true;
+					}
+					std::cout << std::to_string(_frameNummber) << std::to_string(_frameThis->GetSkinItem()->GetFrameMaxSize()) << std::endl;
+
+				}
+
+				_frameTick = tick;
+			}
+		}
+		else 
+		{
+			if (tick > _frameTick + _frameThis->GetDelay())
+			{
+				_frameNummber++;
+				_frameTick = tick;
+				std::cout << std::to_string(_frameNummber) << std::endl;
+			}
 		}
 	}
+
 }
 
 void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
@@ -85,7 +168,14 @@ void Player::RenderCharacter(HDC hdc)
 {
 	this->LoadCharacterFrame(_frameState);
 	char findStr[20];
-	snprintf(findStr, 20, "%s/%d", _frameState.c_str(), GetFrameNummber(3));
+	if (_frameThis != nullptr) 
+	{
+		snprintf(findStr, 20, "%s/%d", _frameState.c_str(), GetFrameNummber(static_cast<uint16_t>(_frameThis->GetSkinItem()->GetFrameMaxSize())));
+	}
+	else 
+	{
+		snprintf(findStr, 20, "%s/%d", _frameState.c_str(), GetFrameNummber(3));
+	}
 	auto frameItr = _skinFrames.find(findStr);
 	if (frameItr != _skinFrames.end())
 	{
@@ -176,7 +266,6 @@ void Player::RenderCharacter(HDC hdc)
 		std::list<std::pair<SkinFrame*, ObjectPos>> positionedFramesList;
 		for (auto positionedFrame : partsFrames)
 		{
-			auto fromAnchorPoint = neckOffsetBody;
 			if (positionedFrame->GetMapSize() > 0)
 			{
 				auto anchorPointEntry = positionedFrame->GetMap().begin();
@@ -186,12 +275,18 @@ void Player::RenderCharacter(HDC hdc)
 					anchorPoint = list.find(anchorPointEntry->first)->second;
 
 				auto vectorFromPoint = anchorPointEntry->second;
-				fromAnchorPoint = { anchorPoint.x - vectorFromPoint.x, anchorPoint.y - vectorFromPoint.y };
+				neckOffsetBody = { anchorPoint.x - vectorFromPoint.x, anchorPoint.y - vectorFromPoint.y };
 			}
 			auto partOrigin = positionedFrame->GetOrigin();
-			auto tempPos = ObjectPos{ fromAnchorPoint.x - partOrigin.x, fromAnchorPoint.y - partOrigin.y };
+			auto tempPos = ObjectPos{ neckOffsetBody.x - partOrigin.x, neckOffsetBody.y - partOrigin.y };
 			positionedFramesList.push_back(std::make_pair(positionedFrame, tempPos));
 		}
+		auto minXPair = std::min_element(positionedFramesList.begin(),
+			positionedFramesList.end(),
+			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
+				return lhs.second.x + lhs.first->GetWidth() < rhs.second.x + rhs.first->GetWidth();
+			});
+		auto minX = minXPair->second.x + minXPair->first->GetWidth();
 
 		auto maxXPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
@@ -199,6 +294,13 @@ void Player::RenderCharacter(HDC hdc)
 				return lhs.second.x + lhs.first->GetWidth() < rhs.second.x + rhs.first->GetWidth();
 			});
 		auto maxX = maxXPair->second.x + maxXPair->first->GetWidth();
+
+		auto minYPair = std::max_element(positionedFramesList.begin(),
+			positionedFramesList.end(),
+			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
+				return lhs.second.y + lhs.first->GetHeight() < rhs.second.y + rhs.first->GetHeight();
+			});
+		auto minY = minYPair->second.y + minYPair->first->GetHeight();
 
 		auto maxYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
@@ -208,33 +310,64 @@ void Player::RenderCharacter(HDC hdc)
 
 		auto maxY = maxYPair->second.y + maxYPair->first->GetHeight();
 
-		Gdiplus::Graphics destination(hdc);
 		if (bodyFrame->GetMap().find("neck") != bodyFrame->GetMap().end())
 		{
-			Rectangle(hdc, 
+		/*	Rectangle(hdc, 
 				_rect.left + static_cast<int>(ScrollManager::GetScrollX()),
 				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
 				_rect.right + static_cast<int>(ScrollManager::GetScrollX()), 
-				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
+				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));*/
+
+			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
+			Rectangle(_memDC, -5, -5, _info.cx + 5, _info.cy + 5);
+			/*
+				static_cast<int>(_rect.left + _info.cx + ScrollManager::GetScrollX() + minX),
+				static_cast<int>(_rect.top + _info.cy + ScrollManager::GetScrollY() + minY),
+				static_cast<int>(maxX),
+				static_cast<int>(maxY)
+				*/
+			SelectObject(_memDC, brushPrev);
+			DeleteObject(brush);
+			DeleteObject(brushPrev);
 
 			for (auto draw : positionedFramesList)
 			{
-				Gdiplus::Rect rc{
-					static_cast<int>(_rect.left + _info.cx + static_cast<int>(ScrollManager::GetScrollX()) + draw.second.x - maxX),
-					static_cast<int>(_rect.top + _info.cy + static_cast<int>(ScrollManager::GetScrollY()) + draw.second.y - maxY),
+				draw.first->GetImage()->RenderBitmapImage(_memDC,
+					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)),
+					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)),
 					static_cast<int>(draw.first->GetWidth()),
-					static_cast<int>(draw.first->GetHeight())
-				};
-
-				destination.DrawImage(draw.first->GetImage(), rc);
+					static_cast<int>(draw.first->GetHeight()));
+				/*draw.first->GetImage()->RenderBitmapImage(_memDC,
+					static_cast<int>(std::floor(_rect.left + _info.cx + ScrollManager::GetScrollX() + draw.second.x - maxX)),
+					static_cast<int>(std::floor(_rect.top + _info.cy + ScrollManager::GetScrollY() + draw.second.y - maxY)),
+					static_cast<int>(draw.first->GetWidth()),
+					static_cast<int>(draw.first->GetHeight()));*/
 			}
 
-			//BitBlt(hdc, static_cast<int>(_info.x), static_cast<int>(_info.y), 42, 64, hdc, 0, 0, SRCCOPY);
+			if (GetFacingDirection())
+			{
+				StretchBlt(_memDC, 0, 0, 42, 64, _memDC, 41, 0, -42, 64, SRCCOPY);
+			}
 
-			//DeleteObject(hBitmap);
-			//DeleteDC(buffer);
+			GdiTransparentBlt(hdc, 
+				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
+				static_cast<int>(std::floor(_rect.top  + ScrollManager::GetScrollY())),
+				42,
+				64,
+				_memDC,
+				0, 0,
+				42,
+				64,
+				RGB(255, 0, 255));
+
+			//ÁÂ¿ì¹ÝÀü
+			//StretchBlt(hdc, 0, 0, 1024, 768, _memDC, 1023, 0, -1024, 768, SRCCOPY);
+
+			//BitBlt(hdc, 0, 0, 1024, 768, _memDC, 0, 0, SRCCOPY);
 
 		}
+
 	}
 }
 
@@ -247,6 +380,10 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
+	float outY = 0;
+	MapManager::GetInstance()->FootholdCollision(this->GetInfo().x, &outY);
+
+	this->SetInfo({ this->GetInfo().x, outY });
 }
 
 void Player::SetFrameThis(SkinInfo* frame)
@@ -276,16 +413,26 @@ void Player::ChangeFrameState(std::string frame)
 	_frameNummber = 0;
 }
 
-char* Player::GetFrameState()
+const char* Player::GetFrameState() const
 {
 	//char findStr[30];
 	//snprintf(findStr, 30, "%s/%d", _frameState.c_str(), _frameNummber);
 
 	//return findStr;
-	return nullptr;
+	return _frameState.c_str();
 }
 
 uint16_t Player::GetFrameNummber(uint16_t remain)
 {
 	return _frameNummber % remain;
+}
+
+void Player::SetFacingDirection(uint8_t direction)
+{
+	_facingDirection = direction;
+}
+
+uint8_t Player::GetFacingDirection() const
+{
+	return _facingDirection;
 }

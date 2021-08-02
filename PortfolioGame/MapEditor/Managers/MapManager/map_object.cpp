@@ -1,5 +1,6 @@
 #include "../../pch.h"
 #include "map_object.h"
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 MapObject::MapObject() :
 	_image(nullptr),
@@ -25,12 +26,12 @@ void MapObject::SetPath(std::string path)
 	_path = path;
 }
 
-void MapObject::SetImage(Gdiplus::Image* image)
+void MapObject::SetImage(MyBitmap* image)
 {
 	_image = image;
 }
 
-Gdiplus::Image* MapObject::GetImage() const
+MyBitmap* MapObject::GetImage() const
 {
 	return _image;
 }

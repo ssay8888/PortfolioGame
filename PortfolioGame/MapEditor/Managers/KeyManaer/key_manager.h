@@ -9,6 +9,7 @@
 #define KEY_B		0x00000080
 #define KEY_S		0x00000100
 #define KEY_L		0x00000200
+#define KEY_Z		0x00000400
 
 class KeyManager
 {

@@ -1,4 +1,5 @@
 #pragma once
+class MyBitmap;
 class MapObject
 {
 public:
@@ -9,7 +10,7 @@ public:
 
 	void UpdateRect();
 
-	Gdiplus::Image* GetImage() const;
+	MyBitmap* GetImage() const;
 	Info GetInfo() const;
 	RECT GetRect() const;
 	uint32_t GetLayer() const;
@@ -19,7 +20,7 @@ public:
 
 	void SetFileName(std::string path);
 	void SetPath(std::string path);
-	void SetImage(Gdiplus::Image* image);
+	void SetImage(MyBitmap* image);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
 	void SetPos(float fX, float fY);
@@ -28,7 +29,7 @@ public:
 	void SetLayer(uint32_t layer);
 
 private:
-	Gdiplus::Image* _image;
+	MyBitmap* _image;
 	std::string _path;
 	std::string _fileName;
 	Info _info;

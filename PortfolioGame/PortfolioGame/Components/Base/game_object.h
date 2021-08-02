@@ -1,4 +1,5 @@
 #pragma once
+class MyBitmap;
 class GameObject
 {
 public:
@@ -23,6 +24,8 @@ public:
 	GameObject::State GetState() const;
 	Info GetInfo() const;
 	RECT GetRect() const;
+	MyBitmap* GetImage();
+	float GetSpeed() const;
 
 	void SetPath(std::string path);
 	void SetFileName(std::string fileName);
@@ -30,6 +33,7 @@ public:
 	void SetState(GameObject::State state);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
+	void SetImage(MyBitmap* image);
 
 private:
 	virtual int ReadyGameObject() = 0;
@@ -45,5 +49,11 @@ protected:
 	Info _info;
 	RECT _rect;
 	float _speed;
+	MyBitmap* _image;
+
+	HDC _memDC;
+	HBITMAP _bitmap;
+	HBITMAP _oldBitmap;
+	HBITMAP _hBitmap;
 };
 

@@ -53,6 +53,11 @@ SkinFrame* SkinItem::GetFindFrame(std::string key) const
 	return nullptr;
 }
 
+size_t SkinItem::GetFrameMaxSize()
+{
+	return _skinFrames.size();
+}
+
 std::string SkinItem::GetName() const
 {
 	return _name;

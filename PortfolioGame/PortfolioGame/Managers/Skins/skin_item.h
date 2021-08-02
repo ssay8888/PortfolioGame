@@ -8,6 +8,7 @@ public:
 	void AddFrame(SkinFrame* frame);
 	std::map<std::string, SkinFrame*>* GetFrames();
 	SkinFrame* GetFindFrame(std::string) const;
+	size_t GetFrameMaxSize();
 	std::string GetName() const;
 	void SetName(const std::string name);
 private:

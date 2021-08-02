@@ -4,6 +4,7 @@
 class MapObject;
 class Mouse;
 class FootHold;
+class MyBitmap;
 class MapManager
 {
 private:
@@ -30,12 +31,12 @@ public:
 	Mouse* GetMouse();
 
 private:
-	Gdiplus::Image* _selectImage;
+	MyBitmap* _selectImage;
 	std::string _selectFileName;
 	std::string _selectPath;
 	std::list<MapObject*> _list[7];
 	std::list<FootHold*> _footholds;
-	std::map<std::string, std::map<std::string, Gdiplus::Image*> > _images;
+	std::map<std::string, std::map<std::string, MyBitmap*> > _images;
 	Mouse* _mouse;
 };
 

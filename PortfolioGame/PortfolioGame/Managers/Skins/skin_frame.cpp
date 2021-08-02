@@ -3,7 +3,7 @@
 #include "skin_info.h"
 #include "skin_item.h"
 #include "skin_manager.h"
-
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 SkinFrame::SkinFrame() :
 	_origin({ 0, 0 }),
@@ -187,12 +187,12 @@ uint32_t SkinFrame::GetHeight()
 	return _height;
 }
 
-void SkinFrame::SetImage(Gdiplus::Image* image)
+void SkinFrame::SetImage(MyBitmap* image)
 {
 	_image = image;
 }
 
-Gdiplus::Image* SkinFrame::GetImage()
+MyBitmap* SkinFrame::GetImage()
 {
 	return _image;
 }

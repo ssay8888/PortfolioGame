@@ -24,9 +24,6 @@
     <ClCompile Include="Managers\CollisionManager\Collision_Manager.cpp">
       <Filter>Managers\CollisionManager</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\BitmapManager\bitmap_manager.cpp">
-      <Filter>Managers\BitmapManager</Filter>
-    </ClCompile>
     <ClCompile Include="Managers\BitmapManager\my_btimap.cpp">
       <Filter>Managers\BitmapManager</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
     </ClInclude>
     <ClInclude Include="Managers\CollisionManager\Collision_Manager.h">
       <Filter>Managers\CollisionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\BitmapManager\bitmap_manager.h">
-      <Filter>Managers\BitmapManager</Filter>
     </ClInclude>
     <ClInclude Include="Managers\BitmapManager\my_bitmap.h">
       <Filter>Managers\BitmapManager</Filter>

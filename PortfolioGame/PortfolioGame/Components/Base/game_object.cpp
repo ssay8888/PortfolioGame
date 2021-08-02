@@ -1,12 +1,14 @@
 #include "../../pch.h"
 #include "game_object.h"
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 GameObject::GameObject(uint8_t layer) :
 	_layer(layer),
 	_info({}),
 	_rect({}),
 	_speed(0),
-	_state(GameObject::State::kActive)
+	_state(GameObject::State::kActive),
+	_image(nullptr)
 {
 }
 
@@ -76,6 +78,16 @@ RECT GameObject::GetRect() const
 	return _rect;
 }
 
+MyBitmap* GameObject::GetImage()
+{
+	return _image;
+}
+
+float GameObject::GetSpeed() const
+{
+	return _speed;
+}
+
 void GameObject::SetPath(std::string path)
 {
 	_path = path;
@@ -104,6 +116,11 @@ void GameObject::SetInfo(Info info)
 void GameObject::SetRect(RECT rect)
 {
 	_rect = rect;
+}
+
+void GameObject::SetImage(MyBitmap* image)
+{
+	_image = image;
 }
 
 void GameObject::UpdateGameObject(const float deltaTime)

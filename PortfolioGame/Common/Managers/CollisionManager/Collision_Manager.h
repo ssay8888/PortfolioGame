@@ -73,7 +73,7 @@ namespace CollisionManager
 				if (Check_Rect(pDst, pSrc, &fX, &fY))
 				{
 					float fSrcX = pSrc->GetInfo().x;
-					float fSrcY = pSrc->Get_Info().y;
+					float fSrcY = pSrc->GetInfo().y;
 
 					if (fX > fY)
 					{
