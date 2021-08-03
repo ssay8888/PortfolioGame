@@ -370,7 +370,7 @@ void Player::RenderCharacter(HDC hdc)
 
 		if (bodyFrame->GetMap().find("neck") != bodyFrame->GetMap().end())
 		{
-			const int plus = (_isProne ? 25 : 0);
+			int plus = (_isProne ? 25 : 0);
 			Rectangle(_memDC,
 				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
 				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
@@ -410,7 +410,7 @@ void Player::RenderCharacter(HDC hdc)
 			}
 
 			GdiTransparentBlt(hdc, 
-				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
+				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX()))  - (GetFacingDirection() ? plus * -1 : plus),
 				static_cast<int>(std::floor(_rect.top  + ScrollManager::GetScrollY())),
 				42 + plus,
 				64,
