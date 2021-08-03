@@ -7,6 +7,7 @@ public:
 	~MainGame();
 	void ReadeyGame();
 	void UpdateGame();
+	void LateUpdateGame();
 	void RenderGame();
 	void ReleaseGame();
 	void SetPlayer(Player*);

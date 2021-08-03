@@ -50,29 +50,56 @@ void Player::UpdateGameObject(const float deltaTime)
 	auto keymanager = KeyManager::GetInstance();
 	float totalMoveX = 0;
 	float totalMoveY = 0;
-	if (keymanager->KeyPressing(KEY_LEFT))
+	if (!_isJump && keymanager->KeyPressing(KEY_DOWN))
 	{
-		totalMoveX -= GetSpeed();
+		this->ChangeFrameState("prone");
+		_isProne = true;
 	}
-	if (keymanager->KeyPressing(KEY_RIGHT))
+	if (!_isProne)
 	{
-		totalMoveX += GetSpeed();
+		if (keymanager->KeyPressing(KEY_LEFT))
+		{
+			totalMoveX -= GetSpeed();
+		}
+		if (keymanager->KeyPressing(KEY_RIGHT))
+		{
+			totalMoveX += GetSpeed();
+		}
+		if (_isJump || keymanager->KeyDown(KEY_C))
+		{
+			if (!_isJump)
+			{
+				this->ChangeFrameState("jump");
+				_isJump = true;
+			}
+			else
+			{
+				++_jumpCount;
+				const int count = 45;
+				const float speed = 2.f;
+				if (_jumpCount < count)
+				{
+					totalMoveY -= speed;
+				}
+				else if (_jumpCount < count * 2 - 1)
+				{
+					totalMoveY += speed;
+				}
+				else
+				{
+					_isJump = false;
+					_jumpCount = 0;
+				}
+			}
+		}
 	}
 	if (keymanager->KeyPressing(KEY_UP))
 	{
-		//totalMoveY -= GetSpeed();
 	}
-	if (keymanager->KeyPressing(KEY_DOWN))
-	{
-		this->ChangeFrameState("prone");
-		_prone = true;
-		//totalMoveY += GetSpeed();
-	}
-	
 	if (keymanager->KeyUp(KEY_DOWN))
 	{
 		this->ChangeFrameState("stand1");
-		_prone = false;
+		_isProne = false;
 	}
 	if (totalMoveX != 0 || totalMoveY != 0)
 	{
@@ -84,7 +111,7 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->SetFacingDirection(1);
 		}
-		if (strcmp(GetFrameState(), "walk1"))
+		if (!_isJump && strcmp(GetFrameState(), "walk1"))
 		{
 			this->ChangeFrameState("walk1");
 		}
@@ -92,18 +119,31 @@ void Player::UpdateGameObject(const float deltaTime)
 		float outY = 0;
 		_info.x += totalMoveX;
 		_info.y += totalMoveY;
-		if (MapManager::GetInstance()->FootholdCollision(_info, &outY))
-		{
-		}
-		else
-		{
-			_info.x -= totalMoveX;
-			_info.y -= totalMoveY;
-		}
+		//if (_isJump || MapManager::GetInstance()->FootholdCollision(_info, &outY))
+		//{
+		//	if (_isJump)
+		//	{
+		//		m_fAccel += 0.20f;
+		//		totalMoveY -= m_fJumpPower * m_fAccel - m_fGravity * m_fAccel * m_fAccel * 0.5f;
+		//		if (bIsColl && m_tInfo.fY >= fY)
+		//		{
+		//			m_bIsJump = false;
+		//			m_fAccel = 0.f;
+		//			m_tInfo.fY = fY;
+		//		}
+		//	}
+		//	else if (bIsColl)
+		//		m_tInfo.fY = fY;
+		//}
+		//else
+		//{
+		//	_info.x -= totalMoveX;
+		//	_info.y -= totalMoveY;
+		//}
 	}
 	else 
 	{
-		if (!_prone && strcmp(GetFrameState(), "stand1"))
+		if (!_isJump && !_isProne && strcmp(GetFrameState(), "stand1"))
 		{
 			this->ChangeFrameState("stand1");
 		}
@@ -144,7 +184,6 @@ void Player::UpdateGameObject(const float deltaTime)
 				++_frameNummber;
 			}
 			_frameTick = tick;
-			std::cout << std::to_string(_frameNummber) << std::endl;
 		}
 	}
 
@@ -328,9 +367,10 @@ void Player::RenderCharacter(HDC hdc)
 
 		auto maxY = maxYPair->second.y + maxYPair->first->GetHeight();
 
+
 		if (bodyFrame->GetMap().find("neck") != bodyFrame->GetMap().end())
 		{
-			const int plus = 25;
+			const int plus = (_isProne ? 25 : 0);
 			Rectangle(_memDC,
 				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
 				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
@@ -399,6 +439,24 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
+	//float fY = 0.f;
+	//bool bIsColl = MapManager::GetInstance()->FootholdCollision(_info, &fY);
+
+	//if (_isJump)
+	//{
+	//	_accel += 0.10f;
+	//	float value = _jumpPower * _accel - _gravity * _accel * _accel * 0.5f;
+	//	std::cout << std::to_string(value) << std::endl;
+	//	_info.y -= value;
+	//	if (bIsColl && _info.y >= fY)
+	//	{
+	//		_isJump = false;
+	//		_accel = 0.f;
+	//		_info.y = fY;
+	//	}
+	//}
+	//else if (bIsColl)
+	//	_info.y = fY;
 }
 
 void Player::SetFrameThis(SkinInfo* frame)

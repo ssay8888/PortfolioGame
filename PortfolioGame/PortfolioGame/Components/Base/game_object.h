@@ -16,7 +16,7 @@ public:
 	void DoReadyGame();
 	GameObject::State DoUpdateObject(const float deltaTime);
 	void DoRenderGameObject(HDC hdc);
-	void DoLateUpdateGameObject();
+	GameObject::State DoLateUpdateGameObject();
 
 	std::string GetPath();
 	std::string GetFileName();

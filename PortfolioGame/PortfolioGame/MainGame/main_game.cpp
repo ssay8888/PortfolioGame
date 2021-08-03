@@ -42,8 +42,9 @@ void MainGame::ReadeyGame()
 
 void MainGame::UpdateGame()
 {
+	// 100 - (116)
+	while (((GetTickCount64())-((_ticksCount + 16))) <= 0);
 	KeyManager::GetInstance()->KeyUpdate();
-	while (!GetTickCount64() - (_ticksCount + 16) <= 0);
 
 	float deltaTime = (GetTickCount64() - _ticksCount) / 1000.0f;
 
@@ -54,6 +55,11 @@ void MainGame::UpdateGame()
 	_ticksCount = GetTickCount64();
 
 	MapManager::GetInstance()->UpdateGameObjectManager(deltaTime);
+}
+
+void MainGame::LateUpdateGame()
+{
+	MapManager::GetInstance()->LateUpdateGameObjectManager();
 }
 
 void MainGame::RenderGame()

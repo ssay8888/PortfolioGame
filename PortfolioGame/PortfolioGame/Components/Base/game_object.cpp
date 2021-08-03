@@ -43,9 +43,13 @@ void GameObject::DoRenderGameObject(HDC hdc)
 	RenderGameObject(hdc);
 }
 
-void GameObject::DoLateUpdateGameObject()
+GameObject::State GameObject::DoLateUpdateGameObject()
 {
-	LateUpdateGameObject();
+	if (this->_state == GameObject::State::kActive)
+	{
+		LateUpdateGameObject();
+	}
+	return this->_state;
 }
 
 std::string GameObject::GetPath()

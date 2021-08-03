@@ -33,6 +33,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_A;
 	if (GetAsyncKeyState('B') & 0x8000)
 		m_dwKey |= KEY_B;
+	if (GetAsyncKeyState('C') & 0x8000)
+		m_dwKey |= KEY_C;
 }
 
 bool KeyManager::KeyUp(DWORD dwKey)

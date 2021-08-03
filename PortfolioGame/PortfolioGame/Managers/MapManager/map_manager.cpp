@@ -169,6 +169,17 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 	}
 }
 
+void MapManager::LateUpdateGameObjectManager()
+{
+	for (int i = 0; i < MaxLayer; i++)
+	{
+		for (auto iter = _listGameObject[i].begin(); iter != _listGameObject[i].end(); ++iter)
+		{
+			GameObject::State iEvent = (*iter)->DoLateUpdateGameObject();
+		}
+	}
+}
+
 void MapManager::ReleaseGameObjectManager()
 {
 }
@@ -195,9 +206,9 @@ bool MapManager::FootholdCollision(Info& info, float* outY)
 			if ((result1 < info.y && result1 + (info.cy / 2) + 1.f > info.y) ||
 				(result2 < info.y && result2 + (info.cy / 2) + 1.f > info.y))
 			{
-				float moveY = static_cast<float>((result1 + result2) / 2);
-				ScrollManager::SetScrollY(info.y - moveY);
-				info.y = moveY;
+				*outY = static_cast<float>((result1 + result2) / 2);
+				//ScrollManager::SetScrollY(info.y - moveY);
+				//info.y = moveY;
 				return true;
 			}
 		}

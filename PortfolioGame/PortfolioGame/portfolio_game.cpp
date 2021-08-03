@@ -63,6 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		//{
 			maingame.UpdateGame();
 			maingame.RenderGame();
+            maingame.LateUpdateGame();
 			//dwOldTime = GetTickCount64();
 		//}
     }

@@ -36,7 +36,12 @@ private:
     uint16_t _frameNummber;
     uint16_t _thisFrameMaxCount;
     bool _frameRevers;
-    bool _prone;
+    bool _isProne;
+    bool _isJump;
+    float _jumpPower = 15.f;
+    float _accel = 0.f;
+    float _gravity = 9.8f;
+    uint16_t _jumpCount;
     uint8_t _facingDirection;
     SkinInfo* _frameThis;
     std::string _frameState;

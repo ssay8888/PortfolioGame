@@ -7,6 +7,7 @@
 #define KEY_DOWN	0x00000020
 #define KEY_A		0x00000040
 #define KEY_B		0x00000080
+#define KEY_C		0x00000100
 
 class KeyManager
 {

@@ -23,6 +23,7 @@ public:
 
 	void UpdateGameObjectManager(const float deltaTime);
 	void RenderGameObjectManager(HDC hDC);
+	void LateUpdateGameObjectManager();
 	void ReleaseGameObjectManager();
 
 	bool FootholdCollision(Info& info, float * outY);
