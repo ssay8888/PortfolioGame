@@ -1,23 +1,58 @@
 #include "../../pch.h"
 #include "skin_info.h"
 #include "skin_item.h"
+#include "skin_frame.h"
+#include "skin_parts.h"
+
+SkinInfo::SkinInfo() :
+	_name("")
+{
+}
 
 SkinInfo::SkinInfo(std::string name) :
-	_name(name),
-	_delay(0),
-	_skin_item(nullptr)
+	_name(name)
 {
 
 }
 
-void SkinInfo::SetSkinItem(SkinItem* item)
+void SkinInfo::InsertBodySkinItem(SkinItem* skinItem)
 {
-	_skin_item = item;
+	_bodySkinItem.insert(std::make_pair(skinItem->GetName(), skinItem));
 }
 
-SkinItem* SkinInfo::GetSkinItem()
+void SkinInfo::InsertHeadSkinItem(SkinItem* skinItem)
 {
-	return _skin_item;
+	_headSkinItem.insert(std::make_pair(skinItem->GetName(), skinItem));
+}
+
+SkinItem* SkinInfo::FindBodySkinItem(std::string key)
+{
+	auto item = _bodySkinItem.find(key);
+	if (_bodySkinItem.end() != item)
+	{
+		return item->second;
+	}
+	return  nullptr;
+}
+
+SkinItem* SkinInfo::FindHeadSkinItem(std::string key)
+{
+	auto item = _headSkinItem.find(key);
+	if (_headSkinItem.end() != item)
+	{
+		return item->second;
+	}
+	return nullptr;
+}
+
+std::map<std::string, SkinItem*>* SkinInfo::GetBodySkinItem()
+{
+	return &_bodySkinItem;
+}
+
+std::map<std::string, SkinItem*>* SkinInfo::GetHeadSkinItem()
+{
+	return &_headSkinItem;
 }
 
 void SkinInfo::SetName(const std::string name)
@@ -31,12 +66,3 @@ std::string SkinInfo::GetName() const
 	return _name;
 }
 
-void SkinInfo::SetDelay(uint32_t delay)
-{
-	_delay = delay;
-}
-
-uint32_t SkinInfo::GetDelay() const
-{
-	return _delay;
-}

@@ -14,8 +14,9 @@ public:
 		static XmlReader instance;
 		return instance;
 	}
-	std::vector<std::string> LoadCharecterSkin(const std::wstring& path);
-	std::vector<std::string> LoadCharecterSkin2(const std::wstring& path);
+	SkinFrame* FindCanvas(pugi::xml_node node, int32_t size);
+	std::vector<std::string> LoadCharecterSkin(const int32_t count);
+
 
 	std::list<std::pair<std::string, std::string>> LoadSmap();
 	std::list<std::string> LoadZmap();

@@ -1,17 +1,27 @@
 #pragma once
 class SkinFrame;
+class SkinInfo;
 class SkinItem
 {
 public:
 	SkinItem();
 	~SkinItem();
-	void AddFrame(SkinFrame* frame);
-	std::map<std::string, SkinFrame*>* GetFrames();
-	SkinFrame* GetFindFrame(std::string) const;
+
+	void InsertFrame(SkinFrame* frame);
+	SkinFrame* FindFrame(std::string index) const;
+
 	std::string GetName() const;
 	void SetName(const std::string name);
+
+	size_t GetFrameSize() const;
+	std::vector<SkinFrame*>* GetSkinFrames();
+
+	void SetPartner(SkinInfo* partner);
+	SkinInfo* GetPartner() const;
 private:
 	std::string _name;
-	std::map<std::string, SkinFrame*> _skinFrames;
+	std::vector<SkinFrame*> _skinFrames;
+
+	SkinInfo* _partner;
 };
 

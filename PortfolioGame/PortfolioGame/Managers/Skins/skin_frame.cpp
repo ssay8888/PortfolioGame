@@ -6,206 +6,81 @@
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 SkinFrame::SkinFrame() :
-	_origin({ 0, 0 }),
-	_width(0),
-	_height(0),
-	_position(0),
-	_image(nullptr),
-	_uolFrame(nullptr)
+	_actionFrame(0),
+	_delay(0)
 {
 }
 
 SkinFrame::~SkinFrame()
 {
-	if (_image != nullptr)
-		delete _image;
 }
 
-void SkinFrame::AddMap(const std::string name, const ObjectPos pos)
+SkinParts* SkinFrame::FindParts(std::string key)
 {
-	_map.insert(std::make_pair(name, pos));
-}
-
-void SkinFrame::AddMap(std::pair<std::string, ObjectPos> map)
-{
-	_map.insert(map);
-}
-
-size_t SkinFrame::GetMapSize() const
-{
-	return _map.size();
-}
-
-void SkinFrame::SetMap(std::map<std::string, ObjectPos> map)
-{
-	_map = map;
-}
-
-std::map<std::string, ObjectPos>& SkinFrame::GetMap()
-{
-	return _map;
-}
-
-const ObjectPos& SkinFrame::GetMapItem(const std::string name)
-{
-	auto item = _map.find(name);
-	return item->second;
-}
-
-void SkinFrame::SetName(const std::string name)
-{
-	if (!strcmp(_name.c_str(), ""))
-		_name = name;
-}
-
-const std::string SkinFrame::GetName() const
-{
-	return _name;
-}
-
-void SkinFrame::SetPath(const std::string path)
-{
-	_path = path;
-}
-
-const std::string SkinFrame::GetPath()
-{
-	return _path;
-}
-
-void SkinFrame::SetUol(const std::string uol)
-{
-	_uol = uol;
-}
-
-std::string SkinFrame::GetUol() const
-{
-	return _uol;
-}
-
-SkinFrame* SkinFrame::FindUolFrame()
-{
-	if (GetUol().empty()) {
-		return nullptr;
-	}
-	auto list = StringTools::SplitString(GetPath(), '\\');
-	std::string str;
-	for (auto data : list)
+	auto item = _parts.find(key);
+	if (item != _parts.end())
 	{
-		if (data.find(".img") != std::string::npos)
-		{
-			str.append(data).append("/");
-			break;
-		}
+		return item->second;
 	}
-	str.append(GetUol());
-	auto data = SkinManager::GetInstance()->GetSkinInfo(str);
-	auto frameData = StringTools::SplitString(GetUol(), '/');
-	if (!strcmp(GetUol().c_str(), "proneStab/0/arm"))
-	{
-		int a = 123;
-
-		auto asdf = SkinManager::GetInstance()->GetSkinInfo(str);
-	}
-	if (data != nullptr) 
-	{
-		if (!strcmp(GetUol().c_str(), "prone/0"))
-		{
-			_uolFrame = data->GetSkinItem()->GetFindFrame("0/head");
-		}
-		else 
-		{
-			_uolFrame = data->GetSkinItem()->GetFindFrame(frameData[frameData.size() - 1]);
-		}
-		this->SetHeight(_uolFrame->GetHeight());
-		this->SetWidth(_uolFrame->GetWidth());
-		this->SetImage(_uolFrame->GetImage());
-		this->SetOrigin(_uolFrame->GetOrigin());
-		this->SetPath(_uolFrame->GetPath());
-		this->SetPosition(_uolFrame->GetPosition());
-		this->SetZ(_uolFrame->GetZ());
-		this->SetMap(_uolFrame->GetMap());
-	}
-	return _uolFrame;
+	return nullptr;
 }
 
-void SkinFrame::SetUolFrame(SkinFrame* uol)
+void SkinFrame::InsertParts(std::string key, SkinParts* item)
 {
-	_uolFrame = uol;
+	_parts.insert(std::make_pair(key, item));
 }
 
-SkinFrame* SkinFrame::GetUolFrame()
+std::map<std::string, SkinParts*>* SkinFrame::GetParts()
 {
-	return _uolFrame;
+	return &_parts;
 }
 
-void SkinFrame::SetZ(const std::string z)
+uint32_t SkinFrame::GetDelay() const
 {
-	SetPosition(SkinManager::GetInstance()->FindPosition(z));
-	_z = z;
+	return _delay;
 }
 
-std::string SkinFrame::GetZ()
+void SkinFrame::SetDelay(uint32_t delay)
 {
-	return _z;
+	_delay = delay;
 }
 
-void SkinFrame::SetPosition(const uint16_t z)
+std::string SkinFrame::GetFrame() const
 {
-	_position = z;
+	return _frame;
 }
 
-uint16_t SkinFrame::GetPosition()
+void SkinFrame::SetFrame(std::string frame)
 {
-	return _position;
+	_frame = frame;
 }
 
-void SkinFrame::SetOrigin(const ObjectPos pos)
+uint32_t SkinFrame::GetActionFrame() const
 {
-	_origin = pos;
+	return _actionFrame;
 }
 
-void SkinFrame::SetOriginX(float x)
+void SkinFrame::SetActionFrame(uint32_t nummber)
 {
-	_origin.x = x;
+	_actionFrame = nummber;
 }
 
-void SkinFrame::SetOriginY(float y)
+std::string SkinFrame::GetAction() const
 {
-	_origin.y = y;
+	return _action;
 }
 
-ObjectPos SkinFrame::GetOrigin() 
+void SkinFrame::SetAction(std::string action)
 {
-	return _origin;
+	_action = action;
 }
 
-void SkinFrame::SetWidth(const uint32_t width)
+void SkinFrame::SetPartner(SkinItem* partner)
 {
-	_width = width;
+	_partner = partner;
 }
 
-uint32_t SkinFrame::GetWidth()
+SkinItem* SkinFrame::GetPartner() const
 {
-	return _width;
-}
-
-void SkinFrame::SetHeight(const uint32_t height)
-{
-	_height = height;
-}
-
-uint32_t SkinFrame::GetHeight()
-{
-	return _height;
-}
-
-void SkinFrame::SetImage(MyBitmap* image)
-{
-	_image = image;
-}
-
-MyBitmap* SkinFrame::GetImage()
-{
-	return _image;
+	return _partner;
 }

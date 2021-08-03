@@ -1,21 +1,28 @@
 #pragma once
 class SkinItem;
+class SkinParts;
+class SkinFrame;
 class SkinInfo
 {
 public:
+	SkinInfo();
 	SkinInfo(std::string name);
 	~SkinInfo() = default;
-	void SetSkinItem(SkinItem* item);
-	SkinItem* GetSkinItem();
+
+	void InsertBodySkinItem(SkinItem* skinItem);
+	void InsertHeadSkinItem(SkinItem* skinItem);
+	SkinItem* FindBodySkinItem(std::string key);
+	SkinItem* FindHeadSkinItem(std::string key);
+	std::map<std::string, SkinItem*>* GetBodySkinItem();
+	std::map<std::string, SkinItem*>* GetHeadSkinItem();
 
 	void SetName(const std::string name);
 	std::string GetName() const;
 
-	void SetDelay(uint32_t delay);
-	uint32_t GetDelay() const;
+
 private:
-	SkinItem* _skin_item;
+	std::map<std::string, SkinItem*> _bodySkinItem;
+	std::map<std::string, SkinItem*> _headSkinItem;
 	std::string _name;
-	uint32_t _delay;
 };
 

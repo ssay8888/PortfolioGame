@@ -12,45 +12,24 @@ SkinItem::~SkinItem()
 {
 }
 
-void SkinItem::AddFrame(SkinFrame* frame)
+void SkinItem::InsertFrame(SkinFrame* frame)
 {
-	_skinFrames.insert(std::make_pair(frame->GetName(), frame));
+	_skinFrames.push_back(frame);
 }
 
-std::map<std::string, SkinFrame*>* SkinItem::GetFrames()
+SkinFrame* SkinItem::FindFrame(std::string index) const
 {
-	return &_skinFrames;
-}
-
-SkinFrame* SkinItem::GetFindFrame(std::string key) const
-{
-	auto item = _skinFrames.find(key);
-	if (item != _skinFrames.end())
+	if (_skinFrames.empty())
 	{
-		if (!item->second->GetUol().empty())
-		{
-			auto list = StringTools::SplitString(item->second->GetPath(), '\\');
-			std::string str;
-			for (auto data : list)
-			{
-				if (data.find(".img") != std::string::npos)
-				{
-					str.append(data).append("/");
-					break;
-				}
-			}
-			str.append(item->second->GetUol());
-			auto data = SkinManager::GetInstance()->GetSkinInfo(str);
-			auto frameData = StringTools::SplitString(item->second->GetUol(), '/');
-			if (frameData.size() > 1)
-			{
-				return data->GetSkinItem()->GetFindFrame(frameData[frameData.size() - 1]);
-			}
-			return  data->GetSkinItem()->GetFindFrame("head");
-		}
-		return item->second;
+		return nullptr;
 	}
-	return nullptr;
+	for (auto begin : _skinFrames)
+	{
+		if (!strcmp(begin->GetFrame().c_str(), index.c_str())) {
+			return begin;
+		}
+	}
+	return  nullptr;
 }
 
 std::string SkinItem::GetName() const
@@ -60,6 +39,25 @@ std::string SkinItem::GetName() const
 
 void SkinItem::SetName(const std::string name)
 {
-	if (_name == "")
-		_name = name;
+	_name = name;
+}
+
+size_t SkinItem::GetFrameSize() const
+{
+	return _skinFrames.size();
+}
+
+std::vector<SkinFrame*>* SkinItem::GetSkinFrames()
+{
+	return &_skinFrames;
+}
+
+void SkinItem::SetPartner(SkinInfo* partner)
+{
+	_partner = partner;
+}
+
+SkinInfo* SkinItem::GetPartner() const
+{
+	return _partner;
 }

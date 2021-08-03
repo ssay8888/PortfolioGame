@@ -2,6 +2,8 @@
 #include "../Base/game_object.h"
 
 class SkinInfo;
+class SkinItem;
+class SkinFrame;
 class Player :
     public GameObject
 {
@@ -14,11 +16,11 @@ public:
     virtual void RenderGameObject(HDC hdc) override;
     virtual void LateUpdateGameObject() override;
 
-    void SetFrameThis(SkinInfo* frame);
-    SkinInfo* GetFrameThis();
+    void SetFrameThis(SkinFrame* frame);
+    SkinFrame* GetFrameThis();
 
     std::vector<SkinInfo*> FindSkinFrame() const;
-    void AddFrame(SkinInfo* item);
+    void InsertFrame(SkinInfo* item);
 
     void ChangeFrameState(std::string frame);
     const char* GetFrameState() const;
@@ -34,7 +36,7 @@ private:
 private:
     uint16_t _skinId;
     uint16_t _frameNummber;
-    uint16_t _thisFrameMaxCount;
+    size_t _thisFrameMaxCount;
     bool _frameRevers;
     bool _isProne;
     bool _isJump;
@@ -43,9 +45,10 @@ private:
     float _gravity = 9.8f;
     uint16_t _jumpCount;
     uint8_t _facingDirection;
-    SkinInfo* _frameThis;
+    SkinFrame* _frameThis;
     std::string _frameState;
-    std::map<std::string, std::pair<uint16_t, std::vector<std::vector<SkinInfo*>>>> _skinFrames;
+    std::map<std::string, SkinItem*> _skinFrames;
+    std::map<std::string, SkinItem*> _headSkinFrames;
     std::vector<SkinInfo*> _itemFrames;
     uint64_t _frameTick;
 

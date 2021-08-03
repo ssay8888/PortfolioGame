@@ -29,3 +29,29 @@ const std::string StringTools::WStringToString(const wchar_t* buffer)
 	str.assign(wstr.begin(), wstr.end());
 	return str.c_str();
 }
+
+uint16_t StringTools::FindOverlapCount(std::string text, std::string mod)
+{
+	size_t start_pos = 0;
+	uint16_t count = 0;
+
+	while ((start_pos = text.find(mod, start_pos)) != std::string::npos)
+	{
+		text.replace(start_pos, mod.length(), "");
+		count++;
+	}
+	return count;
+}
+
+uint16_t StringTools::ReplaceAll(std::string& text, std::string mod)
+{
+	size_t start_pos = 0;
+	uint16_t count = 0;
+
+	while ((start_pos = text.find(mod, start_pos)) != std::string::npos)
+	{
+		text.replace(start_pos, mod.length(), "");
+		count++;
+	}
+	return count;
+}

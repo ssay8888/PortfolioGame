@@ -4,6 +4,7 @@
 #include "../../Managers/Skins/skin_frame.h"
 #include "../../Managers/Skins/skin_info.h"
 #include "../../Managers/Skins/skin_item.h"
+#include "../../Managers/Skins/skin_parts.h"
 #include "../../Managers/Skins/skin_manager.h"
 #include "../../Managers/ScrollManager/scroll_manager.h"
 #include "../../Managers/MapManager/map_manager.h"
@@ -173,7 +174,7 @@ void Player::UpdateGameObject(const float deltaTime)
 				}
 				else
 				{
-					if (++_frameNummber >= _thisFrameMaxCount - 1)
+					if (++_frameNummber >= _frameThis->GetParts()->size())
 					{
 						_frameRevers = true;
 					}
@@ -198,61 +199,68 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 	char bodyStr[100];
 	char headStr[100];
 	uint16_t maxSize = 0;
-	std::vector<std::vector<SkinInfo*>> allList;
-	for (; maxSize < 100; maxSize++)
-	{
-		std::vector<SkinInfo*> tempList;
+	//std::vector<SkinItem*> bodyList;
+	//std::vector<SkinItem*> headList;
+	//for (; maxSize < 100; maxSize++)
+	//{
+		std::vector<SkinItem*> tempList;
 		snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skinId + 2000, frameName.c_str(), maxSize);
 		snprintf(headStr, 100, "000%05d.img/%s/%d", _skinId + 12000, frameName.c_str(), maxSize);
-		auto bodySkinInfo = SkinManager::GetInstance()->GetSkinInfo(bodyStr);
-		auto headSkinInfo = SkinManager::GetInstance()->GetSkinInfo(headStr);
+		auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skinId + 2000));
+		auto headSkinInfo = SkinManager::GetInstance()->GetHeadSkinInfo(std::to_string(_skinId + 12000));
 		if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
 		{
-			tempList.push_back(SkinManager::GetInstance()->GetSkinInfo(bodyStr));
-			tempList.push_back(SkinManager::GetInstance()->GetSkinInfo(headStr));
-			allList.push_back(tempList);
+			_skinFrames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
+			_headSkinFrames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
+			//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
+			//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
 		}
-		else
-		{
-			if (allList.empty())
-			{
-				return;
-			}
-			break;
-		}
-	}
-	_skinFrames.insert({ frameName, {maxSize, allList} });
+	//}
 }
 
 void Player::RenderCharacter(HDC hdc)
 {
 	this->LoadCharacterFrame(_frameState);
 
-	auto frameItr = _skinFrames.find(_frameState.c_str());
-	if (frameItr != _skinFrames.end())
+	auto bodyFrameIter = _skinFrames.find(_frameState.c_str());
+	auto headFrameIter = _headSkinFrames.find(_frameState.c_str());
+	if (bodyFrameIter != _skinFrames.end() 
+		&& headFrameIter != _headSkinFrames.end())
 	{
 
-		std::vector<SkinFrame*> partsFrames;
-		std::vector<SkinFrame*> offsets;
-		SkinFrame* bodyFrame = nullptr;
-		std::map<std::string, ObjectPos> list;
-
-		_thisFrameMaxCount = frameItr->second.first;
-		
-		for (auto skinInfo : frameItr->second.second[_frameNummber % _thisFrameMaxCount])
+		std::vector<SkinParts*> partsFrames;
+		std::vector<SkinParts*> offsets;
+		SkinParts* bodyFrame = nullptr;
+		std::map<std::string, POINT> list;
+		_thisFrameMaxCount = bodyFrameIter->second->GetFrameSize();
+		auto bodyskinItem = bodyFrameIter->second;
+		auto headskinItem = headFrameIter->second;
+		if (bodyskinItem && headskinItem)
 		{
-			auto frames = skinInfo->GetSkinItem()->GetFrames();
-			for (auto frame = frames->begin(); frame != frames->end(); ++frame) 
+			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
+			auto bodyParts = bodyFrames->GetParts();
+			for (auto part = bodyParts->begin(); part != bodyParts->end(); ++part)
 			{
-				if (frame->second->GetName().find("body", 0) != std::string::npos)
-
-				//if (!strcmp(frame->second->GetName().c_str(), "body"))
+				for (auto frame = part->second->GetMaps()->begin(); frame != part->second->GetMaps()->end(); ++frame)
 				{
- 					_frameThis = skinInfo;
-					bodyFrame = frame->second;
+					if (!strcmp(part->first.c_str(), "body"))
+					{
+						_frameThis = bodyFrames;
+						bodyFrame = part->second;
+					}
 				}
-				partsFrames.emplace_back(frame->second);
-				offsets.emplace_back(frame->second);
+				partsFrames.emplace_back(part->second);
+				offsets.emplace_back(part->second);
+			}
+			auto headFrames = headskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
+			auto headParts = headFrames->GetParts();
+			for (auto part = headParts->begin(); part != headParts->end(); ++part)
+			{
+				for (auto frame = part->second->GetMaps()->begin(); frame != part->second->GetMaps()->end(); ++frame)
+				{
+					partsFrames.emplace_back(part->second);
+					offsets.emplace_back(part->second);
+				}
 			}
 		}
 
@@ -284,9 +292,9 @@ void Player::RenderCharacter(HDC hdc)
 
 		for (auto offsetPairing = offsets.begin(); offsetPairing != offsets.end();)
 		{
-			std::pair<std::string, ObjectPos> anchorPointEntry{};
+			std::pair<std::string, POINT> anchorPointEntry{};
 
-			for (auto begin = (*offsetPairing)->GetMap().begin(); begin != (*offsetPairing)->GetMap().end(); ++begin)
+			for (auto begin = (*offsetPairing)->GetMaps()->begin(); begin != (*offsetPairing)->GetMaps()->end(); ++begin)
 			{
 				auto item = list.find(begin->first);
 				if (item != list.end()) {
@@ -295,39 +303,39 @@ void Player::RenderCharacter(HDC hdc)
 				}
 			}
 			auto temp = list.find(anchorPointEntry.first);
-			ObjectPos anchorPoint{};
+			POINT anchorPoint{};
 			if (temp != list.end())
 			{
 				anchorPoint = temp->second;
 			}
-			ObjectPos vectorPoint = anchorPointEntry.second;
-			ObjectPos fromAnchorPoint{ anchorPoint.x - vectorPoint.x, anchorPoint.y - vectorPoint.y };
+			POINT vectorPoint = anchorPointEntry.second;
+			POINT fromAnchorPoint{ anchorPoint.x - vectorPoint.x, anchorPoint.y - vectorPoint.y };
 
-			for (auto childAnchorPoint : (*offsetPairing)->GetMap())
+			for (auto childAnchorPoint = (*offsetPairing)->GetMaps()->begin(); childAnchorPoint != (*offsetPairing)->GetMaps()->end(); ++childAnchorPoint)
 			{
-				if (childAnchorPoint.first != anchorPointEntry.first)
+				if (childAnchorPoint->first != anchorPointEntry.first)
 				{
-					if (list.find(childAnchorPoint.first) == list.end())
+					if (list.find(childAnchorPoint->first) == list.end())
 					{
-						list.insert({ childAnchorPoint.first,
-							{ fromAnchorPoint.x + childAnchorPoint.second.x,
-							  fromAnchorPoint.y + childAnchorPoint.second.y } });
+						list.insert({ childAnchorPoint->first,
+							{ fromAnchorPoint.x + childAnchorPoint->second.x,
+							  fromAnchorPoint.y + childAnchorPoint->second.y } });
 					}
 				}
 			}
 			offsetPairing = offsets.erase(offsetPairing);
 		}
 
-		auto neckOffsetBody = bodyFrame->GetMap().find("neck")->second;
-		auto navelOffsetBody = bodyFrame->GetMap().find("navel")->second;
-		std::list<std::pair<SkinFrame*, ObjectPos>> positionedFramesList;
+		auto neckOffsetBody = bodyFrame->GetMaps()->find("neck")->second;
+		auto navelOffsetBody = bodyFrame->GetMaps()->find("navel")->second;
+		std::list<std::pair<SkinParts*, POINT>> positionedFramesList;
 		for (auto positionedFrame : partsFrames)
 		{
-			if (positionedFrame->GetMapSize() > 0)
+			if (positionedFrame->GetMaps()->size() > 0)
 			{
-				auto anchorPointEntry = positionedFrame->GetMap().begin();
+				auto anchorPointEntry = positionedFrame->GetMaps()->begin();
 
-				ObjectPos anchorPoint{};
+				POINT anchorPoint{};
 				if (list.find(anchorPointEntry->first) != list.end())
 					anchorPoint = list.find(anchorPointEntry->first)->second;
 
@@ -335,40 +343,40 @@ void Player::RenderCharacter(HDC hdc)
 				neckOffsetBody = { anchorPoint.x - vectorFromPoint.x, anchorPoint.y - vectorFromPoint.y };
 			}
 			auto partOrigin = positionedFrame->GetOrigin();
-			auto tempPos = ObjectPos{ neckOffsetBody.x - partOrigin.x, neckOffsetBody.y - partOrigin.y };
-			positionedFramesList.push_back(std::make_pair(positionedFrame, tempPos));
+			auto tempPos = POINT{ neckOffsetBody.x - partOrigin.x, neckOffsetBody.y - partOrigin.y };
+			positionedFramesList.push_back({ positionedFrame, tempPos });
 		}
 		auto minXPair = std::min_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
-				return lhs.second.x + lhs.first->GetWidth() < rhs.second.x + rhs.first->GetWidth();
+			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+				return lhs.second.x + lhs.first->GetBitmap()->GetWidth() < rhs.second.x + rhs.first->GetBitmap()->GetWidth();
 			});
-		auto minX = minXPair->second.x + minXPair->first->GetWidth();
+		auto minX = minXPair->second.x + minXPair->first->GetBitmap()->GetWidth();
 
 		auto maxXPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
-				return lhs.second.x + lhs.first->GetWidth() < rhs.second.x + rhs.first->GetWidth();
+			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+				return lhs.second.x + lhs.first->GetBitmap()->GetWidth() < rhs.second.x + rhs.first->GetBitmap()->GetWidth();
 			});
-		auto maxX = maxXPair->second.x + maxXPair->first->GetWidth();
+		auto maxX = maxXPair->second.x + maxXPair->first->GetBitmap()->GetWidth();
 
 		auto minYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
-				return lhs.second.y + lhs.first->GetHeight() < rhs.second.y + rhs.first->GetHeight();
+			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+				return lhs.second.y + lhs.first->GetBitmap()->GetHeight() < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
 			});
-		auto minY = minYPair->second.y + minYPair->first->GetHeight();
+		auto minY = minYPair->second.y + minYPair->first->GetBitmap()->GetHeight();
 
 		auto maxYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinFrame*, ObjectPos>& lhs, const std::pair<SkinFrame*, ObjectPos>& rhs) {
-				return lhs.second.y + lhs.first->GetHeight() < rhs.second.y + rhs.first->GetHeight();
+			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+				return lhs.second.y + lhs.first->GetBitmap()->GetHeight()  < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
 			});
 
-		auto maxY = maxYPair->second.y + maxYPair->first->GetHeight();
+		auto maxY = maxYPair->second.y + maxYPair->first->GetBitmap()->GetHeight();
 
 
-		if (bodyFrame->GetMap().find("neck") != bodyFrame->GetMap().end())
+		if (bodyFrame->GetMaps()->find("neck") != bodyFrame->GetMaps()->end())
 		{
 			int plus = (_isProne ? 25 : 0);
 			Rectangle(_memDC,
@@ -392,11 +400,11 @@ void Player::RenderCharacter(HDC hdc)
 
 			for (auto draw : positionedFramesList)
 			{
-				draw.first->GetImage()->RenderBitmapImage(_memDC,
+				draw.first->GetBitmap()->RenderBitmapImage(_memDC,
 					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)) + plus,
 					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)) ,
-					static_cast<int>(draw.first->GetWidth()),
-					static_cast<int>(draw.first->GetHeight()));
+					static_cast<int>(draw.first->GetBitmap()->GetWidth()),
+					static_cast<int>(draw.first->GetBitmap()->GetHeight()));
 				/*draw.first->GetImage()->RenderBitmapImage(_memDC,
 					static_cast<int>(std::floor(_rect.left + _info.cx + ScrollManager::GetScrollX() + draw.second.x - maxX)),
 					static_cast<int>(std::floor(_rect.top + _info.cy + ScrollManager::GetScrollY() + draw.second.y - maxY)),
@@ -459,12 +467,12 @@ void Player::LateUpdateGameObject()
 	//	_info.y = fY;
 }
 
-void Player::SetFrameThis(SkinInfo* frame)
+void Player::SetFrameThis(SkinFrame* frame)
 {
 	_frameThis = frame;
 }
 
-SkinInfo* Player::GetFrameThis()
+SkinFrame* Player::GetFrameThis()
 {
 	return _frameThis;
 }
@@ -475,7 +483,7 @@ std::vector<SkinInfo*> Player::FindSkinFrame() const
 	return std::vector<SkinInfo*>();
 }
 
-void Player::AddFrame(SkinInfo* item)
+void Player::InsertFrame(SkinInfo* item)
 {
 }
 
