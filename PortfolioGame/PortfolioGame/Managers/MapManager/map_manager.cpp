@@ -1,23 +1,51 @@
 #include "../../pch.h"
+#include <io.h>
 #include "../../Components/Base/game_object.h"
 #include "../../Components/MapObject/map_object_info.h"
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Common/Utility/file_manager.h"
 #include "../ScrollManager/scroll_manager.h"
 #include "map_manager.h"
 
 void MapManager::ReadyMapManager()
 {
-	auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
-	std::map<std::string, MyBitmap*> list;
-	for (auto begin : fileNams) {
-		MyBitmap* image = new MyBitmap;
-		image->Insert_Bitmap(_hWnd, begin.c_str());
-		list.insert({ FileManager::GetInstance()->GetFileName(StringTools::WStringToString(begin.c_str())), image });
+	std::string tiles[]{ "bsc", "edD", "edU", "enH0", "enH1", "enV0", "enV1", "slLD", "slLU", "slRD", "slRU" };
+
+	std::map<std::string, std::vector<MyBitmap*>> list;
+	for (auto& tileName : tiles)
+	{
+		for (int i = 0; i < 15; i++)
+		{
+			char path[100];
+			snprintf(path, 100, "Client\\Map\\Tile\\woodMarble.img\\%s.%d.bmp", tileName.c_str(), i);
+
+			if (!_access(path, 0))
+			{
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
+				list[tileName].push_back(image);
+				std::cout << path << std::endl;
+			}
+			else
+			{
+				break;
+			}
+		}
 	}
-	_listBitmap.insert(std::make_pair("Client\\Map\\Tile\\woodMarble.img\\", list));
+	_listBitmap.insert({ "woodMarble.img", list });
+
+	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
+
+	//std::map<std::string, MyBitmap*> list;
+	//for (auto begin : fileNams) {
+	//	MyBitmap* image = new MyBitmap;
+	//	image->Insert_Bitmap(_hWnd, begin.c_str());
+	//	list.insert({ FileManager::GetInstance()->GetFileName(StringTools::WStringToString(begin.c_str())), image });
+	//}
+	//_listBitmap.insert(std::make_pair("woodMarble.img", list));
 }
 
 void MapManager::AddGameObject(GameObject* object)
@@ -82,19 +110,32 @@ void MapManager::LoadMapData()
 			uint32_t layer;
 			check = ReadFile(hFile, &layer, sizeof(layer), &dwByte, nullptr);
 			obj->SetLayer(layer);
+			uint32_t number;
+			check = ReadFile(hFile, &number, sizeof(number), &dwByte, nullptr);
+			obj->SetImageNumber(number);
+
 
 			std::string fullPath;
-			fullPath.append(obj->GetPath()).append(obj->GetPath());
+			fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
+				append(std::to_string(obj->GetImageNumber())).append(".bmp");
 			auto image = _listBitmap.find(obj->GetPath());
-			if (image != _listBitmap.end())
-			{
-				auto file = image->second.find(obj->GetFileName());
-				if (file != image->second.end())
-				{
-					obj->SetImage(file->second);
-				}
-			}
+			auto file = image->second.find(obj->GetFileName());
+			auto tile = file->second[obj->GetImageNumber()];
+			obj->SetImage(tile);
 			_listGameObject[layer].push_back(obj);
+
+			//std::string fullPath;
+			//fullPath.append(obj->GetPath()).append(obj->GetPath());
+			//auto image = _listBitmap.find(obj->GetPath());
+			//if (image != _listBitmap.end())
+			//{
+			//	auto file = image->second.find(obj->GetFileName());
+			//	if (file != image->second.end())
+			//	{
+			//		obj->SetImage(file->second);
+			//	}
+			//}
+			//_listGameObject[layer].push_back(obj);
 		}
 	}
 
@@ -192,21 +233,18 @@ void MapManager::ReleaseGameObjectManager()
 {
 }
 
-bool MapManager::FootholdCollision(GameObject* object, float* outY)
+bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 {
-
-
-
 	if (_listFootHold.empty())
 		return false;
 
 	FootHold* pTarget = nullptr;
 
-	for (FootHold* pLine : _listFootHold)
+	for (FootHold* footHold : _listFootHold)
 	{
-		if (object->GetInfo().x >= pLine->GetStartPos().x &&
-			object->GetInfo().x <= pLine->GetEndPos().x)
-			pTarget = pLine;
+		if (object->GetInfo().x >= footHold->GetStartPos().x &&
+			object->GetInfo().x <= footHold->GetEndPos().x)
+			pTarget = footHold;
 	}
 	if (nullptr == pTarget)
 		return false;
@@ -260,15 +298,47 @@ bool MapManager::FootholdCollision(GameObject* object, float* outY)
 	//}
 }
 
-double MapManager::FootHoldAngle(FootHold* start, FootHold* end) {
-	LONG dy = end->GetEndPos().y - start->GetStartPos().y;
-	LONG dx = end->GetEndPos().x - start->GetStartPos().x;
-	double angle = std::atan(dy / dx) * (180.0 / 3.141592);
-	if (dx < 0.0) {
-		angle += 180.0;
+bool MapManager::FootholdAndRectCollision(GameObject* object)
+{
+
+	if (_listFootHold.empty())
+		return false;
+
+	FootHold* pTarget = nullptr;
+
+	for (FootHold* footHold : _listFootHold)
+	{
+		float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
+		float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
+		float radian = std::atan2(y, x);
+		float degree = radian * 180 / 3.141592f;
+		if (degree < 0) {
+			degree *= -1;
+		}
+
+		if (degree >= 85 && degree <= 95 ||
+			degree >= 175 && degree <= 195)
+		{
+			if (footHold->GetEndPos().x <= object->GetRect().right &&
+				footHold->GetStartPos().x >= object->GetRect().left &&
+				footHold->GetEndPos().y <= object->GetRect().bottom &&
+				footHold->GetStartPos().y >= object->GetRect().top)
+			{ // 선과 사각형의 충돌.
+
+				return true;
+			}
+			else if (footHold->GetStartPos().x <= object->GetRect().right &&
+				footHold->GetEndPos().x >= object->GetRect().left &&
+				footHold->GetStartPos().y <= object->GetRect().bottom &&
+				footHold->GetEndPos().y >= object->GetRect().top)
+			{
+				return true;
+			}
+		}
+
 	}
-	else {
-		if (dy < 0.0) angle += 360.0;
-	}
-	return angle;
+
+
+
+	return false;
 }

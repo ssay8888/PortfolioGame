@@ -27,12 +27,12 @@ public:
 	void LateUpdateGameObjectManager();
 	void ReleaseGameObjectManager();
 
-	bool FootholdCollision(GameObject* object, float * outY);
-	double FootHoldAngle(FootHold* start, FootHold* end);
+	bool FootholdYCollision(GameObject* object, float* outY);
+	bool FootholdAndRectCollision(GameObject* object);
 private:
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
-	std::map<std::string, std::map<std::string, MyBitmap*>> _listBitmap;
+	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _listBitmap;
 
 };
 

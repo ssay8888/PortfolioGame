@@ -92,6 +92,11 @@ float GameObject::GetSpeed() const
 	return _speed;
 }
 
+uint32_t GameObject::GetImageNumber() const
+{
+	return _imageNumber;
+}
+
 void GameObject::SetPath(std::string path)
 {
 	_path = path;
@@ -125,6 +130,11 @@ void GameObject::SetRect(RECT rect)
 void GameObject::SetImage(MyBitmap* image)
 {
 	_image = image;
+}
+
+void GameObject::SetImageNumber(uint32_t number)
+{
+	_imageNumber = number;
 }
 
 void GameObject::UpdateGameObject(const float deltaTime)

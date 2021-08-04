@@ -24,6 +24,7 @@ public:
 	void AddListObject();
 	void SelectImage(POINT& pt);
 	void MouseUpdate(POINT& pt);
+
 	void SaveData();
 	void LoadData();
 
@@ -31,12 +32,13 @@ public:
 	Mouse* GetMouse();
 
 private:
-	MyBitmap* _selectImage;
+	std::vector<MyBitmap*> _selectImage;
+	uint32_t _selectCount;
 	std::string _selectFileName;
 	std::string _selectPath;
 	std::list<MapObject*> _list[7];
 	std::list<FootHold*> _footholds;
-	std::map<std::string, std::map<std::string, MyBitmap*> > _images;
+	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>> > _images;
 	Mouse* _mouse;
 };
 

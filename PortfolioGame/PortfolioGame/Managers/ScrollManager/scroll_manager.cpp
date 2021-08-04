@@ -3,6 +3,8 @@
 
 float ScrollManager::_scrollX = 0;
 float ScrollManager::_scrollY = 0;
+float ScrollManager::_tempScrollX = 0;
+float ScrollManager::_tempScrollY = 0;
 
 float ScrollManager::GetScrollX()
 {
@@ -24,12 +26,34 @@ void ScrollManager::SetScrollY(float y)
 	_scrollY = y;
 }
 
-void ScrollManager::GainScrollX(float x)
+void ScrollManager::GainScrollX(float x, bool temp)
 {
-	_scrollX += x;
+	if (temp)
+	{
+		_tempScrollX += x;
+	}
+	else if (_tempScrollX != 0)
+	{
+		_tempScrollX += x;
+	}
+	else
+	{
+		_scrollX += x;
+	}
 }
 
-void ScrollManager::GainScrollY(float y)
+void ScrollManager::GainScrollY(float y, bool temp)
 {
-	_scrollY += y;
+	if (temp)
+	{
+		_tempScrollY += y;
+	}
+	else if (_tempScrollY != 0)
+	{
+		_tempScrollY += y;
+	}
+	else
+	{
+		_scrollY += y;
+	}
 }

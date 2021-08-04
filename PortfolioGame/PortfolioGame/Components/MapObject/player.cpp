@@ -15,8 +15,7 @@ Player::Player(uint8_t layer) :
 	_frameRevers(false),
 	_thisFrameMaxCount(0),
 	_frameState("stand1"),
-	_frameTick(0),
-	_gravity(2)
+	_frameTick(0)
 {
     ReadyGameObject();
 }
@@ -38,6 +37,8 @@ int Player::ReadyGameObject()
 	LoadCharacterFrame("stand1");
 
 	HDC hDC = GetDC(_hWnd);
+	ScrollManager::SetScrollX(1024/2);
+	ScrollManager::SetScrollY(768/2);
 
 	_memDC = CreateCompatibleDC(hDC);
 	_hBitmap = CreateCompatibleBitmap(hDC, 1024, 768);
@@ -53,7 +54,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	float totalMoveX = 0;
 	float totalMoveY = 0;
 	float outY = 0;
-	bool isFoothold = MapManager::GetInstance()->FootholdCollision(this, &outY);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY);
 	if (_info.y >= outY)
 	{
 		if (!_isJump && keymanager->KeyPressing(KEY_DOWN))
@@ -111,6 +112,16 @@ void Player::UpdateGameObject(const float deltaTime)
 		float outY = 0;
 		_info.x += totalMoveX;
 		_info.y += totalMoveY;
+		ScrollManager::GainScrollX(-totalMoveX);
+		ScrollManager::GainScrollY(-totalMoveY);
+		UpdateRectGameObject();
+		if (MapManager::GetInstance()->FootholdAndRectCollision(this)) 
+		{
+			_info.x -= totalMoveX;
+			_info.y -= totalMoveY;
+			ScrollManager::GainScrollX(totalMoveX);
+			ScrollManager::GainScrollY(totalMoveY);
+		}
 	}
 	else 
 	{
@@ -411,26 +422,21 @@ void Player::RenderCharacter(HDC hdc)
 	}
 }
 
-
-void Player::RenderGameObject(HDC hdc)
+void Player::IsJumping()
 {
-	UpdateRectGameObject();
-	RenderCharacter(hdc);
-}
 
-void Player::LateUpdateGameObject()
-{
 	float outY = 0;
-	bool isFoothold = MapManager::GetInstance()->FootholdCollision(this, &outY);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY);
 
-	const int count = 18;
-	const float speed = 6.f;
+	const int count = 14;
+	const float speed = 9.f;
 	if (_isJump)
 	{
 		++_jumpCount;
 		if (_jumpCount < count)
 		{
 			_info.y -= speed;
+			ScrollManager::GainScrollY(speed, true);
 		}
 		else
 		{
@@ -440,23 +446,57 @@ void Player::LateUpdateGameObject()
 	}
 	else if (isFoothold)
 	{
-		float temp = (this->_info.y - (this->GetInfo().cy >> 1));
 		if (_info.y <= outY)
 		{
 			if (_info.y - outY <= speed && _info.y - outY >= -speed)
 			{
 				_info.y = outY;
+				ScrollManager::SetScrollY(-_info.y + (768 / 2));
+				float sx = ScrollManager::GetScrollX();
+				float sy = ScrollManager::GetScrollY();
+				std::cout << sx << std::endl;
 			}
 			else
 			{
 				_info.y += speed;
+				ScrollManager::GainScrollY(-speed);
 			}
 		}
-		else 
+		else
 		{
 			_info.y = outY;
+			ScrollManager::SetScrollY(-_info.y + (768 / 2));
 		}
 	}
+	//float fY = 0.f;
+	//bool bIsColl = MapManager::GetInstance()->FootholdCollision(this, &fY);
+
+	//if (_isJump)
+	//{
+	//	_accel += 0.20f;
+	//	_info.y -= _jumpPower * _accel - _gravity * _accel * _accel * 0.5f;
+	//	int i = 0;
+	//	if (bIsColl && _info.y >= fY)
+	//	{
+	//		_isJump = false;
+	//		_accel = 0.f;
+	//		_info.y = fY;
+	//	}
+	//}
+	//else if (bIsColl)
+	//	_info.y = fY;
+}
+
+
+void Player::RenderGameObject(HDC hdc)
+{
+	UpdateRectGameObject();
+	RenderCharacter(hdc);
+}
+
+void Player::LateUpdateGameObject()
+{
+	Player::IsJumping();
 }
 
 void Player::SetFrameThis(SkinFrame* frame)

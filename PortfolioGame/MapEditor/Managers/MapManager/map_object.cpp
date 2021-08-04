@@ -31,9 +31,19 @@ void MapObject::SetImage(MyBitmap* image)
 	_image = image;
 }
 
+void MapObject::SetImageNumber(uint32_t number)
+{
+	_imageNumber = number;
+}
+
 MyBitmap* MapObject::GetImage() const
 {
 	return _image;
+}
+
+uint32_t MapObject::GetImageNumber() const
+{
+	return _imageNumber;
 }
 
 void MapObject::UpdateRect()

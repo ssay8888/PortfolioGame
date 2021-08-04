@@ -128,7 +128,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   RECT rc{ 0, 0, static_cast<LONG>(1600), static_cast<LONG>(600) };
+   RECT rc{ 0, 0, static_cast<LONG>(1700), static_cast<LONG>(900) };
 
    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
    _hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -192,7 +192,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 L"combobox",
                 NULL,
                 WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
-                1500,
+                1600,
                 50,
                 70,
                 500,

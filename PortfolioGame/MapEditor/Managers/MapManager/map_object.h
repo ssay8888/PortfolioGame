@@ -11,6 +11,7 @@ public:
 	void UpdateRect();
 
 	MyBitmap* GetImage() const;
+	uint32_t GetImageNumber() const;
 	Info GetInfo() const;
 	RECT GetRect() const;
 	uint32_t GetLayer() const;
@@ -21,6 +22,7 @@ public:
 	void SetFileName(std::string path);
 	void SetPath(std::string path);
 	void SetImage(MyBitmap* image);
+	void SetImageNumber(uint32_t number);
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
 	void SetPos(float fX, float fY);
@@ -30,6 +32,7 @@ public:
 
 private:
 	MyBitmap* _image;
+	uint32_t _imageNumber;
 	std::string _path;
 	std::string _fileName;
 	Info _info;

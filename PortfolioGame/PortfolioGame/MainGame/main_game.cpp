@@ -42,6 +42,8 @@ void MainGame::ReadeyGame()
 
 void MainGame::UpdateGame()
 {
+
+
 	float deltaTime = (GetTickCount64() - _ticksCount) / 1000.0f;
 
 	if (deltaTime > 0.05f)

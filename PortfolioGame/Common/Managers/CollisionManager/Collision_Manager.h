@@ -11,33 +11,24 @@ namespace CollisionManager
 	template<typename T>
 	bool Check_Sphere(const T* pDstObject, const T& pSrcObject)
 	{
-		// 자 구충돌을 해볼꺼야 
-		// 스텝 1. 두 원의 반지름의 합을 구해라! 
 		float fRadiusSum = (pDstObject->Get_Info()->iCX >> 1) + (pSrcObject.Get_Info()->iCX >> 1);
-		// 스텝 2. 밑변과 높이를 구하라!
-		float fX = pDstObject->Get_Info()->fX - pSrcObject.Get_Info()->fX; // 밑변 구하기 완료! 
-		float fY = pDstObject->Get_Info()->fY - pSrcObject.Get_Info()->fY; // 높이 구하기 완료! 
+		float fX = pDstObject->Get_Info()->fX - pSrcObject.Get_Info()->fX;
+		float fY = pDstObject->Get_Info()->fY - pSrcObject.Get_Info()->fY;
 
-		//스텝 3. 두 점의 거리를 구하라! 그것도 피타고라스의 정리를 이용하여! C^2 = a^2 + b^2
 		float fDist = sqrtf(fX * fX + fY * fY);
-		//스텝 4. 비교해라! 거리와 반지름의 합을! 만약 거리가 더 작다라는건! 충돌했다 라는 뜻이다!!!! 
 
 		return fRadiusSum >= fDist;
 	}
 
 	template<typename T>
 	bool Check_Rect(const T* pDstObject, const T* pSrcObject, float* pX, float* pY)
-	{
-		// 1. x축으로의 거리와 x 축으로의 반지름의 합. 
+	{ 
 		float fDistX = std::fabs(pDstObject->GetInfo().x - pSrcObject->GetInfo().x);
 		float fRadiusSumX = (pDstObject->GetInfo().cx * 0.5f) + (pSrcObject->GetInfo().cx >> 1);
 
-		// 2. y축으로의 거리와 y축으로의 반지름의 합을 구할꺼에욤 >_<
 		float fDistY = std::fabs(pDstObject->GetInfo().y - pSrcObject->GetInfo().y);
 		float fRadiusSumY = static_cast<float>((pDstObject->GetInfo().cy / 2) + (pSrcObject->GetInfo().cy >> 1));
 
-		// 이제 뭐할꺼에욤!? 
-		//비교요!!!! 뭐랑 뭘요 !? 1번과 2번을 요 !! 옹 ㅖ! 
 		if (fDistX <= fRadiusSumX && fDistY <= fRadiusSumY)
 		{
 			*pX = fRadiusSumX - fDistX;

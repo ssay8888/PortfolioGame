@@ -1,5 +1,6 @@
 #include "../../pch.h"
 #include "foot_hold.h"
+#include "../ScrollManager/scroll_manager.h"
 
 FootHold::FootHold() :
 	_start({}),
@@ -35,10 +36,10 @@ POINT FootHold::GetEndPos() const
 
 void FootHold::RenderFootHold(HDC hdc)
 {
-	HPEN pen = CreatePen(PS_SOLID , 2, RGB(255, 0, 0));
+	HPEN pen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	HPEN oldPen = (HPEN)SelectObject(hdc, pen);
-	MoveToEx(hdc, _start.x, _start.y, nullptr);
-	LineTo(hdc, _end.x, _end.y);
+	MoveToEx(hdc, _start.x + static_cast<int>(ScrollManager::GetScrollX()), _start.y + static_cast<int>(ScrollManager::GetScrollY()), nullptr);
+	LineTo(hdc, _end.x + static_cast<int>(ScrollManager::GetScrollX()), _end.y + static_cast<int>(ScrollManager::GetScrollY()));
 	SelectObject(hdc, oldPen);
 	DeleteObject(pen);
 	DeleteObject(oldPen);

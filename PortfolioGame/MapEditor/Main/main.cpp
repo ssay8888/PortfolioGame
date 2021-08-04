@@ -20,7 +20,7 @@ Main::~Main()
 void Main::Ready_Edit()
 {
 	_hdc_buffer = CreateCompatibleDC(_hdc);
-	_hBitmap = CreateCompatibleBitmap(_hdc, 1600, 768);
+	_hBitmap = CreateCompatibleBitmap(_hdc, 1600, 900);
 	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
 	MapManager::GetInstance()->Ready_Map();
 }
@@ -33,10 +33,10 @@ void Main::Update_Edit()
 
 void Main::Render_Edit()
 {
-	Rectangle(_hdc_buffer, 0, 0, 1500, 768);
-	Rectangle(_hdc_buffer, 0, 0, 800, 600);
+	Rectangle(_hdc_buffer, 0, 0, 1600, 900);
+	Rectangle(_hdc_buffer, 0, 0, 1024, 768);
 	MapManager::GetInstance()->Render_Map(_hdc_buffer);
-	BitBlt(_hdc, 0, 0, 1500, 768, _hdc_buffer, 0, 0, SRCCOPY);
+	BitBlt(_hdc, 0, 0, 1600, 900, _hdc_buffer, 0, 0, SRCCOPY);
 
 }
 

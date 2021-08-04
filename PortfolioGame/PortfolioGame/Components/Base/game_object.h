@@ -26,6 +26,7 @@ public:
 	RECT GetRect() const;
 	MyBitmap* GetImage();
 	float GetSpeed() const;
+	uint32_t GetImageNumber() const;
 
 	void SetPath(std::string path);
 	void SetFileName(std::string fileName);
@@ -34,6 +35,7 @@ public:
 	void SetInfo(Info info);
 	void SetRect(RECT rect);
 	void SetImage(MyBitmap* image);
+	void SetImageNumber(uint32_t number);
 
 private:
 	virtual int ReadyGameObject() = 0;
@@ -45,6 +47,7 @@ protected:
 	std::string _path;
 	std::string _fileName;
 	uint8_t _layer;
+	uint32_t _imageNumber;
 	State _state;
 	Info _info;
 	RECT _rect;

@@ -11,6 +11,7 @@ public:
     Player(uint8_t layer = 5);
     ~Player();
 
+
     virtual int ReadyGameObject() override;
     virtual void UpdateGameObject(const float deltaTime) override;
     virtual void RenderGameObject(HDC hdc) override;
@@ -33,6 +34,8 @@ public:
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);
+
+    void IsJumping();
 private:
     uint16_t _skinId;
     uint16_t _frameNummber;
@@ -49,7 +52,9 @@ private:
     std::vector<SkinInfo*> _itemFrames;
     uint64_t _frameTick;
 
-    const int _gravity;
+    float _jumpPower = 15.f;
+    float _accel = 0.f;
+    float _gravity = 9.f;
 
     HDC _memDC;
     HBITMAP _bitmap;
