@@ -34,11 +34,11 @@ public:
 	MyBitmap* GetBitmap() const;
 	void SetBitmap(MyBitmap* bitmap);
 
-	uint16_t GetPosition() const;
-	void SetPosition(uint16_t pos);
-
 	void SetPartner(SkinFrame* partner);
 	SkinFrame* GetPartner() const;
+
+	void SetPosition(uint16_t position);
+	uint16_t GetPosition() const;
 private:
 	std::string _name;
 	std::map<std::string, POINT> _map;

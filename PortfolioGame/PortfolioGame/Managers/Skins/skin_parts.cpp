@@ -103,16 +103,6 @@ void SkinParts::SetBitmap(MyBitmap* bitmap)
     _image = bitmap;
 }
 
-uint16_t SkinParts::GetPosition() const
-{
-    return _position;
-}
-
-void SkinParts::SetPosition(uint16_t pos)
-{
-    _position = pos;
-}
-
 void SkinParts::SetPartner(SkinFrame* partner)
 {
     _partner = partner;
@@ -121,4 +111,14 @@ void SkinParts::SetPartner(SkinFrame* partner)
 SkinFrame* SkinParts::GetPartner() const
 {
     return _partner;
+}
+
+void SkinParts::SetPosition(uint16_t position)
+{
+    _position = position;
+}
+
+uint16_t SkinParts::GetPosition() const
+{
+    return _position;
 }

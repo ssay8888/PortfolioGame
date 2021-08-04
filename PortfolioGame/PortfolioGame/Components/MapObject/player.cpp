@@ -15,7 +15,8 @@ Player::Player(uint8_t layer) :
 	_frameRevers(false),
 	_thisFrameMaxCount(0),
 	_frameState("stand1"),
-	_frameTick(0)
+	_frameTick(0),
+	_gravity(2)
 {
     ReadyGameObject();
 }
@@ -29,11 +30,11 @@ Player::~Player()
 
 int Player::ReadyGameObject()
 {
-	_info.x = 400.f;
-	_info.y = 300.f;
+	_info.x = 0.f;
+	_info.y = 0.f;
 	_info.cx = 42;
 	_info.cy = 64;
-	_speed = 1;
+	_speed = 2.f;
 	LoadCharacterFrame("stand1");
 
 	HDC hDC = GetDC(_hWnd);
@@ -51,10 +52,21 @@ void Player::UpdateGameObject(const float deltaTime)
 	auto keymanager = KeyManager::GetInstance();
 	float totalMoveX = 0;
 	float totalMoveY = 0;
-	if (!_isJump && keymanager->KeyPressing(KEY_DOWN))
+	float outY = 0;
+	bool isFoothold = MapManager::GetInstance()->FootholdCollision(this, &outY);
+	if (_info.y >= outY)
 	{
-		this->ChangeFrameState("prone");
-		_isProne = true;
+		if (!_isJump && keymanager->KeyPressing(KEY_DOWN))
+		{
+			this->ChangeFrameState("prone");
+			_isProne = true;
+		}
+	}
+
+	if (keymanager->KeyUp(KEY_DOWN))
+	{
+		this->ChangeFrameState("stand1");
+		_isProne = false;
 	}
 	if (!_isProne)
 	{
@@ -66,49 +78,28 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			totalMoveX += GetSpeed();
 		}
-		if (_isJump || keymanager->KeyDown(KEY_C))
+		if (_info.y >= outY)
 		{
-			if (!_isJump)
+			if (!_isJump && keymanager->KeyPressing(KEY_C))
 			{
 				this->ChangeFrameState("jump");
 				_isJump = true;
 			}
-			else
-			{
-				++_jumpCount;
-				const int count = 45;
-				const float speed = 2.f;
-				if (_jumpCount < count)
-				{
-					totalMoveY -= speed;
-				}
-				else if (_jumpCount < count * 2 - 1)
-				{
-					totalMoveY += speed;
-				}
-				else
-				{
-					_isJump = false;
-					_jumpCount = 0;
-				}
-			}
 		}
 	}
+
+
 	if (keymanager->KeyPressing(KEY_UP))
 	{
 	}
-	if (keymanager->KeyUp(KEY_DOWN))
-	{
-		this->ChangeFrameState("stand1");
-		_isProne = false;
-	}
+
 	if (totalMoveX != 0 || totalMoveY != 0)
 	{
 		if (totalMoveX < 0)
 		{
 			this->SetFacingDirection(0);
 		}
-		else 
+		else if (totalMoveX > 0)
 		{
 			this->SetFacingDirection(1);
 		}
@@ -120,27 +111,6 @@ void Player::UpdateGameObject(const float deltaTime)
 		float outY = 0;
 		_info.x += totalMoveX;
 		_info.y += totalMoveY;
-		//if (_isJump || MapManager::GetInstance()->FootholdCollision(_info, &outY))
-		//{
-		//	if (_isJump)
-		//	{
-		//		m_fAccel += 0.20f;
-		//		totalMoveY -= m_fJumpPower * m_fAccel - m_fGravity * m_fAccel * m_fAccel * 0.5f;
-		//		if (bIsColl && m_tInfo.fY >= fY)
-		//		{
-		//			m_bIsJump = false;
-		//			m_fAccel = 0.f;
-		//			m_tInfo.fY = fY;
-		//		}
-		//	}
-		//	else if (bIsColl)
-		//		m_tInfo.fY = fY;
-		//}
-		//else
-		//{
-		//	_info.x -= totalMoveX;
-		//	_info.y -= totalMoveY;
-		//}
 	}
 	else 
 	{
@@ -149,6 +119,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			this->ChangeFrameState("stand1");
 		}
 	}
+
 
 	if (keymanager->KeyPressing(KEY_A))
 	{
@@ -235,6 +206,11 @@ void Player::RenderCharacter(HDC hdc)
 		_thisFrameMaxCount = bodyFrameIter->second->GetFrameSize();
 		auto bodyskinItem = bodyFrameIter->second;
 		auto headskinItem = headFrameIter->second;
+
+		if (!strcmp(_frameState.c_str(), "prone"))
+		{
+			int asd = 123;
+		}
 		if (bodyskinItem && headskinItem)
 		{
 			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
@@ -243,7 +219,7 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				for (auto frame = part->second->GetMaps()->begin(); frame != part->second->GetMaps()->end(); ++frame)
 				{
-					if (!strcmp(part->first.c_str(), "body"))
+					if ((!strcmp(part->second->GetZ().c_str(), "body") || !strcmp(part->second->GetZ().c_str(), "backBody")))
 					{
 						_frameThis = bodyFrames;
 						bodyFrame = part->second;
@@ -256,11 +232,8 @@ void Player::RenderCharacter(HDC hdc)
 			auto headParts = headFrames->GetParts();
 			for (auto part = headParts->begin(); part != headParts->end(); ++part)
 			{
-				for (auto frame = part->second->GetMaps()->begin(); frame != part->second->GetMaps()->end(); ++frame)
-				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
-				}
+				partsFrames.emplace_back(part->second);
+				offsets.emplace_back(part->second);
 			}
 		}
 
@@ -379,12 +352,6 @@ void Player::RenderCharacter(HDC hdc)
 		if (bodyFrame->GetMaps()->find("neck") != bodyFrame->GetMaps()->end())
 		{
 			int plus = (_isProne ? 25 : 0);
-			Rectangle(_memDC,
-				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
-				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
-				_rect.right + static_cast<int>(ScrollManager::GetScrollX()), 
-				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
-
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
 			Rectangle(_memDC, -30, -30, _info.cx + 30, _info.cy + 30);
@@ -402,7 +369,7 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				draw.first->GetBitmap()->RenderBitmapImage(_memDC,
 					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)) + plus,
-					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)) ,
+					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)),
 					static_cast<int>(draw.first->GetBitmap()->GetWidth()),
 					static_cast<int>(draw.first->GetBitmap()->GetHeight()));
 				/*draw.first->GetImage()->RenderBitmapImage(_memDC,
@@ -417,6 +384,12 @@ void Player::RenderCharacter(HDC hdc)
 				StretchBlt(_memDC, 0, 0, 42 + plus, 64, _memDC, 41 + plus, 0, -42 - plus, 64, SRCCOPY);
 			}
 
+			Rectangle(_memDC,
+				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
+				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
+				_rect.right + static_cast<int>(ScrollManager::GetScrollX()),
+				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
+
 			GdiTransparentBlt(hdc, 
 				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX()))  - (GetFacingDirection() ? plus * -1 : plus),
 				static_cast<int>(std::floor(_rect.top  + ScrollManager::GetScrollY())),
@@ -426,7 +399,7 @@ void Player::RenderCharacter(HDC hdc)
 				0, 0,
 				42 + plus,
 				64,
-				RGB(255, 0, 255));
+				RGB(255, 0, 254));
 
 			//ÁÂ¿ì¹ÝÀü
 			//StretchBlt(hdc, 0, 0, 1024, 768, _memDC, 1023, 0, -1024, 768, SRCCOPY);
@@ -447,24 +420,43 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
-	//float fY = 0.f;
-	//bool bIsColl = MapManager::GetInstance()->FootholdCollision(_info, &fY);
+	float outY = 0;
+	bool isFoothold = MapManager::GetInstance()->FootholdCollision(this, &outY);
 
-	//if (_isJump)
-	//{
-	//	_accel += 0.10f;
-	//	float value = _jumpPower * _accel - _gravity * _accel * _accel * 0.5f;
-	//	std::cout << std::to_string(value) << std::endl;
-	//	_info.y -= value;
-	//	if (bIsColl && _info.y >= fY)
-	//	{
-	//		_isJump = false;
-	//		_accel = 0.f;
-	//		_info.y = fY;
-	//	}
-	//}
-	//else if (bIsColl)
-	//	_info.y = fY;
+	const int count = 18;
+	const float speed = 6.f;
+	if (_isJump)
+	{
+		++_jumpCount;
+		if (_jumpCount < count)
+		{
+			_info.y -= speed;
+		}
+		else
+		{
+			_isJump = false;
+			_jumpCount = 0;
+		}
+	}
+	else if (isFoothold)
+	{
+		float temp = (this->_info.y - (this->GetInfo().cy >> 1));
+		if (_info.y <= outY)
+		{
+			if (_info.y - outY <= speed && _info.y - outY >= -speed)
+			{
+				_info.y = outY;
+			}
+			else
+			{
+				_info.y += speed;
+			}
+		}
+		else 
+		{
+			_info.y = outY;
+		}
+	}
 }
 
 void Player::SetFrameThis(SkinFrame* frame)

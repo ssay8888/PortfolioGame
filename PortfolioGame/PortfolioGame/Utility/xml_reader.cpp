@@ -112,6 +112,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(int32_t size)
 								parts->SetName(canvas.attribute("name").value());
 								parts->SetPartner(frame);
 								frame->InsertParts(parts->GetName(), parts);
+
 								for (auto canvasInfo : canvas)
 								{
 									if (!strcmp(canvasInfo.attribute("name").value(), "map"))
@@ -139,6 +140,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(int32_t size)
 								SkinParts* parts = new SkinParts();
 								parts->SetPartner(frame);
 								parts->SetUol(canvas.attribute("value").value());
+								parts->SetName(canvas.attribute("name").value());
 								frame->InsertParts(parts->GetName(), parts);
 							}
 							else if (!strcmp(canvas.name(), "string"))
@@ -152,11 +154,11 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(int32_t size)
 							{
 								if (!strcmp(canvas.attribute("name").value(), "delay"))
 								{
-									frame->SetDelay(static_cast<uint16_t>(std::stoi(canvas.attribute("delay").value())));
+									frame->SetDelay(static_cast<uint16_t>(std::stoi(canvas.attribute("value").value())));
 								}
 								else if (!strcmp(canvas.attribute("name").value(), "frame"))
 								{
-									frame->SetActionFrame(static_cast<uint16_t>(std::stoi(canvas.attribute("delay").value())));
+									frame->SetActionFrame(static_cast<uint16_t>(std::stoi(canvas.attribute("value").value())));
 								}
 							}
 						}

@@ -21,5 +21,10 @@ private:
 
 	uint64_t _ticksCount;
 	Player* _player;
+
+
+	int _iFPS;
+	DWORD _dwFPSTime;
+	TCHAR _szFPS[32];
 };
 

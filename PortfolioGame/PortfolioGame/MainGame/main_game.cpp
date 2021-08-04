@@ -15,7 +15,7 @@ MainGame::MainGame(HDC hdc) :
 	_hdc_buffer(nullptr),
 	_hBitmap(nullptr),
 	_oldBitmap(nullptr),
-	_ticksCount(0),
+	_ticksCount(GetTickCount64()),
 	_player(nullptr)
 {
 }
@@ -42,10 +42,6 @@ void MainGame::ReadeyGame()
 
 void MainGame::UpdateGame()
 {
-	// 100 - (116)
-	while (((GetTickCount64())-((_ticksCount + 16))) <= 0);
-	KeyManager::GetInstance()->KeyUpdate();
-
 	float deltaTime = (GetTickCount64() - _ticksCount) / 1000.0f;
 
 	if (deltaTime > 0.05f)
@@ -53,6 +49,7 @@ void MainGame::UpdateGame()
 		deltaTime = 0.05f;
 	}
 	_ticksCount = GetTickCount64();
+	KeyManager::GetInstance()->KeyUpdate();
 
 	MapManager::GetInstance()->UpdateGameObjectManager(deltaTime);
 }
@@ -66,6 +63,15 @@ void MainGame::RenderGame()
 {
 	Rectangle(_hdc_buffer, -10, -10, WindowCX + 10, WindowCY + 10);
 	MapManager::GetInstance()->RenderGameObjectManager(_hdc_buffer);
+	MapManager::GetInstance()->RenderFootHoldManager(_hdc_buffer);
+	++_iFPS;
+	if (_dwFPSTime + 1000 < GetTickCount())
+	{
+		swprintf_s(_szFPS, L"FPS : %d", _iFPS);
+		_iFPS = 0;
+		_dwFPSTime = GetTickCount();
+	}
+	TextOut(_hdc_buffer, 100, 100, _szFPS, lstrlen(_szFPS));
 	BitBlt(_hdc, 0, 0, WindowCX, WindowCY, _hdc_buffer, 0, 0, SRCCOPY);
 }
 

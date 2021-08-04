@@ -35,13 +35,19 @@ void SkinManager::LoadSkin()
 				for (auto parts = (*frames)->GetParts()->begin(); parts != (*frames)->GetParts()->end(); ++parts)
 				{
 					parts->second->SetPosition(SkinManager::GetInstance()->FindPosition(parts->second->GetZ()));
+				}
+			}
+		}
+		for (auto begin = frames->begin(); begin != frames->end(); ++begin) {
+			for (auto frames = begin->second->GetSkinFrames()->begin(); frames != begin->second->GetSkinFrames()->end(); ++frames)
+			{
+				for (auto parts = (*frames)->GetParts()->begin(); parts != (*frames)->GetParts()->end(); ++parts)
+				{
 					SkinManager::GetInstance()->UolSetting(std::stoi(skin.first), _bodySkins, begin->second);
 				}
 			}
-			//begin->second->GetSkinFrames()->front()->GetParts()->begin()->second->SetPosition();
-			//begin->second->FindUolFrame();
-			//begin->second->SetPosition(SkinManager::GetInstance()->FindPosition(begin->second->GetZ()));
 		}
+
 	}
 }
 
@@ -140,7 +146,7 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 				StringTools::ReplaceAll(uol, "../");
 				auto splitString = StringTools::SplitString(uol, '/');
 				SkinParts * part = nullptr;
-				if (!strcmp(skinitem->GetName().c_str(), "proneStab"))
+				if (!strcmp(skinitem->GetName().c_str(), "prone"))
 				{
 					int asd = 123;
 				}
@@ -204,6 +210,7 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 				}
 				//auto frame = skinItem->FindFrame(std::stoi(splitString[1]));
 				//auto part = frame->FindParts(splitString[2]);
+
 				std::cout << skinId << " : "  << parts->second->GetUol() << std::endl;
 				parts->second->SetMap(part->GetMap());
 				parts->second->SetBitmap(part->GetBitmap());

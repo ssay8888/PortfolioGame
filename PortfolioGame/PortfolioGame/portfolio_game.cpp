@@ -48,7 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MainGame maingame(GetDC(_hWnd));
 
     maingame.ReadeyGame();
-   // ULONGLONG dwOldTime = GetTickCount64();
+    ULONGLONG dwOldTime = GetTickCount64();
     while (WM_QUIT != msg.message)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -59,13 +59,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
-		//if (dwOldTime + 16 < GetTickCount64())
-		//{
+		if (dwOldTime + 14 < GetTickCount64())
+		{
 			maingame.UpdateGame();
 			maingame.RenderGame();
-            maingame.LateUpdateGame();
-			//dwOldTime = GetTickCount64();
-		//}
+			maingame.LateUpdateGame();
+			dwOldTime = GetTickCount64();
+		}
     }
 
     return (int) msg.wParam;

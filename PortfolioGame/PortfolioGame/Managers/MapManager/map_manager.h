@@ -23,10 +23,12 @@ public:
 
 	void UpdateGameObjectManager(const float deltaTime);
 	void RenderGameObjectManager(HDC hDC);
+	void RenderFootHoldManager(HDC hDC);
 	void LateUpdateGameObjectManager();
 	void ReleaseGameObjectManager();
 
-	bool FootholdCollision(Info& info, float * outY);
+	bool FootholdCollision(GameObject* object, float * outY);
+	double FootHoldAngle(FootHold* start, FootHold* end);
 private:
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;

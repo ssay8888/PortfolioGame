@@ -40,9 +40,6 @@ private:
     bool _frameRevers;
     bool _isProne;
     bool _isJump;
-    float _jumpPower = 15.f;
-    float _accel = 0.f;
-    float _gravity = 9.8f;
     uint16_t _jumpCount;
     uint8_t _facingDirection;
     SkinFrame* _frameThis;
@@ -51,6 +48,8 @@ private:
     std::map<std::string, SkinItem*> _headSkinFrames;
     std::vector<SkinInfo*> _itemFrames;
     uint64_t _frameTick;
+
+    const int _gravity;
 
     HDC _memDC;
     HBITMAP _bitmap;

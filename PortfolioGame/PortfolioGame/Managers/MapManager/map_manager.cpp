@@ -169,6 +169,14 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 	}
 }
 
+void MapManager::RenderFootHoldManager(HDC hDC)
+{
+	for (auto iter = _listFootHold.begin(); iter != _listFootHold.end(); ++iter)
+	{
+		(*iter)->RenderFootHold(hDC);
+	}
+}
+
 void MapManager::LateUpdateGameObjectManager()
 {
 	for (int i = 0; i < MaxLayer; i++)
@@ -184,34 +192,83 @@ void MapManager::ReleaseGameObjectManager()
 {
 }
 
-bool MapManager::FootholdCollision(Info& info, float* outY)
+bool MapManager::FootholdCollision(GameObject* object, float* outY)
 {
+
+
 
 	if (_listFootHold.empty())
 		return false;
 
+	FootHold* pTarget = nullptr;
 
-	for (FootHold* footHold : _listFootHold)
+	for (FootHold* pLine : _listFootHold)
 	{
-		if (info.x >= footHold->GetStartPos().x && info.x <= footHold->GetEndPos().x)
-		{
-			double x1 = footHold->GetStartPos().x;
-			double y1 = footHold->GetStartPos().y;
-			double x2 = footHold->GetEndPos().x;
-			double y2 = footHold->GetEndPos().y;
-
-			double result1 = ((y2 - y1) / (x2 - x1)) * (info.x - (info.cx / 2) - x1) + y1 - (info.cy / 2);
-			double result2 = ((y2 - y1) / (x2 - x1)) * (info.x + (info.cx / 2) - x1) + y1 - (info.cy / 2);
-
-			if ((result1 < info.y && result1 + (info.cy / 2) + 1.f > info.y) ||
-				(result2 < info.y && result2 + (info.cy / 2) + 1.f > info.y))
-			{
-				*outY = static_cast<float>((result1 + result2) / 2);
-				//ScrollManager::SetScrollY(info.y - moveY);
-				//info.y = moveY;
-				return true;
-			}
-		}
+		if (object->GetInfo().x >= pLine->GetStartPos().x &&
+			object->GetInfo().x <= pLine->GetEndPos().x)
+			pTarget = pLine;
 	}
-	return false;
+	if (nullptr == pTarget)
+		return false;
+
+	// PlayerY = ((y2 - y1) / (x2 - x1)) * (PlayerX - x1) + y1
+
+	float x1 = static_cast<float>(pTarget->GetStartPos().x);
+	float y1 = static_cast<float>(pTarget->GetStartPos().y);
+	float x2 = static_cast<float>(pTarget->GetEndPos().x);
+	float y2 = static_cast<float>(pTarget->GetEndPos().y);
+
+	*outY = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - x1) + y1;
+	*outY -= (object->GetInfo().cy >> 1);
+	return true;
+	//*outY -= (object->GetInfo().cy >> 1);
+	//float myY = object->GetInfo().y + (object->GetInfo().cy >> 1);
+	//if (*outY > myY)
+	//{
+	//	//*outY -= (object->GetInfo().cy >> 1);
+	//	return true;
+	//}
+	//else
+	//{
+	//	return false;
+	//}
+	//if (_listFootHold.empty())
+	//	return false;
+
+
+	//for (FootHold* footHold : _listFootHold)
+	//{
+	//	if (object->GetInfo().x >= footHold->GetStartPos().x && object->GetInfo().x <= footHold->GetEndPos().x)
+	//	{
+	//		double x1 = footHold->GetStartPos().x;
+	//		double y1 = footHold->GetStartPos().y;
+	//		double x2 = footHold->GetEndPos().x;
+	//		double y2 = footHold->GetEndPos().y;
+
+	//		double result1 = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - (object->GetInfo().cx / 2) - x1) + y1 - (object->GetInfo().cy / 2);
+	//		double result2 = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x + (object->GetInfo().cx / 2) - x1) + y1 - (object->GetInfo().cy / 2);
+
+	//		if ((result1 < object->GetInfo().y && result1 + (object->GetInfo().cy / 2) + 1.f > object->GetInfo().y) ||
+	//			(result2 < object->GetInfo().y && result2 + (object->GetInfo().cy / 2) + 1.f > object->GetInfo().y))
+	//		{
+	//			*outY = static_cast<float>((result1 + result2) / 2);
+	//			//ScrollManager::SetScrollY(info.y - moveY);
+	//			//info.y = moveY;
+	//			return true;
+	//		}
+	//	}
+	//}
+}
+
+double MapManager::FootHoldAngle(FootHold* start, FootHold* end) {
+	LONG dy = end->GetEndPos().y - start->GetStartPos().y;
+	LONG dx = end->GetEndPos().x - start->GetStartPos().x;
+	double angle = std::atan(dy / dx) * (180.0 / 3.141592);
+	if (dx < 0.0) {
+		angle += 180.0;
+	}
+	else {
+		if (dy < 0.0) angle += 360.0;
+	}
+	return angle;
 }
