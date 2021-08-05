@@ -47,6 +47,9 @@
     <Filter Include="Managers\SceneManager\LoadingScene">
       <UniqueIdentifier>{9fa7cd2c-a036-466d-9fbf-587cea8701b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\SceneManager\LoginUiScene">
+      <UniqueIdentifier>{a798b101-b6e5-47f1-8794-3bd275351119}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -115,14 +118,17 @@
     <ClInclude Include="Managers\Skins\skin_parts.h">
       <Filter>Managers\Skins</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\ScenManager\LoadingScene\loading_scene.h">
+      <Filter>Managers\SceneManager\LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ScenManager\LoginUiScene\login_ui_scene.h">
+      <Filter>Managers\SceneManager\LoginUiScene</Filter>
+    </ClInclude>
     <ClInclude Include="Managers\ScenManager\scene_manager.h">
       <Filter>Managers\SceneManager</Filter>
     </ClInclude>
     <ClInclude Include="Managers\ScenManager\scene.h">
       <Filter>Managers\SceneManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\ScenManager\LoadingScene\loading_scene.h">
-      <Filter>Managers\SceneManager\LoadingScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,14 +180,17 @@
     <ClCompile Include="Managers\Skins\skin_parts.cpp">
       <Filter>Managers\Skins</Filter>
     </ClCompile>
+    <ClCompile Include="Managers\ScenManager\LoadingScene\loading_scene.cpp">
+      <Filter>Managers\SceneManager\LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\LoginUiScene\login_ui_scene.cpp">
+      <Filter>Managers\SceneManager\LoginUiScene</Filter>
+    </ClCompile>
     <ClCompile Include="Managers\ScenManager\scene_manager.cpp">
       <Filter>Managers\SceneManager</Filter>
     </ClCompile>
     <ClCompile Include="Managers\ScenManager\scene.cpp">
       <Filter>Managers\SceneManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\ScenManager\LoadingScene\loading_scene.cpp">
-      <Filter>Managers\SceneManager\LoadingScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

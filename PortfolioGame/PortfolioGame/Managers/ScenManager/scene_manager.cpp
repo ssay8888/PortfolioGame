@@ -1,7 +1,7 @@
 #include "../../pch.h"
 #include "scene_manager.h"
 #include "LoadingScene/loading_scene.h"
-
+#include "LoginUiScene/login_ui_scene.h"
 
 SceneManager::SceneManager()
 	:_curScene(SceneState::kEnd)
@@ -19,15 +19,18 @@ void SceneManager::SceneChange(SceneState nextState)
 	_nextScene = nextState;
 	if (_curScene != _nextScene)
 	{
-		delete _scene;
-		_scene = nullptr;
+		if (_scene != nullptr)
+		{
+			delete _scene;
+			_scene = nullptr;
+		}
 		switch (_nextScene)
 		{
 		case SceneManager::SceneState::kLoading:
 			_scene = new LoadingScene();
 			break;
 		case SceneManager::SceneState::kLogin:
-			//_scene = new LoginScene();
+			_scene = new LoginUiScene();
 			break;
 		case SceneManager::SceneState::kChannel:
 			break;

@@ -4,9 +4,9 @@ class MyBitmap;
 class LoadingScene : public Scene
 {
 public:
+
     LoadingScene();
     ~LoadingScene();
-
     // Scene을(를) 통해 상속됨
     virtual int ReadyScene() override;
 
@@ -17,6 +17,7 @@ public:
     virtual void RenderScene(HDC hdc) override;
 
     virtual void ReleaseScene() override;
+
 private:
     std::vector<MyBitmap*> _logoImages;
     MyBitmap* _lastLogo;

@@ -1,14 +1,13 @@
 #pragma once
 class Scene;
-class LoadingScene;
-class SceneManager
+class SceneManager final
 {
 
 private:
 	SceneManager();
 	~SceneManager();
 public:
-	enum class  SceneState { kLoading, kLogin, kChannel, kCharacterSelect, kInGame, kEnd };
+	enum class SceneState { kLoading, kLogin, kChannel, kCharacterSelect, kInGame, kEnd };
 
 	static SceneManager* GetInstance()
 	{
