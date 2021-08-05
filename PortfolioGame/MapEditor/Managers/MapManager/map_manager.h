@@ -28,6 +28,8 @@ public:
 	void SaveData();
 	void LoadData();
 
+	void TileLoad(std::wstring name);
+
 
 	Mouse* GetMouse();
 

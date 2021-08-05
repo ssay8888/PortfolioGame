@@ -1,6 +1,8 @@
 #include "../../../pch.h"
 #include "login_ui_scene.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../KeyManaer/key_manager.h"
+#include "../../ScenManager/scene_manager.h"
 LoginUiScene::LoginUiScene():
     _loginUiImage(nullptr)
 {
@@ -21,6 +23,12 @@ int LoginUiScene::ReadyScene()
 
 void LoginUiScene::UpdateScene()
 {
+    KeyManager::GetInstance()->KeyUpdate();
+
+    if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
+    {
+        SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kInGame);
+    }
 }
 
 void LoginUiScene::LateUpdateScene()

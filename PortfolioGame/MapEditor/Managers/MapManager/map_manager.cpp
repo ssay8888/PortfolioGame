@@ -21,41 +21,7 @@ MapManager::MapManager() :
 void MapManager::Ready_Map()
 {
 
-	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
-	
-	std::string tiles[]{"bsc", "edD", "edU", "enH0", "enH1", "enV0", "enV1", "slLD", "slLU", "slRD", "slRU"};
-
-	std::map<std::string, std::vector<MyBitmap*>> list;
-	for (auto& tileName : tiles)
-	{
-		for (int i =0; i < 15; i++)
-		{
-			char path[100];
-			snprintf(path, 100, "Client\\Map\\Tile\\woodMarble.img\\%s.%d.bmp", tileName.c_str(), i);
-
-			if (!_access(path, 0))
-			{
-				MyBitmap* image = new MyBitmap;
-				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
-				list[tileName].push_back(image);
-			} 
-			else 
-			{
-				break;
-			}
-		}
-	}
-	_images.insert({"woodMarble.img", list});
-	
-	/*std::map<std::string, MyBitmap*> list;
-	for (auto begin : fileNams)
-	{
-		MyBitmap* image = new MyBitmap;
-		image->Insert_Bitmap(_hWnd, begin.c_str());
-		list.insert({ FileManager::GetInstance()->GetFileName(StringTools::WStringToString(begin.c_str())), image });
-		std::cout << begin.c_str() << std::endl;
-	}
-	_images.insert(std::make_pair("Client\\Map\\Tile\\woodMarble.img\\", list));*/
+	TileLoad(L"woodMarble.img");
 
 	_mouse = new Mouse();
 }
@@ -70,21 +36,22 @@ void MapManager::Update_Map()
 	{
 		MouseUpdate(pt);
 	}
+	const int moveValue = 10;
 	if (KeyManager::GetInstance()->KeyPressing(KEY_LEFT))
 	{
-		ScrollManager::GainScrollX(5);
+		ScrollManager::GainScrollX(moveValue);
 	}
 	if (KeyManager::GetInstance()->KeyPressing(KEY_RIGHT))
 	{
-		ScrollManager::GainScrollX(-5);
+		ScrollManager::GainScrollX(-moveValue);
 	}
 	if (KeyManager::GetInstance()->KeyPressing(KEY_UP))
 	{
-		ScrollManager::GainScrollY(5);
+		ScrollManager::GainScrollY(moveValue);
 	}
 	if (KeyManager::GetInstance()->KeyPressing(KEY_DOWN))
 	{
-		ScrollManager::GainScrollY(-5);
+		ScrollManager::GainScrollY(-moveValue);
 	}
 	if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
 	{
@@ -445,6 +412,33 @@ void MapManager::LoadData()
 
 	CloseHandle(hFile);
 	MessageBox(nullptr, L"로드 성공", L"확인", MB_OK);
+}
+
+void MapManager::TileLoad(std::wstring name)
+{
+	std::string tiles[]{ "bsc", "edD", "edU", "enH0", "enH1", "enV0", "enV1", "slLD", "slLU", "slRD", "slRU" };
+
+	std::map<std::string, std::vector<MyBitmap*>> list;
+	for (auto& tileName : tiles)
+	{
+		for (int i = 0; i < 15; i++)
+		{
+			char path[100];
+			snprintf(path, 100, "Client\\Map\\Tile\\%s\\%s.%d.bmp", StringTools::WStringToString(name.c_str()).c_str(), tileName.c_str(), i);
+
+			if (!_access(path, 0))
+			{
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
+				list[tileName].push_back(image);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	_images.insert({ StringTools::WStringToString(name.c_str()), list });
 }
 
 Mouse* MapManager::GetMouse()

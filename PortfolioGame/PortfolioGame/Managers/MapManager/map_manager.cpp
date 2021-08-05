@@ -213,6 +213,22 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 	{
 		for (auto& pObject : _listGameObject[i])
 		{
+			float startPosX = ScrollManager::GetScrollX();
+			float startPosY = ScrollManager::GetScrollY();
+
+			if (pObject->GetInfo().x < -startPosX + -100 ||
+				pObject->GetInfo().x > -startPosX + 1300)
+			{
+				continue;
+			}
+
+			if (pObject->GetInfo().y < -startPosY + -200 ||
+				pObject->GetInfo().y > -startPosY + 900)
+			{
+				continue;
+			}
+
+
 			pObject->DoRenderGameObject(hdc);
 		}
 	}
@@ -261,13 +277,40 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 			if (!(degree >= 85 && degree <= 95) &&
 				!(degree >= 175 && degree <= 195))
 			{
-				if (object->GetInfo().y < footHold->GetStartPos().y  ||
-					object->GetInfo().y < footHold->GetEndPos().y)
+				float characterY = object->GetInfo().y + (object->GetInfo().cy / 2) - 1;
+				if (characterY < footHold->GetEndPos().y ||
+					characterY < footHold->GetStartPos().y)
 				{
 					pTarget = footHold;
 				}
 			}
 
+		}
+	}
+	if (pTarget == nullptr)
+	{
+		for (FootHold* footHold : _listFootHold)
+		{
+			if (object->GetInfo().x <= footHold->GetStartPos().x &&
+				object->GetInfo().x >= footHold->GetEndPos().x)
+			{
+
+				float x = static_cast<float>(footHold->GetStartPos().x) - static_cast<float>(footHold->GetEndPos().x);
+				float y = static_cast<float>(footHold->GetStartPos().y) - static_cast<float>(footHold->GetEndPos().y);
+				float radian = std::atan2(y, x);
+				float degree = radian * 180 / 3.141592f;
+				if (!(degree >= 85 && degree <= 95) &&
+					!(degree >= 175 && degree <= 195))
+				{
+					float characterY = object->GetInfo().y + (object->GetInfo().cy / 2) - 1;
+					if (characterY < footHold->GetEndPos().y ||
+						characterY < footHold->GetStartPos().y)
+					{
+						pTarget = footHold;
+					}
+				}
+
+			}
 		}
 	}
 	if (nullptr == pTarget)

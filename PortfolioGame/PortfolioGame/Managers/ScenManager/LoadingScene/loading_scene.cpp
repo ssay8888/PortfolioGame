@@ -47,7 +47,10 @@ void LoadingScene::UpdateScene()
 	KeyManager::GetInstance()->KeyUpdate();
 	if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
 	{
-		_logoFrameCount = static_cast<int>(_logoImages.size() - 10);
+		if (_logoFrameCount < _logoImages.size() - 10)
+		{
+			_logoFrameCount = static_cast<int>(_logoImages.size() - 10);
+		}
 	}
 }
 
