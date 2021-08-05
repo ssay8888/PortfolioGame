@@ -29,6 +29,10 @@ public:
 	void LoadData();
 
 	void TileLoad(std::wstring name);
+	void MapObjectLoad();
+
+	void ButtonLoad();
+	void ButtonRender(HDC hdc);
 
 
 	Mouse* GetMouse();
@@ -40,7 +44,9 @@ private:
 	std::string _selectPath;
 	std::list<MapObject*> _list[7];
 	std::list<FootHold*> _footholds;
-	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>> > _images;
+	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>> > _tileImages;
+	std::vector<MyBitmap*> _objImages;
+	std::vector<MyBitmap*> _buttons;
 	POINT _mapSize;
 	Mouse* _mouse;
 };

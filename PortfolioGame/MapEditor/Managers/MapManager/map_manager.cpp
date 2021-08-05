@@ -22,7 +22,8 @@ void MapManager::Ready_Map()
 {
 
 	TileLoad(L"woodMarble.img");
-
+	MapObjectLoad();
+	ButtonLoad();
 	_mouse = new Mouse();
 }
 
@@ -138,8 +139,9 @@ void MapManager::Render_Map(HDC hDC)
 			static_cast<int>(_selectImage[_selectCount]->GetWidth()),
 			static_cast<int>(_selectImage[_selectCount]->GetHeight()));
 	}
+	ButtonRender(hDC);
 
-	for (auto tiles : _images)
+	for (auto tiles : _tileImages)
 	{
 		for (auto tile : tiles.second)
 		{
@@ -196,7 +198,7 @@ void MapManager::SelectImage(POINT& pt)
 {
 	int countX = 0;
 	int countY = 0;
-	for (auto tiles : _images)
+	for (auto tiles : _tileImages)
 	{
 		for (auto tile : tiles.second)
 		{
@@ -219,6 +221,24 @@ void MapManager::SelectImage(POINT& pt)
 			}
 		}
 	}
+	countX = 0;
+	for (auto tile : _buttons)
+	{
+		RECT rc{};
+		int x = 90 + (90 * countX) + 1024;
+		int y = 0;
+		RECT tile_rc{ x, y, x + static_cast<LONG>(tile->GetWidth()), y + static_cast<LONG>(tile->GetHeight()) };
+		RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+		if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+		{
+			std::cout << "버틀클릭!" << std::endl;
+		}
+		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
 }
 
 void MapManager::MouseUpdate(POINT& pt)
@@ -231,7 +251,7 @@ void MapManager::MouseUpdate(POINT& pt)
 	GetMouse()->UpdateRect();
 	int countX = 0;
 	int countY = 0;
-	for (auto tiles : _images)
+	for (auto tiles : _tileImages)
 	{
 		for (auto tile : tiles.second)
 		{
@@ -388,7 +408,7 @@ void MapManager::LoadData()
 			std::string fullPath;
 			fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
 				append(std::to_string(obj->GetImageNumber())).append(".bmp");
-			auto image = _images.find(obj->GetPath());
+			auto image = _tileImages.find(obj->GetPath());
 			auto file = image->second.find(obj->GetFileName());
 			auto tile = file->second[obj->GetImageNumber()];
 			obj->SetImage(tile);
@@ -438,7 +458,48 @@ void MapManager::TileLoad(std::wstring name)
 			}
 		}
 	}
-	_images.insert({ StringTools::WStringToString(name.c_str()), list });
+	_tileImages.insert({ StringTools::WStringToString(name.c_str()), list });
+}
+
+void MapManager::MapObjectLoad()
+{
+	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Obj\\");
+
+	for (auto wpath : files)
+	{
+		auto path = StringTools::WStringToString(wpath.c_str());
+		if (!_access(path.c_str(), 0))
+		{
+			MyBitmap* image = new MyBitmap;
+			image->Insert_Bitmap(_hWnd, wpath.c_str());
+			_objImages.push_back(image);
+		}
+	}
+}
+
+void MapManager::ButtonLoad()
+{
+	MyBitmap* image = new MyBitmap;
+	image->Insert_Bitmap(_hWnd, L"Client\\TileButton.bmp");
+	_buttons.push_back(image);
+	image = new MyBitmap;
+	image->Insert_Bitmap(_hWnd, L"Client\\ObjButton.bmp");
+	_buttons.push_back(image);
+	image = new MyBitmap;
+	image->Insert_Bitmap(_hWnd, L"Client\\EtcButton.bmp");
+	_buttons.push_back(image);
+}
+
+void MapManager::ButtonRender(HDC hdc)
+{
+	int countX = 0;
+	for (auto button : _buttons)
+	{
+		int x = 90 + (90 * countX) + 1024;
+		int y = 0;
+		button->RenderBitmapImage(hdc, x, y, button->GetWidth(), button->GetHeight());
+		countX++;
+	}
 }
 
 Mouse* MapManager::GetMouse()
