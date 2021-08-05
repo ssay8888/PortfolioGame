@@ -163,6 +163,9 @@
     <ClInclude Include="MainGame\main_game.h" />
     <ClInclude Include="Managers\KeyManaer\key_manager.h" />
     <ClInclude Include="Managers\MapManager\map_manager.h" />
+    <ClInclude Include="Managers\ScenManager\LoadingScene\loading_scene.h" />
+    <ClInclude Include="Managers\ScenManager\scene.h" />
+    <ClInclude Include="Managers\ScenManager\scene_manager.h" />
     <ClInclude Include="Managers\ScrollManager\scroll_manager.h" />
     <ClInclude Include="Managers\Skins\skin_frame.h" />
     <ClInclude Include="Managers\Skins\skin_info.h" />
@@ -204,6 +207,18 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\MapManager\map_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\LoadingScene\loading_scene.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\scene.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\scene_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>

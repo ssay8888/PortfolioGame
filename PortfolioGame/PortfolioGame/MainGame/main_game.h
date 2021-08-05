@@ -24,7 +24,7 @@ private:
 
 
 	int _iFPS;
-	DWORD _dwFPSTime;
+	ULONGLONG _dwFPSTime;
 	TCHAR _szFPS[32];
 };
 

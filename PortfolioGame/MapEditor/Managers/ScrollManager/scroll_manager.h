@@ -5,6 +5,8 @@ public:
 	ScrollManager() = default;
 	~ScrollManager() = default;
 public:
+	static void Scroll_Lock();
+
 	static float GetScrollX();
 	static float GetScrollY();
 

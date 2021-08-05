@@ -29,8 +29,8 @@ Player::~Player()
 
 int Player::ReadyGameObject()
 {
-	_info.x = 0.f;
-	_info.y = 0.f;
+	_info.x = 250.f;
+	_info.y = 400.f;
 	_info.cx = 42;
 	_info.cy = 64;
 	_speed = 2.f;
@@ -112,18 +112,14 @@ void Player::UpdateGameObject(const float deltaTime)
 		float outY = 0;
 		_info.x += totalMoveX;
 		_info.y += totalMoveY;
-		ScrollManager::GainScrollX(-totalMoveX);
-		ScrollManager::GainScrollY(-totalMoveY);
 		UpdateRectGameObject();
-		if (MapManager::GetInstance()->FootholdAndRectCollision(this)) 
+		if (MapManager::GetInstance()->FootholdAndRectCollision(this))
 		{
 			_info.x -= totalMoveX;
 			_info.y -= totalMoveY;
-			ScrollManager::GainScrollX(totalMoveX);
-			ScrollManager::GainScrollY(totalMoveY);
 		}
 	}
-	else 
+	else
 	{
 		if (!_isJump && !_isProne && strcmp(GetFrameState(), "stand1"))
 		{
@@ -169,6 +165,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			_frameTick = tick;
 		}
 	}
+	ScrollMove();
 
 
 }
@@ -410,7 +407,7 @@ void Player::RenderCharacter(HDC hdc)
 				0, 0,
 				42 + plus,
 				64,
-				RGB(255, 0, 254));
+				RGB(255, 0, 255));
 
 			//ÁÂ¿ì¹ÝÀü
 			//StretchBlt(hdc, 0, 0, 1024, 768, _memDC, 1023, 0, -1024, 768, SRCCOPY);
@@ -436,7 +433,7 @@ void Player::IsJumping()
 		if (_jumpCount < count)
 		{
 			_info.y -= speed;
-			ScrollManager::GainScrollY(speed, true);
+			//ScrollManager::GainScrollY(speed, true);
 		}
 		else
 		{
@@ -451,21 +448,18 @@ void Player::IsJumping()
 			if (_info.y - outY <= speed && _info.y - outY >= -speed)
 			{
 				_info.y = outY;
-				ScrollManager::SetScrollY(-_info.y + (768 / 2));
-				float sx = ScrollManager::GetScrollX();
-				float sy = ScrollManager::GetScrollY();
-				std::cout << sx << std::endl;
+				//ScrollManager::SetScrollY(-_info.y + (768 / 2));
 			}
 			else
 			{
 				_info.y += speed;
-				ScrollManager::GainScrollY(-speed);
+				//ScrollManager::GainScrollY(-speed);
 			}
 		}
 		else
 		{
 			_info.y = outY;
-			ScrollManager::SetScrollY(-_info.y + (768 / 2));
+			//ScrollManager::SetScrollY(-_info.y + (768 / 2));
 		}
 	}
 	//float fY = 0.f;
@@ -497,6 +491,39 @@ void Player::RenderGameObject(HDC hdc)
 void Player::LateUpdateGameObject()
 {
 	Player::IsJumping();
+}
+
+void Player::ScrollMove()
+{
+	const int range = 75;
+
+	const int divideCX = WindowCX >> 1;
+	const int divideCY = WindowCY >> 1;
+
+
+	const float scrollX = ScrollManager::GetScrollX();
+	const float scrollY = ScrollManager::GetScrollY();
+	const float  sumX = _info.x + scrollX;
+	const float  sumY = _info.y + scrollY;
+
+	if (divideCX < sumX + range)
+	{
+		ScrollManager::GainScrollX(-GetSpeed());
+	}
+	if (divideCX > sumX - range)
+	{
+		ScrollManager::GainScrollX(GetSpeed());
+	}
+
+	if (divideCY < sumY + range)
+	{
+		ScrollManager::GainScrollY(-GetSpeed());
+	}
+	if (divideCY > sumY - range)
+	{
+		ScrollManager::GainScrollY(GetSpeed());
+	}
+
 }
 
 void Player::SetFrameThis(SkinFrame* frame)

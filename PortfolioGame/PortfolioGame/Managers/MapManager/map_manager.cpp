@@ -27,7 +27,6 @@ void MapManager::ReadyMapManager()
 				MyBitmap* image = new MyBitmap;
 				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
 				list[tileName].push_back(image);
-				std::cout << path << std::endl;
 			}
 			else
 			{
@@ -78,6 +77,8 @@ void MapManager::LoadMapData()
 
 	unsigned short mark = 0xFEFF;
 	bool  check = ReadFile(hFile, &mark, sizeof(mark), &dwByte, nullptr);
+
+	check = ReadFile(hFile, &_mapSize, sizeof(_mapSize), &dwByte, nullptr);
 	for (int i = 0; i < 7; i++)
 	{
 		size_t size;
@@ -201,6 +202,13 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 void MapManager::RenderGameObjectManager(HDC hdc)
 {
 
+	Rectangle(hdc,
+		0 + static_cast<int>(ScrollManager::GetScrollX()),
+		0 + static_cast<int>(ScrollManager::GetScrollY()),
+		_mapSize.x + static_cast<int>(ScrollManager::GetScrollX()),
+		_mapSize.y + static_cast<int>(ScrollManager::GetScrollY()));
+
+
 	for (int i = 0; i < MaxLayer; i++)
 	{
 		for (auto& pObject : _listGameObject[i])
@@ -244,10 +252,27 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 	{
 		if (object->GetInfo().x >= footHold->GetStartPos().x &&
 			object->GetInfo().x <= footHold->GetEndPos().x)
-			pTarget = footHold;
+		{
+
+			float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
+			float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
+			float radian = std::atan2(y, x);
+			float degree = radian * 180 / 3.141592f;
+			if (!(degree >= 85 && degree <= 95) &&
+				!(degree >= 175 && degree <= 195))
+			{
+				if (object->GetInfo().y < footHold->GetStartPos().y  ||
+					object->GetInfo().y < footHold->GetEndPos().y)
+				{
+					pTarget = footHold;
+				}
+			}
+
+		}
 	}
 	if (nullptr == pTarget)
 		return false;
+
 
 	// PlayerY = ((y2 - y1) / (x2 - x1)) * (PlayerX - x1) + y1
 
@@ -255,7 +280,6 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 	float y1 = static_cast<float>(pTarget->GetStartPos().y);
 	float x2 = static_cast<float>(pTarget->GetEndPos().x);
 	float y2 = static_cast<float>(pTarget->GetEndPos().y);
-
 	*outY = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - x1) + y1;
 	*outY -= (object->GetInfo().cy >> 1);
 	return true;
@@ -341,4 +365,9 @@ bool MapManager::FootholdAndRectCollision(GameObject* object)
 
 
 	return false;
+}
+
+POINT MapManager::GetMapSize() const
+{
+	return _mapSize;
 }

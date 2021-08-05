@@ -29,6 +29,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_UP;
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		m_dwKey |= KEY_DOWN;
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+		m_dwKey |= KEY_LBUTTON;
 	if (GetAsyncKeyState('A') & 0x8000)
 		m_dwKey |= KEY_A;
 	if (GetAsyncKeyState('B') & 0x8000)

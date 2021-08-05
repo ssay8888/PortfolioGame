@@ -39,6 +39,7 @@ private:
 	std::list<MapObject*> _list[7];
 	std::list<FootHold*> _footholds;
 	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>> > _images;
+	POINT _mapSize;
 	Mouse* _mouse;
 };
 

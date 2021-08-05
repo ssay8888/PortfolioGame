@@ -12,12 +12,14 @@ public:
 		static MapManager instance;
 		return &instance;
 	}
+
+	void LoadMapData();
+public:
+
 	void ReadyMapManager();
 
 	void AddGameObject(GameObject* object);
 	void AddFootHold(FootHold* foothold);
-
-	void LoadMapData();
 
 	void ReleaseAllData();
 
@@ -29,10 +31,13 @@ public:
 
 	bool FootholdYCollision(GameObject* object, float* outY);
 	bool FootholdAndRectCollision(GameObject* object);
+
+	POINT GetMapSize() const;
 private:
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
 	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _listBitmap;
+	POINT _mapSize;
 
 };
 

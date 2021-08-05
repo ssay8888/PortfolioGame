@@ -41,6 +41,12 @@
     <Filter Include="Managers\MapManager">
       <UniqueIdentifier>{b740a3f5-1687-4830-9686-092651cb1a8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\SceneManager">
+      <UniqueIdentifier>{cbe749a1-1d85-47c0-a2d7-439f73271813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SceneManager\LoadingScene">
+      <UniqueIdentifier>{9fa7cd2c-a036-466d-9fbf-587cea8701b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -109,6 +115,15 @@
     <ClInclude Include="Managers\Skins\skin_parts.h">
       <Filter>Managers\Skins</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\ScenManager\scene_manager.h">
+      <Filter>Managers\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ScenManager\scene.h">
+      <Filter>Managers\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ScenManager\LoadingScene\loading_scene.h">
+      <Filter>Managers\SceneManager\LoadingScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -158,6 +173,15 @@
     </ClCompile>
     <ClCompile Include="Managers\Skins\skin_parts.cpp">
       <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\scene_manager.cpp">
+      <Filter>Managers\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\scene.cpp">
+      <Filter>Managers\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ScenManager\LoadingScene\loading_scene.cpp">
+      <Filter>Managers\SceneManager\LoadingScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

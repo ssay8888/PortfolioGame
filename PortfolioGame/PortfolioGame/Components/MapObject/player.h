@@ -17,6 +17,10 @@ public:
     virtual void RenderGameObject(HDC hdc) override;
     virtual void LateUpdateGameObject() override;
 
+    void ScrollMove();
+
+public:
+
     void SetFrameThis(SkinFrame* frame);
     SkinFrame* GetFrameThis();
 

@@ -13,7 +13,8 @@
 
 MapManager::MapManager() :
 	_mouse(nullptr),
-	_selectCount(0)
+	_selectCount(0),
+	_mapSize({1024, 768})
 {
 }
 
@@ -37,7 +38,6 @@ void MapManager::Ready_Map()
 				MyBitmap* image = new MyBitmap;
 				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
 				list[tileName].push_back(image);
-				std::cout << path << std::endl;
 			} 
 			else 
 			{
@@ -137,6 +137,11 @@ void MapManager::Render_Map(HDC hDC)
 	int countX = 0;
 	int countY = 0;
 
+	Rectangle(hDC, 
+		0 + static_cast<int>(ScrollManager::GetScrollX()), 
+		0 + static_cast<int>(ScrollManager::GetScrollY()), 
+		_mapSize.x + static_cast<int>(ScrollManager::GetScrollX()), 
+		_mapSize.y + static_cast<int>(ScrollManager::GetScrollY()));
 	for (auto& maps : _list)
 	{
 		for (auto& map : maps)
@@ -149,9 +154,22 @@ void MapManager::Render_Map(HDC hDC)
 		}
 	}
 
+
+
+
 	for (auto foot : _footholds)
 	{
 		foot->RenderFootHold(hDC);
+	}
+	Rectangle(hDC, 1024, 0, 1600, 900);
+
+	if (!_selectImage.empty())
+	{
+		_selectImage[_selectCount]->RenderBitmapImage(hDC,
+			static_cast<int>(GetMouse()->GetInfo().x - (_selectImage[_selectCount]->GetWidth() / 2)),
+			static_cast<int>(GetMouse()->GetInfo().y - (_selectImage[_selectCount]->GetHeight() / 2)),
+			static_cast<int>(_selectImage[_selectCount]->GetWidth()),
+			static_cast<int>(_selectImage[_selectCount]->GetHeight()));
 	}
 
 	for (auto tiles : _images)
@@ -169,17 +187,6 @@ void MapManager::Render_Map(HDC hDC)
 				countY += 1;
 			}
 		}
-	}
-
-	Rectangle(hDC, 1024, 768, 1600, 600);
-
-	if (!_selectImage.empty())
-	{
-		_selectImage[_selectCount]->RenderBitmapImage(hDC,
-			static_cast<int>(GetMouse()->GetInfo().x - (_selectImage[_selectCount]->GetWidth() / 2)),
-			static_cast<int>(GetMouse()->GetInfo().y - (_selectImage[_selectCount]->GetHeight() / 2)),
-			static_cast<int>(_selectImage[_selectCount]->GetWidth()),
-			static_cast<int>(_selectImage[_selectCount]->GetHeight()));
 	}
 	std::wstring str;
 	for (int i = 0; i < 7; i++)
@@ -310,6 +317,9 @@ void MapManager::SaveData()
 	unsigned short mark = 0xFEFF;
 	DWORD dwByte = 0;
 	WriteFile(hFile, &mark, sizeof(mark), &dwByte, nullptr);
+
+
+	WriteFile(hFile, &_mapSize, sizeof(_mapSize), &dwByte, nullptr);
 	for (auto objs : _list)
 	{
 		
@@ -369,6 +379,9 @@ void MapManager::LoadData()
 
 	unsigned short mark = 0xFEFF;
 	bool  check = ReadFile(hFile, &mark, sizeof(mark), &dwByte, nullptr);
+
+
+	check = ReadFile(hFile, &_mapSize, sizeof(_mapSize), &dwByte, nullptr);
 	for (int i = 0; i < 7; i++)
 	{
 		size_t size;

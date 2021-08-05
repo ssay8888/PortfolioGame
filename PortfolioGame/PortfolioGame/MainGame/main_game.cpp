@@ -8,6 +8,8 @@
 #include "../Utility/xml_reader.h"
 #include "../Managers/KeyManaer/key_manager.h"
 #include "../Managers/MapManager/map_manager.h"
+#include "../Managers/ScrollManager/scroll_manager.h"
+#include "../Managers/ScenManager/scene_manager.h"
 #include <fstream>
 #include <algorithm>
 MainGame::MainGame(HDC hdc) :
@@ -35,9 +37,10 @@ void MainGame::ReadeyGame()
 	auto object_manager = MapManager::GetInstance();
 	object_manager->ReadyMapManager();
 	object_manager->LoadMapData();
-	auto object = new Player();
-	this->SetPlayer(object);
-	object_manager->AddGameObject(object);
+	//auto object = new Player();
+	//this->SetPlayer(object);
+	//object_manager->AddGameObject(object);
+	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);
 }
 
 void MainGame::UpdateGame()
@@ -53,27 +56,30 @@ void MainGame::UpdateGame()
 	_ticksCount = GetTickCount64();
 	KeyManager::GetInstance()->KeyUpdate();
 
-	MapManager::GetInstance()->UpdateGameObjectManager(deltaTime);
+	SceneManager::GetInstance()->UpdateSceneManager();
+	ScrollManager::ScrollLock();
 }
 
 void MainGame::LateUpdateGame()
 {
-	MapManager::GetInstance()->LateUpdateGameObjectManager();
+	SceneManager::GetInstance()->LateUpdateSceneManager();
+	//MapManager::GetInstance()->LateUpdateGameObjectManager();
 }
 
 void MainGame::RenderGame()
 {
 	Rectangle(_hdc_buffer, -10, -10, WindowCX + 10, WindowCY + 10);
-	MapManager::GetInstance()->RenderGameObjectManager(_hdc_buffer);
-	MapManager::GetInstance()->RenderFootHoldManager(_hdc_buffer);
+	//MapManager::GetInstance()->RenderGameObjectManager(_hdc_buffer);
+	//MapManager::GetInstance()->RenderFootHoldManager(_hdc_buffer);
+	SceneManager::GetInstance()->RenderSceneManager(_hdc_buffer);
 	++_iFPS;
-	if (_dwFPSTime + 1000 < GetTickCount())
+	if (_dwFPSTime + 1000 < GetTickCount64())
 	{
 		swprintf_s(_szFPS, L"FPS : %d", _iFPS);
 		_iFPS = 0;
-		_dwFPSTime = GetTickCount();
+		_dwFPSTime = GetTickCount64();
 	}
-	TextOut(_hdc_buffer, 100, 100, _szFPS, lstrlen(_szFPS));
+	TextOut(_hdc_buffer, 0, 0, _szFPS, lstrlen(_szFPS));
 	BitBlt(_hdc, 0, 0, WindowCX, WindowCY, _hdc_buffer, 0, 0, SRCCOPY);
 }
 
