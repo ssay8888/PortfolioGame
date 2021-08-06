@@ -19,7 +19,11 @@ void KeyManager::ReadyKeyManaer()
 }
 
 void KeyManager::KeyUpdate()
+{
+	if (!_isWindowsActive)
 	{
+		return;
+	}
 	m_dwKey = 0;
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		m_dwKey |= KEY_LEFT;

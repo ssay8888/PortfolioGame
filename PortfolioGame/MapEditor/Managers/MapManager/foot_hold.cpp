@@ -4,7 +4,8 @@
 
 FootHold::FootHold() :
 	_start({}),
-	_end({})
+	_end({}),
+	_state(HoldState::kLine)
 {
 }
 
@@ -12,34 +13,60 @@ FootHold::~FootHold()
 {
 }
 
-void FootHold::SetStartPos(const uint32_t x, const uint32_t y)
+void FootHold::SetStartPos(const float x, const float y)
 {
 	_start.x = x;
 	_start.y = y;
 }
 
-void FootHold::SetEndPos(const uint32_t x, const uint32_t y)
+void FootHold::SetEndPos(const float x, const float y)
 {
 	_end.x = x;
 	_end.y = y;
 }
 
-POINT FootHold::GetStartPos() const
+ObjectPos FootHold::GetStartPos() const
 {
 	return _start;
 }
 
-POINT FootHold::GetEndPos() const
+ObjectPos FootHold::GetEndPos() const
 {
 	return _end;
 }
 
+FootHold::HoldState FootHold::GetState() const
+{
+	return _state;
+}
+
+void FootHold::SetState(FootHold::HoldState state)
+{
+	_state = state;
+}
+
 void FootHold::RenderFootHold(HDC hdc)
 {
-	HPEN pen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-	HPEN oldPen = (HPEN)SelectObject(hdc, pen);
-	MoveToEx(hdc, _start.x + static_cast<int>(ScrollManager::GetScrollX()), _start.y + static_cast<int>(ScrollManager::GetScrollY()), nullptr);
-	LineTo(hdc, _end.x + static_cast<int>(ScrollManager::GetScrollX()), _end.y + static_cast<int>(ScrollManager::GetScrollY()));
+	HPEN pen = nullptr;
+	HPEN oldPen = nullptr;
+	switch (_state)
+	{
+	case FootHold::HoldState::kLine:
+		pen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+		break;
+	case FootHold::HoldState::kRope:
+		pen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+		break;
+	case FootHold::HoldState::kLadder:
+		pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+		break;
+	default:
+		pen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+		break;
+	}
+	oldPen = (HPEN)SelectObject(hdc, pen);
+	MoveToEx(hdc, static_cast<int>(_start.x + ScrollManager::GetScrollX()), static_cast<int>(_start.y + ScrollManager::GetScrollY()), nullptr);
+	LineTo(hdc, static_cast<int>(_end.x + ScrollManager::GetScrollX()), static_cast<int>(_end.y + ScrollManager::GetScrollY()));
 	SelectObject(hdc, oldPen);
 	DeleteObject(pen);
 	DeleteObject(oldPen);

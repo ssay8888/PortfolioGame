@@ -29,15 +29,27 @@ public:
 	void LateUpdateGameObjectManager();
 	void ReleaseGameObjectManager();
 
-	bool FootholdYCollision(GameObject* object, float* outY);
+	bool FootholdYCollision(GameObject* object, float* outY, FootHold** outHold);
 	bool FootholdAndRectCollision(GameObject* object);
+	bool LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold);
 
-	POINT GetMapSize() const;
+	void TileImageLoad(std::string folderName);
+	void MapObjectImageLoad();
+
+
+	std::list<FootHold*>* GetListRopeLadder();
+	std::list<FootHold*> GetMapFootHold();
+	ObjectPos GetMapSize() const;
 private:
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
+	std::list<FootHold*> _listRopeLadder;
+
 	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _listBitmap;
-	POINT _mapSize;
+
+
+	std::map<std::string, MyBitmap*> _listObjBitmap;
+	ObjectPos _mapSize;
 
 };
 

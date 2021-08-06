@@ -127,8 +127,49 @@ namespace CollisionManager
 		}
 	}
 
+	template<typename FootHold, typename Player>
+	bool LineAndRectCollsition(std::list<FootHold*> footHold, Player* object)
+	{
+		for (auto hold : footHold)
+		{
+			if (hold->GetEndPos().x <= object->GetRect().right &&
+				hold->GetStartPos().x >= object->GetRect().left &&
+				hold->GetEndPos().y <= object->GetRect().bottom &&
+				hold->GetStartPos().y >= object->GetRect().top)
+			{ // 선과 사각형의 충돌.
 
+				return true;
+			}
+			else if (hold->GetStartPos().x <= object->GetRect().right &&
+				hold->GetEndPos().x >= object->GetRect().left &&
+				hold->GetStartPos().y <= object->GetRect().bottom &&
+				hold->GetEndPos().y >= object->GetRect().top)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
+	template<typename FootHold, typename Player>
+	bool LineAndRectCollsition(FootHold* footHold, Player* object)
+	{
+		if (footHold->GetEndPos().x <= object->GetRect().right &&
+			footHold->GetStartPos().x >= object->GetRect().left &&
+			footHold->GetEndPos().y <= object->GetRect().bottom &&
+			footHold->GetStartPos().y >= object->GetRect().top)
+		{ // 선과 사각형의 충돌.
 
+			return true;
+		}
+		else if (footHold->GetStartPos().x <= object->GetRect().right &&
+			footHold->GetEndPos().x >= object->GetRect().left &&
+			footHold->GetStartPos().y <= object->GetRect().bottom &&
+			footHold->GetEndPos().y >= object->GetRect().top)
+		{
+			return true;
+		}
+		return false;
+	}
 };
 

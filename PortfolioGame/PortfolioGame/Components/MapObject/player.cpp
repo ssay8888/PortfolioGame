@@ -8,14 +8,19 @@
 #include "../../Managers/Skins/skin_manager.h"
 #include "../../Managers/ScrollManager/scroll_manager.h"
 #include "../../Managers/MapManager/map_manager.h"
+#include "foot_hold.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 
 Player::Player(uint8_t layer) :
 	GameObject(layer),
 	_frameRevers(false),
 	_thisFrameMaxCount(0),
 	_frameState("stand1"),
-	_frameTick(0)
+	_frameTick(0),
+	_nowFootHold(nullptr),
+	_nextFootHold(nullptr),
+	_isFirstFootHold(false)
 {
     ReadyGameObject();
 }
@@ -54,10 +59,56 @@ void Player::UpdateGameObject(const float deltaTime)
 	float totalMoveX = 0;
 	float totalMoveY = 0;
 	float outY = 0;
-	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY);
+	FootHold* tempHold;
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
+	if (!_isJump && !_isProne && keymanager->KeyPressing(KEY_DOWN))
+	{
+		float outX;
+		FootHold* outHold = nullptr;
+		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
+		if (isRope)
+		{
+			if (!_isRope)
+			{
+				switch (outHold->GetState())
+				{
+				case FootHold::HoldState::kLadder:
+					this->ChangeFrameState("ladder");
+					break;
+				case FootHold::HoldState::kRope:
+					this->ChangeFrameState("rope");
+					break;
+				default:
+					break;
+				}
+				_isRope = true;
+				_info.x = outX;
+			}
+			_info.y += GetSpeed();
+			if (CollisionManager::LineAndRectCollsition(MapManager::GetInstance()->GetMapFootHold(), this))
+			{
+				if (!_isFirstFootHold)
+				{
+					_info.y -= GetSpeed();
+				}
+				else if (_isFirstFootHold && _nextFootHold == nullptr)
+				{
+					_info.y -= GetSpeed();
+					_isRope = false;
+				}
+			}
+			else
+			{
+				_info.y -= GetSpeed();
+				totalMoveY += GetSpeed();
+			}
+
+		}
+	}
+
 	if (_info.y >= outY)
 	{
-		if (!_isJump && keymanager->KeyPressing(KEY_DOWN))
+		if (!_isJump && !_isProne && !_isRope && keymanager->KeyPressing(KEY_DOWN))
 		{
 			this->ChangeFrameState("prone");
 			_isProne = true;
@@ -66,18 +117,47 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (keymanager->KeyUp(KEY_DOWN))
 	{
-		this->ChangeFrameState("stand1");
-		_isProne = false;
+		if (!_isRope)
+		{
+			this->ChangeFrameState("stand1");
+			_isProne = false;
+		}
 	}
 	if (!_isProne)
 	{
 		if (keymanager->KeyPressing(KEY_LEFT))
 		{
-			totalMoveX -= GetSpeed();
+			if (_isRope)
+			{
+				if (keymanager->KeyPressing(KEY_C))
+				{
+					_isRope = false;
+					this->ChangeFrameState("jump");
+					_isJump = true;
+					totalMoveX -= GetSpeed();
+				}
+			}
+			else
+			{
+				totalMoveX -= GetSpeed();
+			}
 		}
 		if (keymanager->KeyPressing(KEY_RIGHT))
 		{
-			totalMoveX += GetSpeed();
+			if (_isRope)
+			{
+				if (keymanager->KeyPressing(KEY_C))
+				{
+					_isRope = false;
+					this->ChangeFrameState("jump");
+					_isJump = true;
+					totalMoveX += GetSpeed();
+				}
+			}
+			else
+			{
+				totalMoveX += GetSpeed();
+			}
 		}
 		if (_info.y >= outY)
 		{
@@ -90,8 +170,42 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 
 
-	if (keymanager->KeyPressing(KEY_UP))
+	if (!_isJump && !_isProne && keymanager->KeyPressing(KEY_UP))
 	{
+		auto rope = MapManager::GetInstance()->GetListRopeLadder();
+		float outX = 0;
+		FootHold* outHold = nullptr;
+		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
+
+
+		if (isRope)
+		{
+			_info.x = outX;
+			totalMoveY -= GetSpeed();
+			if (!_isRope)
+			{
+				switch (outHold->GetState())
+				{
+				case FootHold::HoldState::kLadder:
+					this->ChangeFrameState("ladder");
+					break;
+				case FootHold::HoldState::kRope:
+					this->ChangeFrameState("rope");
+					break;
+				default:
+					break;
+				}
+				_isRope = true;
+			}
+		}
+		else 
+		{
+			if (strcmp(GetFrameState(), "stand1"))
+			{
+				this->ChangeFrameState("stand1");
+				_isRope = false;
+			}
+		}
 	}
 
 	if (totalMoveX != 0 || totalMoveY != 0)
@@ -104,7 +218,7 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->SetFacingDirection(1);
 		}
-		if (!_isJump && strcmp(GetFrameState(), "walk1"))
+		if (!_isRope && !_isJump && strcmp(GetFrameState(), "walk1"))
 		{
 			this->ChangeFrameState("walk1");
 		}
@@ -121,7 +235,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	else
 	{
-		if (!_isJump && !_isProne && strcmp(GetFrameState(), "stand1"))
+		if (!_isRope && !_isJump && !_isProne && strcmp(GetFrameState(), "stand1"))
 		{
 			this->ChangeFrameState("stand1");
 		}
@@ -138,31 +252,44 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	if (_frameThis != nullptr)
 	{
-		uint64_t tick = GetTickCount64();
-		if (tick > _frameTick + _frameThis->GetDelay())
+		if (_isRope)
 		{
-			if (!strcmp(GetFrameState(), "stand1"))
+			uint64_t tick = GetTickCount64();
+			if (tick > _frameTick + _frameThis->GetDelay() && totalMoveY != 0)
 			{
-				if (_frameRevers)
+				_frameNummber++;
+				_frameTick = tick;
+				std::cout << _frameNummber << std::endl;
+			}
+		}
+		else
+		{
+			uint64_t tick = GetTickCount64();
+			if (tick > _frameTick + _frameThis->GetDelay())
+			{
+				if (!strcmp(GetFrameState(), "stand1"))
 				{
-					if (--_frameNummber == 0)
+					if (_frameRevers)
 					{
-						_frameRevers = false;
+						if (--_frameNummber == 0)
+						{
+							_frameRevers = false;
+						}
+					}
+					else
+					{
+						if (++_frameNummber >= _frameThis->GetParts()->size())
+						{
+							_frameRevers = true;
+						}
 					}
 				}
 				else
 				{
-					if (++_frameNummber >= _frameThis->GetParts()->size())
-					{
-						_frameRevers = true;
-					}
+					++_frameNummber;
 				}
+				_frameTick = tick;
 			}
-			else
-			{
-				++_frameNummber;
-			}
-			_frameTick = tick;
 		}
 	}
 	ScrollMove();
@@ -210,15 +337,11 @@ void Player::RenderCharacter(HDC hdc)
 		std::vector<SkinParts*> partsFrames;
 		std::vector<SkinParts*> offsets;
 		SkinParts* bodyFrame = nullptr;
-		std::map<std::string, POINT> list;
+		std::map<std::string, ObjectPos> list;
 		_thisFrameMaxCount = bodyFrameIter->second->GetFrameSize();
 		auto bodyskinItem = bodyFrameIter->second;
 		auto headskinItem = headFrameIter->second;
 
-		if (!strcmp(_frameState.c_str(), "prone"))
-		{
-			int asd = 123;
-		}
 		if (bodyskinItem && headskinItem)
 		{
 			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
@@ -273,7 +396,7 @@ void Player::RenderCharacter(HDC hdc)
 
 		for (auto offsetPairing = offsets.begin(); offsetPairing != offsets.end();)
 		{
-			std::pair<std::string, POINT> anchorPointEntry{};
+			std::pair<std::string, ObjectPos> anchorPointEntry{};
 
 			for (auto begin = (*offsetPairing)->GetMaps()->begin(); begin != (*offsetPairing)->GetMaps()->end(); ++begin)
 			{
@@ -284,13 +407,13 @@ void Player::RenderCharacter(HDC hdc)
 				}
 			}
 			auto temp = list.find(anchorPointEntry.first);
-			POINT anchorPoint{};
+			ObjectPos anchorPoint{};
 			if (temp != list.end())
 			{
 				anchorPoint = temp->second;
 			}
-			POINT vectorPoint = anchorPointEntry.second;
-			POINT fromAnchorPoint{ anchorPoint.x - vectorPoint.x, anchorPoint.y - vectorPoint.y };
+			ObjectPos vectorPoint = anchorPointEntry.second;
+			ObjectPos fromAnchorPoint{ anchorPoint.x - vectorPoint.x, anchorPoint.y - vectorPoint.y };
 
 			for (auto childAnchorPoint = (*offsetPairing)->GetMaps()->begin(); childAnchorPoint != (*offsetPairing)->GetMaps()->end(); ++childAnchorPoint)
 			{
@@ -309,14 +432,14 @@ void Player::RenderCharacter(HDC hdc)
 
 		auto neckOffsetBody = bodyFrame->GetMaps()->find("neck")->second;
 		auto navelOffsetBody = bodyFrame->GetMaps()->find("navel")->second;
-		std::list<std::pair<SkinParts*, POINT>> positionedFramesList;
+		std::list<std::pair<SkinParts*, ObjectPos>> positionedFramesList;
 		for (auto positionedFrame : partsFrames)
 		{
 			if (positionedFrame->GetMaps()->size() > 0)
 			{
 				auto anchorPointEntry = positionedFrame->GetMaps()->begin();
 
-				POINT anchorPoint{};
+				ObjectPos anchorPoint{};
 				if (list.find(anchorPointEntry->first) != list.end())
 					anchorPoint = list.find(anchorPointEntry->first)->second;
 
@@ -324,33 +447,33 @@ void Player::RenderCharacter(HDC hdc)
 				neckOffsetBody = { anchorPoint.x - vectorFromPoint.x, anchorPoint.y - vectorFromPoint.y };
 			}
 			auto partOrigin = positionedFrame->GetOrigin();
-			auto tempPos = POINT{ neckOffsetBody.x - partOrigin.x, neckOffsetBody.y - partOrigin.y };
+			auto tempPos = ObjectPos{ neckOffsetBody.x - partOrigin.x, neckOffsetBody.y - partOrigin.y };
 			positionedFramesList.push_back({ positionedFrame, tempPos });
 		}
 		auto minXPair = std::min_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
 				return lhs.second.x + lhs.first->GetBitmap()->GetWidth() < rhs.second.x + rhs.first->GetBitmap()->GetWidth();
 			});
 		auto minX = minXPair->second.x + minXPair->first->GetBitmap()->GetWidth();
 
 		auto maxXPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
 				return lhs.second.x + lhs.first->GetBitmap()->GetWidth() < rhs.second.x + rhs.first->GetBitmap()->GetWidth();
 			});
 		auto maxX = maxXPair->second.x + maxXPair->first->GetBitmap()->GetWidth();
 
 		auto minYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
 				return lhs.second.y + lhs.first->GetBitmap()->GetHeight() < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
 			});
 		auto minY = minYPair->second.y + minYPair->first->GetBitmap()->GetHeight();
 
 		auto maxYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
-			[](const std::pair<SkinParts*, POINT>& lhs, const std::pair<SkinParts*, POINT>& rhs) {
+			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
 				return lhs.second.y + lhs.first->GetBitmap()->GetHeight()  < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
 			});
 
@@ -363,12 +486,6 @@ void Player::RenderCharacter(HDC hdc)
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
 			Rectangle(_memDC, -30, -30, _info.cx + 30, _info.cy + 30);
-			/*
-				static_cast<int>(_rect.left + _info.cx + ScrollManager::GetScrollX() + minX),
-				static_cast<int>(_rect.top + _info.cy + ScrollManager::GetScrollY() + minY),
-				static_cast<int>(maxX),
-				static_cast<int>(maxY)
-				*/
 			SelectObject(_memDC, brushPrev);
 			DeleteObject(brush);
 			DeleteObject(brushPrev);
@@ -380,11 +497,6 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)),
 					static_cast<int>(draw.first->GetBitmap()->GetWidth()),
 					static_cast<int>(draw.first->GetBitmap()->GetHeight()));
-				/*draw.first->GetImage()->RenderBitmapImage(_memDC,
-					static_cast<int>(std::floor(_rect.left + _info.cx + ScrollManager::GetScrollX() + draw.second.x - maxX)),
-					static_cast<int>(std::floor(_rect.top + _info.cy + ScrollManager::GetScrollY() + draw.second.y - maxY)),
-					static_cast<int>(draw.first->GetWidth()),
-					static_cast<int>(draw.first->GetHeight()));*/
 			}
 
 			if (GetFacingDirection())
@@ -408,22 +520,21 @@ void Player::RenderCharacter(HDC hdc)
 				42 + plus,
 				64,
 				RGB(255, 0, 255));
-
-			//ÁÂ¿ì¹ÝÀü
-			//StretchBlt(hdc, 0, 0, 1024, 768, _memDC, 1023, 0, -1024, 768, SRCCOPY);
-
-			//BitBlt(hdc, 0, 0, 1024, 768, _memDC, 0, 0, SRCCOPY);
-
 		}
-
 	}
 }
 
 void Player::IsJumping()
 {
-
+	if(_isRope) 
+	{
+		float outY = 0;
+		_isFirstFootHold = true;
+		bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_nextFootHold);
+		return;
+	}
 	float outY = 0;
-	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_nowFootHold);
 
 	const int count = 14;
 	const float speed = 9.f;
@@ -441,7 +552,7 @@ void Player::IsJumping()
 			_jumpCount = 0;
 		}
 	}
-	else if (isFoothold)
+	else if (!_isRope && isFoothold)
 	{
 		if (_info.y <= outY)
 		{
@@ -576,4 +687,14 @@ void Player::SetFacingDirection(uint8_t direction)
 uint8_t Player::GetFacingDirection() const
 {
 	return _facingDirection;
+}
+
+FootHold* Player::GetNowFootHold()
+{
+	return _nowFootHold;
+}
+
+void Player::SetNowFootHold(FootHold* hold)
+{
+	_nowFootHold = hold;
 }

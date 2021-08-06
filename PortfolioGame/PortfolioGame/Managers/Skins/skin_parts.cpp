@@ -3,6 +3,15 @@
 #include "skin_frame.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
+SkinParts::SkinParts() :
+    _delay(0),
+    _image(nullptr),
+    _origin({}),
+    _partner(nullptr),
+    _position(0)
+{
+}
+
 std::string SkinParts::GetName() const
 {
     return _name;
@@ -13,52 +22,52 @@ void SkinParts::SetName(std::string name)
     _name = name;
 }
 
-void SkinParts::SetMap(std::map<std::string, POINT> map)
+void SkinParts::SetMap(std::map<std::string, ObjectPos> map)
 {
     _map = map;
 }
 
-std::map<std::string, POINT> SkinParts::GetMap() const
+std::map<std::string, ObjectPos> SkinParts::GetMap() const
 {
     return _map;
 }
 
-void SkinParts::InsertMap(std::string key, POINT pos)
+void SkinParts::InsertMap(std::string key, ObjectPos pos)
 {
     _map.insert(std::make_pair(key, pos));
 }
 
-POINT SkinParts::FindMap(std::string key)
+ObjectPos SkinParts::FindMap(std::string key)
 {
     auto item = _map.find(key);
     if (_map.end() != item)
     {
         return item->second;
     }
-    return POINT();
+    return ObjectPos();
 }
 
-std::map<std::string, POINT>* SkinParts::GetMaps()
+std::map<std::string, ObjectPos>* SkinParts::GetMaps()
 {
     return &_map;
 }
 
-POINT SkinParts::GetOrigin() const
+ObjectPos SkinParts::GetOrigin() const
 {
     return _origin;
 }
 
-void SkinParts::SetOrigin(POINT pos)
+void SkinParts::SetOrigin(ObjectPos pos)
 {
     _origin = pos;
 }
 
-void SkinParts::SetOriginX(LONG x)
+void SkinParts::SetOriginX(float x)
 {
     _origin.x = x;
 }
 
-void SkinParts::SetOriginY(LONG y)
+void SkinParts::SetOriginY(float y)
 {
     _origin.y = y;
 }

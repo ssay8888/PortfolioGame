@@ -2,15 +2,19 @@
 class FootHold
 {
 public:
+	enum class HoldState { kLine, kRope, kLadder};
 	FootHold();
 	~FootHold();
-	void SetStartPos(const uint32_t x, const uint32_t y);
-	void SetEndPos(const uint32_t x, const uint32_t y);
-	POINT GetStartPos() const;
-	POINT GetEndPos() const;
+	void SetStartPos(const float x, const float y);
+	void SetEndPos(const float x, const float y);
+	ObjectPos GetStartPos() const;
+	ObjectPos GetEndPos() const;
+	HoldState GetState() const;
+	void SetState(HoldState state);
 	void RenderFootHold(HDC hdc);
 private:
-	POINT _start;
-	POINT _end;
+	ObjectPos _start;
+	ObjectPos _end;
+	HoldState _state;
 };
 

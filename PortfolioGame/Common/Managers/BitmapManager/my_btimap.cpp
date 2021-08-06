@@ -20,12 +20,17 @@ HDC MyBitmap::GetMemDC()
 
 void MyBitmap::RenderBitmapImage(HDC hdc, int left, int top, int right, int bottom)
 {
+	RenderBitmapImage(hdc, left, top, right, bottom, _width, _height);
+}
+
+void MyBitmap::RenderBitmapImage(HDC hdc, int left, int top, int right, int bottom, int width, int height)
+{
 	GdiTransparentBlt(hdc,
 		left, top, right, bottom,
 		_memDC,
 		0, 0,
-		_width,
-		_height,
+		width,
+		height,
 		RGB(255, 0, 255));
 }
 

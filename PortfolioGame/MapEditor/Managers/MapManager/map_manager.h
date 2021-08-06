@@ -11,6 +11,7 @@ private:
 	MapManager();
 	~MapManager() = default;
 public:
+	enum class SelectState { kTile, kObject, kEtc };
 	static MapManager* GetInstance()
 	{
 		static MapManager instance;
@@ -22,14 +23,25 @@ public:
 	void Render_Map(HDC hDC);
 
 	void AddListObject();
-	void SelectImage(POINT& pt);
+	void SelectTileImage(POINT& pt);
+	void SelectButtonImage(POINT& pt);
+	void SelectObjectImage(POINT& pt);
+	void SelectEtcImage(POINT& pt);
 	void MouseUpdate(POINT& pt);
 
 	void SaveData();
 	void LoadData();
 
 	void TileLoad(std::wstring name);
-	void MapObjectLoad();
+	void TileRender(HDC hdc);
+	void FootHoldRender(HDC hdc);
+
+	void MapObjectImageLoad();
+	void MapObjectRender(HDC hdc);
+
+	void EtcImageLoad();
+	void EtcRender(HDC hdc);
+	void LadderRopeRender(HDC hdc);
 
 	void ButtonLoad();
 	void ButtonRender(HDC hdc);
@@ -38,16 +50,29 @@ public:
 	Mouse* GetMouse();
 
 private:
-	std::vector<MyBitmap*> _selectImage;
-	uint32_t _selectCount;
-	std::string _selectFileName;
-	std::string _selectPath;
 	std::list<MapObject*> _list[7];
 	std::list<FootHold*> _footholds;
-	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>> > _tileImages;
-	std::vector<MyBitmap*> _objImages;
-	std::vector<MyBitmap*> _buttons;
-	POINT _mapSize;
+	std::list<FootHold*> _ladderRopes;
+
+	SelectState _selectState;
+
+	std::vector<MyBitmap*> _selectTileImage;
+	std::string _selectFileName;
+	std::string _selectPath;
+	uint32_t _selectCount;
+	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _tileImages;
+	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>>::iterator _selectTileBegin;
+
+	std::pair<std::string, MyBitmap*> _selectObjImage;
+	std::map<std::string, MyBitmap*> _objImages;
+
+
+	std::pair<std::string, MyBitmap*> _selectEtcImage;
+	std::map<std::string, MyBitmap*> _etcImage;
+
+	std::vector<std::pair<std::string, MyBitmap*>> _buttons;
+
+	ObjectPos _mapSize;
 	Mouse* _mouse;
 };
 

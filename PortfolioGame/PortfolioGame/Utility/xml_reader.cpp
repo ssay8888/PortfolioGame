@@ -36,14 +36,14 @@ SkinFrame* XmlReader::FindCanvas(xml_node node, int32_t size)
 				{
 					for (auto map : canvasInfo)
 					{
-						POINT pos{ std::stol(map.attribute("x").value()), std::stol(map.attribute("y").value()) };
+						ObjectPos pos{ std::stof(map.attribute("x").value()), std::stof(map.attribute("y").value()) };
 						parts->InsertMap(map.attribute("name").value(), pos);
 					}
 				}
 				else if (!strcmp(canvasInfo.attribute("name").value(), "origin"))
 				{
-					parts->SetOriginX(std::stol(canvasInfo.attribute("x").value()));
-					parts->SetOriginY(std::stol(canvasInfo.attribute("y").value()));
+					parts->SetOriginX(std::stof(canvasInfo.attribute("x").value()));
+					parts->SetOriginY(std::stof(canvasInfo.attribute("y").value()));
 				}
 				else if (!strcmp(canvasInfo.attribute("name").value(), "z"))
 				{
@@ -119,14 +119,14 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(int32_t size)
 									{
 										for (auto map : canvasInfo)
 										{
-											POINT pos{ std::stol(map.attribute("x").value()), std::stol(map.attribute("y").value()) };
+											ObjectPos pos{ std::stof(map.attribute("x").value()), std::stof(map.attribute("y").value()) };
 											parts->InsertMap(map.attribute("name").value(), pos);
 										}
 									}
 									else if (!strcmp(canvasInfo.attribute("name").value(), "origin"))
 									{
-										parts->SetOriginX(std::stol(canvasInfo.attribute("x").value()));
-										parts->SetOriginY(std::stol(canvasInfo.attribute("y").value()));
+										parts->SetOriginX(std::stof(canvasInfo.attribute("x").value()));
+										parts->SetOriginY(std::stof(canvasInfo.attribute("y").value()));
 									}
 									else if (!strcmp(canvasInfo.attribute("name").value(), "z"))
 									{

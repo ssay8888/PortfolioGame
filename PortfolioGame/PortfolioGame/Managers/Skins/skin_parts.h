@@ -4,23 +4,23 @@ class SkinFrame;
 class SkinParts
 {
 public:
-	SkinParts() = default;
+	SkinParts();
 	~SkinParts() = default;
 
 	std::string GetName() const;
 	void SetName(std::string name);
 
-	void SetMap(std::map<std::string, POINT> map);
-	std::map<std::string, POINT> GetMap() const;
+	void SetMap(std::map<std::string, ObjectPos> map);
+	std::map<std::string, ObjectPos> GetMap() const;
 
-	void InsertMap(std::string key, POINT pos);
-	POINT FindMap(std::string key);
-	std::map<std::string, POINT>* GetMaps();
+	void InsertMap(std::string key, ObjectPos pos);
+	ObjectPos FindMap(std::string key);
+	std::map<std::string, ObjectPos>* GetMaps();
 
-	POINT GetOrigin() const;
-	void SetOrigin(POINT pos);
-	void SetOriginX(LONG x);
-	void SetOriginY(LONG y);
+	ObjectPos GetOrigin() const;
+	void SetOrigin(ObjectPos pos);
+	void SetOriginX(float x);
+	void SetOriginY(float y);
 
 	std::string GetZ() const;
 	void SetZ(std::string z);
@@ -41,8 +41,8 @@ public:
 	uint16_t GetPosition() const;
 private:
 	std::string _name;
-	std::map<std::string, POINT> _map;
-	POINT _origin;
+	std::map<std::string, ObjectPos> _map;
+	ObjectPos _origin;
 	std::string _z;
 	uint16_t _delay;
 	std::string _uol;

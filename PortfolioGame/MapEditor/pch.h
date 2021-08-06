@@ -25,4 +25,5 @@ typedef struct {
 extern HWND _hWnd;
 extern HWND _hCombo;
 extern int SelectLayer;
+extern bool _isWindowsActive;
 #endif //PCH_H

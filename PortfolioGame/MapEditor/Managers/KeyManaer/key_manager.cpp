@@ -21,6 +21,9 @@ void KeyManager::ReadyKeyManaer()
 void KeyManager::KeyUpdate()
 	{
 	m_dwKey = 0;
+	if (!_isWindowsActive) {
+		return;
+	}
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		m_dwKey |= KEY_LBUTTON;
 	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)

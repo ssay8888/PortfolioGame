@@ -4,6 +4,7 @@
 class SkinInfo;
 class SkinItem;
 class SkinFrame;
+class FootHold;
 class Player :
     public GameObject
 {
@@ -35,6 +36,9 @@ public:
     void SetFacingDirection(uint8_t direction);
     uint8_t GetFacingDirection() const;
 
+    FootHold* GetNowFootHold();
+    void SetNowFootHold(FootHold* hold);
+
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);
@@ -47,6 +51,7 @@ private:
     bool _frameRevers;
     bool _isProne;
     bool _isJump;
+    bool _isRope;
     uint16_t _jumpCount;
     uint8_t _facingDirection;
     SkinFrame* _frameThis;
@@ -55,6 +60,10 @@ private:
     std::map<std::string, SkinItem*> _headSkinFrames;
     std::vector<SkinInfo*> _itemFrames;
     uint64_t _frameTick;
+
+    FootHold* _nowFootHold;
+    FootHold* _nextFootHold;
+    bool _isFirstFootHold;
 
     float _jumpPower = 15.f;
     float _accel = 0.f;

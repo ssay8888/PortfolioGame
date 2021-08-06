@@ -14,15 +14,21 @@
 MapManager::MapManager() :
 	_mouse(nullptr),
 	_selectCount(0),
-	_mapSize({1024, 768})
+	_mapSize({1024, 768}),
+	_selectState(SelectState::kTile)
 {
 }
 
 void MapManager::Ready_Map()
 {
+	std::wstring tiles[]{ L"woodMarble.img", L"darkGrassySoil.img" };
 
-	TileLoad(L"woodMarble.img");
-	MapObjectLoad();
+	for (auto tile : tiles)
+	{
+		TileLoad(tile);
+	}
+	MapObjectImageLoad();
+	EtcImageLoad();
 	ButtonLoad();
 	_mouse = new Mouse();
 }
@@ -33,7 +39,7 @@ void MapManager::Update_Map()
 	GetCursorPos(&pt);
 	ScreenToClient(_hWnd, &pt);
 	GetMouse()->SetPos(static_cast<float>(pt.x), static_cast<float>(pt.y));
-	if (!_selectImage.empty())
+	if (!_selectTileImage.empty())
 	{
 		MouseUpdate(pt);
 	}
@@ -62,22 +68,118 @@ void MapManager::Update_Map()
 		}
 		else
 		{
-			SelectImage(pt);
+			SelectButtonImage(pt);
+			switch (_selectState)
+			{
+			case MapManager::SelectState::kTile:
+				SelectTileImage(pt);
+				break;
+			case MapManager::SelectState::kObject:
+				SelectObjectImage(pt);
+				break;
+			case MapManager::SelectState::kEtc:
+				SelectEtcImage(pt);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	else if (KeyManager::GetInstance()->KeyDown(KEY_RBUTTON))
 	{
-		auto foot = new FootHold();
-		foot->SetStartPos(pt.x - static_cast<int>(ScrollManager::GetScrollX()), pt.y- static_cast<int>(ScrollManager::GetScrollY()));
-		_footholds.emplace_back(foot);
+		switch (_selectState)
+		{
+		case MapManager::SelectState::kTile:
+		{
+			auto foot = new FootHold();
+			foot->SetStartPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+			_footholds.emplace_back(foot);
+			break;
+		}
+		case MapManager::SelectState::kEtc:
+		{
+			if (_selectEtcImage.second != nullptr)
+			{
+				auto foot = new FootHold();
+				foot->SetStartPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+				if (_selectEtcImage.first.find("ladder") != std::string::npos)
+				{
+					foot->SetState(FootHold::HoldState::kLadder);
+					_ladderRopes.push_back(foot);
+				}
+				else if (_selectEtcImage.first.find("rope") != std::string::npos)
+				{
+					foot->SetState(FootHold::HoldState::kRope);
+					_ladderRopes.push_back(foot);
+				}
+				else
+				{
+					delete foot;
+				}
+			}
+			break;
+		}
+		default:
+			break;
+		}
 	}
 	else if (KeyManager::GetInstance()->KeyPressing(KEY_RBUTTON))
 	{
-		_footholds.back()->SetEndPos(pt.x - static_cast<int>(ScrollManager::GetScrollX()), pt.y - static_cast<int>(ScrollManager::GetScrollY()));
+		switch (_selectState)
+		{
+		case MapManager::SelectState::kTile:
+			_footholds.back()->SetEndPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+			break;
+		case MapManager::SelectState::kEtc:
+			if (_selectEtcImage.second != nullptr)
+			{
+				if (_selectEtcImage.first.find("ladder") != std::string::npos ||
+					_selectEtcImage.first.find("rope") != std::string::npos)
+				{
+					_ladderRopes.back()->SetEndPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+				}
+				else if (_selectEtcImage.first.find("SizeXDown") != std::string::npos)
+				{
+					_mapSize.x -= 10;
+				}
+				else if (_selectEtcImage.first.find("SizeXUp") != std::string::npos)
+				{
+					_mapSize.x += 10;
+				}
+				else if (_selectEtcImage.first.find("SizeYDown") != std::string::npos)
+				{
+					_mapSize.y -= 10;
+				}
+				else if (_selectEtcImage.first.find("SizeYUp") != std::string::npos)
+				{
+					_mapSize.y += 10;
+				}
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	else if (KeyManager::GetInstance()->KeyUp(KEY_RBUTTON))
 	{
-		_footholds.back()->SetEndPos(pt.x - static_cast<int>(ScrollManager::GetScrollX()), pt.y - static_cast<int>(ScrollManager::GetScrollY()));
+		switch (_selectState)
+		{
+		case MapManager::SelectState::kTile:
+			_footholds.back()->SetEndPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+			break;
+		case MapManager::SelectState::kEtc:
+			if (_selectEtcImage.second != nullptr)
+			{
+				if (_selectEtcImage.first.find("ladder") != std::string::npos ||
+					_selectEtcImage.first.find("rope") != std::string::npos)
+				{
+					_ladderRopes.back()->SetEndPos(static_cast<float>(pt.x - ScrollManager::GetScrollX()), static_cast<float>(pt.y - ScrollManager::GetScrollY()));
+				}
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	else if (KeyManager::GetInstance()->KeyUp(KEY_S))
 	{
@@ -96,7 +198,7 @@ void MapManager::Update_Map()
 
 }
 
-void MapManager::Render_Map(HDC hDC)
+void MapManager::Render_Map(HDC hdc)
 {
 	POINT pt{};
 	GetCursorPos(&pt);
@@ -105,16 +207,16 @@ void MapManager::Render_Map(HDC hDC)
 	int countX = 0;
 	int countY = 0;
 
-	Rectangle(hDC, 
+	Rectangle(hdc, 
 		0 + static_cast<int>(ScrollManager::GetScrollX()), 
 		0 + static_cast<int>(ScrollManager::GetScrollY()), 
-		_mapSize.x + static_cast<int>(ScrollManager::GetScrollX()), 
-		_mapSize.y + static_cast<int>(ScrollManager::GetScrollY()));
+		static_cast<int>(_mapSize.x + ScrollManager::GetScrollX()),
+		static_cast<int>(_mapSize.y + ScrollManager::GetScrollY()));
 	for (auto& maps : _list)
 	{
 		for (auto& map : maps)
 		{
-			map->GetImage()->RenderBitmapImage(hDC,
+			map->GetImage()->RenderBitmapImage(hdc,
 				static_cast<int>(map->GetInfo().x + static_cast<int>(ScrollManager::GetScrollX() - (map->GetImage()->GetWidth() / 2))),
 				static_cast<int>(map->GetInfo().y + static_cast<int>(ScrollManager::GetScrollY() - (map->GetImage()->GetHeight() / 2))),
 				static_cast<int>(map->GetImage()->GetWidth()),
@@ -122,116 +224,262 @@ void MapManager::Render_Map(HDC hDC)
 		}
 	}
 
+	FootHoldRender(hdc);
+	LadderRopeRender(hdc);
 
 
+	Rectangle(hdc, 1024, 0, 1600, 900);
 
-	for (auto foot : _footholds)
+	switch (_selectState)
 	{
-		foot->RenderFootHold(hDC);
-	}
-	Rectangle(hDC, 1024, 0, 1600, 900);
-
-	if (!_selectImage.empty())
-	{
-		_selectImage[_selectCount]->RenderBitmapImage(hDC,
-			static_cast<int>(GetMouse()->GetInfo().x - (_selectImage[_selectCount]->GetWidth() / 2)),
-			static_cast<int>(GetMouse()->GetInfo().y - (_selectImage[_selectCount]->GetHeight() / 2)),
-			static_cast<int>(_selectImage[_selectCount]->GetWidth()),
-			static_cast<int>(_selectImage[_selectCount]->GetHeight()));
-	}
-	ButtonRender(hDC);
-
-	for (auto tiles : _tileImages)
-	{
-		for (auto tile : tiles.second)
+	case MapManager::SelectState::kTile:
+		if (!_selectTileImage.empty())
 		{
-			tile.second[0]->RenderBitmapImage(hDC,
-				static_cast <int>(90 + (90 * countX) + 1024),
-				static_cast <int>(70 + (70 * countY)),
-				static_cast<int>(tile.second[0]->GetWidth()),
-				static_cast<int>(tile.second[0]->GetHeight()));
-			if (countX++ > 0 && countX % 4 == 0)
-			{
-				countX = 0;
-				countY += 1;
-			}
+			_selectTileImage[_selectCount]->RenderBitmapImage(hdc,
+				static_cast<int>(GetMouse()->GetInfo().x - (_selectTileImage[_selectCount]->GetWidth() / 2)),
+				static_cast<int>(GetMouse()->GetInfo().y - (_selectTileImage[_selectCount]->GetHeight() / 2)),
+				static_cast<int>(_selectTileImage[_selectCount]->GetWidth()),
+				static_cast<int>(_selectTileImage[_selectCount]->GetHeight()));
 		}
+		break;
+	case MapManager::SelectState::kObject:
+		if (_selectObjImage.second != nullptr)
+		{
+			_selectObjImage.second->RenderBitmapImage(hdc,
+				static_cast<int>(GetMouse()->GetInfo().x - (_selectObjImage.second->GetWidth() / 2)),
+				static_cast<int>(GetMouse()->GetInfo().y - (_selectObjImage.second->GetHeight() / 2)),
+				static_cast<int>(_selectObjImage.second->GetWidth()),
+				static_cast<int>(_selectObjImage.second->GetHeight()));
+		}
+		break;
+	case MapManager::SelectState::kEtc:
+		if (_selectEtcImage.second != nullptr)
+		{
+			_selectEtcImage.second->RenderBitmapImage(hdc,
+				static_cast<int>(GetMouse()->GetInfo().x - (_selectEtcImage.second->GetWidth() / 2)),
+				static_cast<int>(GetMouse()->GetInfo().y - (_selectEtcImage.second->GetHeight() / 2)) - 150,
+				static_cast<int>(_selectEtcImage.second->GetWidth()),
+				static_cast<int>(_selectEtcImage.second->GetHeight()));
+		}
+		break;
+	default:
+		break;
+	}
+	ButtonRender(hdc);
+
+	switch (_selectState)
+	{
+	case MapManager::SelectState::kTile:
+		TileRender(hdc);
+		break;
+	case MapManager::SelectState::kObject:
+		MapObjectRender(hdc);
+		break;
+	case MapManager::SelectState::kEtc:
+		EtcRender(hdc);
+		break;
+	default:
+		break;
 	}
 	std::wstring str;
 	for (int i = 0; i < 7; i++)
 	{
 		str.append(std::to_wstring(_list[i].size())).append(L"개");
 	}
-	TextOut(hDC, 0, 0, str.c_str(), static_cast<int>(str.size()));
+	TextOut(hdc, 0, 0, str.c_str(), static_cast<int>(str.size()));
 	str.clear();
 	str.append(L"X : ").append(std::to_wstring(pt.x - ScrollManager::GetScrollX())).
 		append(L"Y : ").append(std::to_wstring(pt.y - ScrollManager::GetScrollY()));
-	TextOut(hDC, 0, 20, str.c_str(), static_cast<int>(str.size()));
+	TextOut(hdc, 0, 20, str.c_str(), static_cast<int>(str.size()));
+	str.clear();
+	str.append(L"현재 맵 사이즈 X : ").append(std::to_wstring(_mapSize.x)).append(L"  Y : ").append(std::to_wstring(_mapSize.y));
+	TextOut(hdc, 0, 40, str.c_str(), static_cast<int>(str.size()));
+
 }
 
 void MapManager::AddListObject()
 {
-	if (!_selectImage.empty())
+	switch (_selectState)
 	{
-		MapObject* obj = new MapObject();
-		obj->SetLayer(SelectLayer);
-		obj->SetImage(_selectImage[_selectCount]);
-		obj->SetImageNumber(_selectCount);
-		obj->SetFileName(_selectFileName);
-		obj->SetPath(_selectPath);
-		obj->SetPos(
-			static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
-			static_cast<float>(GetMouse()->GetInfo().y) - static_cast<int>(ScrollManager::GetScrollY()));
-		obj->SetCX(_selectImage[_selectCount]->GetWidth());
-		obj->SetCY(_selectImage[_selectCount]->GetHeight());
-
-		_list[obj->GetLayer()].emplace_back(obj);
-		_selectCount++;
-		if (_selectCount >= _selectImage.size())
+	case MapManager::SelectState::kTile:
+		if (!_selectTileImage.empty())
 		{
-			_selectCount = 0;
+			MapObject* obj = new MapObject();
+			obj->SetLayer(SelectLayer);
+			obj->SetImage(_selectTileImage[_selectCount]);
+			obj->SetImageNumber(_selectCount);
+			obj->SetFileName(_selectFileName);
+			obj->SetPath(_selectPath);
+			obj->SetPos(
+				static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
+				static_cast<float>(GetMouse()->GetInfo().y) - static_cast<int>(ScrollManager::GetScrollY()));
+			obj->SetCX(_selectTileImage[_selectCount]->GetWidth());
+			obj->SetCY(_selectTileImage[_selectCount]->GetHeight());
+
+			_list[obj->GetLayer()].emplace_back(obj);
+			_selectCount++;
+			if (_selectCount >= _selectTileImage.size())
+			{
+				_selectCount = 0;
+			}
 		}
+		break;
+	case MapManager::SelectState::kObject:
+		if (_selectObjImage.second != nullptr)
+		{
+			MapObject* obj = new MapObject();
+
+			obj->SetLayer(SelectLayer);
+			obj->SetImage(_selectObjImage.second);
+			obj->SetImageNumber(-1);
+			obj->SetFileName(FileManager::GetInstance()->GetFileName(_selectObjImage.first));
+			obj->SetPath(_selectObjImage.first);
+			obj->SetPos(
+				static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
+				static_cast<float>(GetMouse()->GetInfo().y) - static_cast<int>(ScrollManager::GetScrollY()));
+			obj->SetCX(_selectObjImage.second->GetWidth());
+			obj->SetCY(_selectObjImage.second->GetHeight());
+
+			_list[obj->GetLayer()].emplace_back(obj);
+		}
+		break;
+	case MapManager::SelectState::kEtc:
+		if (_selectEtcImage.second != nullptr)
+		{
+			if (_selectEtcImage.first.find("portal") != std::string::npos)
+			{
+
+			}
+			else if (_selectEtcImage.first.find("rope") != std::string::npos)
+			{
+				std::cout << "로프" << std::endl;
+			}
+			else if (_selectEtcImage.first.find("ladder") != std::string::npos)
+			{
+
+			}
+		}
+		break;
+	default:
+		break;
 	}
 }
 
-void MapManager::SelectImage(POINT& pt)
+void MapManager::SelectTileImage(POINT& pt)
 {
 	int countX = 0;
 	int countY = 0;
 	for (auto tiles : _tileImages)
 	{
-		for (auto tile : tiles.second)
+		if (!strcmp(tiles.first.c_str(), _selectTileBegin->first.c_str()))
 		{
-			RECT rc{};
-			int x = 90 + (90 * countX) + 1024;
-			int y = 70 + (70 * countY);
-			RECT tile_rc{ x, y, x + static_cast<LONG>(tile.second[0]->GetWidth()), y + static_cast<LONG>(tile.second[0]->GetHeight()) };
-			RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
-			if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+			for (auto tile : tiles.second)
 			{
-				_selectImage = tile.second;
-				_selectFileName = tile.first;
-				_selectPath = tiles.first;
-				_selectCount = 0;
-			}
-			if (countX++ > 0 && countX % 4 == 0)
-			{
-				countX = 0;
-				countY += 1;
+				RECT rc{};
+				int x = 90 + (90 * countX) + 1024;
+				int y = 70 + (70 * countY);
+				RECT tile_rc{ x, y, x + static_cast<LONG>(tile.second[0]->GetWidth()), y + static_cast<LONG>(tile.second[0]->GetHeight()) };
+				RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+				if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+				{
+					_selectTileImage = tile.second;
+					_selectFileName = tile.first;
+					_selectPath = tiles.first;
+					_selectCount = 0;
+				}
+				if (countX++ > 0 && countX % 4 == 0)
+				{
+					countX = 0;
+					countY += 1;
+				}
 			}
 		}
 	}
-	countX = 0;
+}
+
+void MapManager::SelectButtonImage(POINT& pt)
+{
+	int countX = 0;
+	int countY = 0;
 	for (auto tile : _buttons)
 	{
 		RECT rc{};
 		int x = 90 + (90 * countX) + 1024;
 		int y = 0;
-		RECT tile_rc{ x, y, x + static_cast<LONG>(tile->GetWidth()), y + static_cast<LONG>(tile->GetHeight()) };
+		RECT tile_rc{
+			x,
+			y,
+			x + static_cast<LONG>(tile.second->GetWidth()),
+			y + static_cast<LONG>(tile.second->GetHeight()) };
 		RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
 		if (IntersectRect(&rc, &mouse_rc, &tile_rc))
 		{
-			std::cout << "버틀클릭!" << std::endl;
+			if (!strcmp(tile.first.c_str(), "TileButton"))
+			{
+				_selectState = SelectState::kTile;
+				if ((++_selectTileBegin) == _tileImages.end())
+				{
+					_selectTileBegin = _tileImages.begin();
+				}
+			}
+			else if (!strcmp(tile.first.c_str(), "ObjButton"))
+			{
+				_selectState = SelectState::kObject;
+			}
+			else if (!strcmp(tile.first.c_str(), "EtcButton"))
+			{
+				_selectState = SelectState::kEtc;
+			}
+		}
+		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::SelectObjectImage(POINT& pt)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto tile : _objImages)
+	{
+		RECT rc{};
+		RECT tile_rc{
+			static_cast <int>(50 + (50 * countX) + 1024),
+			static_cast <int>(50 + (50 * countY)),
+			static_cast <int>(50 + (50 * countX) + 1024) +50,
+			static_cast <int>(50 + (50 * countY)) +50 };
+		RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+		if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+		{
+			_selectObjImage = tile;
+		}
+		if (countX++ > 0 && countX % 8 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::SelectEtcImage(POINT& pt)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto tile : _etcImage)
+	{
+		RECT rc{};
+		RECT tile_rc{
+			static_cast <int>(100 + (100 * countX) + 1024),
+			static_cast <int>(80 + (80 * countY)),
+			static_cast <int>(100 + (100 * countX) + 1024) + tile.second->GetWidth(),
+			static_cast <int>(80 + (80 * countY)) + 80 + tile.second->GetHeight() };
+		RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+		if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+		{
+			_selectEtcImage = tile;
 		}
 		if (countX++ > 0 && countX % 4 == 0)
 		{
@@ -243,18 +491,56 @@ void MapManager::SelectImage(POINT& pt)
 
 void MapManager::MouseUpdate(POINT& pt)
 {
-	if (_selectImage.empty()) {
-		return;
-	}
-	GetMouse()->SetCX(_selectImage[_selectCount]->GetWidth());
-	GetMouse()->SetCY(_selectImage[_selectCount]->GetHeight());
-	GetMouse()->UpdateRect();
-	int countX = 0;
-	int countY = 0;
-	for (auto tiles : _tileImages)
+	switch (_selectState)
 	{
-		for (auto tile : tiles.second)
+	case MapManager::SelectState::kTile:
+	{
+		if (_selectTileImage.empty()) {
+			return;
+		}
+		GetMouse()->SetCX(_selectTileImage[_selectCount]->GetWidth());
+		GetMouse()->SetCY(_selectTileImage[_selectCount]->GetHeight());
+		GetMouse()->UpdateRect();
+		int countX = 0;
+		int countY = 0;
+		RECT rc{};
+		int x = 90 + (90 * countX) + 1024;
+		int y = 70 + (70 * countY);
+		GetMouse()->SetInfo({
+			GetMouse()->GetInfo().x - ScrollManager::GetScrollX(),
+			GetMouse()->GetInfo().y - ScrollManager::GetScrollY(),
+			GetMouse()->GetInfo().cx,
+			GetMouse()->GetInfo().cy });
+		for (auto objs : _list)
 		{
+			for (auto obj : objs)
+			{
+				obj->UpdateRect();
+				CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
+			}
+		}
+		GetMouse()->SetInfo({
+			GetMouse()->GetInfo().x + ScrollManager::GetScrollX(),
+			GetMouse()->GetInfo().y + ScrollManager::GetScrollY(),
+			GetMouse()->GetInfo().cx,
+			GetMouse()->GetInfo().cy });
+
+		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+	break;
+	case MapManager::SelectState::kObject:
+	{
+		if (_selectObjImage.second!=nullptr)
+		{
+			GetMouse()->SetCX(_selectObjImage.second->GetWidth());
+			GetMouse()->SetCY(_selectObjImage.second->GetHeight());
+			GetMouse()->UpdateRect();
+			int countX = 0;
+			int countY = 0;
 			RECT rc{};
 			int x = 90 + (90 * countX) + 1024;
 			int y = 70 + (70 * countY);
@@ -283,6 +569,12 @@ void MapManager::MouseUpdate(POINT& pt)
 				countY += 1;
 			}
 		}
+		break;
+	}
+	case MapManager::SelectState::kEtc:
+		break;
+	default:
+		break;
 	}
 }
 
@@ -341,6 +633,21 @@ void MapManager::SaveData()
 		auto endPos = foot->GetEndPos();
 		WriteFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
 	}
+
+
+	size_t ropeSize = _ladderRopes.size();
+	WriteFile(hFile, &ropeSize, sizeof(ropeSize), &dwByte, nullptr);
+	for (auto rope : _ladderRopes)
+	{
+		auto state = rope->GetState();
+		WriteFile(hFile, &state, sizeof(state), &dwByte, nullptr);
+		auto startPos = rope->GetStartPos();
+		WriteFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
+		auto endPos = rope->GetEndPos();
+		WriteFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
+	}
+
+
 
 	CloseHandle(hFile);
 	MessageBox(nullptr, L"저장완료", L"확인", MB_OK);
@@ -404,15 +711,24 @@ void MapManager::LoadData()
 			uint32_t number;
 			check = ReadFile(hFile, &number, sizeof(number), &dwByte, nullptr);
 			obj->SetImageNumber(number);
-			
-			std::string fullPath;
-			fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
-				append(std::to_string(obj->GetImageNumber())).append(".bmp");
-			auto image = _tileImages.find(obj->GetPath());
-			auto file = image->second.find(obj->GetFileName());
-			auto tile = file->second[obj->GetImageNumber()];
-			obj->SetImage(tile);
-			_list[layer].push_back(obj);
+
+			if (obj->GetImageNumber() == -1)
+			{
+				auto image = _objImages.find(obj->GetPath());
+				obj->SetImage(image->second);
+				_list[layer].push_back(obj);
+			}
+			else
+			{
+				std::string fullPath;
+				fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
+					append(std::to_string(obj->GetImageNumber())).append(".bmp");
+				auto image = _tileImages.find(obj->GetPath());
+				auto file = image->second.find(obj->GetFileName());
+				auto tile = file->second[obj->GetImageNumber()];
+				obj->SetImage(tile);
+				_list[layer].push_back(obj);
+			}
 		}
 	}
 
@@ -421,13 +737,30 @@ void MapManager::LoadData()
 	for (int i = 0; i < footSize; i++)
 	{
 		FootHold* footHold = new FootHold();
-		POINT startPos;
-		POINT endPos;
+		ObjectPos startPos;
+		ObjectPos endPos;
 		check = ReadFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
 		check = ReadFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
 		footHold->SetStartPos(startPos.x, startPos.y);
 		footHold->SetEndPos(endPos.x, endPos.y);
 		_footholds.push_back(footHold);
+	}
+
+	size_t ropeSize;
+	check = ReadFile(hFile, &ropeSize, sizeof(ropeSize), &dwByte, nullptr);
+	for (int i = 0; i < ropeSize; i++)
+	{
+		FootHold* footHold = new FootHold();
+		ObjectPos startPos;
+		ObjectPos endPos;
+		auto state = footHold->GetState();
+		check = ReadFile(hFile, &state, sizeof(state), &dwByte, nullptr);
+		check = ReadFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
+		check = ReadFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
+		footHold->SetStartPos(startPos.x, startPos.y);
+		footHold->SetEndPos(endPos.x, endPos.y);
+		footHold->SetState(state);
+		_ladderRopes.push_back(footHold);
 	}
 
 	CloseHandle(hFile);
@@ -458,10 +791,39 @@ void MapManager::TileLoad(std::wstring name)
 			}
 		}
 	}
+
 	_tileImages.insert({ StringTools::WStringToString(name.c_str()), list });
+	_selectTileBegin = _tileImages.begin();
 }
 
-void MapManager::MapObjectLoad()
+void MapManager::TileRender(HDC hdc)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto tile : _selectTileBegin->second)
+	{
+		tile.second[0]->RenderBitmapImage(hdc,
+			static_cast <int>(90 + (90 * countX) + 1024),
+			static_cast <int>(70 + (70 * countY)),
+			static_cast<int>(tile.second[0]->GetWidth()),
+			static_cast<int>(tile.second[0]->GetHeight()));
+		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::FootHoldRender(HDC hdc)
+{
+	for (auto foot : _footholds)
+	{
+		foot->RenderFootHold(hdc);
+	}
+}
+
+void MapManager::MapObjectImageLoad()
 {
 	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Obj\\");
 
@@ -472,8 +834,73 @@ void MapManager::MapObjectLoad()
 		{
 			MyBitmap* image = new MyBitmap;
 			image->Insert_Bitmap(_hWnd, wpath.c_str());
-			_objImages.push_back(image);
+			_objImages.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
 		}
+	}
+}
+
+void MapManager::MapObjectRender(HDC hdc)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto image : _objImages)
+	{
+		image.second->RenderBitmapImage(hdc,
+			static_cast <int>(50 + (50 * countX) + 1024),
+			static_cast <int>(50 + (50 * countY)),
+			50,
+			50,
+			50, 50);
+		if (countX++ > 0 && countX % 8 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::EtcImageLoad()
+{
+	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Etc\\");
+
+	for (auto wpath : files)
+	{
+		auto path = StringTools::WStringToString(wpath.c_str());
+		if (!_access(path.c_str(), 0))
+		{
+			MyBitmap* image = new MyBitmap;
+			image->Insert_Bitmap(_hWnd, wpath.c_str());
+			_etcImage.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
+		}
+	}
+}
+
+void MapManager::EtcRender(HDC hdc)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto image : _etcImage)
+	{
+		image.second->RenderBitmapImage(hdc,
+			static_cast <int>(100 + (100 * countX) + 1024),
+			static_cast <int>(80 + (80 * countY)),
+			image.second->GetWidth(),
+			image.second->GetHeight(),
+			image.second->GetWidth(), 
+			image.second->GetHeight());
+		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::LadderRopeRender(HDC hdc)
+{
+	for (auto& data : _ladderRopes)
+	{
+		data->RenderFootHold(hdc);
 	}
 }
 
@@ -481,13 +908,13 @@ void MapManager::ButtonLoad()
 {
 	MyBitmap* image = new MyBitmap;
 	image->Insert_Bitmap(_hWnd, L"Client\\TileButton.bmp");
-	_buttons.push_back(image);
+	_buttons.push_back(std::make_pair("TileButton", image));
 	image = new MyBitmap;
 	image->Insert_Bitmap(_hWnd, L"Client\\ObjButton.bmp");
-	_buttons.push_back(image);
+	_buttons.push_back(std::make_pair("ObjButton", image));
 	image = new MyBitmap;
 	image->Insert_Bitmap(_hWnd, L"Client\\EtcButton.bmp");
-	_buttons.push_back(image);
+	_buttons.push_back(std::make_pair("EtcButton", image));
 }
 
 void MapManager::ButtonRender(HDC hdc)
@@ -497,7 +924,7 @@ void MapManager::ButtonRender(HDC hdc)
 	{
 		int x = 90 + (90 * countX) + 1024;
 		int y = 0;
-		button->RenderBitmapImage(hdc, x, y, button->GetWidth(), button->GetHeight());
+		button.second->RenderBitmapImage(hdc, x, y, button.second->GetWidth(), button.second->GetHeight());
 		countX++;
 	}
 }

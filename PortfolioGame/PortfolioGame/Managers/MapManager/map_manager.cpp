@@ -11,30 +11,12 @@
 
 void MapManager::ReadyMapManager()
 {
-
-	std::string tiles[]{ "bsc", "edD", "edU", "enH0", "enH1", "enV0", "enV1", "slLD", "slLU", "slRD", "slRU" };
-
-	std::map<std::string, std::vector<MyBitmap*>> list;
-	for (auto& tileName : tiles)
+	std::string tileFolder[] = {"woodMarble.img", "darkGrassySoil.img"};
+	for (auto& folder : tileFolder)
 	{
-		for (int i = 0; i < 15; i++)
-		{
-			char path[100];
-			snprintf(path, 100, "Client\\Map\\Tile\\woodMarble.img\\%s.%d.bmp", tileName.c_str(), i);
-
-			if (!_access(path, 0))
-			{
-				MyBitmap* image = new MyBitmap;
-				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
-				list[tileName].push_back(image);
-			}
-			else
-			{
-				break;
-			}
-		}
+		TileImageLoad(folder);
 	}
-	_listBitmap.insert({ "woodMarble.img", list });
+	MapObjectImageLoad();
 
 	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
@@ -115,15 +97,24 @@ void MapManager::LoadMapData()
 			check = ReadFile(hFile, &number, sizeof(number), &dwByte, nullptr);
 			obj->SetImageNumber(number);
 
+			if (obj->GetImageNumber() == -1)
+			{
+				auto image = _listObjBitmap.find(obj->GetPath());
+				obj->SetImage(image->second);
+				_listGameObject[layer].push_back(obj);
+			}
+			else
+			{
+				std::string fullPath;
+				fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
+					append(std::to_string(obj->GetImageNumber())).append(".bmp");
+				auto image = _listBitmap.find(obj->GetPath());
+				auto file = image->second.find(obj->GetFileName());
+				auto tile = file->second[obj->GetImageNumber()];
+				obj->SetImage(tile);
+				_listGameObject[layer].push_back(obj);
+			}
 
-			std::string fullPath;
-			fullPath.append(obj->GetPath()).append("\\").append(obj->GetFileName()).append(".").
-				append(std::to_string(obj->GetImageNumber())).append(".bmp");
-			auto image = _listBitmap.find(obj->GetPath());
-			auto file = image->second.find(obj->GetFileName());
-			auto tile = file->second[obj->GetImageNumber()];
-			obj->SetImage(tile);
-			_listGameObject[layer].push_back(obj);
 
 			//std::string fullPath;
 			//fullPath.append(obj->GetPath()).append(obj->GetPath());
@@ -145,13 +136,30 @@ void MapManager::LoadMapData()
 	for (int i = 0; i < footSize; i++)
 	{
 		FootHold* footHold = new FootHold();
-		POINT startPos;
-		POINT endPos;
+		ObjectPos startPos;
+		ObjectPos endPos;
 		check = ReadFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
 		check = ReadFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
 		footHold->SetStartPos(startPos.x, startPos.y);
 		footHold->SetEndPos(endPos.x, endPos.y);
 		_listFootHold.push_back(footHold);
+	}
+
+	size_t ropeSize;
+	check = ReadFile(hFile, &ropeSize, sizeof(ropeSize), &dwByte, nullptr);
+	for (int i = 0; i < ropeSize; i++)
+	{
+		FootHold* footHold = new FootHold();
+		ObjectPos startPos;
+		ObjectPos endPos;
+		auto state = footHold->GetState();
+		check = ReadFile(hFile, &state, sizeof(state), &dwByte, nullptr);
+		check = ReadFile(hFile, &startPos, sizeof(startPos), &dwByte, nullptr);
+		check = ReadFile(hFile, &endPos, sizeof(endPos), &dwByte, nullptr);
+		footHold->SetStartPos(startPos.x, startPos.y);
+		footHold->SetEndPos(endPos.x, endPos.y);
+		footHold->SetState(state);
+		_listRopeLadder.push_back(footHold);
 	}
 
 	CloseHandle(hFile);
@@ -205,8 +213,8 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 	Rectangle(hdc,
 		0 + static_cast<int>(ScrollManager::GetScrollX()),
 		0 + static_cast<int>(ScrollManager::GetScrollY()),
-		_mapSize.x + static_cast<int>(ScrollManager::GetScrollX()),
-		_mapSize.y + static_cast<int>(ScrollManager::GetScrollY()));
+		static_cast<int>(_mapSize.x + ScrollManager::GetScrollX()),
+		static_cast<int>(_mapSize.y + ScrollManager::GetScrollY()));
 
 
 	for (int i = 0; i < MaxLayer; i++)
@@ -240,6 +248,12 @@ void MapManager::RenderFootHoldManager(HDC hDC)
 	{
 		(*iter)->RenderFootHold(hDC);
 	}
+	for (auto iter = _listRopeLadder.begin(); iter != _listRopeLadder.end(); ++iter)
+	{
+		(*iter)->RenderFootHold(hDC);
+	}
+
+	
 }
 
 void MapManager::LateUpdateGameObjectManager()
@@ -257,7 +271,7 @@ void MapManager::ReleaseGameObjectManager()
 {
 }
 
-bool MapManager::FootholdYCollision(GameObject* object, float* outY)
+bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** outHold)
 {
 	if (_listFootHold.empty())
 		return false;
@@ -281,6 +295,17 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 				if (characterY < footHold->GetEndPos().y ||
 					characterY < footHold->GetStartPos().y)
 				{
+					if (pTarget != nullptr)
+					{
+						float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
+						float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
+
+						if (fDistY < 0 || fDistY < fDistY2)
+						{
+							continue;
+						}
+
+					}
 					pTarget = footHold;
 				}
 			}
@@ -306,6 +331,17 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 					if (characterY < footHold->GetEndPos().y ||
 						characterY < footHold->GetStartPos().y)
 					{
+						if (pTarget != nullptr)
+						{
+							float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
+							float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
+
+							if (fDistY < 0 || fDistY < fDistY2)
+							{
+								continue;
+							}
+
+						}
 						pTarget = footHold;
 					}
 				}
@@ -314,7 +350,10 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 		}
 	}
 	if (nullptr == pTarget)
+	{
+		*outHold = nullptr;
 		return false;
+	}
 
 
 	// PlayerY = ((y2 - y1) / (x2 - x1)) * (PlayerX - x1) + y1
@@ -325,6 +364,7 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 	float y2 = static_cast<float>(pTarget->GetEndPos().y);
 	*outY = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - x1) + y1;
 	*outY -= (object->GetInfo().cy >> 1);
+	*outHold = pTarget;
 	return true;
 	//*outY -= (object->GetInfo().cy >> 1);
 	//float myY = object->GetInfo().y + (object->GetInfo().cy >> 1);
@@ -367,7 +407,7 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY)
 
 bool MapManager::FootholdAndRectCollision(GameObject* object)
 {
-
+	//90도정도의 라인이라면 길을막는다.
 	if (_listFootHold.empty())
 		return false;
 
@@ -386,31 +426,104 @@ bool MapManager::FootholdAndRectCollision(GameObject* object)
 		if (degree >= 85 && degree <= 95 ||
 			degree >= 175 && degree <= 195)
 		{
-			if (footHold->GetEndPos().x <= object->GetRect().right &&
-				footHold->GetStartPos().x >= object->GetRect().left &&
-				footHold->GetEndPos().y <= object->GetRect().bottom &&
-				footHold->GetStartPos().y >= object->GetRect().top)
-			{ // 선과 사각형의 충돌.
-
-				return true;
-			}
-			else if (footHold->GetStartPos().x <= object->GetRect().right &&
-				footHold->GetEndPos().x >= object->GetRect().left &&
-				footHold->GetStartPos().y <= object->GetRect().bottom &&
-				footHold->GetEndPos().y >= object->GetRect().top)
-			{
-				return true;
-			}
+			return CollisionManager::LineAndRectCollsition(footHold, object);
 		}
 
 	}
-
-
-
 	return false;
 }
 
-POINT MapManager::GetMapSize() const
+bool MapManager::LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold)
+{
+	if (_listFootHold.empty())
+		return false;
+
+	FootHold* pTarget = nullptr;
+
+
+	for (FootHold* footHold : _listRopeLadder)
+	{
+		float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
+		float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
+
+		if (footHold->GetEndPos().x <= object->GetInfo().x +10 &&
+			footHold->GetStartPos().x >= object->GetInfo().x - 10 &&
+			footHold->GetEndPos().y <= object->GetRect().bottom &&
+			footHold->GetStartPos().y >= object->GetRect().top)
+		{ // 선과 사각형의 충돌.
+
+			*outX = footHold->GetStartPos().x;
+			*outHold = footHold;
+			return true;
+		}
+		else if (footHold->GetStartPos().x <= object->GetInfo().x + 10 &&
+			footHold->GetEndPos().x >= object->GetInfo().x  -10 &&
+			footHold->GetStartPos().y <= object->GetRect().bottom &&
+			footHold->GetEndPos().y >= object->GetRect().top)
+		{
+			*outX = footHold->GetStartPos().x;
+			*outHold = footHold;
+			return true;
+		}
+
+	}
+	return false;
+}
+
+void MapManager::TileImageLoad(std::string folderName)
+{
+	std::string tiles[]{ "bsc", "edD", "edU", "enH0", "enH1", "enV0", "enV1", "slLD", "slLU", "slRD", "slRU" };
+
+	std::map<std::string, std::vector<MyBitmap*>> list;
+	for (auto& tileName : tiles)
+	{
+		for (int i = 0; i < 15; i++)
+		{
+			char path[100];
+			snprintf(path, 100, "Client\\Map\\Tile\\%s\\%s.%d.bmp", folderName.c_str(), tileName.c_str(), i);
+
+			if (!_access(path, 0))
+			{
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
+				list[tileName].push_back(image);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	_listBitmap.insert({ folderName, list });
+}
+
+std::list<FootHold*> MapManager::GetMapFootHold()
+{
+	return _listFootHold;
+}
+
+std::list<FootHold*>* MapManager::GetListRopeLadder()
+{
+	return &_listRopeLadder;
+}
+
+inline void MapManager::MapObjectImageLoad()
+{
+	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Obj\\");
+
+	for (auto wpath : files)
+	{
+		auto path = StringTools::WStringToString(wpath.c_str());
+		if (!_access(path.c_str(), 0))
+		{
+			MyBitmap* image = new MyBitmap;
+			image->Insert_Bitmap(_hWnd, wpath.c_str());
+			_listObjBitmap.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
+		}
+	}
+}
+
+ObjectPos MapManager::GetMapSize() const
 {
 	return _mapSize;
 }
