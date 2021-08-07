@@ -1,6 +1,8 @@
 #include "../../pch.h"
 #include "ui_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../MapManager/map_manager.h"
+#include "../../Components/MapObject/player.h"
 #include "ui_button.h"
 
 std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
@@ -39,21 +41,10 @@ void UiManager::RednerUiManager(HDC hdc)
 			(*button->second)->RenderButtonUi(hdc);
 		}
 	}
-	(*_hpBar)->RenderBitmapImage(hdc, 221, 582, 
-		(*_hpBar)->GetWidth() - 50, 
-		(*_hpBar)->GetHeight(), 
-		(*_hpBar)->GetWidth() - 50, 
-		(*_hpBar)->GetHeight());
-	(*_mpBar)->RenderBitmapImage(hdc, 329, 582,
-		(*_mpBar)->GetWidth(),
-		(*_mpBar)->GetHeight(),
-		(*_mpBar)->GetWidth(),
-		(*_mpBar)->GetHeight());
-	(*_expBar)->RenderBitmapImage(hdc, 442, 582, 
-		(*_expBar)->GetWidth(), 
-		(*_expBar)->GetHeight(), 
-		(*_expBar)->GetWidth(), 
-		(*_expBar)->GetHeight());
+
+	StatusGageBarRender(hdc);
+	StatusLevelRender(hdc);
+
 }
 
 void UiManager::ButtonUiLoad()
@@ -140,4 +131,94 @@ void UiManager::PlayerInfoUiLoad()
 	_hpBar = hpBar;
 	_mpBar = mpBar;
 	_expBar = expBar;
+}
+
+void UiManager::StatusGageBarRender(HDC hdc)
+{
+	Player* player = MapManager::GetInstance()->GetPlayer();
+	std::wstring text;
+	text.append(std::to_wstring(player->GetPlayerInfo()->hp))
+		.append(L"/").append(std::to_wstring(player->GetPlayerInfo()->max_hp));
+
+	StringTools::CreateTextOut(hdc, 238, 569, L"[", 11, RGB(153, 204, 51));
+	StringTools::CreateTextOut(hdc, 238 + 5, 569, text.c_str());
+	StringTools::CreateTextOut(hdc, 238 + 5 + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
+
+	float hpPercent =
+		static_cast<float>(player->GetPlayerInfo()->hp) / static_cast<float>(player->GetPlayerInfo()->max_hp) * 100.f;
+	int hpWidth = static_cast<int>((*_hpBar)->GetWidth() * hpPercent / 100);
+	(*_hpBar)->RenderBitmapImage(hdc, 221, 582,
+		hpWidth,
+		(*_hpBar)->GetHeight(),
+		hpWidth,
+		(*_hpBar)->GetHeight());
+
+	text.clear();
+	text.append(std::to_wstring(player->GetPlayerInfo()->mp))
+		.append(L"/").append(std::to_wstring(player->GetPlayerInfo()->max_mp));
+
+	StringTools::CreateTextOut(hdc, 348, 569, L"[", 11, RGB(153, 204, 51));
+	StringTools::CreateTextOut(hdc, 348 + 5, 569, text.c_str());
+	StringTools::CreateTextOut(hdc, 348 + 5 + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
+
+	float mpPercent =
+		static_cast<float>(player->GetPlayerInfo()->mp) / static_cast<float>(player->GetPlayerInfo()->max_mp) * 100.f;
+	int mpWidth = static_cast<int>((*_mpBar)->GetWidth() * mpPercent / 100);
+	(*_mpBar)->RenderBitmapImage(hdc, 329, 582,
+		mpWidth,
+		(*_mpBar)->GetHeight(),
+		mpWidth,
+		(*_mpBar)->GetHeight());
+
+	float expPercent =
+		static_cast<float>(player->GetPlayerInfo()->exp) / 10000 * 100.f;
+	int expWidth = static_cast<int>((*_mpBar)->GetWidth() * expPercent / 100);
+
+	text.clear();
+	text.append(std::to_wstring(player->GetPlayerInfo()->exp));
+
+	int textWidth = static_cast<int>(text.size()) * 6;
+	StringTools::CreateTextOut(hdc, 468, 569, text.c_str());
+	StringTools::CreateTextOut(hdc, 468 + textWidth, 569, L"[", 11, RGB(153, 204, 51));
+	wchar_t str[10];
+	swprintf_s(str, 10, L"%0.2f", expPercent);
+	text.clear();
+	text.append(str).append(L"%");
+	StringTools::CreateTextOut(hdc, 468 + 5 + textWidth, 569, text.c_str());
+	textWidth += 5;
+	StringTools::CreateTextOut(hdc, 468 + textWidth + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
+
+	(*_expBar)->RenderBitmapImage(hdc, 442, 582,
+		expWidth,
+		(*_expBar)->GetHeight(),
+		expWidth,
+		(*_expBar)->GetHeight());
+
+
+	text.clear();
+	text.append(StringTools::StringToWString(player->GetPlayerInfo()->name.c_str()).c_str());
+	StringTools::CreateTextOut(hdc, 89, 584, text.c_str(), 13, RGB(255, 255, 255), L"µ¸¿ò");
+
+	text.clear();
+	text.append(L"ÃÊº¸ÀÚ");
+	StringTools::CreateTextOut(hdc, 89, 568, text.c_str(), 13, RGB(255, 255, 255), L"µ¸¿ò");
+}
+
+void UiManager::StatusLevelRender(HDC hdc)
+{
+	Player* player = MapManager::GetInstance()->GetPlayer();
+	uint8_t level = player->GetPlayerInfo()->level;
+	
+	std::vector<uint8_t> nums;
+	while (level != 0) {
+		nums.push_back(level % 10);
+		level /= 10;
+	}
+	int x = 40;
+	for (auto level = nums.rbegin(); level != nums.rend(); ++level)
+	{
+		auto data = _listLevel.find(*level)->second;
+		(*data)->RenderBitmapImage(hdc, x, 576, (*data)->GetWidth(), (*data)->GetHeight());
+		x += 12;
+	}
 }

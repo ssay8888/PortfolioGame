@@ -20,14 +20,15 @@ public:
 private:
 	void ButtonUiLoad();
 	void PlayerInfoUiLoad();
-
+	void StatusGageBarRender(HDC hdc);
+	void StatusLevelRender(HDC hdc);
 private:
 	std::shared_ptr<MyBitmap*> _statusBar;
 	std::shared_ptr<MyBitmap*> _quickSlot;
 
 	std::map<std::string, std::shared_ptr<UiButton*>> _listButton;
 
-	std::map<int32_t, std::shared_ptr<MyBitmap*>> _listLevel;
+	std::map<uint8_t, std::shared_ptr<MyBitmap*>> _listLevel;
 
 	std::shared_ptr<MyBitmap*> _hpBar;
 	std::shared_ptr<MyBitmap*> _mpBar;

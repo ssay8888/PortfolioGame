@@ -159,11 +159,15 @@
     <ClInclude Include="Components\game_mouse.h" />
     <ClInclude Include="Components\MapObject\foot_hold.h" />
     <ClInclude Include="Components\MapObject\map_object_info.h" />
+    <ClInclude Include="Components\MapObject\monster.h" />
     <ClInclude Include="Components\MapObject\player.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainGame\main_game.h" />
     <ClInclude Include="Managers\KeyManaer\key_manager.h" />
     <ClInclude Include="Managers\MapManager\map_manager.h" />
+    <ClInclude Include="Managers\MonsterMnager\monster_manager.h" />
+    <ClInclude Include="Managers\MonsterMnager\monster_movement.h" />
+    <ClInclude Include="Managers\MonsterMnager\monster_parts.h" />
     <ClInclude Include="Managers\ScenManager\InGameScene\in_game_scene.h" />
     <ClInclude Include="Managers\ScenManager\LoadingScene\loading_scene.h" />
     <ClInclude Include="Managers\ScenManager\LoginUiScene\login_ui_scene.h" />
@@ -203,6 +207,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Components\MapObject\monster.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Components\MapObject\player.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
@@ -216,6 +224,18 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\MapManager\map_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_movement.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_parts.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>

@@ -20,7 +20,8 @@ Player::Player(uint8_t layer) :
 	_frame_tick(0),
 	_now_foothold(nullptr),
 	_next_foothold(nullptr),
-	_is_first_foothold(false)
+	_is_first_foothold(false),
+	_player_info({51, 1000, 432, 1000, 534, 1000, "¹«¾ßÈ£"})
 {
     ReadyGameObject();
 }
@@ -697,4 +698,9 @@ FootHold* Player::GetNowFootHold()
 void Player::SetNowFootHold(FootHold* hold)
 {
 	_now_foothold = hold;
+}
+
+ObjectInfo* Player::GetPlayerInfo()
+{
+	return &_player_info;
 }

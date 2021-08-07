@@ -10,6 +10,7 @@
 #include "../Managers/MapManager/map_manager.h"
 #include "../Managers/ScrollManager/scroll_manager.h"
 #include "../Managers/ScenManager/scene_manager.h"
+#include "../Managers/MonsterMnager/monster_manager.h"
 #include <fstream>
 #include <algorithm>
 MainGame::MainGame(HDC hdc) :
@@ -39,6 +40,8 @@ void MainGame::ReadeyGame()
 	this->SetPlayer(object);
 	object_manager->SetPlayer(object);
 	object_manager->AddGameObject(object);
+
+	MonsterManager::GetInstance()->LoadMonster();
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);
 }
 

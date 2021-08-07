@@ -8,6 +8,10 @@
 #include "../Managers/Skins/skin_frame.h"
 #include "../Managers/Skins/skin_parts.h"
 #include "../Managers/Skins/skin_manager.h"
+#include "../Managers/MonsterMnager/monster_manager.h"
+#include "../Managers/MonsterMnager/monster_movement.h"
+#include "../Managers/MonsterMnager/monster_parts.h"
+#include "../Components/MapObject/monster.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
 
 using namespace pugi;
@@ -223,18 +227,138 @@ const std::wstring XmlReader::StringToWString(const char* buffer) const
 	return wstr.c_str();
 }
 
-void XmlReader::SetCanvasInfo(pugi::xml_node_iterator node, std::string nummber, SkinFrame* item)
+void XmlReader::LoadMonsters()
 {
-}
+	pugi::xml_document doc;
+	char_t xmlPath[100];
+	snprintf(xmlPath, 100, "Client\\Mob\\%07d.img.xml", 100100);
+	auto err = doc.load_file(xmlPath);
 
-void XmlReader::SetMapInfo(pugi::xml_node_iterator itr, pugi::xml_node_iterator end, SkinFrame* item)
-{
-}
-
-void XmlReader::HasChild(pugi::xml_node_iterator begin, pugi::xml_node_iterator end, std::string nummber, SkinFrame* item)
-{
-	for (; begin != end; ++begin)
+	if (err.status == status_ok)
 	{
-		SetCanvasInfo(begin, nummber, item);
+		auto data = doc.select_nodes("imgdir/imgdir[@name='info']/*");
+
+		std::shared_ptr<Monster*> monster = std::make_shared<Monster*>(new Monster());
+		(*monster)->SetMonsterCode(xmlPath);
+		SetInfoMonster(data, monster);
+
+		data = doc.select_nodes("imgdir/imgdir");
+		std::shared_ptr<MonsterMovement*> movement = std::make_shared<MonsterMovement*>(new MonsterMovement());
+		for (auto nodes : data)
+		{
+			if (strcmp(nodes.node().attribute("name").value(), "info"))
+			{
+				(*monster)->SetMovement(movement);
+				std::vector<std::shared_ptr<MonsterParts*>>  list;
+				for (auto node : nodes.node())
+				{
+					auto parts = std::make_shared<MonsterParts*>(new MonsterParts());
+
+					if (!strcmp(node.name(), "canvas"))
+					{
+						std::cout << nodes.node().attribute("name").value() << std::endl;
+						std::cout << node.attribute("name").value() << std::endl;
+						// <imgdir name="move">
+						std::string path;
+						char_t imagePath[100];
+						path.append(nodes.node().attribute("name").value()).append(".").append(node.attribute("name").value())
+							.append(".bmp");
+						snprintf(imagePath, 100, "Client\\Mob\\%07d.img\\%s", 100100, path.c_str());
+						if ((*parts)->GetImage() == nullptr) {
+							std::shared_ptr<MyBitmap*> bitmap = std::make_shared<MyBitmap*>(new MyBitmap());
+							(*bitmap)->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
+							(*parts)->SetImage(bitmap);
+						}
+
+						for (auto canvans : node) // canvas info
+						{
+							std::cout << nodes.node().attribute("name").value() << std::endl;
+							if (!strcmp(canvans.attribute("name").value(), "origin"))
+							{
+								(*parts)->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
+								(*parts)->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
+							}
+							else if (!strcmp(canvans.attribute("name").value(), "It"))
+							{
+								(*parts)->SetRectLeft(std::stoi(canvans.attribute("x").value()));
+								(*parts)->SetRectRight(std::stoi(canvans.attribute("y").value()));
+							}
+							else if (!strcmp(canvans.attribute("name").value(), "rb"))
+							{
+								(*parts)->SetRectRight(std::stoi(canvans.attribute("x").value()));
+								(*parts)->SetRectBottom(std::stoi(canvans.attribute("y").value()));
+							}
+							else if (!strcmp(canvans.attribute("name").value(), "head"))
+							{
+								(*parts)->SetHeadPosX(std::stoi(canvans.attribute("x").value()));
+								(*parts)->SetHeadPosY(std::stoi(canvans.attribute("y").value()));
+							}
+							else if (!strcmp(canvans.attribute("name").value(), "delay"))
+							{
+								(*parts)->SetDelay(std::stoi(canvans.attribute("value").value()));
+							}
+						}
+					}
+					list.push_back(parts);
+				}
+				(*movement)->InsertMovement(nodes.node().attribute("name").value(), list);
+			}
+		}
+
+
+		MonsterManager::GetInstance()->InsertMonster((*monster)->GetMonsteCode(), monster);
+	}
+}
+
+void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monster*> monster)
+{
+
+	for (auto info : data)
+	{
+
+		if (!strcmp(info.node().attribute("name").value(), "level"))
+		{
+			(*monster)->SetLevel(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "bodyAttack"))
+		{
+			(*monster)->SetBodyAttack(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "maxHP"))
+		{
+			(*monster)->SetMaxHp(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "maxMP"))
+		{
+			(*monster)->SetMaxMp(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "speed"))
+		{
+			(*monster)->SetSpeed(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "PADamage"))
+		{
+			(*monster)->SetPad(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "PDDamage"))
+		{
+			(*monster)->SetPdd(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "MADamage"))
+		{
+			(*monster)->SetMad(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "MDDamage"))
+		{
+			(*monster)->SetMdd(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "undead"))
+		{
+			(*monster)->SetUndead(std::stoi(info.node().attribute("value").value()));
+		}
+		else if (!strcmp(info.node().attribute("name").value(), "exp"))
+		{
+			(*monster)->SetExp(std::stoi(info.node().attribute("value").value()));
+		}
 	}
 }

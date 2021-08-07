@@ -6,6 +6,7 @@
 #include <list>
 class SkinFrame;
 class SkinItem;
+class Monster;
 class XmlReader
 {
 public:
@@ -14,16 +15,22 @@ public:
 		static XmlReader instance;
 		return instance;
 	}
+
+	// 스킨관련메소드
 	SkinFrame* FindCanvas(pugi::xml_node node, int32_t size);
 	std::vector<std::string> LoadCharecterSkin(const int32_t count);
-
 
 	std::list<std::pair<std::string, std::string>> LoadSmap();
 	std::list<std::string> LoadZmap();
 
 	const std::wstring StringToWString(const char* buffer) const;
-	void SetCanvasInfo(pugi::xml_node_iterator attributes, std::string number, SkinFrame* item);
-	void SetMapInfo(pugi::xml_node_iterator begin, pugi::xml_node_iterator end, SkinFrame* item);
-	void HasChild(pugi::xml_node_iterator node, pugi::xml_node_iterator end, std::string number, SkinFrame* item);
+
+
+	///몬스터관련 메소드
+
+
+	void LoadMonsters();
+	void SetInfoMonster(pugi::xpath_node_set node, std::shared_ptr<Monster*> monster);
+
 };
 

@@ -39,6 +39,8 @@ public:
     FootHold* GetNowFootHold();
     void SetNowFootHold(FootHold* hold);
 
+    ObjectInfo* GetPlayerInfo();
+
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);

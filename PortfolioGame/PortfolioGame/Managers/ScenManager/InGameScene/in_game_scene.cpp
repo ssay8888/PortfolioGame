@@ -4,6 +4,7 @@
 #include "../../MapManager/map_manager.h"
 #include "../../UiManager/ui_manager.h"
 #include "../../UiManager/ui_button.h"
+#include "../../MonsterMnager/monster_manager.h"
 #include "../../../Components/game_mouse.h"
 
 GameMouse* InGameScene::_mouse = nullptr;

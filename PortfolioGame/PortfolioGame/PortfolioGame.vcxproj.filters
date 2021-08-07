@@ -56,6 +56,9 @@
     <Filter Include="Managers\UiManager">
       <UniqueIdentifier>{aaa0c587-dba8-4d82-aa49-0fe1b298a1d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\MonsterManager">
+      <UniqueIdentifier>{2210b790-f69f-403e-90ba-015825be84a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -148,6 +151,18 @@
     <ClInclude Include="Components\game_mouse.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MapObject\monster.h">
+      <Filter>Components\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MonsterMnager\monster_manager.h">
+      <Filter>Managers\MonsterManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MonsterMnager\monster_parts.h">
+      <Filter>Managers\MonsterManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\MonsterMnager\monster_movement.h">
+      <Filter>Managers\MonsterManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -221,6 +236,18 @@
     </ClCompile>
     <ClCompile Include="Components\game_mouse.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\monster.cpp">
+      <Filter>Components\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_manager.cpp">
+      <Filter>Managers\MonsterManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_parts.cpp">
+      <Filter>Managers\MonsterManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MonsterMnager\monster_movement.cpp">
+      <Filter>Managers\MonsterManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

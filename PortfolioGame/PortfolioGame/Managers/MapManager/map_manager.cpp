@@ -3,7 +3,9 @@
 #include "../../Components/Base/game_object.h"
 #include "../../Components/MapObject/map_object_info.h"
 #include "../../Components/MapObject/player.h"
+#include "../../Components/MapObject/monster.h"
 #include "../../Components/MapObject/foot_hold.h"
+#include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Common/Utility/file_manager.h"
@@ -28,6 +30,11 @@ void MapManager::ReadyMapManager()
 	_backGroundImage = new MyBitmap();
 
 	_backGroundImage->Insert_Bitmap(_hWnd, L"Client\\Map\\Back\\back.bmp");
+
+	auto monster = MonsterManager::GetInstance()->FindMonster("Client\\Mob\\0100100.img.xml");
+	auto monsterCopy = new Monster(*(*monster));
+	monsterCopy->SetInfo({200, 500, 43, 33});
+	_listGameObject[5].emplace_back(monsterCopy);
 	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
 	//std::map<std::string, MyBitmap*> list;

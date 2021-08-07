@@ -16,10 +16,12 @@ std::vector<std::string> StringTools::SplitString(const std::string text, const 
 
 const std::wstring StringTools::StringToWString(const char* buffer)
 {
-	std::wstring wstr;
-	std::string str = buffer;
-	wstr.assign(str.begin(), str.end());
-	return wstr.c_str();
+	const size_t cSize = strlen(buffer) + 1;
+	size_t cn;
+	wchar_t* wc = new wchar_t[cSize];
+	setlocale(LC_ALL, "Korean");
+	mbstowcs_s(&cn, wc, cSize, buffer, cSize);
+	return wc;
 }
 
 const std::string StringTools::WStringToString(const wchar_t* buffer)
@@ -41,6 +43,18 @@ uint16_t StringTools::FindOverlapCount(std::string text, std::string mod)
 		count++;
 	}
 	return count;
+}
+
+void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fontSize, COLORREF color, std::wstring font)
+{
+	SetBkMode(hdc, TRANSPARENT);
+	auto hFont = CreateFont(fontSize, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
+		VARIABLE_PITCH | FF_ROMAN, font.c_str());
+	auto OldFont = (HFONT)SelectObject(hdc, hFont);
+	SetTextColor(hdc, color);
+	TextOut(hdc, x, y, str.c_str(), lstrlen(str.c_str()));
+	SelectObject(hdc, OldFont);
+	DeleteObject(hFont);
 }
 
 uint16_t StringTools::ReplaceAll(std::string& text, std::string mod)
