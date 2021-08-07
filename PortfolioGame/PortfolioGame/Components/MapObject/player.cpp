@@ -606,7 +606,7 @@ void Player::LateUpdateGameObject()
 
 void Player::ScrollMove()
 {
-	const int range = 75;
+	const int range = 50;
 
 	const int divideCX = WindowCX >> 1;
 	const int divideCY = WindowCY >> 1;

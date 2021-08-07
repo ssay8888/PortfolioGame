@@ -2,9 +2,10 @@
 class GameObject;
 class FootHold;
 class MyBitmap;
+class Player;
 class MapManager
 {
-	MapManager() = default;
+	MapManager();
 	~MapManager() = default;
 public:
 	static MapManager* GetInstance()
@@ -40,7 +41,12 @@ public:
 	std::list<FootHold*>* GetListRopeLadder();
 	std::list<FootHold*> GetMapFootHold();
 	ObjectPos GetMapSize() const;
+
+	void SetPlayer(Player* player);
+	Player* GetPlayer();
 private:
+	MyBitmap* _backGroundImage;
+	Player* _player;
 	std::list<GameObject*> _listGameObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
 	std::list<FootHold*> _listRopeLadder;

@@ -1,5 +1,6 @@
 #pragma once
 #include "../scene.h"
+class GameMouse;
 class InGameScene :
     public Scene
 {
@@ -12,5 +13,9 @@ public:
     virtual void LateUpdateScene() override;
     virtual void RenderScene(HDC hdc) override;
     virtual void ReleaseScene() override;
+
+    static GameMouse* GetMouse();
+private:
+    static GameMouse* _mouse;
 };
 

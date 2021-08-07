@@ -37,6 +37,7 @@ void MainGame::ReadeyGame()
 	auto object_manager = MapManager::GetInstance();
 	auto object = new Player();
 	this->SetPlayer(object);
+	object_manager->SetPlayer(object);
 	object_manager->AddGameObject(object);
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);
 }

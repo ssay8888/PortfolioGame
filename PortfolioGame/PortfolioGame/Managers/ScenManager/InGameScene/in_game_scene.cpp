@@ -2,6 +2,11 @@
 #include "in_game_scene.h"
 #include "../../Skins/skin_manager.h"
 #include "../../MapManager/map_manager.h"
+#include "../../UiManager/ui_manager.h"
+#include "../../UiManager/ui_button.h"
+#include "../../../Components/game_mouse.h"
+
+GameMouse* InGameScene::_mouse = nullptr;
 
 
 InGameScene::InGameScene()
@@ -19,15 +24,22 @@ int InGameScene::ReadyScene()
 	auto object_manager = MapManager::GetInstance();
 	object_manager->ReadyMapManager();
 	object_manager->LoadMapData();
-	RECT rc{ 0, 0, static_cast<LONG>(WindowCX), static_cast<LONG>(WindowCY) };
+	RECT rc{ 0, 0, static_cast<LONG>(800), static_cast<LONG>(600) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	SetWindowPos(_hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, 0);
+	_mouse = new GameMouse();
+	_mouse->DoReadyGame();
+	ShowCursor(false);
+	UiManager::GetInstance()->ReadyUiManager();
 	return 0;
 }
 
 void InGameScene::UpdateScene()
 {
 	MapManager::GetInstance()->UpdateGameObjectManager(0);
+	UiManager::GetInstance()->UpdateUiManager();
+
+	_mouse->DoUpdateObject(0);
 }
 
 void InGameScene::LateUpdateScene()
@@ -40,8 +52,17 @@ void InGameScene::RenderScene(HDC hdc)
 	MapManager::GetInstance()->RenderGameObjectManager(hdc);
 	MapManager::GetInstance()->RenderFootHoldManager(hdc);
 
+	UiManager::GetInstance()->RednerUiManager(hdc);
+	_mouse->DoRenderGameObject(hdc);
+
+
 }
 
 void InGameScene::ReleaseScene()
 {
+}
+
+GameMouse* InGameScene::GetMouse()
+{
+	return _mouse;
 }

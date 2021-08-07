@@ -2,12 +2,19 @@
 #include <io.h>
 #include "../../Components/Base/game_object.h"
 #include "../../Components/MapObject/map_object_info.h"
+#include "../../Components/MapObject/player.h"
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Common/Utility/file_manager.h"
 #include "../ScrollManager/scroll_manager.h"
 #include "map_manager.h"
+
+MapManager::MapManager() :
+	_mapSize({}),
+	_backGroundImage(nullptr)
+{
+}
 
 void MapManager::ReadyMapManager()
 {
@@ -18,6 +25,9 @@ void MapManager::ReadyMapManager()
 	}
 	MapObjectImageLoad();
 
+	_backGroundImage = new MyBitmap();
+
+	_backGroundImage->Insert_Bitmap(_hWnd, L"Client\\Map\\Back\\back.bmp");
 	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
 	//std::map<std::string, MyBitmap*> list;
@@ -215,7 +225,10 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 		0 + static_cast<int>(ScrollManager::GetScrollY()),
 		static_cast<int>(_mapSize.x + ScrollManager::GetScrollX()),
 		static_cast<int>(_mapSize.y + ScrollManager::GetScrollY()));
-
+	_backGroundImage->RenderBitmapImage(hdc,
+		static_cast<int>(0),
+		static_cast<int>(0),
+		800, 600);
 
 	for (int i = 0; i < MaxLayer; i++)
 	{
@@ -495,6 +508,16 @@ void MapManager::TileImageLoad(std::string folderName)
 		}
 	}
 	_listBitmap.insert({ folderName, list });
+}
+
+void MapManager::SetPlayer(Player* player)
+{
+	_player = player;
+}
+
+Player* MapManager::GetPlayer()
+{
+	return _player;
 }
 
 std::list<FootHold*> MapManager::GetMapFootHold()
