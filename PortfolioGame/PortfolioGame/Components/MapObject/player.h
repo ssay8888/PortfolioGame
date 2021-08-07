@@ -45,32 +45,34 @@ private:
 
     void IsJumping();
 private:
-    uint16_t _skinId;
-    uint16_t _frameNummber;
-    size_t _thisFrameMaxCount;
-    bool _frameRevers;
-    bool _isProne;
-    bool _isJump;
-    bool _isRope;
-    uint16_t _jumpCount;
-    uint8_t _facingDirection;
-    SkinFrame* _frameThis;
-    std::string _frameState;
-    std::map<std::string, SkinItem*> _skinFrames;
-    std::map<std::string, SkinItem*> _headSkinFrames;
-    std::vector<SkinInfo*> _itemFrames;
-    uint64_t _frameTick;
+    uint16_t _skin_id;
+    uint16_t _frame_nummber;
+    size_t _this_frame_max_count;
+    bool _frame_revers;
+    bool _is_prone;
+    bool _is_jump;
+    bool _is_rope;
+    uint16_t _jump_count;
+    uint8_t _facing_direction;
+    SkinFrame* _frame_this;
+    std::string _frame_state;
+    std::map<std::string, SkinItem*> _skin_frames;
+    std::map<std::string, SkinItem*> _head_skin_frames;
+    std::vector<SkinInfo*> _item_frames;
+    uint64_t _frame_tick;
 
-    FootHold* _nowFootHold;
-    FootHold* _nextFootHold;
-    bool _isFirstFootHold;
+    ObjectInfo _player_info;
 
-    float _jumpPower = 15.f;
+
+    FootHold* _now_foothold;
+    FootHold* _next_foothold;
+    bool _is_first_foothold;
+
+    float _jump_power = 15.f;
     float _accel = 0.f;
     float _gravity = 9.f;
 
     HDC _memDC;
     HBITMAP _bitmap;
-    HBITMAP _oldBitmap;
-    HBITMAP _hBitmap;
+    HBITMAP _old_bitmap;
 };

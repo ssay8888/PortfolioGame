@@ -56,7 +56,6 @@ protected:
 
 	HDC _memDC;
 	HBITMAP _bitmap;
-	HBITMAP _oldBitmap;
-	HBITMAP _hBitmap;
+	HBITMAP _old_bitmap;
 };
 

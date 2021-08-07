@@ -20,7 +20,7 @@ public:
 	SkinInfo* GetPartner() const;
 private:
 	std::string _name;
-	std::vector<SkinFrame*> _skinFrames;
+	std::vector<SkinFrame*> _skin_frames;
 
 	SkinInfo* _partner;
 };

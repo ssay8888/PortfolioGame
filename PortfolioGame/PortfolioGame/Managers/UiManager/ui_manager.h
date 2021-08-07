@@ -18,12 +18,21 @@ public:
 	void RednerUiManager(HDC hdc);
 
 private:
-	void UiLoad();
+	void ButtonUiLoad();
+	void PlayerInfoUiLoad();
 
 private:
 	std::shared_ptr<MyBitmap*> _statusBar;
 	std::shared_ptr<MyBitmap*> _quickSlot;
 
 	std::map<std::string, std::shared_ptr<UiButton*>> _listButton;
+
+	std::map<int32_t, std::shared_ptr<MyBitmap*>> _listLevel;
+
+	std::shared_ptr<MyBitmap*> _hpBar;
+	std::shared_ptr<MyBitmap*> _mpBar;
+	std::shared_ptr<MyBitmap*> _expBar;
+
+
 };
 

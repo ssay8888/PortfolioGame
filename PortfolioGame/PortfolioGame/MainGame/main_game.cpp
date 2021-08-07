@@ -15,8 +15,8 @@
 MainGame::MainGame(HDC hdc) :
 	_hdc(hdc),
 	_hdc_buffer(nullptr),
-	_hBitmap(nullptr),
-	_oldBitmap(nullptr),
+	_bitmap(nullptr),
+	_old_bitmap(nullptr),
 	_ticksCount(GetTickCount64()),
 	_player(nullptr)
 {
@@ -31,8 +31,8 @@ void MainGame::ReadeyGame()
 {
 	SkinManager::GetInstance()->LoadSkin();
 	_hdc_buffer = CreateCompatibleDC(_hdc);
-	_hBitmap = CreateCompatibleBitmap(_hdc, 1024, 768);
-	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
+	_bitmap = CreateCompatibleBitmap(_hdc, 1024, 768);
+	_old_bitmap = (HBITMAP)SelectObject(_hdc_buffer, _bitmap);
 
 	auto object_manager = MapManager::GetInstance();
 	auto object = new Player();
@@ -84,8 +84,8 @@ void MainGame::RenderGame()
 
 void MainGame::ReleaseGame()
 {
-	DeleteObject(_hBitmap);
-	DeleteObject(_oldBitmap);
+	DeleteObject(_bitmap);
+	DeleteObject(_old_bitmap);
 	DeleteDC(_hdc_buffer);
 }
 

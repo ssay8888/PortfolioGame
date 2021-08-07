@@ -6,5 +6,4 @@ namespace ObjectType
 		kPlayer,
 		kEnd
 	};
-
 }

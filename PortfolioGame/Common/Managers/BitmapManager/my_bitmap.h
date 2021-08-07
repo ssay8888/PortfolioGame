@@ -17,7 +17,7 @@ public:
 private:
 	HDC _memDC;
 	HBITMAP _bitmap; 
-	HBITMAP _oldBitmap;
+	HBITMAP _old_bitmap;
 	int _width;
 	int _height;
 };

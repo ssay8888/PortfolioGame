@@ -15,7 +15,7 @@ public:
 private:
 	HDC _hdc;
 	HDC _hdc_buffer;
-	HBITMAP _hBitmap;
-	HBITMAP _oldBitmap;
+	HBITMAP _bitmap;
+	HBITMAP _old_bitmap;
 };
 

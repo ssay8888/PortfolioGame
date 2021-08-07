@@ -3,7 +3,7 @@
 MyBitmap::MyBitmap() :
 	_memDC(nullptr),
 	_bitmap(nullptr),
-	_oldBitmap(nullptr),
+	_old_bitmap(nullptr),
 	_width(0),
 	_height(0)
 {
@@ -45,7 +45,7 @@ void MyBitmap::Insert_Bitmap(HWND hwnd,const TCHAR* pFilePath)
 	_bitmap = (HBITMAP)LoadImage(NULL, pFilePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
 
-	_oldBitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
+	_old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
 	BITMAP bmp;
 	GetObject(_bitmap, sizeof(BITMAP), &bmp);
 	_width = bmp.bmWidth;
@@ -55,7 +55,7 @@ void MyBitmap::Insert_Bitmap(HWND hwnd,const TCHAR* pFilePath)
 
 void MyBitmap::Release_Bitmap()
 {
-	SelectObject(_memDC, _oldBitmap);
+	SelectObject(_memDC, _old_bitmap);
 	DeleteObject(_bitmap);
 	DeleteDC(_memDC);
 }

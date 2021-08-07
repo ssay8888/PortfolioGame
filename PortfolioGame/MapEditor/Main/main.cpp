@@ -7,9 +7,9 @@
 
 Main::Main(HDC hdc) :
 	_hdc(hdc),
-	_hBitmap(nullptr),
+	_bitmap(nullptr),
 	_hdc_buffer(nullptr),
-	_oldBitmap(nullptr)
+	_old_bitmap(nullptr)
 {
 }
 
@@ -20,8 +20,8 @@ Main::~Main()
 void Main::Ready_Edit()
 {
 	_hdc_buffer = CreateCompatibleDC(_hdc);
-	_hBitmap = CreateCompatibleBitmap(_hdc, 1600, 900);
-	_oldBitmap = (HBITMAP)SelectObject(_hdc_buffer, _hBitmap);
+	_bitmap = CreateCompatibleBitmap(_hdc, 1600, 900);
+	_old_bitmap = (HBITMAP)SelectObject(_hdc_buffer, _bitmap);
 	MapManager::GetInstance()->Ready_Map();
 }
 

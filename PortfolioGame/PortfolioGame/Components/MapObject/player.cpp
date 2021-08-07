@@ -14,21 +14,21 @@
 
 Player::Player(uint8_t layer) :
 	GameObject(layer),
-	_frameRevers(false),
-	_thisFrameMaxCount(0),
-	_frameState("stand1"),
-	_frameTick(0),
-	_nowFootHold(nullptr),
-	_nextFootHold(nullptr),
-	_isFirstFootHold(false)
+	_frame_revers(false),
+	_this_frame_max_count(0),
+	_frame_state("stand1"),
+	_frame_tick(0),
+	_now_foothold(nullptr),
+	_next_foothold(nullptr),
+	_is_first_foothold(false)
 {
     ReadyGameObject();
 }
 
 Player::~Player()
 {
-	DeleteObject(_hBitmap);
-	DeleteObject(_oldBitmap);
+	DeleteObject(_bitmap);
+	DeleteObject(_old_bitmap);
 	DeleteDC(_memDC);
 }
 
@@ -46,8 +46,8 @@ int Player::ReadyGameObject()
 	ScrollManager::SetScrollY(768/2);
 
 	_memDC = CreateCompatibleDC(hDC);
-	_hBitmap = CreateCompatibleBitmap(hDC, 1024, 768);
-	_oldBitmap = (HBITMAP)SelectObject(_memDC, _hBitmap);
+	_bitmap = CreateCompatibleBitmap(hDC, 1024, 768);
+	_old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
 	ReleaseDC(_hWnd, hDC);
 
     return 0;
@@ -61,14 +61,14 @@ void Player::UpdateGameObject(const float deltaTime)
 	float outY = 0;
 	FootHold* tempHold;
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
-	if (!_isJump && !_isProne && keymanager->KeyPressing(KEY_DOWN))
+	if (!_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
 	{
 		float outX;
 		FootHold* outHold = nullptr;
 		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
 		if (isRope)
 		{
-			if (!_isRope)
+			if (!_is_rope)
 			{
 				switch (outHold->GetState())
 				{
@@ -81,20 +81,20 @@ void Player::UpdateGameObject(const float deltaTime)
 				default:
 					break;
 				}
-				_isRope = true;
+				_is_rope = true;
 				_info.x = outX;
 			}
 			_info.y += GetSpeed();
 			if (CollisionManager::LineAndRectCollsition(MapManager::GetInstance()->GetMapFootHold(), this))
 			{
-				if (!_isFirstFootHold)
+				if (!_is_first_foothold)
 				{
 					_info.y -= GetSpeed();
 				}
-				else if (_isFirstFootHold && _nextFootHold == nullptr)
+				else if (_is_first_foothold && _next_foothold == nullptr)
 				{
 					_info.y -= GetSpeed();
-					_isRope = false;
+					_is_rope = false;
 				}
 			}
 			else
@@ -108,32 +108,32 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (_info.y >= outY)
 	{
-		if (!_isJump && !_isProne && !_isRope && keymanager->KeyPressing(KEY_DOWN))
+		if (!_is_jump && !_is_prone && !_is_rope && keymanager->KeyPressing(KEY_DOWN))
 		{
 			this->ChangeFrameState("prone");
-			_isProne = true;
+			_is_prone = true;
 		}
 	}
 
 	if (keymanager->KeyUp(KEY_DOWN))
 	{
-		if (!_isRope)
+		if (!_is_rope)
 		{
 			this->ChangeFrameState("stand1");
-			_isProne = false;
+			_is_prone = false;
 		}
 	}
-	if (!_isProne)
+	if (!_is_prone)
 	{
 		if (keymanager->KeyPressing(KEY_LEFT))
 		{
-			if (_isRope)
+			if (_is_rope)
 			{
 				if (keymanager->KeyPressing(KEY_C))
 				{
-					_isRope = false;
+					_is_rope = false;
 					this->ChangeFrameState("jump");
-					_isJump = true;
+					_is_jump = true;
 					totalMoveX -= GetSpeed();
 				}
 			}
@@ -144,13 +144,13 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 		if (keymanager->KeyPressing(KEY_RIGHT))
 		{
-			if (_isRope)
+			if (_is_rope)
 			{
 				if (keymanager->KeyPressing(KEY_C))
 				{
-					_isRope = false;
+					_is_rope = false;
 					this->ChangeFrameState("jump");
-					_isJump = true;
+					_is_jump = true;
 					totalMoveX += GetSpeed();
 				}
 			}
@@ -161,16 +161,16 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 		if (_info.y >= outY)
 		{
-			if (!_isJump && keymanager->KeyPressing(KEY_C))
+			if (!_is_jump && keymanager->KeyPressing(KEY_C))
 			{
 				this->ChangeFrameState("jump");
-				_isJump = true;
+				_is_jump = true;
 			}
 		}
 	}
 
 
-	if (!_isJump && !_isProne && keymanager->KeyPressing(KEY_UP))
+	if (!_is_jump && !_is_prone && keymanager->KeyPressing(KEY_UP))
 	{
 		auto rope = MapManager::GetInstance()->GetListRopeLadder();
 		float outX = 0;
@@ -182,7 +182,7 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			_info.x = outX;
 			totalMoveY -= GetSpeed();
-			if (!_isRope)
+			if (!_is_rope)
 			{
 				switch (outHold->GetState())
 				{
@@ -195,7 +195,7 @@ void Player::UpdateGameObject(const float deltaTime)
 				default:
 					break;
 				}
-				_isRope = true;
+				_is_rope = true;
 			}
 		}
 		else 
@@ -203,7 +203,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			if (strcmp(GetFrameState(), "stand1"))
 			{
 				this->ChangeFrameState("stand1");
-				_isRope = false;
+				_is_rope = false;
 			}
 		}
 	}
@@ -218,7 +218,7 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->SetFacingDirection(1);
 		}
-		if (!_isRope && !_isJump && strcmp(GetFrameState(), "walk1"))
+		if (!_is_rope && !_is_jump && strcmp(GetFrameState(), "walk1"))
 		{
 			this->ChangeFrameState("walk1");
 		}
@@ -235,7 +235,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	else
 	{
-		if (!_isRope && !_isJump && !_isProne && strcmp(GetFrameState(), "stand1"))
+		if (!_is_rope && !_is_jump && !_is_prone && strcmp(GetFrameState(), "stand1"))
 		{
 			this->ChangeFrameState("stand1");
 		}
@@ -250,45 +250,45 @@ void Player::UpdateGameObject(const float deltaTime)
 	{
 		this->ChangeFrameState("swingT1");
 	}
-	if (_frameThis != nullptr)
+	if (_frame_this != nullptr)
 	{
-		if (_isRope)
+		if (_is_rope)
 		{
 			uint64_t tick = GetTickCount64();
-			if (tick > _frameTick + _frameThis->GetDelay() && totalMoveY != 0)
+			if (tick > _frame_tick + _frame_this->GetDelay() && totalMoveY != 0)
 			{
-				_frameNummber++;
-				_frameTick = tick;
-				std::cout << _frameNummber << std::endl;
+				_frame_nummber++;
+				_frame_tick = tick;
+				std::cout << _frame_nummber << std::endl;
 			}
 		}
 		else
 		{
 			uint64_t tick = GetTickCount64();
-			if (tick > _frameTick + _frameThis->GetDelay())
+			if (tick > _frame_tick + _frame_this->GetDelay())
 			{
 				if (!strcmp(GetFrameState(), "stand1"))
 				{
-					if (_frameRevers)
+					if (_frame_revers)
 					{
-						if (--_frameNummber == 0)
+						if (--_frame_nummber == 0)
 						{
-							_frameRevers = false;
+							_frame_revers = false;
 						}
 					}
 					else
 					{
-						if (++_frameNummber >= _frameThis->GetParts()->size())
+						if (++_frame_nummber >= _frame_this->GetParts()->size())
 						{
-							_frameRevers = true;
+							_frame_revers = true;
 						}
 					}
 				}
 				else
 				{
-					++_frameNummber;
+					++_frame_nummber;
 				}
-				_frameTick = tick;
+				_frame_tick = tick;
 			}
 		}
 	}
@@ -299,7 +299,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 {
-	if (_skinFrames.find(frameName) != _skinFrames.end())
+	if (_skin_frames.find(frameName) != _skin_frames.end())
 		return;
 
 	char bodyStr[100];
@@ -310,14 +310,14 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 	//for (; maxSize < 100; maxSize++)
 	//{
 		std::vector<SkinItem*> tempList;
-		snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skinId + 2000, frameName.c_str(), maxSize);
-		snprintf(headStr, 100, "000%05d.img/%s/%d", _skinId + 12000, frameName.c_str(), maxSize);
-		auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skinId + 2000));
-		auto headSkinInfo = SkinManager::GetInstance()->GetHeadSkinInfo(std::to_string(_skinId + 12000));
+		snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skin_id + 2000, frameName.c_str(), maxSize);
+		snprintf(headStr, 100, "000%05d.img/%s/%d", _skin_id + 12000, frameName.c_str(), maxSize);
+		auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 2000));
+		auto headSkinInfo = SkinManager::GetInstance()->GetHeadSkinInfo(std::to_string(_skin_id + 12000));
 		if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
 		{
-			_skinFrames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
-			_headSkinFrames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
+			_skin_frames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
+			_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
 			//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
 			//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
 		}
@@ -326,25 +326,25 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 
 void Player::RenderCharacter(HDC hdc)
 {
-	this->LoadCharacterFrame(_frameState);
+	this->LoadCharacterFrame(_frame_state);
 
-	auto bodyFrameIter = _skinFrames.find(_frameState.c_str());
-	auto headFrameIter = _headSkinFrames.find(_frameState.c_str());
-	if (bodyFrameIter != _skinFrames.end() 
-		&& headFrameIter != _headSkinFrames.end())
+	auto bodyFrameIter = _skin_frames.find(_frame_state.c_str());
+	auto headFrameIter = _head_skin_frames.find(_frame_state.c_str());
+	if (bodyFrameIter != _skin_frames.end() 
+		&& headFrameIter != _head_skin_frames.end())
 	{
 
 		std::vector<SkinParts*> partsFrames;
 		std::vector<SkinParts*> offsets;
 		SkinParts* bodyFrame = nullptr;
 		std::map<std::string, ObjectPos> list;
-		_thisFrameMaxCount = bodyFrameIter->second->GetFrameSize();
+		_this_frame_max_count = bodyFrameIter->second->GetFrameSize();
 		auto bodyskinItem = bodyFrameIter->second;
 		auto headskinItem = headFrameIter->second;
 
 		if (bodyskinItem && headskinItem)
 		{
-			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
+			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 			auto bodyParts = bodyFrames->GetParts();
 			for (auto part = bodyParts->begin(); part != bodyParts->end(); ++part)
 			{
@@ -352,14 +352,14 @@ void Player::RenderCharacter(HDC hdc)
 				{
 					if ((!strcmp(part->second->GetZ().c_str(), "body") || !strcmp(part->second->GetZ().c_str(), "backBody")))
 					{
-						_frameThis = bodyFrames;
+						_frame_this = bodyFrames;
 						bodyFrame = part->second;
 					}
 				}
 				partsFrames.emplace_back(part->second);
 				offsets.emplace_back(part->second);
 			}
-			auto headFrames = headskinItem->FindFrame(std::to_string(_frameNummber % _thisFrameMaxCount));
+			auto headFrames = headskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 			auto headParts = headFrames->GetParts();
 			for (auto part = headParts->begin(); part != headParts->end(); ++part)
 			{
@@ -378,9 +378,9 @@ void Player::RenderCharacter(HDC hdc)
 			});
 
 		list.insert({ "navel", {} });
-		if (!strcmp(_frameState.c_str(), "alert"))
+		if (!strcmp(_frame_state.c_str(), "alert"))
 		{
-			switch (_frameNummber % 3)
+			switch (_frame_nummber % 3)
 			{
 			case 0:
 				list.insert({ "handMove", {-8, -2} });
@@ -482,7 +482,7 @@ void Player::RenderCharacter(HDC hdc)
 
 		if (bodyFrame->GetMaps()->find("neck") != bodyFrame->GetMaps()->end())
 		{
-			int plus = (_isProne ? 25 : 0);
+			int plus = (_is_prone ? 25 : 0);
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
 			Rectangle(_memDC, -30, -30, _info.cx + 30, _info.cy + 30);
@@ -526,33 +526,33 @@ void Player::RenderCharacter(HDC hdc)
 
 void Player::IsJumping()
 {
-	if(_isRope) 
+	if(_is_rope) 
 	{
 		float outY = 0;
-		_isFirstFootHold = true;
-		bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_nextFootHold);
+		_is_first_foothold = true;
+		bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_next_foothold);
 		return;
 	}
 	float outY = 0;
-	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_nowFootHold);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
 
 	const int count = 14;
 	const float speed = 9.f;
-	if (_isJump)
+	if (_is_jump)
 	{
-		++_jumpCount;
-		if (_jumpCount < count)
+		++_jump_count;
+		if (_jump_count < count)
 		{
 			_info.y -= speed;
 			//ScrollManager::GainScrollY(speed, true);
 		}
 		else
 		{
-			_isJump = false;
-			_jumpCount = 0;
+			_is_jump = false;
+			_jump_count = 0;
 		}
 	}
-	else if (!_isRope && isFoothold)
+	else if (!_is_rope && isFoothold)
 	{
 		if (_info.y <= outY)
 		{
@@ -639,12 +639,12 @@ void Player::ScrollMove()
 
 void Player::SetFrameThis(SkinFrame* frame)
 {
-	_frameThis = frame;
+	_frame_this = frame;
 }
 
 SkinFrame* Player::GetFrameThis()
 {
-	return _frameThis;
+	return _frame_this;
 }
 
 std::vector<SkinInfo*> Player::FindSkinFrame() const
@@ -660,9 +660,9 @@ void Player::InsertFrame(SkinInfo* item)
 void Player::ChangeFrameState(std::string frame)
 {
 	LoadCharacterFrame(frame);
-	_frameState = frame;
-	_frameNummber = 0;
-	_frameRevers = false;
+	_frame_state = frame;
+	_frame_nummber = 0;
+	_frame_revers = false;
 }
 
 const char* Player::GetFrameState() const
@@ -671,30 +671,30 @@ const char* Player::GetFrameState() const
 	//snprintf(findStr, 30, "%s/%d", _frameState.c_str(), _frameNummber);
 
 	//return findStr;
-	return _frameState.c_str();
+	return _frame_state.c_str();
 }
 
 uint16_t Player::GetFrameNummber(uint16_t remain)
 {
-	return _frameNummber % remain;
+	return _frame_nummber % remain;
 }
 
 void Player::SetFacingDirection(uint8_t direction)
 {
-	_facingDirection = direction;
+	_facing_direction = direction;
 }
 
 uint8_t Player::GetFacingDirection() const
 {
-	return _facingDirection;
+	return _facing_direction;
 }
 
 FootHold* Player::GetNowFootHold()
 {
-	return _nowFootHold;
+	return _now_foothold;
 }
 
 void Player::SetNowFootHold(FootHold* hold)
 {
-	_nowFootHold = hold;
+	_now_foothold = hold;
 }

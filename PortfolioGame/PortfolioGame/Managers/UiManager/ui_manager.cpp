@@ -22,13 +22,14 @@ void UiManager::UpdateUiManager()
 
 void UiManager::ReadyUiManager()
 {
-	UiLoad();
+	ButtonUiLoad();
+	PlayerInfoUiLoad();
 }
 
 void UiManager::RednerUiManager(HDC hdc)
 {
-	(*_statusBar)->RenderBitmapImage(hdc, 0, 529, (*_statusBar)->GetWidth(), (*_statusBar)->GetHeight());
 	(*_quickSlot)->RenderBitmapImage(hdc, 647, 453, (*_quickSlot)->GetWidth(), (*_quickSlot)->GetHeight());
+	(*_statusBar)->RenderBitmapImage(hdc, 0, 529, (*_statusBar)->GetWidth(), (*_statusBar)->GetHeight());
 
 	for (auto buttonName : buttons)
 	{
@@ -38,9 +39,24 @@ void UiManager::RednerUiManager(HDC hdc)
 			(*button->second)->RenderButtonUi(hdc);
 		}
 	}
+	(*_hpBar)->RenderBitmapImage(hdc, 221, 582, 
+		(*_hpBar)->GetWidth() - 50, 
+		(*_hpBar)->GetHeight(), 
+		(*_hpBar)->GetWidth() - 50, 
+		(*_hpBar)->GetHeight());
+	(*_mpBar)->RenderBitmapImage(hdc, 329, 582,
+		(*_mpBar)->GetWidth(),
+		(*_mpBar)->GetHeight(),
+		(*_mpBar)->GetWidth(),
+		(*_mpBar)->GetHeight());
+	(*_expBar)->RenderBitmapImage(hdc, 442, 582, 
+		(*_expBar)->GetWidth(), 
+		(*_expBar)->GetHeight(), 
+		(*_expBar)->GetWidth(), 
+		(*_expBar)->GetHeight());
 }
 
-void UiManager::UiLoad()
+void UiManager::ButtonUiLoad()
 {
 	std::shared_ptr<MyBitmap*> backgrnd = std::make_shared<MyBitmap*>(new MyBitmap());
 	(*backgrnd)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\backgrnd.bmp");
@@ -101,4 +117,27 @@ void UiManager::UiLoad()
 
 	}
 
+}
+
+void UiManager::PlayerInfoUiLoad()
+{
+
+	for (int i = 0; i < 10; i++)
+	{
+		std::shared_ptr<MyBitmap*> backgrnd = std::make_shared<MyBitmap*>(new MyBitmap());
+		wchar_t path[256];
+		swprintf_s(path, 256, L"Client\\Ui\\StatusBar\\LevelNo.%d.bmp", i);
+		(*backgrnd)->Insert_Bitmap(_hWnd, path);
+		
+		_listLevel.insert({i, backgrnd });
+	}
+	std::shared_ptr<MyBitmap*> hpBar = std::make_shared<MyBitmap*>(new MyBitmap());
+	(*hpBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\hpBar.bmp");
+	std::shared_ptr<MyBitmap*> mpBar = std::make_shared<MyBitmap*>(new MyBitmap());
+	(*mpBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\mpBar.bmp");
+	std::shared_ptr<MyBitmap*> expBar = std::make_shared<MyBitmap*>(new MyBitmap());
+	(*expBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\expBar.bmp");
+	_hpBar = hpBar;
+	_mpBar = mpBar;
+	_expBar = expBar;
 }
