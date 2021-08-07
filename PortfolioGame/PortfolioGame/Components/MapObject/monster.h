@@ -1,11 +1,13 @@
 #pragma once
 #include "../Base/game_object.h"
 class MonsterMovement;
+class MonsterParts;
 class Monster :
 	public GameObject
 {
 
 public:
+	enum class MonsterState { kStand, kMove, kDie };
 	Monster();
 	~Monster() = default;
 	MonsterInfo GetMonsterInfo();
@@ -47,15 +49,26 @@ public:
 	std::shared_ptr<MonsterMovement*> GetMovement();
 	void SetName(std::string name);
 	std::string GetName() const;
+
+
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
 	virtual void RenderGameObject(HDC hdc) override;
 	virtual void LateUpdateGameObject() override;
+	
+	void ChangeState(MonsterState state);
 
 private:
 	MonsterInfo _monster_info;
 	std::shared_ptr<MonsterMovement*> _movement;
 	std::string _monster_code;
+
+
+
+	MonsterState _monster_state;
+	uint64_t _frame_tick;
+	uint16_t _frame_nummber;
+	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
 };
 

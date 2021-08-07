@@ -159,6 +159,7 @@ uint32_t Monster::GetMaxMp() const
 void Monster::SetMovement(std::shared_ptr<MonsterMovement*> movement)
 {
     _movement = movement;
+    _this_frame = (*_movement)->FindMovement("stand");
 }
 
 std::shared_ptr<MonsterMovement*> Monster::GetMovement()
@@ -183,11 +184,22 @@ int Monster::ReadyGameObject()
 
 void Monster::UpdateGameObject(const float deltaTime)
 {
+    ChangeState(MonsterState::kMove);
+    uint64_t tick = GetTickCount64();
+    if (tick > _frame_tick + (*_this_frame[_frame_nummber % _this_frame.size()])->GetDelay())
+    {
+        _frame_nummber++;
+        if (_frame_nummber >= _this_frame.size())
+        {
+            _frame_nummber = 0;
+        }
+        _frame_tick = tick;
+    }
 }
 
 void Monster::RenderGameObject(HDC hdc)
 {
-    auto data = (*_movement)->FindMovement("stand")[0];
+    auto data = _this_frame[_frame_nummber % _this_frame.size()];
     auto image = (*data)->GetImage();
     (*image)->RenderBitmapImage(hdc, 
         static_cast<int>(_info.x), 
@@ -198,4 +210,29 @@ void Monster::RenderGameObject(HDC hdc)
 
 void Monster::LateUpdateGameObject()
 {
+}
+
+void Monster::ChangeState(MonsterState state)
+{
+    if (_monster_state != state)
+    {
+        _frame_tick = 0;
+        _frame_nummber = 0;
+        _monster_state = state;
+        switch (state)
+        {
+        case Monster::MonsterState::kStand:
+        {
+            _this_frame = (*_movement)->FindMovement("stand");
+            break;
+        }
+        case Monster::MonsterState::kMove:
+            _this_frame = (*_movement)->FindMovement("move");
+            break;
+        case Monster::MonsterState::kDie:
+            break;
+        default:
+            break;
+        }
+    }
 }

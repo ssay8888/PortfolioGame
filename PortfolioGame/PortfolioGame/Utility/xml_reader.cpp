@@ -298,8 +298,8 @@ void XmlReader::LoadMonsters()
 								(*parts)->SetDelay(std::stoi(canvans.attribute("value").value()));
 							}
 						}
+						list.push_back(parts);
 					}
-					list.push_back(parts);
 				}
 				(*movement)->InsertMovement(nodes.node().attribute("name").value(), list);
 			}
