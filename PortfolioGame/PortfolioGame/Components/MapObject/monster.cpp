@@ -187,11 +187,11 @@ bool Monster::GetFacingDirection()
 
 void Monster::IsJumping()
 {
-    float outY = 0;
-    FootHold* footHold;
-    bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+    //float outY = 0;
+    //FootHold* footHold;
+    //bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
 
-	if (isFoothold)
+	/*if (isFoothold)
 	{
 		if (_info.y <= outY)
 		{
@@ -208,7 +208,7 @@ void Monster::IsJumping()
 		{
 			_info.y = outY;
 		}
-    }
+    }*/
 }
 
 int Monster::ReadyGameObject()
@@ -242,22 +242,22 @@ void Monster::UpdateGameObject(const float deltaTime)
         {
             _facing_direction = 0;
         }
-        if (_now_foothold == nullptr)
-        {
-            //처음 발판을 설정.
-            MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
-        }
-        _info.x += totalMoveX;
-        _info.y += totalMoveY;
-        FootHold* hold;
-        if (MapManager::GetInstance()->FootholdYCollision(this, &outY, &hold))
-        {
-            if (hold != _now_foothold) // 발판이 바뀌면 되돌아감.
-            {
-                _info.x -= totalMoveX;
-                _info.y -= totalMoveY;
-            }
-        }
+        //if (_now_foothold == nullptr)
+        //{
+        //    //처음 발판을 설정.
+        //    MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
+        //}
+        //_info.x += totalMoveX;
+        //_info.y += totalMoveY;
+        //FootHold* hold;
+        //if (MapManager::GetInstance()->FootholdYCollision(this, &outY, &hold))
+        //{
+        //    if (hold != _now_foothold) // 발판이 바뀌면 되돌아감.
+        //    {
+        //        _info.x -= totalMoveX;
+        //        _info.y -= totalMoveY;
+        //    }
+        //}
     }
 
 

@@ -30,6 +30,7 @@ void MapManager::Ready_Map()
 	MapObjectImageLoad();
 	EtcImageLoad();
 	ButtonLoad();
+	MonsterImageLoad();
 	_mouse = new Mouse();
 }
 
@@ -79,6 +80,9 @@ void MapManager::Update_Map()
 				break;
 			case MapManager::SelectState::kEtc:
 				SelectEtcImage(pt);
+				break;
+			case MapManager::SelectState::kMob:
+				SelectMobImage(pt);
 				break;
 			default:
 				break;
@@ -261,6 +265,15 @@ void MapManager::Render_Map(HDC hdc)
 				static_cast<int>(_selectEtcImage.second->GetWidth()),
 				static_cast<int>(_selectEtcImage.second->GetHeight()));
 		}
+	case MapManager::SelectState::kMob:
+		if (_selectMonsterImage.second != nullptr)
+		{
+			_selectMonsterImage.second->RenderBitmapImage(hdc,
+				static_cast<int>(GetMouse()->GetInfo().x - (_selectMonsterImage.second->GetWidth() / 2)),
+				static_cast<int>(GetMouse()->GetInfo().y - (_selectMonsterImage.second->GetHeight() / 2)),
+				static_cast<int>(_selectMonsterImage.second->GetWidth()),
+				static_cast<int>(_selectMonsterImage.second->GetHeight()));
+		}
 		break;
 	default:
 		break;
@@ -277,6 +290,9 @@ void MapManager::Render_Map(HDC hdc)
 		break;
 	case MapManager::SelectState::kEtc:
 		EtcRender(hdc);
+		break;
+	case MapManager::SelectState::kMob:
+		MonsterRender(hdc);
 		break;
 	default:
 		break;
@@ -309,6 +325,7 @@ void MapManager::AddListObject()
 			obj->SetImage(_selectTileImage[_selectCount]);
 			obj->SetImageNumber(_selectCount);
 			obj->SetFileName(_selectFileName);
+			obj->SetObjectType(MapObject::ObjectType::kNoLife);
 			obj->SetPath(_selectPath);
 			obj->SetPos(
 				static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
@@ -333,6 +350,7 @@ void MapManager::AddListObject()
 			obj->SetImage(_selectObjImage.second);
 			obj->SetImageNumber(-1);
 			obj->SetFileName(FileManager::GetInstance()->GetFileName(_selectObjImage.first));
+			obj->SetObjectType(MapObject::ObjectType::kNoLife);
 			obj->SetPath(_selectObjImage.first);
 			obj->SetPos(
 				static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
@@ -358,6 +376,26 @@ void MapManager::AddListObject()
 			{
 
 			}
+		}
+		break;
+	case MapManager::SelectState::kMob:
+		if (_selectMonsterImage.second != nullptr)
+		{
+			MapObject* obj = new MapObject();
+
+			obj->SetLayer(SelectLayer);
+			obj->SetImage(_selectMonsterImage.second);
+			obj->SetImageNumber(-2);
+			obj->SetFileName(FileManager::GetInstance()->GetFileName(_selectMonsterImage.first));
+			obj->SetObjectType(MapObject::ObjectType::kLife);
+			obj->SetPath(_selectMonsterImage.first);
+			obj->SetPos(
+				static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
+				static_cast<float>(GetMouse()->GetInfo().y) - static_cast<int>(ScrollManager::GetScrollY()));
+			obj->SetCX(_selectMonsterImage.second->GetWidth());
+			obj->SetCY(_selectMonsterImage.second->GetHeight());
+
+			_list[obj->GetLayer()].emplace_back(obj);
 		}
 		break;
 	default:
@@ -430,6 +468,10 @@ void MapManager::SelectButtonImage(POINT& pt)
 			{
 				_selectState = SelectState::kEtc;
 			}
+			else if (!strcmp(tile.first.c_str(), "MobButton"))
+			{
+				_selectState = SelectState::kMob;
+			}
 		}
 		if (countX++ > 0 && countX % 4 == 0)
 		{
@@ -482,6 +524,33 @@ void MapManager::SelectEtcImage(POINT& pt)
 			_selectEtcImage = tile;
 		}
 		if (countX++ > 0 && countX % 4 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
+void MapManager::SelectMobImage(POINT& pt)
+{
+
+	int countX = 0;
+	int countY = 0;
+	for (auto tile : _monsterImage)
+	{
+		RECT rc{};
+		RECT tile_rc{
+			static_cast <int>(50 + (50 * countX) + 1024),
+			static_cast <int>(50 + (50 * countY)),
+			static_cast <int>(50 + (50 * countX) + 1024 + tile.second->GetWidth()) ,
+			static_cast <int>(50 + (50 * countY)) + 50 + tile.second->GetHeight() };
+		//image.second->GetWidth(), image.second->GetHeight()
+		RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+		if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+		{
+			_selectMonsterImage = tile;
+		}
+		if (countX++ > 0 && countX % 8 == 0)
 		{
 			countX = 0;
 			countY += 1;
@@ -573,6 +642,45 @@ void MapManager::MouseUpdate(POINT& pt)
 	}
 	case MapManager::SelectState::kEtc:
 		break;
+	case MapManager::SelectState::kMob:
+	{
+		if (_selectMonsterImage.second != nullptr)
+		{
+			GetMouse()->SetCX(_selectMonsterImage.second->GetWidth());
+			GetMouse()->SetCY(_selectMonsterImage.second->GetHeight());
+			GetMouse()->UpdateRect();
+			int countX = 0;
+			int countY = 0;
+			RECT rc{};
+			int x = 90 + (90 * countX) + 1024;
+			int y = 70 + (70 * countY);
+			GetMouse()->SetInfo({
+				GetMouse()->GetInfo().x - ScrollManager::GetScrollX(),
+				GetMouse()->GetInfo().y - ScrollManager::GetScrollY(),
+				GetMouse()->GetInfo().cx,
+				GetMouse()->GetInfo().cy });
+			for (auto objs : _list)
+			{
+				for (auto obj : objs)
+				{
+					obj->UpdateRect();
+					CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
+				}
+			}
+			GetMouse()->SetInfo({
+				GetMouse()->GetInfo().x + ScrollManager::GetScrollX(),
+				GetMouse()->GetInfo().y + ScrollManager::GetScrollY(),
+				GetMouse()->GetInfo().cx,
+				GetMouse()->GetInfo().cy });
+
+			if (countX++ > 0 && countX % 4 == 0)
+			{
+				countX = 0;
+				countY += 1;
+			}
+		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -622,6 +730,8 @@ void MapManager::SaveData()
 			WriteFile(hFile, &layer, sizeof(layer), &dwByte, nullptr);
 			uint32_t number = obj->GetImageNumber();
 			WriteFile(hFile, &number, sizeof(number), &dwByte, nullptr);
+			MapObject::ObjectType objectState = obj->GetObjectType();
+			WriteFile(hFile, &objectState, sizeof(objectState), &dwByte, nullptr);
 		}
 	}
 	size_t footSize = _footholds.size();
@@ -711,10 +821,18 @@ void MapManager::LoadData()
 			uint32_t number;
 			check = ReadFile(hFile, &number, sizeof(number), &dwByte, nullptr);
 			obj->SetImageNumber(number);
-
+			MapObject::ObjectType objectState;
+			check = ReadFile(hFile, &objectState, sizeof(objectState), &dwByte, nullptr);
+			obj->SetObjectType(objectState);
 			if (obj->GetImageNumber() == -1)
 			{
 				auto image = _objImages.find(obj->GetPath());
+				obj->SetImage(image->second);
+				_list[layer].push_back(obj);
+			}
+			else if (obj->GetImageNumber() == -2)
+			{
+				auto image = _monsterImage.find(obj->GetPath());
 				obj->SetImage(image->second);
 				_list[layer].push_back(obj);
 			}
@@ -850,7 +968,7 @@ void MapManager::MapObjectRender(HDC hdc)
 			static_cast <int>(50 + (50 * countY)),
 			50,
 			50,
-			50, 50);
+			image.second->GetWidth(), image.second->GetHeight());
 		if (countX++ > 0 && countX % 8 == 0)
 		{
 			countX = 0;
@@ -904,6 +1022,49 @@ void MapManager::LadderRopeRender(HDC hdc)
 	}
 }
 
+void MapManager::MonsterImageLoad()
+{
+	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Mob\\");
+
+	for (auto wpath : files)
+	{
+		auto path = StringTools::WStringToString(wpath.c_str());
+		if (wpath.find(L".xml") != std::wstring::npos)
+		{
+			if (!_access(path.c_str(), 0))
+			{
+				// Client\\Mob\\0100100.img.xml
+				auto name = FileManager::GetInstance()->GetFileName(path);
+				auto  fullpath = wpath.substr(0, wpath.size() - 4);
+				fullpath.append(L"\\stand.0.bmp");
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, fullpath.c_str());
+				_monsterImage.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
+			}
+		}
+	}
+}
+
+void MapManager::MonsterRender(HDC hdc)
+{
+	int countX = 0;
+	int countY = 0;
+	for (auto image : _monsterImage)
+	{
+		image.second->RenderBitmapImage(hdc,
+			static_cast <int>(50 + (50 * countX) + 1024),
+			static_cast <int>(50 + (50 * countY)),
+			50,
+			50,
+			image.second->GetWidth(), image.second->GetHeight());
+		if (countX++ > 0 && countX % 8 == 0)
+		{
+			countX = 0;
+			countY += 1;
+		}
+	}
+}
+
 void MapManager::ButtonLoad()
 {
 	MyBitmap* image = new MyBitmap;
@@ -915,6 +1076,9 @@ void MapManager::ButtonLoad()
 	image = new MyBitmap;
 	image->Insert_Bitmap(_hWnd, L"Client\\EtcButton.bmp");
 	_buttons.push_back(std::make_pair("EtcButton", image));
+	image = new MyBitmap;
+	image->Insert_Bitmap(_hWnd, L"Client\\MobButton.bmp");
+	_buttons.push_back(std::make_pair("MobButton", image));
 }
 
 void MapManager::ButtonRender(HDC hdc)

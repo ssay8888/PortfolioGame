@@ -3,6 +3,7 @@ class MyBitmap;
 class MapObject
 {
 public:
+	enum class ObjectType { kNoLife, kLife, kNpc };
 	MapObject();
 	~MapObject();
 
@@ -17,6 +18,7 @@ public:
 	uint32_t GetLayer() const;
 	std::string GetFileName() const;
 	std::string GetPath() const;
+	ObjectType GetObjectType() const; 
 
 
 	void SetFileName(std::string path);
@@ -29,6 +31,7 @@ public:
 	void SetCY(int x);
 	void SetCX(int y);
 	void SetLayer(uint32_t layer);
+	void SetObjectType(const ObjectType type);
 
 private:
 	MyBitmap* _image;
@@ -38,5 +41,6 @@ private:
 	Info _info;
 	RECT _rect;
 	uint32_t _layer;
+	ObjectType _state;
 };
 

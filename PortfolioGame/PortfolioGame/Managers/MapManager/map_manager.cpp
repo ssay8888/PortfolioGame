@@ -114,12 +114,26 @@ void MapManager::LoadMapData()
 			uint32_t number;
 			check = ReadFile(hFile, &number, sizeof(number), &dwByte, nullptr);
 			obj->SetImageNumber(number);
+			GameObject::ObjectType type;
+			check = ReadFile(hFile, &type, sizeof(type), &dwByte, nullptr);
+			obj->SetObjectType(type);
 
 			if (obj->GetImageNumber() == -1)
 			{
 				auto image = _listObjBitmap.find(obj->GetPath());
 				obj->SetImage(image->second);
 				_listGameObject[layer].push_back(obj);
+			} 
+			else if (obj->GetImageNumber() == -2)
+			{
+				auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
+				auto monsterCopy = new Monster(*(*monster));
+				monsterCopy->SetInfo({ 200, 800, 43, 33 });
+				monsterCopy->DoReadyGame();
+
+				_listGameObject[obj->GetLayer()].emplace_back(monsterCopy);
+
+				delete obj;
 			}
 			else
 			{
@@ -133,19 +147,6 @@ void MapManager::LoadMapData()
 				_listGameObject[layer].push_back(obj);
 			}
 
-
-			//std::string fullPath;
-			//fullPath.append(obj->GetPath()).append(obj->GetPath());
-			//auto image = _listBitmap.find(obj->GetPath());
-			//if (image != _listBitmap.end())
-			//{
-			//	auto file = image->second.find(obj->GetFileName());
-			//	if (file != image->second.end())
-			//	{
-			//		obj->SetImage(file->second);
-			//	}
-			//}
-			//_listGameObject[layer].push_back(obj);
 		}
 	}
 
@@ -299,10 +300,12 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 
 	FootHold* pTarget = nullptr;
 
+
 	for (FootHold* footHold : _listFootHold)
 	{
+		float xas = footHold->GetStartPos().x;
 		if (object->GetInfo().x >= footHold->GetStartPos().x &&
-			object->GetInfo().x <= footHold->GetEndPos().x)
+			object->GetInfo().x <= footHold->GetEndPos().x + (std::abs(footHold->GetStartPos().x - footHold->GetEndPos().x)))
 		{
 
 			float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
@@ -320,7 +323,8 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 					{
 						float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
 						float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
-
+ 
+						//std::cout << fDistY << " : " << fDistY2 << std::endl;
 						if (fDistY < 0 || fDistY < fDistY2)
 						{
 							continue;
@@ -337,6 +341,9 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 	{
 		for (FootHold* footHold : _listFootHold)
 		{
+			float xas = footHold->GetStartPos().x;
+			// 528
+			// 249-1093
 			if (object->GetInfo().x <= footHold->GetStartPos().x &&
 				object->GetInfo().x >= footHold->GetEndPos().x)
 			{
@@ -447,7 +454,11 @@ bool MapManager::FootholdAndRectCollision(GameObject* object)
 		if (degree >= 85 && degree <= 95 ||
 			degree >= 175 && degree <= 195)
 		{
-			return CollisionManager::LineAndRectCollsition(footHold, object);
+			//std::cout << "가지면안되는데..?" << degree << std::endl;
+			if (CollisionManager::LineAndRectCollsition(footHold, object))
+			{
+				return true;
+			}
 		}
 
 	}

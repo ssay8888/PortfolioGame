@@ -39,7 +39,7 @@ int Player::ReadyGameObject()
 	_info.y = 400.f;
 	_info.cx = 42;
 	_info.cy = 64;
-	_speed = 2.f;
+	_speed = 5.f;
 	LoadCharacterFrame("stand1");
 
 	HDC hDC = GetDC(_hWnd);
@@ -664,7 +664,10 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)) + 10,
 					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)) + 10);*/
 			}
-
+			std::wstring str;
+			str.append(L"X: ").append(std::to_wstring(_info.x)).append(L"  Y : ").append(std::to_wstring(_info.y));
+			TextOut(hdc, static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
+				static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
 		}
 	}
 }

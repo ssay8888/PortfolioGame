@@ -6,7 +6,8 @@ MapObject::MapObject() :
 	_image(nullptr),
 	_info({}),
 	_rect({}),
-	_layer(5)
+	_layer(5),
+	_state{ObjectType::kNoLife}
 {
 }
 
@@ -75,6 +76,11 @@ void MapObject::SetLayer(uint32_t layer)
 	_layer = layer;
 }
 
+void MapObject::SetObjectType(const ObjectType type)
+{
+	_state = type;
+}
+
 void MapObject::SetCY(int y)
 {
 	_info.cy = y;
@@ -113,4 +119,9 @@ std::string MapObject::GetFileName() const
 std::string MapObject::GetPath() const
 {
 	return _path;
+}
+
+MapObject::ObjectType MapObject::GetObjectType() const
+{
+	return _state;
 }

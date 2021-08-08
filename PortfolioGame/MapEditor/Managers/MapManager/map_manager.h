@@ -11,7 +11,7 @@ private:
 	MapManager();
 	~MapManager() = default;
 public:
-	enum class SelectState { kTile, kObject, kEtc };
+	enum class SelectState { kTile, kObject, kEtc, kMob, kEnd};
 	static MapManager* GetInstance()
 	{
 		static MapManager instance;
@@ -27,6 +27,7 @@ public:
 	void SelectButtonImage(POINT& pt);
 	void SelectObjectImage(POINT& pt);
 	void SelectEtcImage(POINT& pt);
+	void SelectMobImage(POINT& pt);
 	void MouseUpdate(POINT& pt);
 
 	void SaveData();
@@ -42,6 +43,9 @@ public:
 	void EtcImageLoad();
 	void EtcRender(HDC hdc);
 	void LadderRopeRender(HDC hdc);
+
+	void MonsterImageLoad();
+	void MonsterRender(HDC hdc);
 
 	void ButtonLoad();
 	void ButtonRender(HDC hdc);
@@ -69,6 +73,10 @@ private:
 
 	std::pair<std::string, MyBitmap*> _selectEtcImage;
 	std::map<std::string, MyBitmap*> _etcImage;
+
+	std::pair<std::string, MyBitmap*> _selectMonsterImage;
+	std::map<std::string, MyBitmap*> _monsterImage;
+
 
 	std::vector<std::pair<std::string, MyBitmap*>> _buttons;
 

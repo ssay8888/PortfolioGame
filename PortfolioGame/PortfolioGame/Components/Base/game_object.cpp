@@ -97,6 +97,11 @@ uint32_t GameObject::GetImageNumber() const
 	return _imageNumber;
 }
 
+GameObject::ObjectType GameObject::GetObjectType() const
+{
+	return _objectType;
+}
+
 void GameObject::SetPath(std::string path)
 {
 	_path = path;
@@ -135,6 +140,11 @@ void GameObject::SetImage(MyBitmap* image)
 void GameObject::SetImageNumber(uint32_t number)
 {
 	_imageNumber = number;
+}
+
+void GameObject::SetObjectType(const ObjectType type)
+{
+	_objectType = type;
 }
 
 void GameObject::UpdateGameObject(const float deltaTime)

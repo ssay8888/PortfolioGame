@@ -9,6 +9,7 @@ public:
 		kPaused,
 		kDead
 	};
+	enum class ObjectType { kNoLife, kLife, kNpc };
 	GameObject(uint8_t layer);
 	virtual ~GameObject();
 
@@ -27,6 +28,7 @@ public:
 	MyBitmap* GetImage();
 	float GetSpeed() const;
 	uint32_t GetImageNumber() const;
+	ObjectType GetObjectType() const;
 
 	void SetPath(std::string path);
 	void SetFileName(std::string fileName);
@@ -36,7 +38,7 @@ public:
 	void SetRect(RECT rect);
 	void SetImage(MyBitmap* image);
 	void SetImageNumber(uint32_t number);
-
+	void SetObjectType(const ObjectType type);
 private:
 	virtual int ReadyGameObject() = 0;
 	virtual void UpdateGameObject(const float deltaTime) = 0;
@@ -53,6 +55,7 @@ protected:
 	RECT _rect;
 	float _speed;
 	MyBitmap* _image;
+	ObjectType _objectType;
 
 	HDC _memDC;
 	HBITMAP _bitmap;
