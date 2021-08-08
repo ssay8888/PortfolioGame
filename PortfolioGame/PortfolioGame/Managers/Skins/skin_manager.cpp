@@ -15,12 +15,14 @@ void SkinManager::LoadSkin()
 {
 	XmlReader::GetInstance().LoadCharecterSkin(2000);
 	XmlReader::GetInstance().LoadCharecterSkin(12000);
+	XmlReader::GetInstance().LoadCharacterItem(1302000);
+
 	LoadBase();
 
 	for (auto skin : _bodySkins)
 	{
 		std::map<std::string, SkinItem*>* frames = nullptr;
-		if (std::stoi(skin.first) > 10000 )
+		if (std::stoi(skin.first) > 10000  && std::stoi(skin.first) < 15000)
 		{
 			frames = skin.second->GetHeadSkinItem();
 		}
@@ -47,7 +49,6 @@ void SkinManager::LoadSkin()
 				}
 			}
 		}
-
 	}
 }
 
@@ -72,11 +73,19 @@ void SkinManager::InsertBodySkin(SkinInfo* skin)
 	}
 }
 
-void SkinManager::InsertHeadSkin(SkinInfo* skin)
+//void SkinManager::InsertHeadSkin(SkinInfo* skin)
+//{
+//	if (_headSkins.find(skin->GetName()) == _headSkins.end())
+//	{
+//		_headSkins.insert(std::make_pair(skin->GetName(), skin));
+//	}
+//}
+
+void SkinManager::InsertItemParts(SkinInfo* skin)
 {
-	if (_headSkins.find(skin->GetName()) == _headSkins.end())
+	if (_itemSkins.find(skin->GetName()) == _itemSkins.end())
 	{
-		_headSkins.insert(std::make_pair(skin->GetName(), skin));
+		_itemSkins.insert(std::make_pair(skin->GetName(), skin));
 	}
 }
 
@@ -90,11 +99,21 @@ SkinInfo* SkinManager::GetBodySkinInfo(std::string key) const
 
 	return nullptr;
 }
+//
+//SkinInfo* SkinManager::GetHeadSkinInfo(std::string key) const
+//{
+//	auto pair = _bodySkins.find(key);
+//	if (pair != _bodySkins.end())
+//	{
+//		return pair->second;
+//	}
+//	return nullptr;
+//}
 
-SkinInfo* SkinManager::GetHeadSkinInfo(std::string key) const
+SkinInfo* SkinManager::GetItemParts(std::string key) const
 {
-	auto pair = _bodySkins.find(key);
-	if (pair != _bodySkins.end())
+	auto pair = _itemSkins.find(key);
+	if (pair != _itemSkins.end())
 	{
 		return pair->second;
 	}
@@ -169,7 +188,7 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 					if (splitString.size() == 2)
 					{
 						SkinItem* skinItem = nullptr;
-						if (skinId > 10000) 
+						if (skinId > 10000 && skinId < 15000)
 						{
 							skinItem = parts->second->GetPartner()->GetPartner()->GetPartner()->FindHeadSkinItem(splitString[0]);
 						}
@@ -187,7 +206,7 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 					{
 
 						SkinItem* skinItem = nullptr;
-						if (skinId > 10000)
+						if (skinId > 10000 && skinId < 15000)
 						{
 							skinItem = parts->second->GetPartner()->GetPartner()->GetPartner()->FindHeadSkinItem(splitString[0]);
 							auto frame = skinItem->FindFrame(splitString[1]);

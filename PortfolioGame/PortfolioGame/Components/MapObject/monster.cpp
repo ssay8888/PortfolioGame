@@ -3,11 +3,14 @@
 #include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../Managers/MonsterMnager/monster_movement.h"
 #include "../../Managers/MonsterMnager/monster_parts.h"
+#include "../../Managers/ScrollManager/scroll_manager.h"
+#include "../../Managers/MapManager/map_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 Monster::Monster() :
     GameObject(0),
-    _monster_info({})
+    _monster_info({}),
+    _now_foothold(nullptr)
 {
 }
 
@@ -36,12 +39,12 @@ uint8_t Monster::GetLevel() const
     return _monster_info.level;
 }
 
-void Monster::SetSpeed(uint8_t speed)
+void Monster::SetSpeed(float speed)
 {
     _monster_info.speed = speed;
 }
 
-uint8_t Monster::GetSpeed() const
+float Monster::GetSpeed() const
 {
     return _monster_info.speed;
 }
@@ -177,21 +180,106 @@ std::string Monster::GetName() const
     return _monster_info.name;
 }
 
+bool Monster::GetFacingDirection()
+{
+    return _facing_direction;
+}
+
+void Monster::IsJumping()
+{
+    float outY = 0;
+    FootHold* footHold;
+    bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+
+	if (isFoothold)
+	{
+		if (_info.y <= outY)
+		{
+			if (_info.y - outY <= GetSpeed() && _info.y - outY >= -GetSpeed())
+			{
+				_info.y = outY;
+			}
+			else
+			{
+				_info.y += GetSpeed();
+			}
+		}
+		else
+		{
+			_info.y = outY;
+		}
+    }
+}
+
 int Monster::ReadyGameObject()
 {
+
+    HDC hDC = GetDC(_hWnd);
+    _memDC = CreateCompatibleDC(hDC);
+    _bitmap = CreateCompatibleBitmap(hDC, 1024, 768);
+    _old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
+    ReleaseDC(_hWnd, hDC);
     return 0;
 }
 
 void Monster::UpdateGameObject(const float deltaTime)
 {
     ChangeState(MonsterState::kMove);
+    float totalMoveX = 0;
+    float totalMoveY = 0;
+    float outY = 0;
+    FootHold* footHold = nullptr;
+    totalMoveX -= GetSpeed();
+
+
+    if (totalMoveX != 0 || totalMoveY != 0)
+    {
+        if (totalMoveX > 0)
+        {
+            _facing_direction = 1;
+        }
+        else
+        {
+            _facing_direction = 0;
+        }
+        if (_now_foothold == nullptr)
+        {
+            //처음 발판을 설정.
+            MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
+        }
+        _info.x += totalMoveX;
+        _info.y += totalMoveY;
+        FootHold* hold;
+        if (MapManager::GetInstance()->FootholdYCollision(this, &outY, &hold))
+        {
+            if (hold != _now_foothold) // 발판이 바뀌면 되돌아감.
+            {
+                _info.x -= totalMoveX;
+                _info.y -= totalMoveY;
+            }
+        }
+    }
+
+
+
+    IsJumping();
     uint64_t tick = GetTickCount64();
     if (tick > _frame_tick + (*_this_frame[_frame_nummber % _this_frame.size()])->GetDelay())
     {
-        _frame_nummber++;
-        if (_frame_nummber >= _this_frame.size())
+
+        if (_frame_revers)
         {
-            _frame_nummber = 0;
+            if (--_frame_nummber == 0)
+            {
+                _frame_revers = false;
+            }
+        }
+        else
+        {
+            if (++_frame_nummber >= _this_frame.size() - 1)
+            {
+                _frame_revers = true;
+            }
         }
         _frame_tick = tick;
     }
@@ -199,13 +287,44 @@ void Monster::UpdateGameObject(const float deltaTime)
 
 void Monster::RenderGameObject(HDC hdc)
 {
+    UpdateRectGameObject();
     auto data = _this_frame[_frame_nummber % _this_frame.size()];
     auto image = (*data)->GetImage();
-    (*image)->RenderBitmapImage(hdc, 
-        static_cast<int>(_info.x), 
-        static_cast<int>(_info.y),
+    Rectangle(_memDC,
+        0,
+        0,
         static_cast<int>((*image)->GetWidth()),
         static_cast<int>((*image)->GetHeight()));
+    (*image)->RenderBitmapImage(_memDC,
+        0,
+        0,
+        static_cast<int>((*image)->GetWidth()),
+        static_cast<int>((*image)->GetHeight()));
+    if (GetFacingDirection())
+    {
+        StretchBlt(_memDC,
+            0,
+            0,
+            (*image)->GetWidth(), 
+            (*image)->GetHeight(), 
+            _memDC, 
+            (*image)->GetWidth() - 1,
+            0, 
+            -(*image)->GetWidth(),
+            (*image)->GetHeight(), SRCCOPY);
+    }
+
+
+    GdiTransparentBlt(hdc,
+        static_cast<int>(_info.x - (_info.cx >> 1) + ScrollManager::GetScrollX()),
+        static_cast<int>(_info.y + (_info.cy >> 1) - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()),
+        (*image)->GetWidth(),
+        (*image)->GetHeight(),
+        _memDC,
+        0, 0,
+        (*image)->GetWidth(),
+        (*image)->GetHeight(),
+        RGB(255, 0, 255));
 }
 
 void Monster::LateUpdateGameObject()
@@ -230,6 +349,7 @@ void Monster::ChangeState(MonsterState state)
             _this_frame = (*_movement)->FindMovement("move");
             break;
         case Monster::MonsterState::kDie:
+            _this_frame = (*_movement)->FindMovement("die1");
             break;
         default:
             break;

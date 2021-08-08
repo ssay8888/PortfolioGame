@@ -25,6 +25,9 @@ public:
 
 	const std::wstring StringToWString(const char* buffer) const;
 
+	//아이템메소드
+	std::vector<std::string> LoadCharacterItem(const int32_t code);
+
 
 	///몬스터관련 메소드
 

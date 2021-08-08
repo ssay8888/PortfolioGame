@@ -22,12 +22,12 @@ void SkinParts::SetName(std::string name)
     _name = name;
 }
 
-void SkinParts::SetMap(std::map<std::string, ObjectPos> map)
+void SkinParts::SetMap(std::unordered_map<std::string, ObjectPos> map)
 {
     _map = map;
 }
 
-std::map<std::string, ObjectPos> SkinParts::GetMap() const
+std::unordered_map<std::string, ObjectPos> SkinParts::GetMap() const
 {
     return _map;
 }
@@ -47,7 +47,7 @@ ObjectPos SkinParts::FindMap(std::string key)
     return ObjectPos();
 }
 
-std::map<std::string, ObjectPos>* SkinParts::GetMaps()
+std::unordered_map<std::string, ObjectPos>* SkinParts::GetMaps()
 {
     return &_map;
 }

@@ -592,8 +592,8 @@ void Player::IsJumping()
 	float outY = 0;
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
 
-	const int count = 17;
-	const float speed = 6.f;
+	const int count = 25;
+	const float speed = 5.f;
 	if (_is_jump)
 	{
 		++_jump_count;

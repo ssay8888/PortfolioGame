@@ -227,6 +227,124 @@ const std::wstring XmlReader::StringToWString(const char* buffer) const
 	return wstr.c_str();
 }
 
+std::vector<std::string> XmlReader::LoadCharacterItem(const int32_t code)
+{
+	pugi::xml_document doc;
+	//L"Client\\Character\\00012000.img.xml"
+	char_t xmlPath[100];
+	snprintf(xmlPath, 100, "Client\\Character\\Weapon\\%08d.img.xml", code);
+	auto err = doc.load_file(xmlPath);
+
+	std::vector<std::string> list;
+	if (err.status == status_ok)
+	{
+		auto data = doc.select_nodes("imgdir/imgdir");
+		SkinInfo* info = new SkinInfo();
+		info->SetName(std::to_string(code));
+		for (auto begin : data) // alert ..
+		{
+			auto itemName = begin.node().attribute("name").value();
+			SkinItem* item = new SkinItem();
+			item->SetName(itemName);
+			item->SetPartner(info);
+			for (auto frameCount : begin.node()) // alert\0~n
+			{
+				if (!strcmp(frameCount.name(), "canvas"))
+				{
+					SkinFrame* frame = FindCanvas(frameCount, code);
+					frame->SetFrame(frameCount.attribute("name").value());
+					item->InsertFrame(frame);
+				}
+				else
+				{
+					SkinFrame* frame = new SkinFrame();
+					try
+					{
+						frame->SetPartner(item);
+						frame->SetFrame(frameCount.attribute("name").value());
+						for (auto canvas : frameCount)
+						{
+							if (!strcmp(canvas.name(), "canvas"))
+							{
+								SkinParts* parts = new SkinParts();
+								std::wstring fileName;
+								fileName.append(StringToWString(itemName)).append(L".")
+									.append(StringToWString(frameCount.attribute("name").value())).append(L".").
+									append(StringToWString(canvas.attribute("name").value())).append(L".bmp");
+								wchar_t fullPath[256];
+								swprintf_s(fullPath, L"Client\\Character\\Weapon\\%08d.img\\%s", code, fileName.c_str());
+								MyBitmap* bitmap = new MyBitmap();
+								bitmap->Insert_Bitmap(_hWnd, fullPath);
+								parts->SetBitmap(bitmap);
+								parts->SetName(canvas.attribute("name").value());
+								parts->SetPartner(frame);
+								frame->InsertParts(parts->GetName(), parts);
+
+								for (auto canvasInfo : canvas)
+								{
+									if (!strcmp(canvasInfo.attribute("name").value(), "map"))
+									{
+										for (auto map : canvasInfo)
+										{
+											ObjectPos pos{ std::stof(map.attribute("x").value()), std::stof(map.attribute("y").value()) };
+											parts->InsertMap(map.attribute("name").value(), pos);
+										}
+									}
+									else if (!strcmp(canvasInfo.attribute("name").value(), "origin"))
+									{
+										parts->SetOriginX(std::stof(canvasInfo.attribute("x").value()));
+										parts->SetOriginY(std::stof(canvasInfo.attribute("y").value()));
+									}
+									else if (!strcmp(canvasInfo.attribute("name").value(), "z"))
+									{
+										parts->SetZ(canvasInfo.attribute("value").value());
+									}
+								}
+								frame->InsertParts(parts->GetName(), parts);
+							}
+							else if (!strcmp(canvas.name(), "uol"))
+							{
+								SkinParts* parts = new SkinParts();
+								parts->SetPartner(frame);
+								parts->SetUol(canvas.attribute("value").value());
+								parts->SetName(canvas.attribute("name").value());
+								frame->InsertParts(parts->GetName(), parts);
+							}
+							else if (!strcmp(canvas.name(), "string"))
+							{
+								if (!strcmp(canvas.attribute("name").value(), "action"))
+								{
+									frame->SetAction(canvas.attribute("value").value());
+								}
+							}
+							else if (!strcmp(canvas.name(), "int"))
+							{
+								if (!strcmp(canvas.attribute("name").value(), "delay"))
+								{
+									frame->SetDelay(static_cast<uint16_t>(std::stoi(canvas.attribute("value").value())));
+								}
+								else if (!strcmp(canvas.attribute("name").value(), "frame"))
+								{
+									frame->SetActionFrame(static_cast<uint16_t>(std::stoi(canvas.attribute("value").value())));
+								}
+							}
+						}
+					}
+					catch (std::exception&)
+					{
+
+					}
+					item->InsertFrame(frame);
+				}
+			}
+			info->InsertBodySkinItem(item);
+		}
+		SkinManager::GetInstance()->InsertBodySkin(info);
+	}
+
+	return list;
+}
+
 void XmlReader::LoadMonsters()
 {
 	pugi::xml_document doc;
@@ -334,7 +452,7 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "speed"))
 		{
-			(*monster)->SetSpeed(std::stoi(info.node().attribute("value").value()));
+			(*monster)->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 100);
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "PADamage"))
 		{

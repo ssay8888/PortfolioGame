@@ -2,6 +2,7 @@
 #include "../Base/game_object.h"
 class MonsterMovement;
 class MonsterParts;
+class FootHold;
 class Monster :
 	public GameObject
 {
@@ -18,8 +19,8 @@ public:
 	void SetLevel(uint8_t level);
 	uint8_t GetLevel() const;
 
-	void SetSpeed(uint8_t speed);
-	uint8_t GetSpeed() const;
+	void SetSpeed(float speed);
+	float GetSpeed() const;
 	void SetUndead(uint8_t undead);
 	uint8_t GetUndead() const;
 	void SetBodyAttack(uint8_t body);
@@ -50,6 +51,7 @@ public:
 	void SetName(std::string name);
 	std::string GetName() const;
 
+	bool GetFacingDirection();
 
 private:
 	virtual int ReadyGameObject() override;
@@ -57,6 +59,7 @@ private:
 	virtual void RenderGameObject(HDC hdc) override;
 	virtual void LateUpdateGameObject() override;
 	
+	void IsJumping();
 	void ChangeState(MonsterState state);
 
 private:
@@ -66,9 +69,20 @@ private:
 
 
 
+	//몬스터상태관련
+	FootHold* _now_foothold;
 	MonsterState _monster_state;
+	bool _facing_direction;
+
+	//프레임관련변수
 	uint64_t _frame_tick;
 	uint16_t _frame_nummber;
+	bool _frame_revers;
 	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
+
+
+	HDC _memDC;
+	HBITMAP _bitmap;
+	HBITMAP _old_bitmap;
 };
 

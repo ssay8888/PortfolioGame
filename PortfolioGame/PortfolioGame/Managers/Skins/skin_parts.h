@@ -10,12 +10,12 @@ public:
 	std::string GetName() const;
 	void SetName(std::string name);
 
-	void SetMap(std::map<std::string, ObjectPos> map);
-	std::map<std::string, ObjectPos> GetMap() const;
+	void SetMap(std::unordered_map<std::string, ObjectPos> map);
+	std::unordered_map<std::string, ObjectPos> GetMap() const;
 
 	void InsertMap(std::string key, ObjectPos pos);
 	ObjectPos FindMap(std::string key);
-	std::map<std::string, ObjectPos>* GetMaps();
+	std::unordered_map<std::string, ObjectPos>* GetMaps();
 
 	ObjectPos GetOrigin() const;
 	void SetOrigin(ObjectPos pos);
@@ -41,7 +41,7 @@ public:
 	uint16_t GetPosition() const;
 private:
 	std::string _name;
-	std::map<std::string, ObjectPos> _map;
+	std::unordered_map<std::string, ObjectPos> _map;
 	ObjectPos _origin;
 	std::string _z;
 	uint16_t _delay;

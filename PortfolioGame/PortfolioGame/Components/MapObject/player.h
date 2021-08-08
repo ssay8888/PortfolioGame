@@ -53,6 +53,7 @@ private:
     bool _frame_revers;
     bool _is_prone;
     bool _is_jump;
+    bool _is_fly;
     bool _is_rope;
     uint16_t _jump_count;
     uint8_t _facing_direction;
@@ -60,7 +61,6 @@ private:
     std::string _frame_state;
     std::map<std::string, SkinItem*> _skin_frames;
     std::map<std::string, SkinItem*> _head_skin_frames;
-    std::vector<SkinInfo*> _item_frames;
     uint64_t _frame_tick;
 
     ObjectInfo _player_info;

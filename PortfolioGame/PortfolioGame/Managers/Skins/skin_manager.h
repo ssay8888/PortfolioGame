@@ -17,9 +17,11 @@ public:
 	}
 	void LoadSkin();
 	void InsertBodySkin(SkinInfo* skin);
-	void InsertHeadSkin(SkinInfo* skin);
+	//void InsertHeadSkin(SkinInfo* skin);
+	void InsertItemParts(SkinInfo* skin);
 	SkinInfo* GetBodySkinInfo(std::string key) const;
-	SkinInfo* GetHeadSkinInfo(std::string key) const;
+	//SkinInfo* GetHeadSkinInfo(std::string key) const;
+	SkinInfo* GetItemParts(std::string key) const;
 	size_t GetSize();
 
 	uint32_t FindPosition(std::string z);
@@ -29,7 +31,7 @@ private:
 	void UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> info, SkinItem* skinitem);
 private:
 	std::map<std::string, SkinInfo*> _bodySkins;
-	std::map<std::string, SkinInfo*> _headSkins;
+	std::map<std::string, SkinInfo*> _itemSkins;
 	std::list<std::pair<std::string, std::string>> _smap;
 	std::list<std::string> _zmap;
 };

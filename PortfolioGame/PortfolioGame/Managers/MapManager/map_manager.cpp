@@ -33,7 +33,8 @@ void MapManager::ReadyMapManager()
 
 	auto monster = MonsterManager::GetInstance()->FindMonster("Client\\Mob\\0100100.img.xml");
 	auto monsterCopy = new Monster(*(*monster));
-	monsterCopy->SetInfo({200, 500, 43, 33});
+	monsterCopy->SetInfo({200, 800, 43, 33});
+	monsterCopy->DoReadyGame();
 	_listGameObject[5].emplace_back(monsterCopy);
 	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
