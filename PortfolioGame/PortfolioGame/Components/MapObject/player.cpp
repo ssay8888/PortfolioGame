@@ -199,14 +199,14 @@ void Player::UpdateGameObject(const float deltaTime)
 				_is_rope = true;
 			}
 		}
-		else 
-		{
-			if (strcmp(GetFrameState(), "stand1"))
-			{
-				this->ChangeFrameState("stand1");
-				_is_rope = false;
-			}
-		}
+		//else 
+		//{
+		//	if (strcmp(GetFrameState(), "stand1"))
+		//	{
+		//		this->ChangeFrameState("stand1");
+		//		_is_rope = false;
+		//	}
+		//}
 	}
 
 	if (totalMoveX != 0 || totalMoveY != 0)
@@ -544,7 +544,7 @@ void Player::RenderCharacter(HDC hdc)
 			int plus = (_is_prone ? 25 : 0);
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
-			Rectangle(_memDC, -30, -30, _info.cx + 30, _info.cy + 30);
+			Rectangle(_memDC, -30, -30, _info.cx + 120, _info.cy + 120);
 			SelectObject(_memDC, brushPrev);
 			DeleteObject(brush);
 			DeleteObject(brushPrev);
@@ -552,16 +552,16 @@ void Player::RenderCharacter(HDC hdc)
 			ObjectPos centerPos{ (maxX - minX) / 2, (maxY - minY) / 2 };
 
 			ObjectPos destination{ (maxX - minX) + (2 * 2), (maxY - minY) + (2 * 2) };
-			int oldCx = _info.cx - static_cast<int>(destination.x);
+			//int oldCx = _info.cx - static_cast<int>(destination.x);
 			int oldCy = _info.cy - static_cast<int>(destination.y);
-			if (oldCx != 0) {
-				//_info.x += oldCx >> 1;
-			}
+			//if (oldCx != 0) {
+			//	//_info.x += oldCx >> 1;
+			//}
 			if (oldCy != 0) {
-				//_info.y += oldCy >> 1;
+				_info.y += oldCy >> 1;
 			}
 			//_info.cx = static_cast<int>(destination.x);
-			//_info.cy = static_cast<int>(destination.y);
+			_info.cy = static_cast<int>(destination.y);
 			UpdateRectGameObject();
 
 			std::pair<SkinParts*, ObjectPos> lastBody;
@@ -573,18 +573,18 @@ void Player::RenderCharacter(HDC hdc)
 					lastBody = body;
 				}
 			}
-			ObjectPos bodyShouldBe{ 36, 55 };
-			float tempX1 = lastBody.second.x - bodyShouldBe.x;
-			float tempY1 = lastBody.second.y - bodyShouldBe.y;
-			float tempX2 = minX;
-			float tempY2 = minY;
+			//ObjectPos bodyShouldBe{ 36, 55 };
+			//float tempX1 = lastBody.second.x - bodyShouldBe.x;
+			//float tempY1 = lastBody.second.y - bodyShouldBe.y;
+			//float tempX2 = minX;
+			//float tempY2 = minY;
 
 
 
-			ObjectPos cropOrigin{ tempX1 - tempX2 , tempY1 - tempY2 };
-			RECT cropArea{ static_cast<int>(std::fmax(cropOrigin.x, 0)),
-				 static_cast<int>(std::fmax(cropOrigin.y, 0)), 96, 96 };
-			ObjectPos cropOffsetFromOrigin{ cropArea.left - cropOrigin.x, cropArea.top - cropOrigin.y };
+			//ObjectPos cropOrigin{ tempX1 - tempX2 , tempY1 - tempY2 };
+			//RECT cropArea{ static_cast<int>(std::fmax(cropOrigin.x, 0)),
+			//	 static_cast<int>(std::fmax(cropOrigin.y, 0)), 96, 96 };
+			//ObjectPos cropOffsetFromOrigin{ cropArea.left - cropOrigin.x, cropArea.top - cropOrigin.y };
 
 			for (auto draw : positionedFramesList)
 			{
@@ -600,50 +600,71 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				int x = static_cast<int>(destination.x);
 				int y = static_cast<int>(destination.y);
+				StretchBlt(hdc, 0, 0, x, y, _memDC, x - 1, 0, -x, y, SRCCOPY);
+
 				StretchBlt(_memDC, 0, 0, x, y, _memDC, x - 1, 0, -x, y, SRCCOPY);
 			}
+			else
+			{
+				int x = static_cast<int>(destination.x);
+				int y = static_cast<int>(destination.y);
+				StretchBlt(hdc, 0, 0, x, y, _memDC, 0, 0, x, y, SRCCOPY);
+			}
 
-			//brush = CreateSolidBrush(RGB(255, 0, 255));
-			//brushPrev = (HBRUSH)SelectObject(_memDC, brush);
-			//Rectangle(_memDC,
-			//	_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
-			//	_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
-			//	static_cast<int>(destination.x + ScrollManager::GetScrollX()),
-			//	static_cast<int>(destination.y + ScrollManager::GetScrollY()));
-			//SelectObject(_memDC, brushPrev);
-			//DeleteObject(brush);
-			//DeleteObject(brushPrev);
-
-			Rectangle(hdc,
+			/*Rectangle(hdc,
 				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
 				static_cast<int>(std::floor(_rect.top + ScrollManager::GetScrollY())),
 				static_cast<int>(std::floor(_rect.right + ScrollManager::GetScrollX())),
-				static_cast<int>(std::floor(_rect.bottom + ScrollManager::GetScrollY())));
+				static_cast<int>(std::floor(_rect.bottom + ScrollManager::GetScrollY())));*/
 
-			auto 발오리진x = lastBody.first->GetOrigin().x + (lastBody.second.x - minX);
-			auto 발오리진y = lastBody.first->GetOrigin().y + (lastBody.second.y - minY);
-			//Rectangle(hdc, static_cast<int>(발오리진x), static_cast<int>(발오리진y), static_cast<int>(발오리진x) + 10, static_cast<int>(발오리진y) + 10);
-		
+			UpdateRectGameObject();
 
-			float left = _info.x + (_info.cx) + (GetFacingDirection() ? 0 : oldCx);
-			float top = _info.y - (_info.cy / 2);
-			GdiTransparentBlt(hdc,
-				static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
-				static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
-				static_cast<int>(destination.x),
-				static_cast<int>(destination.y),
-				_memDC,
-				0,
-				0,
-				static_cast<int>(destination.x),
-				static_cast<int>(destination.y),
-				RGB(255, 0, 255));
+			auto footOriginX = lastBody.first->GetOrigin().x + (lastBody.second.x - minX);
+			auto footOriginY = lastBody.first->GetOrigin().y + (lastBody.second.y - minY);
+			float reduceX= _info.x - (_rect.right - footOriginX);
+			float reduceY= _info.y - (_rect.bottom - footOriginY);
+			if (GetFacingDirection())
+			{
+				auto reversOriginX = (std::abs(lastBody.first->GetOrigin().x - destination.x)) + ((lastBody.second.x - minX) * -1);
+				float reduceX = _info.x - (_rect.right - reversOriginX);
+				float reduceY = _info.y - (_rect.bottom - footOriginY);
+				GdiTransparentBlt(hdc,
+					static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
+					static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()),
+					static_cast<int>(destination.x),
+					static_cast<int>(destination.y),
+					_memDC,
+					0,
+					0,
+					static_cast<int>(destination.x),
+					static_cast<int>(destination.y),
+					RGB(255, 0, 255));
+				/*Rectangle(hdc,
+					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + reduceX),
+					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)),
+					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + reduceX ) + 10,
+					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)) + 10);*/
+			}
+			else
+			{
+				GdiTransparentBlt(hdc,
+					static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()) ,
+					static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()),
+					static_cast<int>(destination.x),
+					static_cast<int>(destination.y),
+					_memDC,
+					0,
+					0,
+					static_cast<int>(destination.x),
+					static_cast<int>(destination.y),
+					RGB(255, 0, 255));
+				/*Rectangle(hdc,
+					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)),
+					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)),
+					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)) + 10,
+					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)) + 10);*/
+			}
 
-			Rectangle(hdc,
-				static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x )) ,
-				static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y )),
-				static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x )) + 10,
-				static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y )) + 10);
 		}
 	}
 }

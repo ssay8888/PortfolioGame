@@ -9,7 +9,7 @@ class Player :
     public GameObject
 {
 public:
-    Player(uint8_t layer = 5);
+    Player(uint8_t layer = 6);
     ~Player();
 
 
@@ -73,6 +73,7 @@ private:
     float _jump_power = 15.f;
     float _accel = 0.f;
     float _gravity = 9.f;
+    ObjectPos _oldOrigin;
 
     HDC _memDC;
     HBITMAP _bitmap;
