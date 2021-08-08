@@ -236,7 +236,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	else
 	{
-		if (!_is_fly && !_is_rope && !_is_jump && !_is_prone && strcmp(GetFrameState(), "stand1"))
+		if (!_is_fly && !_is_rope && !_is_jump && !_is_prone && strcmp(GetFrameState(), "swingO2") && strcmp(GetFrameState(), "stand1"))
 		{
 			this->ChangeFrameState("stand1");
 		}
@@ -245,7 +245,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (keymanager->KeyPressing(KEY_A))
 	{
-		this->ChangeFrameState("alert");
+		this->ChangeFrameState("swingO2");
 	}
 	if (keymanager->KeyPressing(KEY_B))
 	{
@@ -268,7 +268,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			uint64_t tick = GetTickCount64();
 			if (tick > _frame_tick + _frame_this->GetDelay())
 			{
-				if (!strcmp(GetFrameState(), "stand1"))
+				if (!strcmp(GetFrameState(), "stand1") || !strcmp(GetFrameState(), "swingO2"))
 				{
 					if (_frame_revers)
 					{
@@ -345,7 +345,7 @@ void Player::RenderCharacter(HDC hdc)
 		auto headskinItem = headFrameIter->second;
 		auto bodyItemParts = ItemFrameIter->second;
 
-		if (bodyskinItem && headskinItem && bodyItemParts)
+		if (bodyskinItem && headskinItem)
 		{
 			auto bodyFrames = bodyskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 			auto bodyParts = bodyFrames->GetParts();
@@ -362,12 +362,15 @@ void Player::RenderCharacter(HDC hdc)
 				partsFrames.emplace_back(part->second);
 				offsets.emplace_back(part->second);
 			}
-			auto itemFrames = bodyItemParts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-			auto itemParts = itemFrames->GetParts();
-			for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+			if (bodyItemParts) 
 			{
-				partsFrames.emplace_back(part->second);
-				offsets.emplace_back(part->second);
+				auto itemFrames = bodyItemParts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
+				auto itemParts = itemFrames->GetParts();
+				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+				{
+					partsFrames.emplace_back(part->second);
+					offsets.emplace_back(part->second);
+				}
 			}
 			auto headFrames = headskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 			auto headParts = headFrames->GetParts();
@@ -509,9 +512,9 @@ void Player::RenderCharacter(HDC hdc)
 		auto minXPair = std::min_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
 			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
-				return lhs.second.x + lhs.first->GetBitmap()->GetWidth() < rhs.second.x + rhs.first->GetBitmap()->GetWidth();
+				return lhs.second.x < rhs.second.x;
 			});
-		auto minX = minXPair->second.x + minXPair->first->GetBitmap()->GetWidth();
+		auto minX = minXPair->second.x;
 
 		auto maxXPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
@@ -520,12 +523,12 @@ void Player::RenderCharacter(HDC hdc)
 			});
 		auto maxX = maxXPair->second.x + maxXPair->first->GetBitmap()->GetWidth();
 
-		auto minYPair = std::max_element(positionedFramesList.begin(),
+		auto minYPair = std::min_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
 			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
-				return lhs.second.y + lhs.first->GetBitmap()->GetHeight() < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
+				return lhs.second.y < rhs.second.y;
 			});
-		auto minY = minYPair->second.y + minYPair->first->GetBitmap()->GetHeight();
+		auto minY = minYPair->second.y;
 
 		auto maxYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
@@ -546,36 +549,101 @@ void Player::RenderCharacter(HDC hdc)
 			DeleteObject(brush);
 			DeleteObject(brushPrev);
 
+			ObjectPos centerPos{ (maxX - minX) / 2, (maxY - minY) / 2 };
+
+			ObjectPos destination{ (maxX - minX) + (2 * 2), (maxY - minY) + (2 * 2) };
+			int oldCx = _info.cx - static_cast<int>(destination.x);
+			int oldCy = _info.cy - static_cast<int>(destination.y);
+			if (oldCx != 0) {
+				//_info.x += oldCx >> 1;
+			}
+			if (oldCy != 0) {
+				//_info.y += oldCy >> 1;
+			}
+			//_info.cx = static_cast<int>(destination.x);
+			//_info.cy = static_cast<int>(destination.y);
+			UpdateRectGameObject();
+
+			std::pair<SkinParts*, ObjectPos> lastBody;
+			for (auto body : positionedFramesList)
+			{
+				if ((!strcmp(body.first->GetName().c_str(), "body")) || !strcmp(body.first->GetName().c_str(), "backBody") &&
+					body.first->GetMaps()->find("neck") != body.first->GetMaps()->end() &&
+					body.first->GetMaps()->find("navel") != body.first->GetMaps()->end()) {
+					lastBody = body;
+				}
+			}
+			ObjectPos bodyShouldBe{ 36, 55 };
+			float tempX1 = lastBody.second.x - bodyShouldBe.x;
+			float tempY1 = lastBody.second.y - bodyShouldBe.y;
+			float tempX2 = minX;
+			float tempY2 = minY;
+
+
+
+			ObjectPos cropOrigin{ tempX1 - tempX2 , tempY1 - tempY2 };
+			RECT cropArea{ static_cast<int>(std::fmax(cropOrigin.x, 0)),
+				 static_cast<int>(std::fmax(cropOrigin.y, 0)), 96, 96 };
+			ObjectPos cropOffsetFromOrigin{ cropArea.left - cropOrigin.x, cropArea.top - cropOrigin.y };
+
 			for (auto draw : positionedFramesList)
 			{
 				draw.first->GetBitmap()->RenderBitmapImage(_memDC,
-					static_cast<int>(std::floor(_info.cx + draw.second.x - maxX)) + plus,
-					static_cast<int>(std::floor(_info.cy + draw.second.y - maxY)),
+					static_cast<int>(std::floor(draw.second.x - minX)),
+					static_cast<int>(std::floor(draw.second.y - minY)),
 					static_cast<int>(draw.first->GetBitmap()->GetWidth()),
 					static_cast<int>(draw.first->GetBitmap()->GetHeight()));
-			}
-
+			}//var cropArea = new Rectangle((int)Math.Max(cropOrigin.X, 0), (int)Math.Max(cropOrigin.Y, 0), 96, 96);
+			//ObjectPos Temp{ positionedFramesList}
+			// Point.Subtract(Point.Subtract(body.Item2, bodyShouldBe), new Size((int)minX, (int)minY))
 			if (GetFacingDirection())
 			{
-				StretchBlt(_memDC, 0, 0, 42 + plus, 64, _memDC, 41 + plus, 0, -42 - plus, 64, SRCCOPY);
+				int x = static_cast<int>(destination.x);
+				int y = static_cast<int>(destination.y);
+				StretchBlt(_memDC, 0, 0, x, y, _memDC, x - 1, 0, -x, y, SRCCOPY);
 			}
 
-			Rectangle(_memDC,
-				_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
-				_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
-				_rect.right + static_cast<int>(ScrollManager::GetScrollX()),
-				_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
+			//brush = CreateSolidBrush(RGB(255, 0, 255));
+			//brushPrev = (HBRUSH)SelectObject(_memDC, brush);
+			//Rectangle(_memDC,
+			//	_rect.left + static_cast<int>(ScrollManager::GetScrollX()) + plus,
+			//	_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
+			//	static_cast<int>(destination.x + ScrollManager::GetScrollX()),
+			//	static_cast<int>(destination.y + ScrollManager::GetScrollY()));
+			//SelectObject(_memDC, brushPrev);
+			//DeleteObject(brush);
+			//DeleteObject(brushPrev);
 
-			GdiTransparentBlt(hdc, 
-				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX()))  - (GetFacingDirection() ? plus * -1 : plus),
-				static_cast<int>(std::floor(_rect.top  + ScrollManager::GetScrollY())),
-				42 + plus,
-				64,
+			Rectangle(hdc,
+				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
+				static_cast<int>(std::floor(_rect.top + ScrollManager::GetScrollY())),
+				static_cast<int>(std::floor(_rect.right + ScrollManager::GetScrollX())),
+				static_cast<int>(std::floor(_rect.bottom + ScrollManager::GetScrollY())));
+
+			auto 발오리진x = lastBody.first->GetOrigin().x + (lastBody.second.x - minX);
+			auto 발오리진y = lastBody.first->GetOrigin().y + (lastBody.second.y - minY);
+			//Rectangle(hdc, static_cast<int>(발오리진x), static_cast<int>(발오리진y), static_cast<int>(발오리진x) + 10, static_cast<int>(발오리진y) + 10);
+		
+
+			float left = _info.x + (_info.cx) + (GetFacingDirection() ? 0 : oldCx);
+			float top = _info.y - (_info.cy / 2);
+			GdiTransparentBlt(hdc,
+				static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+				static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
+				static_cast<int>(destination.x),
+				static_cast<int>(destination.y),
 				_memDC,
-				0, 0,
-				42 + plus,
-				64,
+				0,
+				0,
+				static_cast<int>(destination.x),
+				static_cast<int>(destination.y),
 				RGB(255, 0, 255));
+
+			Rectangle(hdc,
+				static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x )) ,
+				static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y )),
+				static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x )) + 10,
+				static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y )) + 10);
 		}
 	}
 }
