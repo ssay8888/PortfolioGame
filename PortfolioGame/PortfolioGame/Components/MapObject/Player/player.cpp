@@ -10,7 +10,7 @@
 #include "../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../Managers/EffectManager/effect_manager.h"
-#include "../../../Components/MapObject/monster.h"
+#include "../../../Components/MapObject/Monster/monster.h"
 #include "../foot_hold.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
@@ -32,8 +32,8 @@ Player::Player(uint8_t layer) :
 
 Player::~Player()
 {
+	SelectObject(_memDC, _old_bitmap);
 	DeleteObject(_bitmap);
-	DeleteObject(_old_bitmap);
 	DeleteDC(_memDC);
 }
 
@@ -150,7 +150,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 			else
 			{
-				if (!_is_attacking) 
+				if (((_is_jump || _is_fly) && _is_attacking) || !_is_attacking)
 				{
 					totalMoveX -= GetSpeed();
 				}
@@ -170,7 +170,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 			else
 			{
-				if (!_is_attacking)
+				if (((_is_jump || _is_fly) && _is_attacking) || !_is_attacking)
 				{
 					totalMoveX += GetSpeed();
 				}
@@ -279,7 +279,6 @@ void Player::UpdateGameObject(const float deltaTime)
 			{
 				_frame_nummber++;
 				_frame_tick = tick;
-				std::cout << _frame_nummber << std::endl;
 			}
 		}
 	}
@@ -773,12 +772,21 @@ void Player::IsJumping()
 			{
 				_info.y = outY;
 				_is_fly = false;
+				if (_is_attacking)
+				{
+					if (strcmp(GetFrameState(), "swingO2")) //공격모션이아니라면 공격품
+					{
+						_is_attacking = false;
+					}
+				}
 				//ScrollManager::SetScrollY(-_info.y + (768 / 2));
 			}
 			else
 			{
-
-				this->ChangeFrameState("jump");
+				if (!_is_attacking)
+				{
+					this->ChangeFrameState("jump");
+				}
 				_is_fly = true;
 				_info.y += speed;
 				//ScrollManager::GainScrollY(-speed);
@@ -851,24 +859,14 @@ void Player::AttackMonster(Monster* monster)
 	//TODO: 데미지연산은 여기서..처리하도록하자
 	int32_t damage = rand();
 	monster->GainHp(-damage);
-	_damage_handler->InsertAttackDamageEffect(monster, damage, 850);
+	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
 }
 
 
 void Player::RenderGameObject(HDC hdc)
 {
 	UpdateRectGameObject();
-
-
-	Rectangle(hdc,
-		0,
-		100,
-		73 + 5,
-		150 + 17);
-
-	
 	RenderCharacter(hdc);
-
 	_damage_handler->ShowDamages(hdc);
 	
 }
@@ -878,7 +876,7 @@ void Player::LateUpdateGameObject()
 	Player::IsJumping();
 
 	uint64_t tick = GetTickCount64();
-	if (tick > _frame_tick + _frame_this->GetDelay())
+	if (!_is_rope && tick > _frame_tick + _frame_this->GetDelay())
 	{
 
 		if (!strcmp(GetFrameState(), "stand1") || !strcmp(GetFrameState(), "swingO2") || !strcmp(GetFrameState(), "alert"))
@@ -906,7 +904,7 @@ void Player::LateUpdateGameObject()
 					for (auto monster : mosnters)
 					{
 						AttackMonster(monster);
-						std::cout << "몬스터 데미지 피격!" << monster->GetHp() << std::endl;
+						//std::cout << "몬스터 데미지 피격!" << monster->GetHp() << std::endl;
 					}
 					_is_attacking = false;
 				}

@@ -1,12 +1,11 @@
-#include "../../pch.h"
+#include "../../../pch.h"
 #include "monster.h"
-#include "../Base/game_object.h"
-#include "../../Managers/MonsterMnager/monster_manager.h"
-#include "../../Managers/MonsterMnager/monster_movement.h"
-#include "../../Managers/MonsterMnager/monster_parts.h"
-#include "../../Managers/ScrollManager/scroll_manager.h"
-#include "../../Managers/MapManager/map_manager.h"
-#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../../Managers/MonsterMnager/monster_manager.h"
+#include "../../../Managers/MonsterMnager/monster_movement.h"
+#include "../../../Managers/MonsterMnager/monster_parts.h"
+#include "../../../Managers/ScrollManager/scroll_manager.h"
+#include "../../../Managers/MapManager/map_manager.h"
+#include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 Monster::Monster() :
     GameObject(0),
@@ -16,13 +15,29 @@ Monster::Monster() :
     _frame_nummber(0),
     _frame_revers(false),
     _frame_tick(0),
+    _is_alive(true),
     _monster_state(MonsterState::kStand),
+    _die_wait_tick(0),
+    _alpha_value(255),
     _bitmap(nullptr),
     _old_bitmap(nullptr),
-    _memDC(nullptr)
+    _memDC(nullptr),
+    _bitmap2(nullptr),
+    _old_bitmap2(nullptr),
+    _memDC2(nullptr)
 
 
 {
+}
+
+Monster::~Monster()
+{
+    SelectObject(_memDC, _old_bitmap);
+    DeleteObject(_bitmap);
+    DeleteDC(_memDC);
+    SelectObject(_memDC2, _old_bitmap2);
+    DeleteObject(_bitmap2);
+    DeleteDC(_memDC2);
 }
 
 MonsterInfo Monster::GetMonsterInfo()
@@ -135,7 +150,7 @@ void Monster::SetHp(uint32_t hp)
     _monster_info.hp = hp;
     if (0 > _monster_info.hp)
     {
-        _state = State::kDead;
+        _is_alive = false;
     }
 }
 
@@ -149,7 +164,7 @@ void Monster::GainHp(const int32_t hp)
     _monster_info.hp += hp;
     if (0 > _monster_info.hp)
     {
-        _state = State::kDead;
+        _is_alive = false;
     }
 }
 
@@ -216,11 +231,11 @@ bool Monster::IsAlive() const
 
 void Monster::IsJumping()
 {
-    //float outY = 0;
-    //FootHold* footHold;
-    //bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+    float outY = 0;
+    FootHold* footHold;
+    bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
 
-	/*if (isFoothold)
+	if (isFoothold)
 	{
 		if (_info.y <= outY)
 		{
@@ -237,7 +252,7 @@ void Monster::IsJumping()
 		{
 			_info.y = outY;
 		}
-    }*/
+    }
 }
 
 int Monster::ReadyGameObject()
@@ -247,12 +262,36 @@ int Monster::ReadyGameObject()
     _memDC = CreateCompatibleDC(hDC);
     _bitmap = CreateCompatibleBitmap(hDC, 1024, 768);
     _old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
+    _memDC2 = CreateCompatibleDC(hDC);
+    _bitmap2 = CreateCompatibleBitmap(hDC, 1024, 768);
+    _old_bitmap2 = (HBITMAP)SelectObject(_memDC2, _bitmap2);
     ReleaseDC(_hWnd, hDC);
     return 0;
 }
 
 void Monster::UpdateGameObject(const float deltaTime)
 {
+    if (!IsAlive())
+    {
+        ChangeState(MonsterState::kDie);
+        if (_state == State::kDead)
+        {
+            return;
+        }
+        auto endFrame = NextFrame();
+        if (_die_wait_tick == 0) {
+            if (endFrame)
+            {
+                _die_wait_tick = GetTickCount64();
+            }
+        }
+        else if (GetTickCount64() > _die_wait_tick + 250) //죽어도 시체가 남아있는 시간..
+        {
+            _state = State::kDead;
+        }
+        return;
+    }
+
     ChangeState(MonsterState::kMove);
     float totalMoveX = 0;
     float totalMoveY = 0;
@@ -271,27 +310,134 @@ void Monster::UpdateGameObject(const float deltaTime)
         {
             _facing_direction = 0;
         }
-        //if (_now_foothold == nullptr)
-        //{
-        //    //처음 발판을 설정.
-        //    MapManager::GetInstance()->FootholdYCollision(this, &outY, &_now_foothold);
-        //}
-        //_info.x += totalMoveX;
-        //_info.y += totalMoveY;
-        //FootHold* hold;
-        //if (MapManager::GetInstance()->FootholdYCollision(this, &outY, &hold))
-        //{
-        //    if (hold != _now_foothold) // 발판이 바뀌면 되돌아감.
-        //    {
-        //        _info.x -= totalMoveX;
-        //        _info.y -= totalMoveY;
-        //    }
-        //}
     }
 
 
-
     IsJumping();
+    NextFrame();
+}
+
+void Monster::RenderGameObject(HDC hdc)
+{
+    UpdateRectGameObject();
+    auto data = _this_frame[_frame_nummber % _this_frame.size()];
+    auto image = (*data)->GetImage();
+
+    HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+    HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
+    Rectangle(_memDC,
+        0-10,
+        0 - 10,
+        static_cast<int>((*image)->GetWidth() + 10),
+        static_cast<int>((*image)->GetHeight()) + 10);
+    SelectObject(_memDC, brushPrev);
+    DeleteObject(brush);
+    DeleteObject(brushPrev);
+    (*image)->RenderBitmapImage(_memDC,
+        0,
+        0,
+        static_cast<int>((*image)->GetWidth()),
+        static_cast<int>((*image)->GetHeight()));
+    if (GetFacingDirection())
+    {
+        StretchBlt(_memDC,
+            0,
+            0,
+            (*image)->GetWidth(), 
+            (*image)->GetHeight(), 
+            _memDC, 
+            (*image)->GetWidth() - 1,
+            0, 
+            -(*image)->GetWidth(),
+            (*image)->GetHeight(), SRCCOPY);
+    }
+
+    if (!IsAlive() && _die_wait_tick== 0)
+    {
+        BLENDFUNCTION bf{ 0,0 , _alpha_value -= 15, 0 };
+        BitBlt(_memDC2, 0, 0,
+            (*image)->GetWidth(),
+            (*image)->GetHeight(), hdc,
+            static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+            static_cast<int>(_rect.bottom - ((*image)->GetHeight()) + ScrollManager::GetScrollY()), SRCCOPY);
+
+        GdiTransparentBlt(_memDC2,
+            0,
+            0,
+            (*image)->GetWidth(),
+            (*image)->GetHeight(),
+            _memDC,
+            0,
+            0,
+            (*image)->GetWidth(),
+            (*image)->GetHeight(),
+            RGB(255, 0, 255));
+
+
+        GdiAlphaBlend(hdc,
+            static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+            static_cast<int>(_rect.bottom - ((*image)->GetHeight()) + ScrollManager::GetScrollY()),
+            (*image)->GetWidth(),
+            (*image)->GetHeight(),
+            _memDC2,
+            0, 0,
+            (*image)->GetWidth(),
+            (*image)->GetHeight(), bf);
+    }
+    else
+    {
+        GdiTransparentBlt(hdc,
+            static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+            static_cast<int>(_rect.bottom - ((*image)->GetHeight()) + ScrollManager::GetScrollY()),
+            (*image)->GetWidth(),
+            (*image)->GetHeight(),
+            _memDC,
+            0,
+            0,
+            (*image)->GetWidth(),
+            (*image)->GetHeight(),
+            RGB(255, 0, 255));
+
+    }
+}
+
+void Monster::LateUpdateGameObject()
+{
+}
+
+void Monster::ChangeState(MonsterState state)
+{
+    if (_monster_state != state)
+    {
+        _frame_tick = 0;
+        _frame_nummber = 0;
+        _frame_revers = false;
+        _monster_state = state;
+        switch (state)
+        {
+        case Monster::MonsterState::kStand:
+        {
+            _this_frame = (*_movement)->FindMovement("stand");
+            break;
+        }
+        case Monster::MonsterState::kMove:
+            _this_frame = (*_movement)->FindMovement("move");
+            break;
+        case Monster::MonsterState::kDie:
+            _this_frame = (*_movement)->FindMovement("die1");
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void Monster::ShowDieMotion()
+{
+}
+
+bool Monster::NextFrame()
+{
     uint64_t tick = GetTickCount64();
     if (tick > _frame_tick + (*_this_frame[_frame_nummber % _this_frame.size()])->GetDelay())
     {
@@ -312,81 +458,6 @@ void Monster::UpdateGameObject(const float deltaTime)
         }
         _frame_tick = tick;
     }
-}
-
-void Monster::RenderGameObject(HDC hdc)
-{
-    UpdateRectGameObject();
-    auto data = _this_frame[_frame_nummber % _this_frame.size()];
-    auto image = (*data)->GetImage();
-    Rectangle(_memDC,
-        0,
-        0,
-        static_cast<int>((*image)->GetWidth()),
-        static_cast<int>((*image)->GetHeight()));
-    (*image)->RenderBitmapImage(_memDC,
-        0,
-        0,
-        static_cast<int>((*image)->GetWidth()),
-        static_cast<int>((*image)->GetHeight()));
-    if (GetFacingDirection())
-    {
-        StretchBlt(_memDC,
-            0,
-            0,
-            (*image)->GetWidth(), 
-            (*image)->GetHeight(), 
-            _memDC, 
-            (*image)->GetWidth() - 1,
-            0, 
-            -(*image)->GetWidth(),
-            (*image)->GetHeight(), SRCCOPY);
-    }
-
-    Rectangle(hdc,
-        static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
-        static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
-            static_cast<int>(_rect.right + ScrollManager::GetScrollX()),
-                static_cast<int>(_rect.bottom + ScrollManager::GetScrollY()));
-
-    GdiTransparentBlt(hdc,
-        static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
-        static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
-        (*image)->GetWidth(),
-        (*image)->GetHeight(),
-        _memDC,
-        0, 0,
-        (*image)->GetWidth(),
-        (*image)->GetHeight(),
-        RGB(255, 0, 255));
-}
-
-void Monster::LateUpdateGameObject()
-{
-}
-
-void Monster::ChangeState(MonsterState state)
-{
-    if (_monster_state != state)
-    {
-        _frame_tick = 0;
-        _frame_nummber = 0;
-        _monster_state = state;
-        switch (state)
-        {
-        case Monster::MonsterState::kStand:
-        {
-            _this_frame = (*_movement)->FindMovement("stand");
-            break;
-        }
-        case Monster::MonsterState::kMove:
-            _this_frame = (*_movement)->FindMovement("move");
-            break;
-        case Monster::MonsterState::kDie:
-            _this_frame = (*_movement)->FindMovement("die1");
-            break;
-        default:
-            break;
-        }
-    }
+   // _info.cy = (*(*_this_frame[_frame_nummber % _this_frame.size()])->GetImage())->GetHeight();
+    return _frame_revers; // 리버스가 true되면 모션이 끝난것으로 간주!
 }

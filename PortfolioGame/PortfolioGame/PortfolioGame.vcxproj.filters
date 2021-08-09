@@ -68,6 +68,12 @@
     <Filter Include="Components\MapObject\Player\Damage">
       <UniqueIdentifier>{3c04bafa-2cae-40d1-bfd9-dd84bf12335e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\MapObject\Monster">
+      <UniqueIdentifier>{dcea4126-f785-4e77-ad27-57f04c368e71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Monster\AiMovement">
+      <UniqueIdentifier>{a7e206f1-a62a-456f-a84e-dbd4dadaf54d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -157,9 +163,6 @@
     <ClInclude Include="Components\game_mouse.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MapObject\monster.h">
-      <Filter>Components\MapObject</Filter>
-    </ClInclude>
     <ClInclude Include="Managers\MonsterMnager\monster_manager.h">
       <Filter>Managers\MonsterManager</Filter>
     </ClInclude>
@@ -180,6 +183,12 @@
     </ClInclude>
     <ClInclude Include="Components\MapObject\Player\Damage\damage_handler.h">
       <Filter>Components\MapObject\Player\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Monster\monster.h">
+      <Filter>Components\MapObject\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Monster\AiMovement\ai_movement.h">
+      <Filter>Components\MapObject\Monster\AiMovement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +261,6 @@
     <ClCompile Include="Components\game_mouse.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MapObject\monster.cpp">
-      <Filter>Components\MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="Managers\MonsterMnager\monster_manager.cpp">
       <Filter>Managers\MonsterManager</Filter>
     </ClCompile>
@@ -275,6 +281,12 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\Damage\damage_info.cpp">
       <Filter>Components\MapObject\Player\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\monster.cpp">
+      <Filter>Components\MapObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\AiMovement\ai_movement.cpp">
+      <Filter>Components\MapObject\Monster\AiMovement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Base/game_object.h"
+#include "../../Base/game_object.h"
 class MonsterMovement;
 class MonsterParts;
 class FootHold;
@@ -10,7 +10,7 @@ class Monster :
 public:
 	enum class MonsterState { kStand, kMove, kDie };
 	Monster();
-	~Monster() = default;
+	~Monster();
 	MonsterInfo GetMonsterInfo();
 
 	void SetMonsterCode(std::string code);
@@ -62,7 +62,14 @@ private:
 	
 	void IsJumping();
 	void ChangeState(MonsterState state);
+	void ShowDieMotion();
 
+	bool NextFrame();
+
+
+	void LeftMoving();
+	void RightMoving();
+	void StopMoving();
 private:
 	MonsterInfo _monster_info;
 	std::shared_ptr<MonsterMovement*> _movement;
@@ -76,6 +83,10 @@ private:
 	bool _facing_direction;
 	bool _is_alive;
 
+	//죽음 관련
+	uint64_t _die_wait_tick;
+	uint8_t _alpha_value;
+
 	//프레임관련변수
 	uint64_t _frame_tick;
 	uint16_t _frame_nummber;
@@ -86,5 +97,8 @@ private:
 	HDC _memDC;
 	HBITMAP _bitmap;
 	HBITMAP _old_bitmap;
+	HDC _memDC2;
+	HBITMAP _bitmap2;
+	HBITMAP _old_bitmap2;
 };
 

@@ -3,7 +3,7 @@
 #include "../../Components/Base/game_object.h"
 #include "../../Components/MapObject/map_object_info.h"
 #include "../../Components/MapObject/Player/player.h"
-#include "../../Components/MapObject/monster.h"
+#include "../../Components/MapObject/Monster/monster.h"
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"

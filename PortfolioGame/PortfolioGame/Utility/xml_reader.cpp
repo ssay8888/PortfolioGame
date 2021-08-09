@@ -11,7 +11,7 @@
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/MonsterMnager/monster_movement.h"
 #include "../Managers/MonsterMnager/monster_parts.h"
-#include "../Components/MapObject/monster.h"
+#include "../Components/MapObject/Monster/monster.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../Common/Utility/file_manager.h"
 
