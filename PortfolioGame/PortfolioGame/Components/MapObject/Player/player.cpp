@@ -728,9 +728,9 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)) + 10);*/
 			}
 			std::wstring str;
-			str.append(L"X: ").append(std::to_wstring(_info.x)).append(L"  Y : ").append(std::to_wstring(_info.y));
-			TextOut(hdc, static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
-				static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
+			//str.append(L"X: ").append(std::to_wstring(_info.x)).append(L"  Y : ").append(std::to_wstring(_info.y));
+			///TextOut(hdc, static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
+			//	static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
 		}
 	}
 }

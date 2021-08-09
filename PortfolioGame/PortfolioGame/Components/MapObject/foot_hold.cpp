@@ -72,8 +72,8 @@ void FootHold::RenderFootHold(HDC hdc)
 	DeleteObject(oldPen);
 	std::wstring str;
 	
-	str.append(L"X : ").append(std::to_wstring(_start.x)).append(L"  ").append(L"Y: ").append(std::to_wstring(_start.y)).
-		append(L"     End X : ").append(std::to_wstring(_end.x)).append(L"  ").append(L"Y: ").append(std::to_wstring(_end.y));
-	TextOut(hdc, static_cast<int>(_start.x + ScrollManager::GetScrollX()), static_cast<int>(_start.y + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
+	//str.append(L"X : ").append(std::to_wstring(_start.x)).append(L"  ").append(L"Y: ").append(std::to_wstring(_start.y)).
+	//	append(L"     End X : ").append(std::to_wstring(_end.x)).append(L"  ").append(L"Y: ").append(std::to_wstring(_end.y));
+	//TextOut(hdc, static_cast<int>(_start.x + ScrollManager::GetScrollX()), static_cast<int>(_start.y + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
 }
 

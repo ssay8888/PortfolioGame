@@ -19,9 +19,6 @@ Monster::Monster() :
     _monster_state(MonsterState::kStand),
     _die_wait_tick(0),
     _alpha_value(255),
-    _bitmap(nullptr),
-    _old_bitmap(nullptr),
-    _memDC(nullptr),
     _bitmap2(nullptr),
     _old_bitmap2(nullptr),
     _memDC2(nullptr)
@@ -352,9 +349,16 @@ void Monster::RenderGameObject(HDC hdc)
             (*image)->GetHeight(), SRCCOPY);
     }
 
-    if (!IsAlive() && _die_wait_tick== 0)
+    if (!IsAlive() && _die_wait_tick > 0)
     {
-        BLENDFUNCTION bf{ 0,0 , _alpha_value -= 15, 0 };
+        BLENDFUNCTION bf{ 0,0 , _alpha_value, 0 };
+        auto tick =  GetTickCount64();
+        if (tick > _alpha_tick + 40)
+        {
+            _alpha_value -= 30;
+            _alpha_tick = tick;
+        }
+        std::cout << std::to_string(_alpha_value) << std::endl;
         BitBlt(_memDC2, 0, 0,
             (*image)->GetWidth(),
             (*image)->GetHeight(), hdc,

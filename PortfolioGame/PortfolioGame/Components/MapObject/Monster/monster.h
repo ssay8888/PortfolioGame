@@ -86,6 +86,7 @@ private:
 	//죽음 관련
 	uint64_t _die_wait_tick;
 	uint8_t _alpha_value;
+	uint64_t _alpha_tick;
 
 	//프레임관련변수
 	uint64_t _frame_tick;
@@ -94,9 +95,6 @@ private:
 	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
 
 
-	HDC _memDC;
-	HBITMAP _bitmap;
-	HBITMAP _old_bitmap;
 	HDC _memDC2;
 	HBITMAP _bitmap2;
 	HBITMAP _old_bitmap2;

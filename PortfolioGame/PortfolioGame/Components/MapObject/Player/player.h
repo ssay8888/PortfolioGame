@@ -100,7 +100,4 @@ private:
     /// <summary>
     /// ±‚≈∏
     /// </summary>
-    HDC _memDC;
-    HBITMAP _bitmap;
-    HBITMAP _old_bitmap;
 };
