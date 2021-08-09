@@ -15,7 +15,12 @@ void SkinManager::LoadSkin()
 {
 	XmlReader::GetInstance().LoadCharecterSkin(2000);
 	XmlReader::GetInstance().LoadCharecterSkin(12000);
-	XmlReader::GetInstance().LoadCharacterItem(1302000);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Weapon", 1302000);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Hair", 30000);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Face", 20000);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Coat", 1040002);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Pants", 1060002);
+	XmlReader::GetInstance().LoadCharacterItem("Character\\Shoes", 1072001);
 
 	LoadBase();
 
@@ -152,7 +157,7 @@ uint32_t SkinManager::FindPosition(std::string z)
 	return zPosition;
 }
 
-void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> info, SkinItem* skinitem)
+void SkinManager::UolSetting(uint32_t skinId, std::map<std::string, SkinInfo*> info, SkinItem* skinitem)
 {
 	for (auto frames = skinitem->GetSkinFrames()->begin(); frames != skinitem->GetSkinFrames()->end(); ++frames)
 	{
@@ -165,11 +170,17 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 				StringTools::ReplaceAll(uol, "../");
 				auto splitString = StringTools::SplitString(uol, '/');
 				SkinParts * part = nullptr;
-				if (!strcmp(skinitem->GetName().c_str(), "prone"))
+				if (splitString.size() == 2)
 				{
-					int asd = 123;
+					if (!strcmp(splitString[1].c_str(), "hairOverHead")) {
+						int asd = 123;
+					}
 				}
-				if (overlapCount == 1)
+				if (overlapCount == 0)
+				{
+					part = parts->second->GetPartner()->FindParts(splitString[0]);
+				}
+				else if (overlapCount == 1)
 				{
 					if (splitString.size() == 2)
 					{
@@ -197,7 +208,9 @@ void SkinManager::UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> i
 							skinItem = parts->second->GetPartner()->GetPartner()->GetPartner()->FindBodySkinItem(splitString[0]);
 						}
 						auto skinFrame = skinItem->FindFrame(splitString[1]);
-						if (skinFrame != nullptr && !strcmp(splitString[1].c_str(), "head"))
+						if (skinFrame != nullptr &&
+							(!strcmp(splitString[1].c_str(), "head") || !strcmp(splitString[1].c_str(), "hairShade") || !strcmp(splitString[1].c_str(), "backHair") ||
+							!strcmp(splitString[1].c_str(), "hair") || !strcmp(splitString[1].c_str(), "backHairBelowCap") || !strcmp(splitString[1].c_str(), "hairOverHead")))
 						{
 							part = skinFrame->GetParts()->begin()->second;
 						}

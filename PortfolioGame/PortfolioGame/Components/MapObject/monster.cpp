@@ -1,5 +1,6 @@
 #include "../../pch.h"
 #include "monster.h"
+#include "../Base/game_object.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../Managers/MonsterMnager/monster_movement.h"
 #include "../../Managers/MonsterMnager/monster_parts.h"
@@ -10,7 +11,17 @@
 Monster::Monster() :
     GameObject(0),
     _monster_info({}),
-    _now_foothold(nullptr)
+    _now_foothold(nullptr),
+    _facing_direction(false),
+    _frame_nummber(0),
+    _frame_revers(false),
+    _frame_tick(0),
+    _monster_state(MonsterState::kStand),
+    _bitmap(nullptr),
+    _old_bitmap(nullptr),
+    _memDC(nullptr)
+
+
 {
 }
 
@@ -122,11 +133,24 @@ uint32_t Monster::GetExp() const
 void Monster::SetHp(uint32_t hp)
 {
     _monster_info.hp = hp;
+    if (0 > _monster_info.hp)
+    {
+        _state = State::kDead;
+    }
 }
 
 uint32_t Monster::GetHp() const
 {
     return _monster_info.hp;
+}
+
+void Monster::GainHp(const int32_t hp)
+{
+    _monster_info.hp += hp;
+    if (0 > _monster_info.hp)
+    {
+        _state = State::kDead;
+    }
 }
 
 void Monster::SetMaxHp(uint32_t maxhp)
@@ -183,6 +207,11 @@ std::string Monster::GetName() const
 bool Monster::GetFacingDirection()
 {
     return _facing_direction;
+}
+
+bool Monster::IsAlive() const
+{
+    return _is_alive;
 }
 
 void Monster::IsJumping()
@@ -314,10 +343,15 @@ void Monster::RenderGameObject(HDC hdc)
             (*image)->GetHeight(), SRCCOPY);
     }
 
+    Rectangle(hdc,
+        static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+        static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
+            static_cast<int>(_rect.right + ScrollManager::GetScrollX()),
+                static_cast<int>(_rect.bottom + ScrollManager::GetScrollY()));
 
     GdiTransparentBlt(hdc,
-        static_cast<int>(_info.x - (_info.cx >> 1) + ScrollManager::GetScrollX()),
-        static_cast<int>(_info.y + (_info.cy >> 1) - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()),
+        static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
+        static_cast<int>(_rect.top + ScrollManager::GetScrollY()),
         (*image)->GetWidth(),
         (*image)->GetHeight(),
         _memDC,

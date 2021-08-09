@@ -3,6 +3,7 @@ class GameObject;
 class FootHold;
 class MyBitmap;
 class Player;
+class Monster;
 class MapManager
 {
 	MapManager();
@@ -36,7 +37,7 @@ public:
 
 	void TileImageLoad(std::string folderName);
 	void MapObjectImageLoad();
-
+	std::list<Monster*> HitBoxMonsterCollision(RECT rect, uint32_t count);
 
 	std::list<FootHold*>* GetListRopeLadder();
 	std::list<FootHold*> GetMapFootHold();
@@ -46,8 +47,9 @@ public:
 	Player* GetPlayer();
 private:
 	MyBitmap* _backGroundImage;
-	Player* _player;
+	Player* _map_player;
 	std::list<GameObject*> _listGameObject[MaxLayer];
+	std::list<Monster*> _listMonsterObject[MaxLayer];
 	std::list<FootHold*> _listFootHold;
 	std::list<FootHold*> _listRopeLadder;
 

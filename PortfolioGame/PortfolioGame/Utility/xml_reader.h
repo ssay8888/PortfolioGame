@@ -17,7 +17,7 @@ public:
 	}
 
 	// 스킨관련메소드
-	SkinFrame* FindCanvas(pugi::xml_node node, int32_t size);
+	SkinFrame* FindCanvas(std::string type, pugi::xml_node node, int32_t size);
 	std::vector<std::string> LoadCharecterSkin(const int32_t count);
 
 	std::list<std::pair<std::string, std::string>> LoadSmap();
@@ -26,7 +26,7 @@ public:
 	const std::wstring StringToWString(const char* buffer) const;
 
 	//아이템메소드
-	std::vector<std::string> LoadCharacterItem(const int32_t code);
+	std::vector<std::string> LoadCharacterItem(std::string type,  const int32_t code);
 
 
 	///몬스터관련 메소드

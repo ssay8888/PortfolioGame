@@ -4,6 +4,7 @@
 #include "../../MapManager/map_manager.h"
 #include "../../UiManager/ui_manager.h"
 #include "../../UiManager/ui_button.h"
+#include "../../EffectManager/effect_manager.h"
 #include "../../MonsterMnager/monster_manager.h"
 #include "../../../Components/game_mouse.h"
 
@@ -32,6 +33,7 @@ int InGameScene::ReadyScene()
 	_mouse->DoReadyGame();
 	ShowCursor(false);
 	UiManager::GetInstance()->ReadyUiManager();
+	EffectManager::GetInstance()->LoadDamageNumber();
 	return 0;
 }
 

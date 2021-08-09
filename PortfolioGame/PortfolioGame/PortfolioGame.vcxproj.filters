@@ -59,6 +59,15 @@
     <Filter Include="Managers\MonsterManager">
       <UniqueIdentifier>{2210b790-f69f-403e-90ba-015825be84a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\EffectManager">
+      <UniqueIdentifier>{e03648d7-fa60-4fc6-a504-46ebc2fe73aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Player">
+      <UniqueIdentifier>{d95853bf-9f51-41a7-ad92-036486838819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Player\Damage">
+      <UniqueIdentifier>{3c04bafa-2cae-40d1-bfd9-dd84bf12335e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -108,9 +117,6 @@
     </ClInclude>
     <ClInclude Include="Managers\ScrollManager\scroll_manager.h">
       <Filter>Managers\ScrollManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MapObject\player.h">
-      <Filter>Components\MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Components\MapObject\map_object_info.h">
       <Filter>Components\MapObject</Filter>
@@ -163,6 +169,18 @@
     <ClInclude Include="Managers\MonsterMnager\monster_movement.h">
       <Filter>Managers\MonsterManager</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\EffectManager\effect_manager.h">
+      <Filter>Managers\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\player.h">
+      <Filter>Components\MapObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Damage\damage_info.h">
+      <Filter>Components\MapObject\Player\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Damage\damage_handler.h">
+      <Filter>Components\MapObject\Player\Damage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -194,9 +212,6 @@
     </ClCompile>
     <ClCompile Include="Managers\ScrollManager\scroll_manager.cpp">
       <Filter>Managers\ScrollManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MapObject\player.cpp">
-      <Filter>Components\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Components\MapObject\map_object_info.cpp">
       <Filter>Components\MapObject</Filter>
@@ -248,6 +263,18 @@
     </ClCompile>
     <ClCompile Include="Managers\MonsterMnager\monster_movement.cpp">
       <Filter>Managers\MonsterManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\EffectManager\effect_manager.cpp">
+      <Filter>Managers\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\player.cpp">
+      <Filter>Components\MapObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Damage\damage_handler.cpp">
+      <Filter>Components\MapObject\Player\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Damage\damage_info.cpp">
+      <Filter>Components\MapObject\Player\Damage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

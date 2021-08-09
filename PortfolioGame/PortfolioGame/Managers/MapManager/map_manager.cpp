@@ -2,7 +2,7 @@
 #include <io.h>
 #include "../../Components/Base/game_object.h"
 #include "../../Components/MapObject/map_object_info.h"
-#include "../../Components/MapObject/player.h"
+#include "../../Components/MapObject/Player/player.h"
 #include "../../Components/MapObject/monster.h"
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
@@ -14,7 +14,8 @@
 
 MapManager::MapManager() :
 	_mapSize({}),
-	_backGroundImage(nullptr)
+	_backGroundImage(nullptr),
+	_map_player(nullptr)
 {
 }
 
@@ -31,11 +32,11 @@ void MapManager::ReadyMapManager()
 
 	_backGroundImage->Insert_Bitmap(_hWnd, L"Client\\Map\\Back\\back.bmp");
 
-	auto monster = MonsterManager::GetInstance()->FindMonster("Client\\Mob\\0100100.img.xml");
-	auto monsterCopy = new Monster(*(*monster));
-	monsterCopy->SetInfo({200, 800, 43, 33});
-	monsterCopy->DoReadyGame();
-	_listGameObject[5].emplace_back(monsterCopy);
+	//auto monster = MonsterManager::GetInstance()->FindMonster("Client\\Mob\\0100100.img.xml");
+	//auto monsterCopy = new Monster(*(*monster));
+	//monsterCopy->SetInfo({200, 800, 43, 33});
+	//monsterCopy->DoReadyGame();
+	//_listGameObject[5].emplace_back(monsterCopy);
 	//auto fileNams = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Tile\\woodMarble.img\\");
 
 	//std::map<std::string, MyBitmap*> list;
@@ -126,13 +127,14 @@ void MapManager::LoadMapData()
 			} 
 			else if (obj->GetImageNumber() == -2)
 			{
+
 				auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
 				auto monsterCopy = new Monster(*(*monster));
-				monsterCopy->SetInfo({ 200, 800, 43, 33 });
+				monsterCopy->SetInfo(obj->GetInfo());
 				monsterCopy->DoReadyGame();
 
 				_listGameObject[obj->GetLayer()].emplace_back(monsterCopy);
-
+				_listMonsterObject[obj->GetLayer()].emplace_back(monsterCopy);
 				delete obj;
 			}
 			else
@@ -305,7 +307,7 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 	{
 		float xas = footHold->GetStartPos().x;
 		if (object->GetInfo().x >= footHold->GetStartPos().x &&
-			object->GetInfo().x <= footHold->GetEndPos().x + (std::abs(footHold->GetStartPos().x - footHold->GetEndPos().x)))
+			object->GetInfo().x <= footHold->GetEndPos().x)
 		{
 
 			float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
@@ -531,12 +533,12 @@ void MapManager::TileImageLoad(std::string folderName)
 
 void MapManager::SetPlayer(Player* player)
 {
-	_player = player;
+	_map_player = player;
 }
 
 Player* MapManager::GetPlayer()
 {
-	return _player;
+	return _map_player;
 }
 
 std::list<FootHold*> MapManager::GetMapFootHold()
@@ -549,7 +551,7 @@ std::list<FootHold*>* MapManager::GetListRopeLadder()
 	return &_listRopeLadder;
 }
 
-inline void MapManager::MapObjectImageLoad()
+void MapManager::MapObjectImageLoad()
 {
 	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Map\\Obj\\");
 
@@ -563,6 +565,27 @@ inline void MapManager::MapObjectImageLoad()
 			_listObjBitmap.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
 		}
 	}
+}
+
+std::list<Monster*> MapManager::HitBoxMonsterCollision(RECT rect, uint32_t count)
+{
+	RECT rc;
+	std::list<Monster*> monsters;
+	for (int i = 0; i < MaxLayer; ++i)
+	{
+		for (auto data : _listMonsterObject[i])
+		{
+			RECT dist = data->GetRect();
+			if (IntersectRect(&rc, &rect,  &dist))
+			{
+				monsters.emplace_back(data);
+				if (count >= monsters.size()) {
+					break;
+				}
+			}
+		}
+	}
+	return monsters;
 }
 
 ObjectPos MapManager::GetMapSize() const

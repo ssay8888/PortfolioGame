@@ -7,7 +7,8 @@ MapObject::MapObject() :
 	_info({}),
 	_rect({}),
 	_layer(5),
-	_state{ObjectType::kNoLife}
+	_state{ ObjectType::kNoLife },
+	_imageNumber(0)
 {
 }
 

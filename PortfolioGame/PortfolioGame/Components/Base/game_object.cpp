@@ -8,7 +8,12 @@ GameObject::GameObject(uint8_t layer) :
 	_rect({}),
 	_speed(0),
 	_state(GameObject::State::kActive),
-	_image(nullptr)
+	_image(nullptr),
+	_bitmap(nullptr),
+	_imageNumber(0),
+	_memDC(nullptr),
+	_objectType(ObjectType::kNoLife),
+	_old_bitmap(nullptr)
 {
 }
 

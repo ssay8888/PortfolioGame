@@ -31,9 +31,9 @@ typedef struct {
 	uint16_t mdd;
 	float speed;
 	uint32_t exp;
-	uint32_t hp;
-	uint32_t max_hp;
-	uint32_t mp;
-	uint32_t max_mp;
+	int32_t hp;
+	int32_t max_hp;
+	int32_t mp;
+	int32_t max_mp;
 	std::string name;
 } MonsterInfo;

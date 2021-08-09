@@ -2,7 +2,7 @@
 #include "ui_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../MapManager/map_manager.h"
-#include "../../Components/MapObject/player.h"
+#include "../../Components/MapObject/Player/player.h"
 #include "ui_button.h"
 
 std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",

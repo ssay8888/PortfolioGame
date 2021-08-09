@@ -28,7 +28,7 @@ public:
 
 private:
 	void LoadBase();
-	void UolSetting(uint16_t skinId, std::map<std::string, SkinInfo*> info, SkinItem* skinitem);
+	void UolSetting(uint32_t skinId, std::map<std::string, SkinInfo*> info, SkinItem* skinitem);
 private:
 	std::map<std::string, SkinInfo*> _bodySkins;
 	std::map<std::string, SkinInfo*> _itemSkins;

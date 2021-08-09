@@ -39,6 +39,7 @@ public:
 	uint32_t GetExp() const;
 	void SetHp(uint32_t hp);
 	uint32_t GetHp() const;
+	void GainHp(const int32_t hp);
 	void SetMaxHp(uint32_t maxhp);
 	uint32_t GetMaxHp() const;
 	void SetMp(uint32_t mp);
@@ -52,7 +53,7 @@ public:
 	std::string GetName() const;
 
 	bool GetFacingDirection();
-
+	bool IsAlive() const;
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
@@ -73,6 +74,7 @@ private:
 	FootHold* _now_foothold;
 	MonsterState _monster_state;
 	bool _facing_direction;
+	bool _is_alive;
 
 	//프레임관련변수
 	uint64_t _frame_tick;

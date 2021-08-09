@@ -1,10 +1,12 @@
 #pragma once
-#include "../Base/game_object.h"
+#include "../../Base/game_object.h"
 
 class SkinInfo;
 class SkinItem;
 class SkinFrame;
 class FootHold;
+class Monster;
+class DamageHandler;
 class Player :
     public GameObject
 {
@@ -46,6 +48,11 @@ private:
     void RenderCharacter(HDC hdc);
 
     void IsJumping();
+    void TryMeleeAttack();
+
+    bool IsAlertStateTick();
+    void UpdateAlertTick();
+    void AttackMonster(Monster* monster);
 private:
     uint16_t _skin_id;
     uint16_t _frame_nummber;
@@ -65,7 +72,17 @@ private:
 
     ObjectInfo _player_info;
 
+    /// <summary>
+    /// 공격관련
+    /// </summary>
+    RECT _melee_attack_hitbox;
+    RECT _magic_attack_hitbox;
+    bool _is_attacking;
+    uint64_t _alert_tick;
 
+    /// <summary>
+    /// 발판관련
+    /// </summary>
     FootHold* _now_foothold;
     FootHold* _next_foothold;
     bool _is_first_foothold;
@@ -75,6 +92,14 @@ private:
     float _gravity = 9.f;
     ObjectPos _oldOrigin;
 
+    /// <summary>
+    /// 데미지관련
+    /// </summary>
+    DamageHandler* _damage_handler;
+    
+    /// <summary>
+    /// 기타
+    /// </summary>
     HDC _memDC;
     HBITMAP _bitmap;
     HBITMAP _old_bitmap;

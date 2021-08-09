@@ -1,6 +1,6 @@
 #include "../pch.h"
 #include "main_game.h"
-#include "../Components/MapObject/player.h"
+#include "../Components/MapObject/Player/player.h"
 #include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_frame.h"
 #include "../Managers/Skins/skin_item.h"
@@ -19,7 +19,10 @@ MainGame::MainGame(HDC hdc) :
 	_bitmap(nullptr),
 	_old_bitmap(nullptr),
 	_ticksCount(GetTickCount64()),
-	_player(nullptr)
+	_player(nullptr),
+	_szFPS{},
+	_iFPS(0),
+	_dwFPSTime(0)
 {
 }
 
