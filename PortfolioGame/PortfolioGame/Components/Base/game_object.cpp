@@ -152,6 +152,19 @@ void GameObject::SetObjectType(const ObjectType type)
 	_objectType = type;
 }
 
+int GameObject::ReadyGameObject()
+{
+	return 0;
+}
+
 void GameObject::UpdateGameObject(const float deltaTime)
+{
+}
+
+void GameObject::RenderGameObject(HDC hdc)
+{
+}
+
+void GameObject::LateUpdateGameObject()
 {
 }

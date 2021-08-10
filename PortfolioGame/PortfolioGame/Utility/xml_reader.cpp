@@ -3,6 +3,8 @@
 #include <fstream> 
 
 #include "xml_reader.h"
+#include "../Components/Base/game_object.h"
+#include "../Managers/MapManager/map_manager.h"
 #include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_frame.h"
@@ -12,6 +14,7 @@
 #include "../Managers/MonsterMnager/monster_movement.h"
 #include "../Managers/MonsterMnager/monster_parts.h"
 #include "../Components/MapObject/Monster/monster.h"
+#include "../Components/MapObject/ani_map_object.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../Common/Utility/file_manager.h"
 
@@ -493,5 +496,33 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		{
 			(*monster)->SetExp(std::stoi(info.node().attribute("value").value()));
 		}
+	}
+}
+
+void XmlReader::LoadPortal()
+{
+
+	pugi::xml_document doc;
+	auto err = doc.load_file("Client\\Map\\Portal.xml");
+
+	std::vector<std::string> list;
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir/canvas");
+
+		AniMapObject* aniObject = new AniMapObject();
+		for (auto canvas : datas)
+		{
+			char path[150];
+			sprintf_s(path, 150, "Client\\Map\\pv.%s.bmp", canvas.node().attribute("name").value());
+			MyBitmap* image = new MyBitmap();
+			image->Insert_Bitmap(_hWnd, StringTools::StringToWString(path).c_str());
+			for(auto vector : canvas.node())
+			{
+				ObjectPos pos{ std::stof(vector.attribute("x").value()) , std::stof(vector.attribute("y").value()) };
+				aniObject->InsertAni(pos, image);
+			}
+		}
+		MapManager::GetInstance()->InsertObjectImage("portal", aniObject);
 	}
 }

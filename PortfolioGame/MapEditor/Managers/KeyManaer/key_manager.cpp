@@ -34,6 +34,10 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_L;
 	if (GetAsyncKeyState('Z') & 0x8000)
 		m_dwKey |= KEY_Z;
+	if (GetAsyncKeyState('C') & 0x8000)
+		m_dwKey |= KEY_C;
+	if (GetAsyncKeyState('X') & 0x8000)
+		m_dwKey |= KEY_X;
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		m_dwKey |= KEY_LEFT;
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
@@ -42,6 +46,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_UP;
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		m_dwKey |= KEY_DOWN;
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+		m_dwKey |= KEY_CONTROL;
 }
 
 bool KeyManager::KeyUp(DWORD dwKey)

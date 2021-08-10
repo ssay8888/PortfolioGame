@@ -74,6 +74,9 @@
     <Filter Include="Components\MapObject\Monster\AiMovement">
       <UniqueIdentifier>{a7e206f1-a62a-456f-a84e-dbd4dadaf54d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\MapManager\Map">
+      <UniqueIdentifier>{3fb389f7-266e-45b2-a61b-cac6a93a1444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -190,6 +193,15 @@
     <ClInclude Include="Components\MapObject\Monster\AiMovement\ai_movement.h">
       <Filter>Components\MapObject\Monster\AiMovement</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\MapManager\Map\map_instance.h">
+      <Filter>Managers\MapManager\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\ani_map_object.h">
+      <Filter>Components\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\portal.h">
+      <Filter>Components\MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -287,6 +299,15 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\Monster\AiMovement\ai_movement.cpp">
       <Filter>Components\MapObject\Monster\AiMovement</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\MapManager\Map\map_instance.cpp">
+      <Filter>Managers\MapManager\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\ani_map_object.cpp">
+      <Filter>Components\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\portal.cpp">
+      <Filter>Components\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

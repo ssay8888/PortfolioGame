@@ -4,6 +4,9 @@ class FootHold;
 class MyBitmap;
 class Player;
 class Monster;
+class MapInstance;
+class AniMapObject;
+class Portal;
 class MapManager
 {
 	MapManager();
@@ -15,13 +18,9 @@ public:
 		return &instance;
 	}
 
-	void LoadMapData();
+	void LoadMapData(uint32_t mapid);
 public:
-
 	void ReadyMapManager();
-
-	void AddGameObject(GameObject* object);
-	void AddFootHold(FootHold* foothold);
 
 	void ReleaseAllData();
 
@@ -34,28 +33,32 @@ public:
 	bool FootholdYCollision(GameObject* object, float* outY, FootHold** outHold);
 	bool FootholdAndRectCollision(GameObject* object);
 	bool LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold);
+	bool PortalCollsition(GameObject* object, Portal** outPortal);
 
 	void TileImageLoad(std::string folderName);
+	void InsertObjectImage(std::string path, AniMapObject* object);
+	AniMapObject* FindAniObjectCopy(std::string key);
+	
 	void MapObjectImageLoad();
+	void AniObjectImageLoad();
 	std::list<Monster*> MonsterCollision(RECT rect, uint32_t count);
-
-	std::list<FootHold*>* GetListRopeLadder();
-	std::list<FootHold*> GetMapFootHold();
-	ObjectPos GetMapSize() const;
+	std::shared_ptr<MapInstance*> GetNowMap();
 
 	void SetPlayer(Player* player);
 	Player* GetPlayer();
+
+	void ChangeMap(int32_t next_map, ObjectPos pos);
+
 private:
 	Player* _map_player;
-	MyBitmap* _backGroundImage;
-	std::list<GameObject*> _listGameObject[MaxLayer];
-	std::list<Monster*> _listMonsterObject[MaxLayer];
-	std::list<FootHold*> _listFootHold;
-	std::list<FootHold*> _listRopeLadder;
+
+	std::shared_ptr<MapInstance*> _now_map;
 
 	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _listBitmap;
 	std::map<std::string, MyBitmap*> _listObjBitmap;
-	ObjectPos _mapSize;
+	std::map<std::string, AniMapObject*> _listAniObject;
+	std::map<uint32_t, std::shared_ptr<MapInstance*>> _listMap;
+
 
 };
 

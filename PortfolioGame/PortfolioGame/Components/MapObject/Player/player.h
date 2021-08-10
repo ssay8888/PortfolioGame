@@ -120,6 +120,7 @@ private:
     /// </summary>
     DamageHandler* _damage_handler;
     
+    uint64_t _portal_tick;
     /// <summary>
     /// ±‚≈∏
     /// </summary>

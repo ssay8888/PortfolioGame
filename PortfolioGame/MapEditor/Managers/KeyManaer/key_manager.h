@@ -10,6 +10,9 @@
 #define KEY_S		0x00000100
 #define KEY_L		0x00000200
 #define KEY_Z		0x00000400
+#define KEY_CONTROL 0x00000800
+#define KEY_X		0x00001000
+#define KEY_C		0x00002000
 
 class KeyManager
 {

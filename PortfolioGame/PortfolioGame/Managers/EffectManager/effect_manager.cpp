@@ -2,6 +2,7 @@
 #include "effect_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Utility/file_manager.h"
+#include "../../Utility/xml_reader.h"
 
 void EffectManager::LoadDamageNumber()
 {

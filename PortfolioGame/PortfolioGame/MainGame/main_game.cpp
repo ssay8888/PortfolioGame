@@ -42,9 +42,9 @@ void MainGame::ReadeyGame()
 	auto object = new Player();
 	this->SetPlayer(object);
 	object_manager->SetPlayer(object);
-	object_manager->AddGameObject(object);
 
 	MonsterManager::GetInstance()->LoadMonster();
+	MapManager::GetInstance()->AniObjectImageLoad();
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);
 }
 

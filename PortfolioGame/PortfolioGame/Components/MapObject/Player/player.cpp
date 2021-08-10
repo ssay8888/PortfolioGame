@@ -1,6 +1,8 @@
 #include "../../../pch.h"
 #include "player.h"
 #include "Damage/damage_handler.h"
+#include "../foot_hold.h"
+#include "../../MapObject/portal.h"
 #include "../../../Managers/KeyManaer/key_manager.h"
 #include "../../../Managers/Skins/skin_frame.h"
 #include "../../../Managers/Skins/skin_info.h"
@@ -9,9 +11,9 @@
 #include "../../../Managers/Skins/skin_manager.h"
 #include "../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
+#include "../../../Managers/MapManager/Map/map_instance.h"
 #include "../../../Managers/EffectManager/effect_manager.h"
 #include "../../../Components/MapObject/Monster/monster.h"
-#include "../foot_hold.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
 
@@ -39,8 +41,8 @@ Player::~Player()
 
 int Player::ReadyGameObject()
 {
-	_info.x = 250.f;
-	_info.y = 800.f;
+	_info.x = 0.f;
+	_info.y = 0.f;
 	_info.cx = 42;
 	_info.cy = 64;
 	_speed = 5.f;
@@ -91,7 +93,7 @@ void Player::UpdateGameObject(const float deltaTime)
 				_info.x = outX;
 			}
 			_info.y += GetSpeed();
-			if (CollisionManager::LineAndRectCollsition(MapManager::GetInstance()->GetMapFootHold(), this))
+			if (CollisionManager::LineAndRectCollsition((*MapManager::GetInstance()->GetNowMap())->GetFootHoldList(), this))
 			{
 				if (!_is_first_foothold)
 				{
@@ -113,7 +115,10 @@ void Player::UpdateGameObject(const float deltaTime)
 				_info.y -= GetSpeed();
 				totalMoveY += GetSpeed();
 			}
-
+		}
+		else
+		{
+			_is_rope = false;
 		}
 	}
 
@@ -189,7 +194,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (!_is_prone && keymanager->KeyPressing(KEY_UP))
 	{
-		auto rope = MapManager::GetInstance()->GetListRopeLadder();
+		auto rope = (*MapManager::GetInstance()->GetNowMap())->GetRopeLadderList();
 		float outX = 0;
 		FootHold* outHold = nullptr;
 		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
@@ -218,6 +223,16 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 		else 
 		{
+			Portal* outPortal = nullptr;
+			
+			if (MapManager::GetInstance()->PortalCollsition(this, &outPortal))
+			{
+				if (GetTickCount64() > _portal_tick + 1000)
+				{
+					MapManager::GetInstance()->ChangeMap(outPortal->GetNextMap(), outPortal->GetNextMapSpawnPos());
+					_portal_tick = GetTickCount64();
+				}
+			}
 			_is_rope = false;
 		}
 	}
@@ -712,7 +727,7 @@ void Player::RenderCharacter(HDC hdc)
 				static_cast<int>(std::floor(_rect.top + ScrollManager::GetScrollY())),
 				static_cast<int>(std::floor(_rect.right + ScrollManager::GetScrollX())),
 				static_cast<int>(std::floor(_rect.bottom + ScrollManager::GetScrollY())));*/
-
+			
 			UpdateRectGameObject();
 
 			auto footOriginX = lastBody.first->GetOrigin().x + (lastBody.second.x - minX);
@@ -774,6 +789,7 @@ void Player::IsJumping()
 	{
 		float outY = 0;
 		_is_first_foothold = true;
+		_is_jump = false;
 		bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_next_foothold);
 		return;
 	}
@@ -945,45 +961,48 @@ void Player::LateUpdateGameObject()
 	Player::IsJumping();
 
 	uint64_t tick = GetTickCount64();
-	if (!_is_rope && tick > _frame_tick + _frame_this->GetDelay())
+	if (_frame_this != nullptr)
 	{
-
-		if (!strcmp(GetFrameState(), "stand1") || !strcmp(GetFrameState(), "swingO2") || !strcmp(GetFrameState(), "alert"))
+		if (!_is_rope && tick > _frame_tick + _frame_this->GetDelay())
 		{
-			if (_frame_revers)
+
+			if (!strcmp(GetFrameState(), "stand1") || !strcmp(GetFrameState(), "swingO2") || !strcmp(GetFrameState(), "alert"))
 			{
-				if (--_frame_nummber == 0)
+				if (_frame_revers)
 				{
-					_frame_revers = false;
+					if (--_frame_nummber == 0)
+					{
+						_frame_revers = false;
+					}
+				}
+				else
+				{
+					if (++_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
+					{
+						_frame_revers = true;
+					}
+				}
+				if (_is_attacking)
+				{
+					if (_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
+					{
+						this->ChangeFrameState("alert");
+						auto mosnters = MapManager::GetInstance()->MonsterCollision(_melee_attack_hitbox, 1);
+						for (auto monster : mosnters)
+						{
+							AttackMonster(monster);
+							//std::cout << "몬스터 데미지 피격!" << monster->GetHp() << std::endl;
+						}
+						_is_attacking = false;
+					}
 				}
 			}
 			else
 			{
-				if (++_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
-				{
-					_frame_revers = true;
-				}
+				++_frame_nummber;
 			}
-			if (_is_attacking)
-			{
-				if (_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
-				{
-					this->ChangeFrameState("alert");
-					auto mosnters = MapManager::GetInstance()->MonsterCollision(_melee_attack_hitbox, 1);
-					for (auto monster : mosnters)
-					{
-						AttackMonster(monster);
-						//std::cout << "몬스터 데미지 피격!" << monster->GetHp() << std::endl;
-					}
-					_is_attacking = false;
-				}
-			}
+			_frame_tick = tick;
 		}
-		else
-		{
-			++_frame_nummber;
-		}
-		_frame_tick = tick;
 	}
 }
 

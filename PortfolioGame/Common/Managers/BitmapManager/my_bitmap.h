@@ -9,6 +9,7 @@ public:
 	HDC GetMemDC();
 	void RenderBitmapImage(HDC hdc, int left, int top, int right, int bottom);
 	void RenderBitmapImage(HDC hdc, int left, int top, int right, int bottom, int width, int height);
+	void RenderBitmapImage(HDC hdc, int left, int top, int right, int bottom, int width, int height, UINT rgb);
 	void Insert_Bitmap(HWND hwnd, const TCHAR* pFilePath);
 	void Release_Bitmap();
 

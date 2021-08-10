@@ -25,7 +25,11 @@ int InGameScene::ReadyScene()
 	SkinManager::GetInstance()->LoadSkin();
 	auto object_manager = MapManager::GetInstance();
 	object_manager->ReadyMapManager();
-	object_manager->LoadMapData();
+	for (int i = 0; i < 2; i++)
+	{
+		object_manager->LoadMapData(i);
+	}
+	object_manager->ChangeMap(0, {0, 0});
 	RECT rc{ 0, 0, static_cast<LONG>(800), static_cast<LONG>(600) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	SetWindowPos(_hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, 0);
@@ -34,6 +38,7 @@ int InGameScene::ReadyScene()
 	ShowCursor(false);
 	UiManager::GetInstance()->ReadyUiManager();
 	EffectManager::GetInstance()->LoadDamageNumber();
+
 	return 0;
 }
 

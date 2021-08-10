@@ -40,10 +40,10 @@ public:
 	void SetImageNumber(uint32_t number);
 	void SetObjectType(const ObjectType type);
 private:
-	virtual int ReadyGameObject() = 0;
-	virtual void UpdateGameObject(const float deltaTime) = 0;
-	virtual void RenderGameObject(HDC hdc) = 0;
-	virtual void LateUpdateGameObject() = 0;
+	virtual int ReadyGameObject();
+	virtual void UpdateGameObject(const float deltaTime);
+	virtual void RenderGameObject(HDC hdc);
+	virtual void LateUpdateGameObject();
 
 protected:
 	std::string _path;

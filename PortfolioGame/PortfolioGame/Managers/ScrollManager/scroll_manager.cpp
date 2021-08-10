@@ -1,6 +1,7 @@
 #include "../../pch.h"
 #include "scroll_manager.h"
 #include "../MapManager/map_manager.h"
+#include "../MapManager/Map/map_instance.h"
 
 float ScrollManager::_scrollX = 0;
 float ScrollManager::_scrollY = 0;
@@ -9,15 +10,19 @@ float ScrollManager::_tempScrollY = 0;
 
 void ScrollManager::ScrollLock()
 {
+	auto now_map = MapManager::GetInstance()->GetNowMap();
+	if (now_map == nullptr) {
+		return;
+	}
 	if (0 < _scrollX)
 		_scrollX = 0;
 	if (0 < _scrollY)
 		_scrollY = 0;
 
-	if (WindowCX - MapManager::GetInstance()->GetMapSize().x > _scrollX)
-		_scrollX = WindowCX - static_cast<float>(MapManager::GetInstance()->GetMapSize().x);
-	if (WindowCY - MapManager::GetInstance()->GetMapSize().y > _scrollY)
-		_scrollY = WindowCY - static_cast<float>(MapManager::GetInstance()->GetMapSize().y);
+	if (WindowCX - (*now_map)->GetMapSize().x > _scrollX)
+		_scrollX = WindowCX - static_cast<float>((*now_map)->GetMapSize().x);
+	if (WindowCY - (*now_map)->GetMapSize().y > _scrollY)
+		_scrollY = WindowCY - static_cast<float>((*now_map)->GetMapSize().y);
 }
 
 float ScrollManager::GetScrollX()

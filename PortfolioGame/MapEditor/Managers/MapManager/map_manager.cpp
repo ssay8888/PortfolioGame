@@ -15,7 +15,8 @@ MapManager::MapManager() :
 	_mouse(nullptr),
 	_selectCount(0),
 	_mapSize({1024, 768}),
-	_selectState(SelectState::kTile)
+	_selectState(SelectState::kTile),
+	_is_altkey(false)
 {
 }
 
@@ -158,6 +159,10 @@ void MapManager::Update_Map()
 				{
 					_mapSize.y += 10;
 				}
+				else if (_selectEtcImage.first.find("TileDelete") != std::string::npos)
+				{
+					DeleteTile(pt);
+				}
 			}
 			break;
 		default:
@@ -195,9 +200,32 @@ void MapManager::Update_Map()
 	}
 	else if (KeyManager::GetInstance()->KeyUp(KEY_Z))
 	{
-		if (!_list[SelectLayer].empty()) {
+		if (!_list[SelectLayer].empty())
+		{
 			_list[SelectLayer].pop_back();
 		}
+	}
+	else if (KeyManager::GetInstance()->KeyUp(KEY_X))
+	{
+		if (!_footholds.empty())
+		{
+			_footholds.pop_back();
+		}
+	}
+	else if (KeyManager::GetInstance()->KeyUp(KEY_C))
+	{
+		if (!_ladderRopes.empty())
+		{
+			_ladderRopes.pop_back();
+		}
+	}
+	else if (KeyManager::GetInstance()->KeyDown(KEY_CONTROL))
+	{
+		_is_altkey = true;
+	}
+	else if (KeyManager::GetInstance()->KeyUp(KEY_CONTROL))
+	{
+		_is_altkey = false;
 	}
 
 }
@@ -403,6 +431,60 @@ void MapManager::AddListObject()
 	}
 }
 
+void MapManager::DeleteTile(POINT& pt)
+{
+	RECT rc;
+	for (int i = 0; i < 7; ++i)
+	{
+		for (auto dataptr = _list[i].begin(); dataptr != _list[i].end();)
+		{
+			auto data = (*dataptr);
+			RECT tile_rc{ 
+				static_cast<LONG>(data->GetRect().left + ScrollManager::GetScrollX()),
+				static_cast<LONG>(data->GetRect().top + ScrollManager::GetScrollY()),
+				 static_cast<LONG>(data->GetRect().right + ScrollManager::GetScrollX()),
+				static_cast<LONG>(data->GetRect().bottom + ScrollManager::GetScrollY()) };
+			RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+
+			if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+			{
+				dataptr = _list[i].erase(dataptr);
+				
+				std::cout << "충돌" << std::endl;
+				continue;
+			}
+			++dataptr;
+
+		}
+	}/*
+	for (auto tiles : _list)
+	{
+		if (!strcmp(tiles.first.c_str(), _selectTileBegin->first.c_str()))
+		{
+			for (auto tile : tiles.second)
+			{
+				RECT rc{};
+				int x = 90 + (90 * countX) + 1024;
+				int y = 70 + (70 * countY);
+				RECT tile_rc{ x, y, x + static_cast<LONG>(tile.second[0]->GetWidth()), y + static_cast<LONG>(tile.second[0]->GetHeight()) };
+				RECT mouse_rc{ pt.x, pt.y, pt.x + 1, pt.y + 1 };
+				if (IntersectRect(&rc, &mouse_rc, &tile_rc))
+				{
+					_selectTileImage = tile.second;
+					_selectFileName = tile.first;
+					_selectPath = tiles.first;
+					_selectCount = 0;
+				}
+				if (countX++ > 0 && countX % 4 == 0)
+				{
+					countX = 0;
+					countY += 1;
+				}
+			}
+		}
+	}*/
+}
+
 void MapManager::SelectTileImage(POINT& pt)
 {
 	int countX = 0;
@@ -584,8 +666,11 @@ void MapManager::MouseUpdate(POINT& pt)
 		{
 			for (auto obj : objs)
 			{
-				obj->UpdateRect();
-				CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
+				obj->UpdateRect(); // 범위설저
+				if (!_is_altkey)
+				{
+					CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
+				}
 			}
 		}
 		GetMouse()->SetInfo({
@@ -623,6 +708,7 @@ void MapManager::MouseUpdate(POINT& pt)
 				for (auto obj : objs)
 				{
 					obj->UpdateRect();
+					if (!_is_altkey)
 					CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
 				}
 			}
@@ -664,6 +750,7 @@ void MapManager::MouseUpdate(POINT& pt)
 				for (auto obj : objs)
 				{
 					obj->UpdateRect();
+					if (!_is_altkey)
 					CollisionManager::Collision_RectEX<MapObject>(obj, GetMouse());
 				}
 			}
@@ -790,7 +877,7 @@ void MapManager::LoadData()
 	{
 		size_t size;
 		check = ReadFile(hFile, &size, sizeof(size), &dwByte, nullptr);
-		for (int i =0; i < size; i++)
+		for (int j =0; j < size; j++)
 		{
 			MapObject* obj = new MapObject();
 			size_t pathSize;

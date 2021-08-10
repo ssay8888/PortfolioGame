@@ -35,5 +35,8 @@ public:
 	void LoadMonsters();
 	void SetInfoMonster(pugi::xpath_node_set node, std::shared_ptr<Monster*> monster);
 
+
+	///
+	void LoadPortal();
 };
 

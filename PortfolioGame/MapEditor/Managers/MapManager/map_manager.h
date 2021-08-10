@@ -23,6 +23,7 @@ public:
 	void Render_Map(HDC hDC);
 
 	void AddListObject();
+	void DeleteTile(POINT& pt);
 	void SelectTileImage(POINT& pt);
 	void SelectButtonImage(POINT& pt);
 	void SelectObjectImage(POINT& pt);
@@ -82,5 +83,7 @@ private:
 
 	ObjectPos _mapSize;
 	Mouse* _mouse;
+	
+	bool _is_altkey;
 };
 
