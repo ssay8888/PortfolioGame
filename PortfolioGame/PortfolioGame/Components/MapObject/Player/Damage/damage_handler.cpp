@@ -14,6 +14,13 @@ void DamageHandler::InsertAttackDamageEffect(GameObject* target, uint32_t damage
 	_show_damage_list.push_back(info);
 }
 
+void DamageHandler::InsertTakeDamageEffect(GameObject* target, uint32_t damage, uint32_t delay)
+{
+	DamageInfo* info = new DamageInfo(target, damage, delay, false);
+
+	_show_damage_list.push_back(info);
+}
+
 void DamageHandler::ShowDamages(HDC hdc)
 {
 	for (auto& data: _show_damage_list)

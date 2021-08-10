@@ -43,6 +43,19 @@ public:
 
     ObjectInfo* GetPlayerInfo();
 
+    int16_t GetHp() const; 
+    int16_t GetMaxHp() const;
+    int16_t GetMp() const;
+    int16_t GetMaxMp() const;
+    void GainHp(int16_t value);
+    void GainMaxHp(int16_t value);
+    void GainMp(int16_t value);
+    void GainMaxMp(int16_t value);
+    void SetHp(int16_t value);
+    void SetMaxHp(int16_t value);
+    void SetMp(int16_t value );
+    void SetMaxMp(int16_t value);
+
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);
@@ -53,6 +66,8 @@ private:
     bool IsAlertStateTick();
     void UpdateAlertTick();
     void AttackMonster(Monster* monster);
+    void IsTakeDamage();
+    void SettingPushKnockBack(bool fancing);
 private:
     uint16_t _skin_id;
     uint16_t _frame_nummber;
@@ -79,6 +94,14 @@ private:
     RECT _magic_attack_hitbox;
     bool _is_attacking;
     uint64_t _alert_tick;
+    
+
+    ///피격관련
+    uint64_t _take_damage_tick;
+    uint64_t _knockback_tick;
+    bool _knockback_facing_direction;
+    const uint32_t _knockback_time = 200;
+
 
     /// <summary>
     /// 발판관련

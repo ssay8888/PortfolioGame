@@ -5,7 +5,7 @@
 #include "../../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../../../Common/Managers/BitmapManager/my_bitmap.h"
 
-DamageInfo::DamageInfo(GameObject* target, uint32_t damage, uint32_t delay) :
+DamageInfo::DamageInfo(GameObject* target, uint32_t damage, uint32_t delay, bool is_attack) :
 	_targetObject(target),
 	_damage(damage),
 	_delay(delay),
@@ -13,27 +13,42 @@ DamageInfo::DamageInfo(GameObject* target, uint32_t damage, uint32_t delay) :
 	_is_alive(true),
 	_position({ static_cast<int>(target->GetInfo().x), static_cast<int>(target->GetInfo().y - (target->GetInfo().cy >> 1)) })
 {
-	ReadyDamage();
+	ReadyDamage(is_attack);
 }
 
 DamageInfo::~DamageInfo()
 {
 }
 
-void DamageInfo::ReadyDamage()
+void DamageInfo::ReadyDamage(bool is_attack)
 {
 	auto instance = EffectManager::GetInstance();
 	std::list<MyBitmap*> list;
 	if (_damage == 0)
 	{
-		_damage_image.emplace_back(instance->GetAttackDamageNumber(10));
+		if (is_attack)
+		{
+			_damage_image.emplace_back(instance->GetAttackDamageNumber(10));
+		}
+		else
+		{
+			_damage_image.emplace_back(instance->GetTakeDamageNumber(10));
+		}
 		return;
 	}
 
 	auto temp_damage = _damage;
 	while (temp_damage != 0)
 	{
-		_damage_image.emplace_front(instance->GetAttackDamageNumber(temp_damage % 10));
+
+		if (is_attack)
+		{
+			_damage_image.emplace_front(instance->GetAttackDamageNumber(temp_damage % 10));
+		}
+		else
+		{
+			_damage_image.emplace_front(instance->GetTakeDamageNumber(temp_damage % 10));
+		}
 		temp_damage /= 10;
 	}
 }

@@ -5,9 +5,9 @@
 #include "../../Components/MapObject/Player/player.h"
 #include "ui_button.h"
 
-std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
+const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
-std::wstring wbuttons[] = { L"BtMenu", L"BtShop", L"BtShort", L"EquipKey", L"StatKey", L"InvenKey",
+const std::wstring wbuttons[] = { L"BtMenu", L"BtShop", L"BtShort", L"EquipKey", L"StatKey", L"InvenKey",
 						  L"KeySet", L"QuickSlot", L"QuickSlotD", L"SkillKey" };
 
 void UiManager::UpdateUiManager()

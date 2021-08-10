@@ -567,7 +567,7 @@ void MapManager::MapObjectImageLoad()
 	}
 }
 
-std::list<Monster*> MapManager::HitBoxMonsterCollision(RECT rect, uint32_t count)
+std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 {
 	RECT rc;
 	std::list<Monster*> monsters;
@@ -575,6 +575,8 @@ std::list<Monster*> MapManager::HitBoxMonsterCollision(RECT rect, uint32_t count
 	{
 		for (auto data : _listMonsterObject[i])
 		{
+			if (!data->IsAlive())
+				continue;
 			RECT dist = data->GetRect();
 			if (IntersectRect(&rc, &rect,  &dist))
 			{

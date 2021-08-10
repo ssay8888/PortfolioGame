@@ -4,13 +4,13 @@ class MyBitmap;
 class DamageInfo
 {
 public:
-	DamageInfo(GameObject* target, uint32_t damage, uint32_t delay);
+	DamageInfo(GameObject* target, uint32_t damage, uint32_t delay, bool is_attack = true);
 	~DamageInfo();
 	void UpdateDamages();
 	void RenderDamage(HDC hdc);
 	bool IsAlive();
 private:
-	void ReadyDamage();
+	void ReadyDamage(bool is_attack);
 private:
 	GameObject* _targetObject;
 	uint32_t _damage;

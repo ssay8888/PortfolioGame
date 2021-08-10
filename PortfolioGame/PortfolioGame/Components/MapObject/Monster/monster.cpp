@@ -1,5 +1,6 @@
 #include "../../../pch.h"
 #include "monster.h"
+#include "AiMovement/ai_movement.h"
 #include "../../../Managers/MonsterMnager/monster_manager.h"
 #include "../../../Managers/MonsterMnager/monster_movement.h"
 #include "../../../Managers/MonsterMnager/monster_parts.h"
@@ -19,6 +20,9 @@ Monster::Monster() :
     _monster_state(MonsterState::kStand),
     _die_wait_tick(0),
     _alpha_value(255),
+    _ai_movement(nullptr),
+    _alpha_tick(0),
+    _this_foothold(nullptr),
     _bitmap2(nullptr),
     _old_bitmap2(nullptr),
     _memDC2(nullptr)
@@ -35,6 +39,7 @@ Monster::~Monster()
     SelectObject(_memDC2, _old_bitmap2);
     DeleteObject(_bitmap2);
     DeleteDC(_memDC2);
+    delete _ai_movement;
 }
 
 MonsterInfo Monster::GetMonsterInfo()
@@ -252,16 +257,34 @@ void Monster::IsJumping()
     }
 }
 
+bool Monster::IsChangeFoothold()
+{
+    float outY = 0;
+    FootHold* footHold;
+    if (_this_foothold == nullptr)
+    {
+        MapManager::GetInstance()->FootholdYCollision(this, &outY, &_this_foothold);
+    }
+    bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+    if (_this_foothold != footHold)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 int Monster::ReadyGameObject()
 {
 
     HDC hDC = GetDC(_hWnd);
     _memDC = CreateCompatibleDC(hDC);
-    _bitmap = CreateCompatibleBitmap(hDC, 1024, 768);
+    _bitmap = CreateCompatibleBitmap(hDC, 300, 300);
     _old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
     _memDC2 = CreateCompatibleDC(hDC);
-    _bitmap2 = CreateCompatibleBitmap(hDC, 1024, 768);
+    _bitmap2 = CreateCompatibleBitmap(hDC, 300, 300);
     _old_bitmap2 = (HBITMAP)SelectObject(_memDC2, _bitmap2);
+    _ai_movement = new AiMovement(GetSpeed());
     ReleaseDC(_hWnd, hDC);
     return 0;
 }
@@ -288,28 +311,34 @@ void Monster::UpdateGameObject(const float deltaTime)
         }
         return;
     }
-
-    ChangeState(MonsterState::kMove);
+    if (_ai_movement->Moveing() != 0)
+    {
+        ChangeState(MonsterState::kMove);
+    }
+    else
+    {
+        ChangeState(MonsterState::kStand);
+    }
     float totalMoveX = 0;
     float totalMoveY = 0;
     float outY = 0;
     FootHold* footHold = nullptr;
-    totalMoveX -= GetSpeed();
+    totalMoveX += _ai_movement->Moveing();
 
 
     if (totalMoveX != 0 || totalMoveY != 0)
     {
-        if (totalMoveX > 0)
-        {
-            _facing_direction = 1;
-        }
-        else
-        {
-            _facing_direction = 0;
-        }
+        _facing_direction = _ai_movement->GetFacingDirection();
+        _info.x += totalMoveX;
+        _info.y += totalMoveY;
     }
 
-
+    UpdateRectGameObject();
+    if (auto changeHold = IsChangeFoothold() || MapManager::GetInstance()->FootholdAndRectCollision(this))
+    {
+        _info.x -= totalMoveX;
+        _info.y -= totalMoveY;
+    }
     IsJumping();
     NextFrame();
 }
@@ -335,6 +364,7 @@ void Monster::RenderGameObject(HDC hdc)
         0,
         static_cast<int>((*image)->GetWidth()),
         static_cast<int>((*image)->GetHeight()));
+
     if (GetFacingDirection())
     {
         StretchBlt(_memDC,
@@ -358,7 +388,7 @@ void Monster::RenderGameObject(HDC hdc)
             _alpha_value -= 30;
             _alpha_tick = tick;
         }
-        std::cout << std::to_string(_alpha_value) << std::endl;
+
         BitBlt(_memDC2, 0, 0,
             (*image)->GetWidth(),
             (*image)->GetHeight(), hdc,

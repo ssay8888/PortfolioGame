@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Base/game_object.h"
+class AiMovement;
 class MonsterMovement;
 class MonsterParts;
 class FootHold;
@@ -61,15 +62,12 @@ private:
 	virtual void LateUpdateGameObject() override;
 	
 	void IsJumping();
+	bool IsChangeFoothold();
 	void ChangeState(MonsterState state);
 	void ShowDieMotion();
 
 	bool NextFrame();
 
-
-	void LeftMoving();
-	void RightMoving();
-	void StopMoving();
 private:
 	MonsterInfo _monster_info;
 	std::shared_ptr<MonsterMovement*> _movement;
@@ -94,6 +92,9 @@ private:
 	bool _frame_revers;
 	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
 
+	//몬스터이동
+	FootHold* _this_foothold;
+	AiMovement* _ai_movement;
 
 	HDC _memDC2;
 	HBITMAP _bitmap2;

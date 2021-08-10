@@ -216,19 +216,48 @@ void Player::UpdateGameObject(const float deltaTime)
 				_is_fly = false;
 			}
 		}
+		else 
+		{
+			_is_rope = false;
+		}
+	}
+	IsTakeDamage();
+	bool isKnockback = GetTickCount64() < _knockback_tick + _knockback_time;
+	int32_t knockbackMoveX = 0;
+	int32_t knockbackMoveY = 0;
+	if (isKnockback)
+	{
+		if (_knockback_facing_direction)
+		{
+			knockbackMoveX += 3;
+			knockbackMoveY -= 2;
+			totalMoveX += knockbackMoveX;
+			totalMoveY += knockbackMoveY;
+		}
+		else
+		{
+			knockbackMoveX -= 3;
+			knockbackMoveY -= 2;
+			totalMoveX += knockbackMoveX;
+			totalMoveY += knockbackMoveY;
+		}
+	}
+	else
+	{
+		_knockback_tick = 0;
 	}
 
 	if (totalMoveX != 0 || totalMoveY != 0)
 	{
-		if (totalMoveX < 0)
+		if (totalMoveX < 0 && knockbackMoveX == 0)
 		{
 			this->SetFacingDirection(0);
 		}
-		else if (totalMoveX > 0)
+		else if (totalMoveX > 0 && knockbackMoveX == 0)
 		{
 			this->SetFacingDirection(1);
 		}
-		if (!_is_fly && !_is_rope && !_is_jump && strcmp(GetFrameState(), "walk1"))
+		if (!_is_attacking && !_is_fly && !_is_rope && !_is_jump && strcmp(GetFrameState(), "walk1"))
 		{
 			this->ChangeFrameState("walk1");
 		}
@@ -240,13 +269,12 @@ void Player::UpdateGameObject(const float deltaTime)
 		if (MapManager::GetInstance()->FootholdAndRectCollision(this))
 		{
 			_info.x -= totalMoveX;
-			_info.y -= totalMoveY;
+			// y좌표는 가도됨.
 		}
 	}
 	else
 	{
-		if (!_is_attacking && !_is_fly && !_is_rope && !_is_jump && !_is_prone && 
-			strcmp(GetFrameState(), "stand1"))
+		if (!_is_attacking && !_is_fly && !_is_rope && !_is_jump && !_is_prone)
 		{
 			if (IsAlertStateTick())
 			{
@@ -260,9 +288,16 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 
 
-	if (!_is_attacking && keymanager->KeyPressing(KEY_A))
+	if (!_is_attacking && !_is_rope && keymanager->KeyPressing(KEY_A))
 	{
-		this->ChangeFrameState("swingO2");
+		if (_is_prone) 
+		{
+			this->ChangeFrameState("proneStab");
+		}
+		else
+		{
+			this->ChangeFrameState("swingO2");
+		}
 		Player::TryMeleeAttack();
 		UpdateAlertTick();
 	}
@@ -663,16 +698,14 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				int x = static_cast<int>(destination.x);
 				int y = static_cast<int>(destination.y);
-				StretchBlt(hdc, 0, 0, x, y, _memDC, x - 1, 0, -x, y, SRCCOPY);
-
 				StretchBlt(_memDC, 0, 0, x, y, _memDC, x - 1, 0, -x, y, SRCCOPY);
 			}
-			else
+			/*else
 			{
 				int x = static_cast<int>(destination.x);
 				int y = static_cast<int>(destination.y);
 				StretchBlt(hdc, 0, 0, x, y, _memDC, 0, 0, x, y, SRCCOPY);
-			}
+			}*/
 
 			/*Rectangle(hdc,
 				static_cast<int>(std::floor(_rect.left + ScrollManager::GetScrollX())),
@@ -742,6 +775,10 @@ void Player::IsJumping()
 		float outY = 0;
 		_is_first_foothold = true;
 		bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &_next_foothold);
+		return;
+	}
+	if (GetTickCount64() < _knockback_tick + _knockback_time)
+	{ 
 		return;
 	}
 	float outY = 0;
@@ -859,9 +896,41 @@ void Player::AttackMonster(Monster* monster)
 	//TODO: 데미지연산은 여기서..처리하도록하자
 	int32_t damage = rand();
 	monster->GainHp(-damage);
+	if (!monster->IsAlive())
+	{
+		GetPlayerInfo()->exp += monster->GetExp();
+	}
 	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
 }
 
+void Player::IsTakeDamage()
+{
+	auto mosnters = MapManager::GetInstance()->MonsterCollision(_rect, 1);
+
+	if (!mosnters.empty() && GetTickCount64() > _take_damage_tick + 3000)
+	{
+		this->GainHp(-1);
+		_take_damage_tick = GetTickCount64();
+		_alert_tick = GetTickCount64();
+		_damage_handler->InsertTakeDamageEffect(this, 1234, 1000);
+		if ((*mosnters.begin())->GetInfo().x > this->GetInfo().x)
+		{
+			SettingPushKnockBack(false);
+		}
+		else
+		{
+			SettingPushKnockBack(true);
+		}
+		
+	}
+
+}
+
+void Player::SettingPushKnockBack(bool fancing)
+{
+	_knockback_facing_direction = fancing;
+	_knockback_tick = GetTickCount64();
+}
 
 void Player::RenderGameObject(HDC hdc)
 {
@@ -900,7 +969,7 @@ void Player::LateUpdateGameObject()
 				if (_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
 				{
 					this->ChangeFrameState("alert");
-					auto mosnters = MapManager::GetInstance()->HitBoxMonsterCollision(_melee_attack_hitbox, 1);
+					auto mosnters = MapManager::GetInstance()->MonsterCollision(_melee_attack_hitbox, 1);
 					for (auto monster : mosnters)
 					{
 						AttackMonster(monster);
@@ -1019,4 +1088,64 @@ void Player::SetNowFootHold(FootHold* hold)
 ObjectInfo* Player::GetPlayerInfo()
 {
 	return &_player_info;
+}
+
+int16_t Player::GetHp() const
+{
+	return _player_info.hp;
+}
+
+int16_t Player::GetMaxHp() const
+{
+	return _player_info.max_hp;
+}
+
+int16_t Player::GetMp() const
+{
+	return _player_info.mp;
+}
+
+int16_t Player::GetMaxMp() const
+{
+	return _player_info.max_mp;
+}
+
+void Player::GainHp(int16_t value)
+{
+	_player_info.hp += value;
+}
+
+void Player::GainMaxHp(int16_t value)
+{
+	_player_info.max_hp += value;
+}
+
+void Player::GainMp(int16_t value)
+{
+	_player_info.mp += value;
+}
+
+void Player::GainMaxMp(int16_t value)
+{
+	_player_info.max_mp += value;
+}
+
+void Player::SetHp(int16_t value)
+{
+	_player_info.hp = value;
+}
+
+void Player::SetMaxHp(int16_t value)
+{
+	_player_info.max_hp = value;
+}
+
+void Player::SetMp(int16_t value)
+{
+	_player_info.mp = value;
+}
+
+void Player::SetMaxMp(int16_t value)
+{
+	_player_info.max_mp = value;
 }
