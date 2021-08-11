@@ -12,24 +12,29 @@
 #include "../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../Managers/MapManager/Map/map_instance.h"
+#include "../../../Managers/UiManager/ui_manager.h"
 #include "../../../Managers/EffectManager/effect_manager.h"
 #include "../../../Components/MapObject/Monster/monster.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
 
+
 #include <time.h>
+
+#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+
 Player::Player(uint8_t layer) :
-	GameObject(layer),
-	_frame_revers(false),
-	_this_frame_max_count(0),
-	_frame_state("stand1"),
-	_frame_tick(0),
-	_now_foothold(nullptr),
-	_next_foothold(nullptr),
-	_is_first_foothold(false),
-	_player_info({51, 1000, 432, 1000, 534, 1000, "公具龋"})
+                              GameObject(layer),
+                              _this_frame_max_count(0),
+                              _frame_revers(false),
+                              _frame_state("stand1"),
+                              _frame_tick(0),
+                              _player_info({51, 1000, 432, 1000, 534, 10, 10, 1000, 222, "公具龋"}),
+                              _now_foothold(nullptr),
+                              _next_foothold(nullptr),
+                              _is_first_foothold(false)
 {
-    ReadyGameObject();
+	Player::ReadyGameObject();
 }
 
 Player::~Player()
@@ -948,6 +953,17 @@ void Player::SettingPushKnockBack(bool fancing)
 	_knockback_tick = GetTickCount64();
 }
 
+void Player::ApplySkill()
+{
+	const auto key_manager = KeyManager::GetInstance();
+	const auto quick_slot = (*UiManager::GetInstance()->GetQuickSlot());
+	if (key_manager->KeyDown(KEY_SHIFT))
+	{
+		_attack_skill = quick_slot->GetSkill(QuickSlot::KeyBoard::kShift);
+
+	}
+}
+
 void Player::RenderGameObject(HDC hdc)
 {
 	UpdateRectGameObject();
@@ -1094,7 +1110,7 @@ uint8_t Player::GetFacingDirection() const
 	return _facing_direction;
 }
 
-FootHold* Player::GetNowFootHold()
+FootHold* Player::GetNowFootHold() const
 {
 	return _now_foothold;
 }
@@ -1129,42 +1145,72 @@ int16_t Player::GetMaxMp() const
 	return _player_info.max_mp;
 }
 
-void Player::GainHp(int16_t value)
+int16_t Player::GetAp() const
+{
+	return _player_info.ap;
+}
+
+int16_t Player::GetSp() const
+{
+	return _player_info.sp;
+}
+
+int16_t Player::GetJob() const
+{
+	return _player_info.job;
+}
+
+void Player::SetJob(const int16_t value)
+{
+	_player_info.job = value;
+}
+
+void Player::GainHp(const int16_t value)
 {
 	_player_info.hp += value;
 }
 
-void Player::GainMaxHp(int16_t value)
+void Player::GainMaxHp(const int16_t value)
 {
 	_player_info.max_hp += value;
 }
 
-void Player::GainMp(int16_t value)
+void Player::GainMp(const int16_t value)
 {
 	_player_info.mp += value;
 }
 
-void Player::GainMaxMp(int16_t value)
+void Player::GainMaxMp(const int16_t value)
 {
 	_player_info.max_mp += value;
 }
 
-void Player::SetHp(int16_t value)
+void Player::SetHp(const int16_t value)
 {
 	_player_info.hp = value;
 }
 
-void Player::SetMaxHp(int16_t value)
+void Player::SetMaxHp(const int16_t value)
 {
 	_player_info.max_hp = value;
 }
 
-void Player::SetMp(int16_t value)
+void Player::SetMp(const int16_t value)
 {
 	_player_info.mp = value;
 }
 
-void Player::SetMaxMp(int16_t value)
+void Player::SetMaxMp(const int16_t value)
 {
 	_player_info.max_mp = value;
+}
+
+void Player::GainAp(const int16_t value)
+{
+	_player_info.ap += value;
+}
+
+void Player::GainSp(const int16_t value)
+{
+	_player_info.sp += value;
 }

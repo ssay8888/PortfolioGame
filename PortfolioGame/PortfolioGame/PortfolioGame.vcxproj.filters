@@ -77,6 +77,24 @@
     <Filter Include="Managers\MapManager\Map">
       <UniqueIdentifier>{3fb389f7-266e-45b2-a61b-cac6a93a1444}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\UiManager\Skill">
+      <UniqueIdentifier>{d8aac49e-744b-4b19-ac5c-0066c7ed2569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SkillManager">
+      <UniqueIdentifier>{a89479b0-e974-48ff-852c-49f7b9949a4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SkillManager\Skill">
+      <UniqueIdentifier>{cee093c6-543c-4b9a-97ba-20d3ea0bb684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\UiScroll">
+      <UniqueIdentifier>{a1d34824-72d1-4d2e-8dbd-006708a67b1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\QuickSlot">
+      <UniqueIdentifier>{d06bdb91-833a-48ab-89c8-69bd7d8fb893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Player\MagicAttack">
+      <UniqueIdentifier>{fd3d4e78-2ff5-43d4-9a87-7de23ebe4d63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -202,6 +220,36 @@
     <ClInclude Include="Components\MapObject\portal.h">
       <Filter>Components\MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\UiManager\Skill\skill_window.h">
+      <Filter>Managers\UiManager\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\ui_tab_button.h">
+      <Filter>Managers\UiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SkillManager\skill_manager.h">
+      <Filter>Managers\SkillManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SkillManager\Skill\skill.h">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SkillManager\Skill\skill_info.h">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SkillManager\Skill\skill_effect_image.h">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\game_constants.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\UiScroll\ui_scroll.h">
+      <Filter>Managers\UiManager\UiScroll</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\QuickSlot\quick_slot.h">
+      <Filter>Managers\UiManager\QuickSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h">
+      <Filter>Components\MapObject\Player\MagicAttack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -308,6 +356,36 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\portal.cpp">
       <Filter>Components\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Skill\skill_window.cpp">
+      <Filter>Managers\UiManager\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\ui_tab_button.cpp">
+      <Filter>Managers\UiManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SkillManager\skill_manager.cpp">
+      <Filter>Managers\SkillManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SkillManager\Skill\skill.cpp">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SkillManager\Skill\skill_info.cpp">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SkillManager\Skill\skill_effect_image.cpp">
+      <Filter>Managers\SkillManager\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\game_constants.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\UiScroll\ui_scroll.cpp">
+      <Filter>Managers\UiManager\UiScroll</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\QuickSlot\quick_slot.cpp">
+      <Filter>Managers\UiManager\QuickSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\MagicAttack\magic_attack.cpp">
+      <Filter>Components\MapObject\Player\MagicAttack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

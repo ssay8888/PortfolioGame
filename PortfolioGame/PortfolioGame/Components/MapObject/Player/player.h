@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class Skill;
 class SkinInfo;
 class SkinItem;
 class SkinFrame;
@@ -38,7 +39,7 @@ public:
     void SetFacingDirection(uint8_t direction);
     uint8_t GetFacingDirection() const;
 
-    FootHold* GetNowFootHold();
+    FootHold* GetNowFootHold() const;
     void SetNowFootHold(FootHold* hold);
 
     ObjectInfo* GetPlayerInfo();
@@ -47,6 +48,10 @@ public:
     int16_t GetMaxHp() const;
     int16_t GetMp() const;
     int16_t GetMaxMp() const;
+    int16_t GetAp() const;
+    int16_t GetSp() const;
+    int16_t GetJob() const;
+
     void GainHp(int16_t value);
     void GainMaxHp(int16_t value);
     void GainMp(int16_t value);
@@ -55,6 +60,9 @@ public:
     void SetMaxHp(int16_t value);
     void SetMp(int16_t value );
     void SetMaxMp(int16_t value);
+    void GainAp(int16_t value);
+    void GainSp(int16_t value);
+    void SetJob(int16_t value);
 
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
@@ -68,6 +76,8 @@ private:
     void AttackMonster(Monster* monster);
     void IsTakeDamage();
     void SettingPushKnockBack(bool fancing);
+
+    void ApplySkill();
 private:
     uint16_t _skin_id;
     uint16_t _frame_nummber;
@@ -94,6 +104,9 @@ private:
     RECT _magic_attack_hitbox;
     bool _is_attacking;
     uint64_t _alert_tick;
+
+    Skill* _attack_skill;
+    uint64_t _attack_skill_tick;
     
 
     ///피격관련

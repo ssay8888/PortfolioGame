@@ -1,5 +1,6 @@
 #pragma once
 #include "Base/game_object.h"
+class KeyManager;
 class GameMouse :
     public GameObject
 {
@@ -12,7 +13,7 @@ private:
 
 public:
     GameMouse();
-    ~GameMouse() = default;
+    ~GameMouse();
 
     POINT GetPoint() const;
 private:
@@ -20,5 +21,6 @@ private:
     MouseState _state;
     std::map<MouseState, std::vector<std::shared_ptr<MyBitmap*>>> _mouseImage;
     POINT _cursorPos;
+    KeyManager* _key_manager;
 };
 

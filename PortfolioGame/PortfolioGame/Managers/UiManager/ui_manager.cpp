@@ -1,42 +1,57 @@
 #include "../../pch.h"
 #include "ui_manager.h"
-#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
-#include "../MapManager/map_manager.h"
-#include "../../Components/MapObject/Player/player.h"
 #include "ui_button.h"
+#include "Skill/skill_window.h"
+#include "../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../Components/MapObject/Player/player.h"
+#include "../MapManager/map_manager.h"
+#include "QuickSlot/quick_slot.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
 const std::wstring wbuttons[] = { L"BtMenu", L"BtShop", L"BtShort", L"EquipKey", L"StatKey", L"InvenKey",
 						  L"KeySet", L"QuickSlot", L"QuickSlotD", L"SkillKey" };
 
+UiManager::UiManager() = default;
+
+UiManager::~UiManager() = default;
+
+UiManager* UiManager::GetInstance()
+{
+	static UiManager instance;
+	return &instance;
+}
+
 void UiManager::UpdateUiManager()
 {
 	for (auto buttonName : buttons)
 	{
-		auto button = _listButton.find(buttonName);
-		if (button != _listButton.end())
+		auto button = _list_button.find(buttonName);
+		if (button != _list_button.end())
 		{
 			(*button->second)->UpdateButton();
 		}
 	}
+	(*_skill_window)->UpdateWindow();
 }
 
 void UiManager::ReadyUiManager()
 {
 	ButtonUiLoad();
 	PlayerInfoUiLoad();
+	_skill_window = std::make_shared<SkillWindow*>(new SkillWindow());
+	(*_skill_window)->ReadyWindow();
 }
 
-void UiManager::RednerUiManager(HDC hdc)
+void UiManager::RenderUiManager(HDC hdc)
 {
-	(*_quickSlot)->RenderBitmapImage(hdc, 647, 453, (*_quickSlot)->GetWidth(), (*_quickSlot)->GetHeight());
-	(*_statusBar)->RenderBitmapImage(hdc, 0, 529, (*_statusBar)->GetWidth(), (*_statusBar)->GetHeight());
+	(*_quick_slot)->RenderQuickSlot(hdc);
+	(*_status_bar)->RenderBitmapImage(hdc, 0, 529, (*_status_bar)->GetWidth(), (*_status_bar)->GetHeight());
 
 	for (auto buttonName : buttons)
 	{
-		auto button = _listButton.find(buttonName);
-		if (button != _listButton.end())
+		auto button = _list_button.find(buttonName);
+		if (button != _list_button.end())
 		{
 			(*button->second)->RenderButtonUi(hdc);
 		}
@@ -45,17 +60,16 @@ void UiManager::RednerUiManager(HDC hdc)
 	StatusGageBarRender(hdc);
 	StatusLevelRender(hdc);
 
+	(*_skill_window)->RenderWindow(hdc);
 }
 
 void UiManager::ButtonUiLoad()
 {
 	std::shared_ptr<MyBitmap*> backgrnd = std::make_shared<MyBitmap*>(new MyBitmap());
 	(*backgrnd)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\backgrnd.bmp");
-	_statusBar = backgrnd;
-	std::shared_ptr<MyBitmap*> quickSlot = std::make_shared<MyBitmap*>(new MyBitmap());
-	(*quickSlot)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\quickSlot.bmp");
-	_quickSlot = quickSlot;
-
+	_status_bar = backgrnd;
+	_quick_slot = std::make_shared<QuickSlot*>(new QuickSlot());
+	(*_quick_slot)->ReadyQuickSlot();
 	for (auto buttonName : wbuttons)
 	{
 		wchar_t path[256];
@@ -104,7 +118,7 @@ void UiManager::ButtonUiLoad()
 
 		(*button)->ReadyButton(path);
 
-		_listButton.insert({ StringTools::WStringToString(buttonName.c_str()), button });
+		_list_button.insert({ StringTools::WStringToString(buttonName.c_str()), button });
 
 	}
 
@@ -120,7 +134,7 @@ void UiManager::PlayerInfoUiLoad()
 		swprintf_s(path, 256, L"Client\\Ui\\StatusBar\\LevelNo.%d.bmp", i);
 		(*backgrnd)->Insert_Bitmap(_hWnd, path);
 		
-		_listLevel.insert({i, backgrnd });
+		_list_level.insert({i, backgrnd });
 	}
 	std::shared_ptr<MyBitmap*> hpBar = std::make_shared<MyBitmap*>(new MyBitmap());
 	(*hpBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\hpBar.bmp");
@@ -128,9 +142,9 @@ void UiManager::PlayerInfoUiLoad()
 	(*mpBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\mpBar.bmp");
 	std::shared_ptr<MyBitmap*> expBar = std::make_shared<MyBitmap*>(new MyBitmap());
 	(*expBar)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\expBar.bmp");
-	_hpBar = hpBar;
-	_mpBar = mpBar;
-	_expBar = expBar;
+	_hp_bar = hpBar;
+	_mp_bar = mpBar;
+	_exp_bar = expBar;
 }
 
 void UiManager::StatusGageBarRender(HDC hdc)
@@ -144,14 +158,14 @@ void UiManager::StatusGageBarRender(HDC hdc)
 	StringTools::CreateTextOut(hdc, 238 + 5, 569, text.c_str());
 	StringTools::CreateTextOut(hdc, 238 + 5 + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
 
-	float hpPercent =
+	const float hpPercent =
 		static_cast<float>(player->GetPlayerInfo()->hp) / static_cast<float>(player->GetPlayerInfo()->max_hp) * 100.f;
-	int hpWidth = static_cast<int>((*_hpBar)->GetWidth() * hpPercent / 100);
-	(*_hpBar)->RenderBitmapImage(hdc, 221, 582,
+	int hpWidth = static_cast<int>((*_hp_bar)->GetWidth() * hpPercent / 100);
+	(*_hp_bar)->RenderBitmapImage(hdc, 221, 582,
 		hpWidth,
-		(*_hpBar)->GetHeight(),
+		(*_hp_bar)->GetHeight(),
 		hpWidth,
-		(*_hpBar)->GetHeight());
+		(*_hp_bar)->GetHeight());
 
 	text.clear();
 	text.append(std::to_wstring(player->GetPlayerInfo()->mp))
@@ -161,18 +175,18 @@ void UiManager::StatusGageBarRender(HDC hdc)
 	StringTools::CreateTextOut(hdc, 348 + 5, 569, text.c_str());
 	StringTools::CreateTextOut(hdc, 348 + 5 + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
 
-	float mpPercent =
+	const float mpPercent =
 		static_cast<float>(player->GetPlayerInfo()->mp) / static_cast<float>(player->GetPlayerInfo()->max_mp) * 100.f;
-	int mpWidth = static_cast<int>((*_mpBar)->GetWidth() * mpPercent / 100);
-	(*_mpBar)->RenderBitmapImage(hdc, 329, 582,
+	const int mpWidth = static_cast<int>((*_mp_bar)->GetWidth() * mpPercent / 100);
+	(*_mp_bar)->RenderBitmapImage(hdc, 329, 582,
 		mpWidth,
-		(*_mpBar)->GetHeight(),
+		(*_mp_bar)->GetHeight(),
 		mpWidth,
-		(*_mpBar)->GetHeight());
+		(*_mp_bar)->GetHeight());
 
-	float expPercent =
+	const float expPercent =
 		static_cast<float>(player->GetPlayerInfo()->exp) / 10000 * 100.f;
-	int expWidth = static_cast<int>((*_mpBar)->GetWidth() * expPercent / 100);
+	const int expWidth = static_cast<int>((*_mp_bar)->GetWidth() * expPercent / 100);
 
 	text.clear();
 	text.append(std::to_wstring(player->GetPlayerInfo()->exp));
@@ -188,19 +202,19 @@ void UiManager::StatusGageBarRender(HDC hdc)
 	textWidth += 5;
 	StringTools::CreateTextOut(hdc, 468 + textWidth + (static_cast<int>(text.size()) * 6), 569, L"]", 11, RGB(153, 204, 51));
 
-	(*_expBar)->RenderBitmapImage(hdc, 442, 582,
+	(*_exp_bar)->RenderBitmapImage(hdc, 442, 582,
 		expWidth,
-		(*_expBar)->GetHeight(),
+		(*_exp_bar)->GetHeight(),
 		expWidth,
-		(*_expBar)->GetHeight());
+		(*_exp_bar)->GetHeight());
 
 
 	text.clear();
-	text.append(StringTools::StringToWString(player->GetPlayerInfo()->name.c_str()).c_str());
+	text.append(StringTools::StringToWString(player->GetPlayerInfo()->name.c_str()));
 	StringTools::CreateTextOut(hdc, 89, 584, text.c_str(), 13, RGB(255, 255, 255), L"µ¸¿ò");
 
 	text.clear();
-	text.append(L"ÃÊº¸ÀÚ");
+	text.append(L"¸¶¹ý»ç");
 	StringTools::CreateTextOut(hdc, 89, 568, text.c_str(), 13, RGB(255, 255, 255), L"µ¸¿ò");
 }
 
@@ -217,8 +231,13 @@ void UiManager::StatusLevelRender(HDC hdc)
 	int x = 40;
 	for (auto level = nums.rbegin(); level != nums.rend(); ++level)
 	{
-		auto data = _listLevel.find(*level)->second;
+		auto data = _list_level.find(*level)->second;
 		(*data)->RenderBitmapImage(hdc, x, 576, (*data)->GetWidth(), (*data)->GetHeight());
 		x += 12;
 	}
+}
+
+std::shared_ptr<QuickSlot*> UiManager::GetQuickSlot() const
+{
+	return _quick_slot;
 }

@@ -29,21 +29,22 @@ int GameMouse::ReadyGameObject()
 	(*isButton2)->Insert_Bitmap(_hWnd, L"Client\\Ui\\Basic.img\\Cursor.3.1.bmp");
 	_mouseImage.insert({ MouseState::kIsButton, { isButton1, isButton2 } });
 
-
+	_key_manager = new KeyManager();
 	return 0;
 }
 
 void GameMouse::UpdateGameObject(const float deltaTime)
 {
+	_key_manager->KeyUpdate();
 	GetCursorPos(&_cursorPos);
 	ScreenToClient(_hWnd, &_cursorPos);
 	this->SetInfo({ static_cast<float>(_cursorPos.x), static_cast<float>(_cursorPos.y) });
 
-	if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
+	if (_key_manager->KeyDown(KEY_LBUTTON))
 	{
 		_state = MouseState::kClick;
 	}
-	if (KeyManager::GetInstance()->KeyUp(KEY_LBUTTON))
+	if (_key_manager->KeyUp(KEY_LBUTTON))
 	{
 		_state = MouseState::kBasic;
 	}
@@ -70,6 +71,11 @@ GameMouse::GameMouse() :
 	_cursorPos({})
 {
 }
+GameMouse::~GameMouse()
+{
+	delete _key_manager;
+}
+
 
 POINT GameMouse::GetPoint() const
 {

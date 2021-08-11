@@ -114,7 +114,7 @@ void MapManager::LoadMapData(uint32_t mapid)
 				monsterCopy->SetInfo(obj->GetInfo());
 				monsterCopy->DoReadyGame();
 
-				map->AddGameObject(obj);
+				map->AddGameObject(monsterCopy);
 				map->AddMonsterObject(monsterCopy);
 				delete obj;
 			}
@@ -209,7 +209,7 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 	auto now_map = (*GetNowMap());
 	for (int i = 0; i < MaxLayer; i++)
 	{
-		auto list = now_map->GetGameObjectList(i);
+		auto& list = now_map->GetGameObjectList(i);
 		for (auto iter = list.begin(); iter != list.end();)
 		{
 			GameObject::State iEvent = (*iter)->DoUpdateObject(deltaTime);
@@ -220,7 +220,7 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 					delete (*iter);
 					(*iter) = nullptr;
 				}
-				iter = now_map->GetGameObjectList(i).erase(iter);
+				iter = list.erase(iter);
 			}
 			else
 			{

@@ -13,6 +13,10 @@
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/MonsterMnager/monster_movement.h"
 #include "../Managers/MonsterMnager/monster_parts.h"
+#include "../Managers/SkillManager/skill_manager.h"
+#include "../Managers/SkillManager/Skill/skill.h"
+#include "../Managers/SkillManager/Skill/skill_effect_image.h"
+#include "../Managers/SkillManager/Skill/skill_info.h"
 #include "../Components/MapObject/Monster/monster.h"
 #include "../Components/MapObject/ani_map_object.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
@@ -495,6 +499,149 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		else if (!strcmp(info.node().attribute("name").value(), "exp"))
 		{
 			(*monster)->SetExp(std::stoi(info.node().attribute("value").value()));
+		}
+	}
+}
+
+void XmlReader::SkillLoad()
+{
+	pugi::xml_document doc;
+	const auto foldersPath = FileManager::GetInstance()->GetDirFileName(L"Client\\Skill\\");
+	for (auto folderPath : foldersPath)
+	{
+		const auto err = doc.load_file(StringTools::WStringToString(folderPath.c_str()).c_str());
+
+		if (err.status == status_ok)
+		{
+			const auto datas = doc.select_nodes("imgdir/imgdir/imgdir");
+
+			for (auto skills_node : datas) // skillid
+			{
+				const auto skill = new Skill();
+				skill->SetSkillId(std::stoi(skills_node.node().attribute("name").value()));
+
+
+				for (auto skill_info : skills_node.node())
+				{
+					if (!strcmp(skill_info.attribute("name").value(), "action"))
+					{
+						skill->SetAction(skill_info.children().begin()->attribute("value").value());
+					}
+					else if (!strcmp(skill_info.attribute("name").value(), "level"))
+					{
+						for (auto& skill_level_node : skill_info)
+						{
+							auto skill_info = new SkillInfo();
+							for (auto& skill_level_info_node : skill_level_node)
+							{
+								if (!strcmp(skill_level_info_node.attribute("name").value(), "x"))
+								{
+									skill_info->SetX(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "y"))
+								{
+									skill_info->SetY(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "time"))
+								{
+									skill_info->SetTime(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "time"))
+								{
+									skill_info->SetTime(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "pdd"))
+								{
+									skill_info->SetPdd(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "attackCount"))
+								{
+									skill_info->SetAttackCount(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "mobCount"))
+								{
+									skill_info->SetMobCount(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+							}
+							skill->InsertSkillInfo(skill_info);
+
+						}
+					}
+					else if (!strcmp(skill_info.attribute("name").value(), "effect") || !strcmp(skill_info.attribute("name").value(), "ball"))
+					{
+						for (auto& skill_effect_node : skill_info)
+						{
+							wchar_t path[150];
+							swprintf_s(path, 150, L"Client\\Skill\\%d.img\\skill.%d.%s.%s.bmp",
+								(skill->GetSkillId() / 10000),
+								skill->GetSkillId(),
+								StringTools::StringToWString(skill_info.attribute("name").value()).c_str(),
+								StringTools::StringToWString(skill_effect_node.attribute("name").value()).c_str());
+							const auto skill_effect = new SkillEffectImage();
+							for (auto& skill_effect_info : skill_effect_node)
+							{
+								if (!strcmp(skill_effect_info.attribute("name").value(), "delay"))
+								{
+									skill_effect->SetDelay(std::stoi(skill_effect_info.attribute("value").value()));
+								}
+								else if (!strcmp(skill_effect_info.attribute("name").value(), "origin"))
+								{
+									skill_effect->SetOrigin(
+										{ std::stof(skill_effect_info.attribute("x").value()) ,
+											std::stof(skill_effect_info.attribute("y").value()) });
+								}
+							}
+							const auto image = new MyBitmap();
+							image->Insert_Bitmap(_hWnd, path);
+							skill_effect->SetImage(image);
+							if (!strcmp(skill_info.attribute("name").value(), "effect"))
+							{
+								skill->InsertSkillEffect(skill_effect);
+							}
+							else
+							{
+								skill->InsertBallEffect(skill_effect);
+							}
+						}
+
+					}
+					else if (!strcmp(skill_info.attribute("name").value(), "hit"))
+					{
+						for (auto skill_hits_node : skill_info)
+						{
+							for (auto& skill_effect_node : skill_hits_node)
+							{
+								wchar_t path[150];
+								swprintf_s(path, 150, L"Client\\Skill\\%d.img\\skill.%d.hit.%s.%s.bmp",
+									(skill->GetSkillId() / 10000),
+									skill->GetSkillId(),
+									StringTools::StringToWString(skill_hits_node.attribute("name").value()).c_str(),
+									StringTools::StringToWString(skill_effect_node.attribute("name").value()).c_str());
+								const auto skill_effect = new SkillEffectImage();
+								for (auto& skill_effect_info : skill_effect_node)
+								{
+									if (!strcmp(skill_effect_info.attribute("name").value(), "delay"))
+									{
+										skill_effect->SetDelay(std::stoi(skill_effect_info.attribute("value").value()));
+									}
+									else if (!strcmp(skill_effect_info.attribute("name").value(), "origin"))
+									{
+										skill_effect->SetOrigin(
+											{ std::stof(skill_effect_info.attribute("x").value()) ,
+												std::stof(skill_effect_info.attribute("y").value()) });
+									}
+								}
+								const auto image = new MyBitmap();
+								image->Insert_Bitmap(_hWnd, path);
+								skill_effect->SetImage(image);
+								skill->InsertHitEffect(skill_effect);
+							}
+						}
+					}
+				}
+				skill->ReadySkill();
+				SkillManager::GetInstance()->InsertSkill(skill->GetSkillId(), skill);
+			}
 		}
 	}
 }

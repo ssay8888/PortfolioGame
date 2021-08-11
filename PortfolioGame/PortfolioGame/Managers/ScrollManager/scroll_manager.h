@@ -18,7 +18,5 @@ public:
 private:
 	static float _scrollX;
 	static float _scrollY;
-	static float _tempScrollX;
-	static float _tempScrollY;
 };
 

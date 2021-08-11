@@ -17,7 +17,10 @@ typedef struct {
 	int16_t hp;
 	int16_t max_mp;
 	int16_t mp;
+	int16_t ap;
+	int16_t sp;
 	int32_t exp;
+	int16_t job;
 	std::string name;
 } ObjectInfo;
 

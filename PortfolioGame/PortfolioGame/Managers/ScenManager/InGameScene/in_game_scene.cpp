@@ -60,7 +60,7 @@ void InGameScene::RenderScene(HDC hdc)
 	MapManager::GetInstance()->RenderGameObjectManager(hdc);
 	MapManager::GetInstance()->RenderFootHoldManager(hdc);
 
-	UiManager::GetInstance()->RednerUiManager(hdc);
+	UiManager::GetInstance()->RenderUiManager(hdc);
 	_mouse->DoRenderGameObject(hdc);
 
 

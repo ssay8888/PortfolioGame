@@ -16,8 +16,8 @@ public:
 	void SetObjectPosY(float y);
 
 private:
-	Info _info;
-	RECT _rect;
+	Info _info{};
+	RECT _rect{};
 	ButtonState _state;
 
 	std::shared_ptr<MyBitmap*> _normalImage;

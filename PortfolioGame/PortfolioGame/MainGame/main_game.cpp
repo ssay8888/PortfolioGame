@@ -11,6 +11,7 @@
 #include "../Managers/ScrollManager/scroll_manager.h"
 #include "../Managers/ScenManager/scene_manager.h"
 #include "../Managers/MonsterMnager/monster_manager.h"
+#include "../Managers/SkillManager/skill_manager.h"
 #include <fstream>
 #include <algorithm>
 MainGame::MainGame(HDC hdc) :
@@ -43,6 +44,7 @@ void MainGame::ReadeyGame()
 	this->SetPlayer(object);
 	object_manager->SetPlayer(object);
 
+	SkillManager::GetInstance()->LoadSkillData();
 	MonsterManager::GetInstance()->LoadMonster();
 	MapManager::GetInstance()->AniObjectImageLoad();
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);

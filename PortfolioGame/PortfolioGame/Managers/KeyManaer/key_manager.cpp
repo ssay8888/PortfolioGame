@@ -41,6 +41,24 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_B;
 	if (GetAsyncKeyState('C') & 0x8000)
 		m_dwKey |= KEY_C;
+	if (GetAsyncKeyState('K') & 0x8000)
+		m_dwKey |= KEY_K;
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+		m_dwKey |= KEY_SHIFT;
+	if (GetAsyncKeyState(VK_INSERT) & 0x8000)
+		m_dwKey |= KEY_INSERT;
+	if (GetAsyncKeyState(VK_HOME) & 0x8000)
+		m_dwKey |= KEY_HOME;
+	if (GetAsyncKeyState(VK_PRIOR) & 0x8000)
+		m_dwKey |= KEY_PAGEUP;
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+		m_dwKey |= KEY_CTRL;
+	if (GetAsyncKeyState(VK_DELETE) & 0x8000)
+		m_dwKey |= KEY_DELETE;
+	if (GetAsyncKeyState(VK_END) & 0x8000)
+		m_dwKey |= KEY_END;
+	if (GetAsyncKeyState(VK_NEXT) & 0x8000)
+		m_dwKey |= KEY_PAGEDOWN;
 }
 
 bool KeyManager::KeyUp(DWORD dwKey)

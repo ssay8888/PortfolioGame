@@ -36,6 +36,9 @@ public:
 	void SetInfoMonster(pugi::xpath_node_set node, std::shared_ptr<Monster*> monster);
 
 
+	//스킬관련 메소드
+	void SkillLoad();
+
 	///
 	void LoadPortal();
 };
