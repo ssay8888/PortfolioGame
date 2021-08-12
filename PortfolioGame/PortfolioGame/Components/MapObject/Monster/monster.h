@@ -1,15 +1,17 @@
 #pragma once
 #include "../../Base/game_object.h"
+class AttackInfo;
 class AiMovement;
 class MonsterMovement;
 class MonsterParts;
 class FootHold;
+class MonsterFrameManager;
 class Monster :
 	public GameObject
 {
 
 public:
-	enum class MonsterState { kStand, kMove, kDie };
+	enum class MonsterState { kStand, kMove, kHit, kAttack1, kAttack2, kAttack3, kDie };
 	Monster();
 	~Monster();
 	MonsterInfo GetMonsterInfo();
@@ -48,6 +50,9 @@ public:
 	void SetMaxMp(uint32_t maxmp);
 	uint32_t GetMaxMp() const;
 
+	void SetAttackInfo(AttackInfo* attack_info);
+	AttackInfo* GetAttackInfo() const;
+
 	void SetMovement(std::shared_ptr<MonsterMovement*> movement);
 	std::shared_ptr<MonsterMovement*> GetMovement();
 	void SetName(std::string name);
@@ -55,6 +60,7 @@ public:
 
 	bool GetFacingDirection();
 	bool IsAlive() const;
+	void ChangeState(MonsterState state);
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
@@ -63,11 +69,7 @@ private:
 	
 	void IsJumping();
 	bool IsChangeFoothold();
-	void ChangeState(MonsterState state);
-	void ShowDieMotion();
-
-	bool NextFrame();
-
+	
 private:
 	MonsterInfo _monster_info;
 	std::shared_ptr<MonsterMovement*> _movement;
@@ -87,14 +89,15 @@ private:
 	uint64_t _alpha_tick;
 
 	//프레임관련변수
-	uint64_t _frame_tick;
-	uint16_t _frame_nummber;
-	bool _frame_revers;
+	MonsterFrameManager* _base_state_frame;
 	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
 
 	//몬스터이동
 	FootHold* _this_foothold;
 	AiMovement* _ai_movement;
+
+	//공격관련
+	AttackInfo* _attack_info;
 
 	HDC _memDC2;
 	HBITMAP _bitmap2;

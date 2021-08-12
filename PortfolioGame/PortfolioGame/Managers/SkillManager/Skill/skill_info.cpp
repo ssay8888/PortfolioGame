@@ -1,11 +1,15 @@
 #include "../../../pch.h"
 #include "skill_info.h"
 
-SkillInfo::SkillInfo() :
-	_attack_count(0),
-	_mad(0),
-	_mp_con(0),
-	_rect()
+SkillInfo::SkillInfo() : _x(0),
+                         _y(0),
+                         _attack_count(1),
+                         _mob_count(1),
+                         _mad(0),
+                         _mp_con(0),
+                         _time(0),
+                         _pdd(0),
+                         _rect()
 {
 }
 
@@ -101,4 +105,16 @@ void SkillInfo::SetMpCon(const int32_t mp_con)
 void SkillInfo::SetRect(const RECT rect)
 {
 	_rect = rect;
+}
+
+void SkillInfo::SetRectLt(LONG left, LONG top)
+{
+	_rect.left = left;
+	_rect.top = top;
+}
+
+void SkillInfo::SetRectRb(LONG right, LONG bottom)
+{
+	_rect.right = right;
+	_rect.bottom = bottom;
 }

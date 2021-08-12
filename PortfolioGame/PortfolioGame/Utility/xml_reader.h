@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <list>
+class MonsterParts;
 class SkinFrame;
 class SkinItem;
 class Monster;
@@ -34,7 +35,7 @@ public:
 
 	void LoadMonsters();
 	void SetInfoMonster(pugi::xpath_node_set node, std::shared_ptr<Monster*> monster);
-
+	void CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts*> parts, std::vector<std::shared_ptr<MonsterParts*>>& list);
 
 	//스킬관련 메소드
 	void SkillLoad();

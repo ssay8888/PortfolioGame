@@ -18,6 +18,7 @@
 #include "../Managers/SkillManager/Skill/skill_effect_image.h"
 #include "../Managers/SkillManager/Skill/skill_info.h"
 #include "../Components/MapObject/Monster/monster.h"
+#include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
 #include "../Components/MapObject/ani_map_object.h"
 #include "../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../Common/Utility/file_manager.h"
@@ -390,8 +391,8 @@ void XmlReader::LoadMonsters()
 
 								if (!strcmp(node.name(), "canvas"))
 								{
-									std::cout << nodes.node().attribute("name").value() << std::endl;
-									std::cout << node.attribute("name").value() << std::endl;
+									//std::cout << nodes.node().attribute("name").value() << std::endl;
+									//std::cout << node.attribute("name").value() << std::endl;
 									// <imgdir name="move">
 									std::string path;
 									char_t imagePath[100];
@@ -404,37 +405,110 @@ void XmlReader::LoadMonsters()
 										(*bitmap)->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
 										(*parts)->SetImage(bitmap);
 									}
-
-									for (auto canvans : node) // canvas info
-									{
-										std::cout << nodes.node().attribute("name").value() << std::endl;
-										if (!strcmp(canvans.attribute("name").value(), "origin"))
-										{
-											(*parts)->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
-											(*parts)->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
-										}
-										else if (!strcmp(canvans.attribute("name").value(), "It"))
-										{
-											(*parts)->SetRectLeft(std::stoi(canvans.attribute("x").value()));
-											(*parts)->SetRectRight(std::stoi(canvans.attribute("y").value()));
-										}
-										else if (!strcmp(canvans.attribute("name").value(), "rb"))
-										{
-											(*parts)->SetRectRight(std::stoi(canvans.attribute("x").value()));
-											(*parts)->SetRectBottom(std::stoi(canvans.attribute("y").value()));
-										}
-										else if (!strcmp(canvans.attribute("name").value(), "head"))
-										{
-											(*parts)->SetHeadPosX(std::stoi(canvans.attribute("x").value()));
-											(*parts)->SetHeadPosY(std::stoi(canvans.attribute("y").value()));
-										}
-										else if (!strcmp(canvans.attribute("name").value(), "delay"))
-										{
-											(*parts)->SetDelay(std::stoi(canvans.attribute("value").value()));
-										}
-									}
+									CanvasMonster(node, parts, list);
 									list.push_back(parts);
 								}
+								else if (!strcmp(node.attribute("name").value(), "info"))
+								{
+									AttackInfo* attack_info = new AttackInfo();
+									for (auto info_node : node)
+									{
+										if (!strcmp(info_node.attribute("name").value(), "attackAfter"))
+										{
+											attack_info->SetAttackAfter(std::stoi(info_node.attribute("value").value()));
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "conMP"))
+										{
+											attack_info->SetMpCon(std::stoi(info_node.attribute("value").value()));
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "deadlyAttack"))
+										{
+											attack_info->SetDeadlyAttack(std::stoi(info_node.attribute("value").value()));
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "effectAfter"))
+										{
+											attack_info->SetEffectAfter(std::stoi(info_node.attribute("value").value()));
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "effect") || 
+											!strcmp(info_node.attribute("name").value(), "hit") ||
+											!strcmp(info_node.attribute("name").value(), "areaWarning"))
+										{
+											std::vector<std::shared_ptr<MonsterParts*>>  list2;
+											for (auto effect_node : info_node)
+											{
+												auto parts2 = std::make_shared<MonsterParts*>(new MonsterParts());
+												if(!strcmp(effect_node.name(), "canvas"))
+												{
+													CanvasMonster(effect_node, parts2, list2);
+
+													std::string path;
+													char_t imagePath[100];
+													path.append(nodes.node().attribute("name").value()).append(".")
+														.append(node.attribute("name").value()).append(".").append(info_node.attribute("name").value())
+														.append(".").append(effect_node.attribute("name").value()).append(".bmp");
+													snprintf(imagePath, 100, "%s\\%s", StringTools::WStringToString(xmlPath.substr(0, xmlPath.size() - 4).c_str()).c_str(), path.c_str());
+
+													if ((*parts2)->GetImage() == nullptr)
+													{
+														std::shared_ptr<MyBitmap*> bitmap2 = std::make_shared<MyBitmap*>(new MyBitmap());
+														(*bitmap2)->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
+														(*parts2)->SetImage(bitmap2);
+													}
+													list2.emplace_back(parts2);
+												}
+												else if (!strcmp(effect_node.name(), "uol"))
+												{
+													auto parts2 = std::make_shared<MonsterParts*>(new MonsterParts());
+													(*parts2)->SetUol(effect_node.attribute("value").value());
+													list2.emplace_back(parts2);
+												}
+											}
+											if (!strcmp(info_node.attribute("name").value(), "effect"))
+											{
+												attack_info->SetEffect(list2);
+											}
+											else if (!strcmp(info_node.attribute("name").value(), "hit"))
+											{
+												attack_info->SetHitEffect(list2);
+											}
+											else if (!strcmp(info_node.attribute("name").value(), "areaWarning"))
+											{
+												attack_info->SetAreaWarning(list2);
+											}
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "range"))
+										{
+											RECT ragne{};
+											for (auto range_node : info_node)
+											{
+												std::cout << range_node.attribute("name").value() << std::endl;
+												if (!strcmp(range_node.attribute("name").value(), "lt"))
+												{
+													ragne.left = std::stol(range_node.attribute("x").value());
+													ragne.top = std::stol(range_node.attribute("y").value());
+												}
+												else if (!strcmp(range_node.attribute("name").value(), "rb"))
+												{
+													ragne.right = std::stol(range_node.attribute("x").value());
+													ragne.bottom = std::stol(range_node.attribute("y").value());
+												}
+											}
+											attack_info->SetRange(ragne);
+										}
+										else if (!strcmp(info_node.attribute("name").value(), "type"))
+										{
+											attack_info->SetType(std::stoi(info_node.attribute("value").value()));
+										}
+									}
+
+									(*monster)->SetAttackInfo(attack_info);
+								}
+								if (!strcmp(node.name(), "uol"))
+								{
+									(*parts)->SetUol(node.attribute("value").value());
+									list.push_back(parts);
+								}
+								(*parts)->SetPartner(movement);
 							}
 							(*movement)->InsertMovement(nodes.node().attribute("name").value(), list);
 						}
@@ -503,6 +577,39 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 	}
 }
 
+void XmlReader::CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts*> parts, std::vector<std::shared_ptr<MonsterParts*>>& list)
+{
+
+	for (auto canvans : node) // canvas info
+	{
+		//std::cout << nodes.node().attribute("name").value() << std::endl;
+		if (!strcmp(canvans.attribute("name").value(), "origin"))
+		{
+			(*parts)->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
+			(*parts)->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
+		}
+		else if (!strcmp(canvans.attribute("name").value(), "It"))
+		{
+			(*parts)->SetRectLeft(std::stoi(canvans.attribute("x").value()));
+			(*parts)->SetRectRight(std::stoi(canvans.attribute("y").value()));
+		}
+		else if (!strcmp(canvans.attribute("name").value(), "rb"))
+		{
+			(*parts)->SetRectRight(std::stoi(canvans.attribute("x").value()));
+			(*parts)->SetRectBottom(std::stoi(canvans.attribute("y").value()));
+		}
+		else if (!strcmp(canvans.attribute("name").value(), "head"))
+		{
+			(*parts)->SetHeadPosX(std::stoi(canvans.attribute("x").value()));
+			(*parts)->SetHeadPosY(std::stoi(canvans.attribute("y").value()));
+		}
+		else if (!strcmp(canvans.attribute("name").value(), "delay"))
+		{
+			(*parts)->SetDelay(std::stoi(canvans.attribute("value").value()));
+		}
+	}
+}
+
 void XmlReader::SkillLoad()
 {
 	pugi::xml_document doc;
@@ -561,6 +668,18 @@ void XmlReader::SkillLoad()
 								else if (!strcmp(skill_level_info_node.attribute("name").value(), "mobCount"))
 								{
 									skill_info->SetMobCount(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "mpCon"))
+								{
+									skill_info->SetMpCon(std::stoi(skill_level_info_node.attribute("value").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "lt"))
+								{
+									skill_info->SetRectLt(std::stol(skill_level_info_node.attribute("x").value()), std::stol(skill_level_info_node.attribute("y").value()));
+								}
+								else if (!strcmp(skill_level_info_node.attribute("name").value(), "rb"))
+								{
+									skill_info->SetRectRb(std::stol(skill_level_info_node.attribute("x").value()), std::stol(skill_level_info_node.attribute("y").value()));
 								}
 							}
 							skill->InsertSkillInfo(skill_info);

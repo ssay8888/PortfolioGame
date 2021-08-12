@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class MagicAttack;
 class Skill;
 class SkinInfo;
 class SkinItem;
@@ -105,8 +106,8 @@ private:
     bool _is_attacking;
     uint64_t _alert_tick;
 
-    Skill* _attack_skill;
-    uint64_t _attack_skill_tick;
+    MagicAttack* _attack_skill;
+
     
 
     ///피격관련

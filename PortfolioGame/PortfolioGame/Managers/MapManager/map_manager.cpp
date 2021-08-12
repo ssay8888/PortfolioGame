@@ -588,6 +588,9 @@ std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 		auto list = (*GetNowMap())->InMapMonsterObjectList(i);
 		for (auto object : *list)
 		{
+			if (monsters.size() >= count) {
+				break;
+			}
 			auto data = dynamic_cast<Monster*>(object);
 			if (data != nullptr)
 			{
@@ -597,9 +600,6 @@ std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 				if (IntersectRect(&rc, &rect, &dist))
 				{
 					monsters.emplace_back(data);
-					if (count >= monsters.size()) {
-						break;
-					}
 				}
 			}
 		}

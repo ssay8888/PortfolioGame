@@ -22,6 +22,8 @@ public:
 	void SetTime(int32_t time);
 	void SetPdd(int32_t pdd);
 	void SetRect(RECT rect);
+	void SetRectLt(LONG left, LONG top);
+	void SetRectRb(LONG right, LONG bottom);
 
 private:
 	int32_t _x;

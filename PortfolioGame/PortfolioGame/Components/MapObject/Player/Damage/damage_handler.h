@@ -10,6 +10,7 @@ public:
 
 
 	void InsertAttackDamageEffect(GameObject* target, uint32_t damage, uint32_t delay);
+	void InsertAttackDamageEffect(GameObject* target, std::list<uint32_t> damage, uint32_t delay);
 	void InsertTakeDamageEffect(GameObject* target, uint32_t damage, uint32_t delay);
 	void ShowDamages(HDC hdc);
 	void UpdateDamages();

@@ -170,12 +170,6 @@ void SkinManager::UolSetting(uint32_t skinId, std::map<std::string, SkinInfo*> i
 				StringTools::ReplaceAll(uol, "../");
 				auto splitString = StringTools::SplitString(uol, '/');
 				SkinParts * part = nullptr;
-				if (splitString.size() == 2)
-				{
-					if (!strcmp(splitString[1].c_str(), "hairOverHead")) {
-						int asd = 123;
-					}
-				}
 				if (overlapCount == 0)
 				{
 					part = parts->second->GetPartner()->FindParts(splitString[0]);

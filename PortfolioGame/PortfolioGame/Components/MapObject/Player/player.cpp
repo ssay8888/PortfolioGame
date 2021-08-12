@@ -1,27 +1,30 @@
 #include "../../../pch.h"
 #include "player.h"
-#include "Damage/damage_handler.h"
 #include "../foot_hold.h"
-#include "../../MapObject/portal.h"
+#include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
+#include "../../../Components/MapObject/Monster/monster.h"
+#include "../../../Managers/EffectManager/effect_manager.h"
 #include "../../../Managers/KeyManaer/key_manager.h"
+#include "../../../Managers/MapManager/map_manager.h"
+#include "../../../Managers/MapManager/Map/map_instance.h"
+#include "../../../Managers/ScrollManager/scroll_manager.h"
+#include "../../../Managers/SkillManager/Skill/skill.h"
+#include "../../../Managers/SkillManager/Skill/skill_info.h"
 #include "../../../Managers/Skins/skin_frame.h"
 #include "../../../Managers/Skins/skin_info.h"
 #include "../../../Managers/Skins/skin_item.h"
-#include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/Skins/skin_manager.h"
-#include "../../../Managers/ScrollManager/scroll_manager.h"
-#include "../../../Managers/MapManager/map_manager.h"
-#include "../../../Managers/MapManager/Map/map_instance.h"
+#include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/UiManager/ui_manager.h"
-#include "../../../Managers/EffectManager/effect_manager.h"
-#include "../../../Components/MapObject/Monster/monster.h"
-#include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
-#include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
+#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../MapObject/portal.h"
+#include "Damage/damage_handler.h"
+#include "MagicAttack/magic_attack.h"
 
 
 #include <time.h>
 
-#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
 
 Player::Player(uint8_t layer) :
                               GameObject(layer),
@@ -74,7 +77,8 @@ void Player::UpdateGameObject(const float deltaTime)
 	float outY = 0;
 	FootHold* tempHold;
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
-	if (!_is_fly && !_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
+	const bool finished_attack_frame = (_attack_skill != nullptr ? _attack_skill->IsFinishedFrame() : true);
+	if (finished_attack_frame && !_is_fly && !_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
 	{
 		float outX;
 		FootHold* outHold = nullptr;
@@ -129,14 +133,14 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (_info.y >= outY)
 	{
-		if (!_is_attacking && !_is_jump && !_is_prone && !_is_rope && keymanager->KeyPressing(KEY_DOWN))
+		if (finished_attack_frame && !_is_attacking && !_is_jump && !_is_prone && !_is_rope && keymanager->KeyPressing(KEY_DOWN))
 		{
 			this->ChangeFrameState("prone");
 			_is_prone = true;
 		}
 	}
 
-	if (keymanager->KeyUp(KEY_DOWN))
+	if (finished_attack_frame && keymanager->KeyUp(KEY_DOWN))
 	{
 		if (!_is_attacking && !_is_rope)
 		{
@@ -144,7 +148,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			_is_prone = false;
 		}
 	}
-	if (!_is_prone)
+	if (finished_attack_frame && !_is_prone)
 	{
 		if (keymanager->KeyPressing(KEY_LEFT))
 		{
@@ -197,7 +201,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 
 
-	if (!_is_prone && keymanager->KeyPressing(KEY_UP))
+	if (finished_attack_frame && !_is_prone && keymanager->KeyPressing(KEY_UP))
 	{
 		auto rope = (*MapManager::GetInstance()->GetNowMap())->GetRopeLadderList();
 		float outX = 0;
@@ -240,6 +244,10 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 			_is_rope = false;
 		}
+	}
+	if (!_is_rope &&  !_is_prone && finished_attack_frame)
+	{
+		ApplySkill();
 	}
 	IsTakeDamage();
 	bool isKnockback = GetTickCount64() < _knockback_tick + _knockback_time;
@@ -922,6 +930,7 @@ void Player::AttackMonster(Monster* monster)
 		GetPlayerInfo()->exp += monster->GetExp();
 	}
 	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
+	monster->ChangeState(Monster::MonsterState::kHit);
 }
 
 void Player::IsTakeDamage()
@@ -957,10 +966,99 @@ void Player::ApplySkill()
 {
 	const auto key_manager = KeyManager::GetInstance();
 	const auto quick_slot = (*UiManager::GetInstance()->GetQuickSlot());
-	if (key_manager->KeyDown(KEY_SHIFT))
+	QuickSlot::KeyBoard key_board = QuickSlot::KeyBoard::kEnd;
+	if (key_manager->KeyPressing(KEY_SHIFT))
 	{
-		_attack_skill = quick_slot->GetSkill(QuickSlot::KeyBoard::kShift);
+		key_board = QuickSlot::KeyBoard::kShift;
+	}
+	else if (key_manager->KeyPressing(KEY_INSERT))
+	{
+		key_board = QuickSlot::KeyBoard::kInsert;
+	}
+	else if (key_manager->KeyPressing(KEY_HOME))
+	{
+		key_board = QuickSlot::KeyBoard::kHome;
+	}
+	else if (key_manager->KeyPressing(KEY_PAGEUP))
+	{
+		key_board = QuickSlot::KeyBoard::kPageUp;
+	}
+	else if (key_manager->KeyPressing(KEY_CTRL))
+	{
+		key_board = QuickSlot::KeyBoard::kControl;
+	}
+	else if (key_manager->KeyPressing(KEY_DELETE))
+	{
+		key_board = QuickSlot::KeyBoard::kDelete;
+	}
+	else if (key_manager->KeyPressing(KEY_END))
+	{
+		key_board = QuickSlot::KeyBoard::kEndKey;
+	}
+	else if (key_manager->KeyPressing(KEY_PAGEDOWN))
+	{
+		key_board = QuickSlot::KeyBoard::kPageDown;
+	}
 
+	if (key_board != QuickSlot::KeyBoard::kEnd)
+	{
+		auto attack_skill = quick_slot->GetSkill(key_board);
+		if (attack_skill == nullptr)
+		{
+			return;
+		}
+		auto skill_info = attack_skill->GetSkillInfo()[attack_skill->GetSkillInfo().size() - 1];
+
+		RECT rect {
+			static_cast<long>(_info.x) - std::abs(skill_info->GetRect().left),
+			static_cast<long>(_info.y) - std::abs(skill_info->GetRect().top),
+			static_cast<long>(_info.x) + std::abs(skill_info->GetRect().right) ,
+			static_cast<long>(_info.y) + std::abs(skill_info->GetRect().bottom) };
+
+		if (skill_info->GetRect().left == 0 && skill_info->GetRect().right == 0 && skill_info->GetRect().top == 0 && skill_info->GetRect().bottom == 0)
+		{
+			if (GetFacingDirection())
+			{
+				rect = {
+					static_cast<long>(_info.x),
+					static_cast<long>(_info.y) - 65,
+					static_cast<long>(_info.x) + 200,
+					static_cast<long>(_info.y) + 65 };
+			}
+			else
+			{
+				rect = {
+					static_cast<long>(_info.x) + -200 ,
+					static_cast<long>(_info.y) + -65,
+					static_cast<long>(_info.x),
+					static_cast<long>(_info.y) + 65 };
+			}
+		}
+
+		const auto mosnters = MapManager::GetInstance()->MonsterCollision(rect, skill_info->GetMobCount());
+
+		if (_attack_skill == nullptr)
+		{
+			_attack_skill = new MagicAttack(attack_skill, this, mosnters);
+			_attack_skill->ReadyMagicAttack();
+		}
+		else
+		{
+			_attack_skill->ResetSkill(attack_skill, this, mosnters);
+		}
+		this->ChangeFrameState("swingO2");
+		UpdateAlertTick();
+		_is_attacking = true;
+		for (auto& monster : mosnters)
+		{
+			std::list<uint32_t> damages;
+			for (int i = 0; i < skill_info->GetAttackCount(); ++i)
+			{
+				damages.emplace_back(rand());
+			}
+			_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
+			monster->ChangeState(Monster::MonsterState::kHit);
+		}
 	}
 }
 
@@ -969,7 +1067,10 @@ void Player::RenderGameObject(HDC hdc)
 	UpdateRectGameObject();
 	RenderCharacter(hdc);
 	_damage_handler->ShowDamages(hdc);
-	
+	if (_attack_skill != nullptr)
+	{
+		_attack_skill->SkillRender(hdc);
+	}
 }
 
 void Player::LateUpdateGameObject()

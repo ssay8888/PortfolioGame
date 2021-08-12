@@ -70,5 +70,5 @@ void QuickSlot::RenderQuickSlot(HDC hdc)
 
 Skill* QuickSlot::GetSkill(const KeyBoard key) const
 {
-	return _skills[static_cast<KeyBoard>(key)];
+	return _skills[static_cast<int>(key)];
 }

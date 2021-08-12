@@ -161,7 +161,9 @@
     <ClInclude Include="Components\MapObject\foot_hold.h" />
     <ClInclude Include="Components\MapObject\map_object_info.h" />
     <ClInclude Include="Components\MapObject\Monster\AiMovement\ai_movement.h" />
+    <ClInclude Include="Components\MapObject\Monster\AttackInfo\attack_info.h" />
     <ClInclude Include="Components\MapObject\Monster\monster.h" />
+    <ClInclude Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_handler.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_info.h" />
     <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h" />
@@ -232,9 +234,17 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\AttackInfo\attack_info.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Components\MapObject\Monster\monster.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\Damage\damage_handler.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>

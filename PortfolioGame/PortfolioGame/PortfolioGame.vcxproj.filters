@@ -95,6 +95,12 @@
     <Filter Include="Components\MapObject\Player\MagicAttack">
       <UniqueIdentifier>{fd3d4e78-2ff5-43d4-9a87-7de23ebe4d63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\MapObject\Monster\AttackInfo">
+      <UniqueIdentifier>{ac31584e-e07f-4e2e-bca6-702c3734fd5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Monster\MonsterUtility">
+      <UniqueIdentifier>{1d0bb53a-273c-4e05-86e5-923609eefd38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -250,6 +256,12 @@
     <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h">
       <Filter>Components\MapObject\Player\MagicAttack</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MapObject\Monster\AttackInfo\attack_info.h">
+      <Filter>Components\MapObject\Monster\AttackInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.h">
+      <Filter>Components\MapObject\Monster\MonsterUtility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -386,6 +398,12 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\MagicAttack\magic_attack.cpp">
       <Filter>Components\MapObject\Player\MagicAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\AttackInfo\attack_info.cpp">
+      <Filter>Components\MapObject\Monster\AttackInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.cpp">
+      <Filter>Components\MapObject\Monster\MonsterUtility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

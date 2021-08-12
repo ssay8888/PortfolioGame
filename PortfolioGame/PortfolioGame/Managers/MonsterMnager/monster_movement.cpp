@@ -24,3 +24,8 @@ std::vector<std::shared_ptr<MonsterParts*>> MonsterMovement::FindMovement(std::s
 	}
 	return std::vector<std::shared_ptr<MonsterParts*>>();
 }
+
+std::map<std::string, std::vector<std::shared_ptr<MonsterParts*>>>& MonsterMovement::GetMovemnet()
+{
+	return _movement;
+}

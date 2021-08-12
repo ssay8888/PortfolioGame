@@ -58,7 +58,7 @@ float AiMovement::GetMoveRange() const
 
 void AiMovement::ResetMoveRange()
 {
-	if (rand() % 10 == 1)
+	if (rand() % 10 == 1 || true)
 	{
 		_is_stand = true;
 		_stand_tick = GetTickCount64();
