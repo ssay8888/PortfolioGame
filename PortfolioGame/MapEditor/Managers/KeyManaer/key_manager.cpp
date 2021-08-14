@@ -38,6 +38,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_C;
 	if (GetAsyncKeyState('X') & 0x8000)
 		m_dwKey |= KEY_X;
+	if (GetAsyncKeyState('Z') & 0x8000)
+		m_dwKey |= KEY_Z;
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		m_dwKey |= KEY_LEFT;
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)

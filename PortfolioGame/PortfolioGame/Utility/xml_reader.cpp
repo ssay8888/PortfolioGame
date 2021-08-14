@@ -4,6 +4,7 @@
 
 #include "xml_reader.h"
 #include "../Components/Base/game_object.h"
+#include "../Components/MapObject/Item/item.h"
 #include "../Managers/MapManager/map_manager.h"
 #include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_item.h"
@@ -17,6 +18,7 @@
 #include "../Managers/SkillManager/Skill/skill.h"
 #include "../Managers/SkillManager/Skill/skill_effect_image.h"
 #include "../Managers/SkillManager/Skill/skill_info.h"
+#include "../Managers/ItemManager/item_manager.h"
 #include "../Components/MapObject/Monster/monster.h"
 #include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
 #include "../Components/MapObject/ani_map_object.h"
@@ -256,6 +258,28 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 			SkinItem* item = new SkinItem();
 			item->SetName(itemName);
 			item->SetPartner(info);
+			if (!strcmp(begin.node().attribute("name").value(), "info"))
+			{
+				auto data = begin.node().select_node("canvas[@name='icon']");
+				if (data)
+				{
+					auto icon = std::make_shared<MyBitmap*>(new MyBitmap());
+					std::wstring bmp_path;
+					wchar_t bmpPath[100];
+					swprintf(bmpPath, 100, L"Client\\%s\\%08d.img\\info.icon.bmp",
+						StringTools::StringToWString(type.c_str()).c_str(), code);
+					(*icon)->Insert_Bitmap(_hWnd, bmpPath);
+					info->SetIcon(icon);
+
+					data = begin.node().select_node("canvas[@name='iconRaw']");
+					auto icon2 = std::make_shared<MyBitmap*>(new MyBitmap());
+					swprintf(bmpPath, 100, L"Client\\%s\\%08d.img\\info.iconRaw.bmp",
+						StringTools::StringToWString(type.c_str()).c_str(), code);
+					(*icon2)->Insert_Bitmap(_hWnd, bmpPath);
+					info->SetIconRaw(icon2);
+				}
+				continue;
+			}
 			for (auto frameCount : begin.node()) // alert\0~n
 			{
 				if (!strcmp(frameCount.name(), "canvas"))
@@ -790,5 +814,71 @@ void XmlReader::LoadPortal()
 			}
 		}
 		MapManager::GetInstance()->InsertObjectImage("portal", aniObject);
+	}
+}
+
+void XmlReader::LoadItem(std::string path)
+{
+	pugi::xml_document doc;
+	char buff[255];
+	snprintf(buff, 255, "Client\\Item\\%s.xml", path.c_str()); // Consume\\0200.img.xml
+	const auto err = doc.load_file(buff);
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir");
+
+		for (auto item_code : datas)
+		{
+			int32_t item_id = std::stoi(item_code.node().attribute("name").value());
+			std::shared_ptr<Item> item_shared = std::make_shared<Item>(Item());
+			auto item = (item_shared);
+
+			auto info_node = item_code.node().select_node("imgdir[@name='info']");
+
+			if (info_node)
+			{
+				for (auto info : info_node.node())
+				{
+					if (!strcmp(info.attribute("name").value(), "icon") || !strcmp(info.attribute("name").value(), "iconRaw"))
+					{
+						char bmp_path[150];
+						snprintf(bmp_path, 150, "Client\\Item\\%s\\%08d.info.%s.bmp", 
+							path.c_str(), 
+							item_id, 
+							info.attribute("name").value());
+						auto icon = std::make_shared<MyBitmap*>(new MyBitmap());
+						(*icon)->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
+						if (!strcmp(info.attribute("name").value(), "icon"))
+						{
+							item->SetIcon(icon);
+						}
+						else
+						{
+							item->SetIconRaw(icon);
+						}
+
+					}
+					else if (!strcmp(info.attribute("name").value(), "price"))
+					{
+						item->SetPrice(std::stoi(info.attribute("value").value()));
+					}
+					else if (!strcmp(info.attribute("name").value(), "slotMax"))
+					{
+						item->SetSlotMax(std::stoi(info.attribute("value").value()));
+					}
+				}
+			}
+
+			auto spec_node = item_code.node().select_node("imgdir[@name='spec']");
+			if (spec_node)
+			{
+				for (auto spec : spec_node.node())
+				{
+					item->InsertSpec(spec.attribute("name").value(), std::stoi(spec.attribute("value").value()));
+				}
+			}
+			ItemManager::GetInstance()->InsertItem(item_id, item_shared);
+		}
 	}
 }

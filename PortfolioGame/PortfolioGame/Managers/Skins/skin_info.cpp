@@ -66,3 +66,23 @@ std::string SkinInfo::GetName() const
 	return _name;
 }
 
+
+void SkinInfo::SetIcon(std::shared_ptr<MyBitmap*> icon)
+{
+	_icon = icon;
+}
+
+void SkinInfo::SetIconRaw(std::shared_ptr<MyBitmap*> icon)
+{
+	_icon_raw = icon;
+}
+
+std::shared_ptr<MyBitmap*> SkinInfo::GetIcon() const
+{
+	return _icon;
+}
+
+std::shared_ptr<MyBitmap*> SkinInfo::GetIconRaw() const
+{
+	return _icon_raw;
+}

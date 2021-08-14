@@ -25,7 +25,7 @@ public:
 	void GainInfoPosXY(float x, float y);
 
 
-private:
+protected:
 	Info _info;
 	RECT _rect;
 	ButtonState _state;

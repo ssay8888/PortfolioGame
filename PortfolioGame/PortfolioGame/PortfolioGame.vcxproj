@@ -159,6 +159,7 @@
     <ClInclude Include="Components\game_mouse.h" />
     <ClInclude Include="Components\MapObject\ani_map_object.h" />
     <ClInclude Include="Components\MapObject\foot_hold.h" />
+    <ClInclude Include="Components\MapObject\Item\item.h" />
     <ClInclude Include="Components\MapObject\map_object_info.h" />
     <ClInclude Include="Components\MapObject\Monster\AiMovement\ai_movement.h" />
     <ClInclude Include="Components\MapObject\Monster\AttackInfo\attack_info.h" />
@@ -166,12 +167,15 @@
     <ClInclude Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_handler.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_info.h" />
+    <ClInclude Include="Components\MapObject\Player\Inventory\eqp_inventory.h" />
+    <ClInclude Include="Components\MapObject\Player\Inventory\inventory.h" />
     <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h" />
     <ClInclude Include="Components\MapObject\Player\player.h" />
     <ClInclude Include="Components\MapObject\portal.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainGame\main_game.h" />
     <ClInclude Include="Managers\EffectManager\effect_manager.h" />
+    <ClInclude Include="Managers\ItemManager\item_manager.h" />
     <ClInclude Include="Managers\KeyManaer\key_manager.h" />
     <ClInclude Include="Managers\MapManager\Map\map_instance.h" />
     <ClInclude Include="Managers\MapManager\map_manager.h" />
@@ -193,6 +197,8 @@
     <ClInclude Include="Managers\Skins\skin_item.h" />
     <ClInclude Include="Managers\Skins\skin_manager.h" />
     <ClInclude Include="Managers\Skins\skin_parts.h" />
+    <ClInclude Include="Managers\UiManager\Base\base_window.h" />
+    <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h" />
     <ClInclude Include="Managers\UiManager\QuickSlot\quick_slot.h" />
     <ClInclude Include="Managers\UiManager\Skill\skill_window.h" />
     <ClInclude Include="Managers\UiManager\UiScroll\ui_scroll.h" />
@@ -226,6 +232,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Components\MapObject\Item\item.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Components\MapObject\map_object_info.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
@@ -254,6 +264,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Inventory\eqp_inventory.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Inventory\inventory.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Components\MapObject\Player\MagicAttack\magic_attack.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
@@ -271,6 +289,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\EffectManager\effect_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\ItemManager\item_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -357,6 +379,14 @@
     <ClCompile Include="Managers\Skins\skin_parts.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Base\base_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Inventory\inventory_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\UiManager\QuickSlot\quick_slot.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>

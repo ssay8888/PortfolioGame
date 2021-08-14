@@ -61,3 +61,4 @@ SkinInfo* SkinItem::GetPartner() const
 {
 	return _partner;
 }
+

@@ -1,6 +1,8 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class EqpInventory;
+class Inventory;
 class MagicAttack;
 class Skill;
 class SkinInfo;
@@ -70,6 +72,8 @@ public:
     DamageHandler* GetDamageHandler() const;
     void SettingPushKnockBack(bool fancing);
 
+    Inventory* GetInventory(::ObjectType::InventoryTabState type);
+    EqpInventory* GetEqpInventory();
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);
@@ -137,7 +141,13 @@ private:
     /// 데미지관련
     /// </summary>
     DamageHandler* _damage_handler;
-    
+
+    /// <summary>
+    /// 인벤토리관련
+    /// </summary>
+    Inventory* _inventory[::ObjectType::InventoryTabState::kEnd];
+    EqpInventory* _eqp_inventory;
+
     uint64_t _portal_tick;
     /// <summary>
     /// 기타

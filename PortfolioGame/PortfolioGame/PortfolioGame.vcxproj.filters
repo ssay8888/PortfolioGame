@@ -101,6 +101,21 @@
     <Filter Include="Components\MapObject\Monster\MonsterUtility">
       <UniqueIdentifier>{1d0bb53a-273c-4e05-86e5-923609eefd38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\UiManager\Inventory">
+      <UniqueIdentifier>{8a3df242-ea7e-45e9-8eab-9e48a04a2fec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\Base">
+      <UniqueIdentifier>{351632e0-6b81-443f-b4e4-67bdb3454309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Player\Inventory">
+      <UniqueIdentifier>{1e2548b1-7b96-4d85-bf23-43640886b00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Item">
+      <UniqueIdentifier>{0ab92242-46f8-4f53-a4c4-e9d555d99ef1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ItemManager">
+      <UniqueIdentifier>{2f61bdd9-1ce4-48c4-8f15-088a5f2cf859}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -262,6 +277,24 @@
     <ClInclude Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.h">
       <Filter>Components\MapObject\Monster\MonsterUtility</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h">
+      <Filter>Managers\UiManager\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\Base\base_window.h">
+      <Filter>Managers\UiManager\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Inventory\inventory.h">
+      <Filter>Components\MapObject\Player\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Item\item.h">
+      <Filter>Components\MapObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ItemManager\item_manager.h">
+      <Filter>Managers\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Inventory\eqp_inventory.h">
+      <Filter>Components\MapObject\Player\Inventory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -404,6 +437,24 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.cpp">
       <Filter>Components\MapObject\Monster\MonsterUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Inventory\inventory_window.cpp">
+      <Filter>Managers\UiManager\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Base\base_window.cpp">
+      <Filter>Managers\UiManager\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Inventory\inventory.cpp">
+      <Filter>Components\MapObject\Player\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Item\item.cpp">
+      <Filter>Components\MapObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ItemManager\item_manager.cpp">
+      <Filter>Managers\ItemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Inventory\eqp_inventory.cpp">
+      <Filter>Components\MapObject\Player\Inventory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

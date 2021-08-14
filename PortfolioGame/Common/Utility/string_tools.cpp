@@ -55,6 +55,7 @@ void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fon
 	TextOut(hdc, x, y, str.c_str(), lstrlen(str.c_str()));
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);
+	DeleteObject(OldFont);
 }
 
 uint16_t StringTools::ReplaceAll(std::string& text, std::string mod)

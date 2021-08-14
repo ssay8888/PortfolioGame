@@ -17,6 +17,9 @@
 #define KEY_DELETE		0x00008000
 #define KEY_END			0x00010000
 #define KEY_PAGEDOWN	0x00020000
+#define KEY_I			0x00040000
+#define KEY_Z			0x00080000
+
 
 class KeyManager
 {

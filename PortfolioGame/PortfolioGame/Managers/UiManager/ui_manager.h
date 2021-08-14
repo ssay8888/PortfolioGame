@@ -1,4 +1,5 @@
 #pragma once
+class InventoryWindow;
 class SkillWindow;
 class MyBitmap;
 class UiButton;
@@ -32,5 +33,6 @@ private:
 	std::shared_ptr<MyBitmap*> _exp_bar;
 
 	std::shared_ptr<SkillWindow*> _skill_window;
+	std::shared_ptr<InventoryWindow*> _inventory_window;
 
 };

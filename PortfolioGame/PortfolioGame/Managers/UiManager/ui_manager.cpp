@@ -1,11 +1,12 @@
 #include "../../pch.h"
 #include "ui_manager.h"
 #include "ui_button.h"
-#include "Skill/skill_window.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../Components/MapObject/Player/player.h"
 #include "../MapManager/map_manager.h"
+#include "Inventory/inventory_window.h"
 #include "QuickSlot/quick_slot.h"
+#include "Skill/skill_window.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
@@ -33,6 +34,7 @@ void UiManager::UpdateUiManager()
 		}
 	}
 	(*_skill_window)->UpdateWindow();
+	(*_inventory_window)->DoUpdateWindow();
 }
 
 void UiManager::ReadyUiManager()
@@ -41,6 +43,8 @@ void UiManager::ReadyUiManager()
 	PlayerInfoUiLoad();
 	_skill_window = std::make_shared<SkillWindow*>(new SkillWindow());
 	(*_skill_window)->ReadyWindow();
+	_inventory_window = std::make_shared<InventoryWindow*>(new InventoryWindow());
+	(*_inventory_window)->DoReadyWindow();
 }
 
 void UiManager::RenderUiManager(HDC hdc)
@@ -61,6 +65,7 @@ void UiManager::RenderUiManager(HDC hdc)
 	StatusLevelRender(hdc);
 
 	(*_skill_window)->RenderWindow(hdc);
+	(*_inventory_window)->DoRenderWindow(hdc);
 }
 
 void UiManager::ButtonUiLoad()

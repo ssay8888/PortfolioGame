@@ -76,6 +76,7 @@ public:
 
 	void SetAttackTick();
 	uint64_t GetAttackTick()const;
+	MonsterFrameManager* GetBaseFrame() const;
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;

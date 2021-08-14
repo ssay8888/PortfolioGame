@@ -1,4 +1,5 @@
 #pragma once
+class MyBitmap;
 class SkinFrame;
 class SkinInfo;
 class SkinItem
@@ -18,6 +19,7 @@ public:
 
 	void SetPartner(SkinInfo* partner);
 	SkinInfo* GetPartner() const;
+
 private:
 	std::string _name;
 	std::vector<SkinFrame*> _skin_frames;

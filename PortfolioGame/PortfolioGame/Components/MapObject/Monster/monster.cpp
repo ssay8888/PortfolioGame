@@ -34,6 +34,9 @@ Monster::Monster() :
 
 
 {
+	InsertAttackDelay("attack1", GetTickCount64());
+	InsertAttackDelay("attack2", GetTickCount64() + 10000);
+	InsertAttackDelay("attack3", GetTickCount64() + 20000);
 }
 
 Monster::~Monster()
@@ -422,6 +425,11 @@ uint64_t Monster::GetAttackTick() const
 	return _attack_tick;
 }
 
+MonsterFrameManager* Monster::GetBaseFrame() const
+{
+	return _base_state_frame;
+}
+
 void Monster::SetAttackTick()
 {
 	_attack_tick = GetTickCount64();
@@ -717,13 +725,6 @@ void Monster::RenderGameObject(HDC hdc)
 
 void Monster::LateUpdateGameObject()
 {
-	if (_base_state_frame->NextFrame(false))
-	{
-		if (_monster_state == MonsterState::kHit)
-		{
-			ChangeState(MonsterState::kStand);
-		}
-	}
 	switch (_monster_state) {
 	case MonsterState::kStand:
 	case MonsterState::kMove:
@@ -735,15 +736,6 @@ void Monster::LateUpdateGameObject()
 	case MonsterState::kAttack3:
 	{
 		const auto attack_info = _attack_info.find(_state_string);
-		if (attack_info->second->IsEffectFinish() && attack_info->second->IsAttackFinish() &&
-			_base_state_frame->IsFrameFinish())
-		{
-			attack_info->second->ResetEffectFrame();
-			attack_info->second->ResetAreaFrame();
-			_base_state_frame->ResetFrame();
-			ChangeState(MonsterState::kStand);
-			return;
-		}
 		if (attack_info != _attack_info.end())
 		{
 			if (!attack_info->second->GetEffect().empty())
@@ -783,10 +775,32 @@ void Monster::LateUpdateGameObject()
 			{
 				attack_info->second->GetHitEffectFrame()->NextFrame(false);
 			}
+
+			if (attack_info->second->IsEffectFinish() && attack_info->second->IsAttackFinish())
+			{
+				if (!this->GetStateString().empty())
+				{
+					this->AttackApply(this->GetStateString());
+				}
+				attack_info->second->ResetEffectFrame();
+				attack_info->second->ResetAreaFrame();
+				_base_state_frame->ResetFrame();
+				ChangeState(MonsterState::kStand);
+				return;
+			}
 		}
+
 		break;
 	}
 	default:;
+	}
+
+	if (_base_state_frame->NextFrame())
+	{
+		if (_monster_state == MonsterState::kHit)
+		{
+			ChangeState(MonsterState::kStand);
+		}
 	}
 }
 

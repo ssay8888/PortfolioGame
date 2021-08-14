@@ -43,6 +43,10 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_C;
 	if (GetAsyncKeyState('K') & 0x8000)
 		m_dwKey |= KEY_K;
+	if (GetAsyncKeyState('I') & 0x8000)
+		m_dwKey |= KEY_I;
+	if (GetAsyncKeyState('Z') & 0x8000)
+		m_dwKey |= KEY_Z;
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 		m_dwKey |= KEY_SHIFT;
 	if (GetAsyncKeyState(VK_INSERT) & 0x8000)

@@ -71,8 +71,9 @@ float AiMovement::Moveing()
 						return 0;
 					}
 				}
-			} else if ((!attack_info.second->IsEffectFinish() && attack_info.second->IsAttackFinish()) ||
-				(attack_info.second->IsEffectFinish() && !attack_info.second->IsAttackFinish()))
+			}
+			else if (((!attack_info.second->IsEffectFinish() && attack_info.second->IsAttackFinish()) ||
+				(attack_info.second->IsEffectFinish() && !attack_info.second->IsAttackFinish())))
 			{
 				is_check_attack = true;
 				useAttack = attack_info.first;
@@ -88,27 +89,25 @@ float AiMovement::Moveing()
 
 			attack_info = _partner->GetAttackInfo().find(attkey)->second;
 			auto tick = _partner->FindAttackDelay(attkey);
-			if (GetTickCount64() > tick + 10000)
+			if (GetTickCount64() > tick)
 			{
 				switch (value)
 				{
 				case 1:
 					_partner->ChangeState(Monster::MonsterState::kAttack1);
 					useAttack = attkey;
+					_partner->SetAttackTick();
 					_partner->SetStateString(attkey);
-					break;
-				case 2:
-					_partner->ChangeState(Monster::MonsterState::kAttack2);
-					useAttack = attkey;
-					_partner->SetStateString(attkey);
+					_partner->InsertAttackDelay(attkey, GetTickCount64() + 10000);
 					break;
 				case 3:
 					_partner->ChangeState(Monster::MonsterState::kAttack3);
 					useAttack = attkey;
+					_partner->SetAttackTick();
 					_partner->SetStateString(attkey);
+					_partner->InsertAttackDelay(attkey, GetTickCount64() + 20000);
 					break;
 				}
-				_partner->InsertAttackDelay(attkey, GetTickCount64());
 
 				if (_partner->GetPlayer() != nullptr)
 				{
@@ -121,10 +120,6 @@ float AiMovement::Moveing()
 						SetFacingDirection(false);
 					}
 				}
-			}
-			if (!_partner->GetStateString().empty())
-			{
-				_partner->AttackApply(_partner->GetStateString());
 			}
 			return 0.f;
 		}

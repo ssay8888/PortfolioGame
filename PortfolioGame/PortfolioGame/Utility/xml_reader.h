@@ -40,7 +40,10 @@ public:
 	//스킬관련 메소드
 	void SkillLoad();
 
-	///
+	//포탈관련 메소드
 	void LoadPortal();
+
+	//아이템 메소드
+	void LoadItem(std::string path);
 };
 

@@ -18,12 +18,18 @@
 #include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/UiManager/ui_manager.h"
 #include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../../Managers/UiManager/Inventory/inventory_window.h"
+#include "../../../Managers/ItemManager/item_manager.h"
 #include "../../MapObject/portal.h"
 #include "Damage/damage_handler.h"
 #include "MagicAttack/magic_attack.h"
 
 
 #include <time.h>
+
+#include "../Item/item.h"
+#include "Inventory/eqp_inventory.h"
+#include "Inventory/inventory.h"
 
 
 Player::Player(uint8_t layer) :
@@ -42,6 +48,10 @@ Player::Player(uint8_t layer) :
 
 Player::~Player()
 {
+	for (int i = 0; i < ::ObjectType::InventoryTabState::kEnd; ++i)
+	{
+		delete _inventory[i];
+	}
 	SelectObject(_memDC, _old_bitmap);
 	DeleteObject(_bitmap);
 	DeleteDC(_memDC);
@@ -66,6 +76,11 @@ int Player::ReadyGameObject()
 	ReleaseDC(_hWnd, hDC);
 
 	srand(int(time(NULL)));
+	for (int i = 0; i < ::ObjectType::InventoryTabState::kEnd; ++i)
+	{
+		_inventory[i] = new Inventory();
+	}
+	_eqp_inventory = new EqpInventory();
     return 0;
 }
 
@@ -332,6 +347,42 @@ void Player::UpdateGameObject(const float deltaTime)
 	if (keymanager->KeyPressing(KEY_B))
 	{
 		this->ChangeFrameState("swingT1");
+	}
+	if (keymanager->KeyPressing(KEY_Z))
+	{
+		for (int i = 0; i < 24; ++i)
+		{
+			auto item = ItemManager::GetInstance()->FindCopyItem(2000000 + i);
+			item->SetQuantity(rand() % 100);
+			_inventory[::ObjectType::kConsume]->AddItem(i, item);
+		}
+		for (int i = 0; i < 3; ++i)
+		{
+			auto item = ItemManager::GetInstance()->FindCopyItem(2001000 + i);
+			item->SetQuantity(rand() % 100);
+			_inventory[::ObjectType::kConsume]->AddItem(i + 24, item);
+		}
+		for (int i = 0; i < 25; ++i)
+		{
+			auto item = ItemManager::GetInstance()->FindCopyItem(2001500 + i);
+			item->SetQuantity(rand() % 100);
+			_inventory[::ObjectType::kConsume]->AddItem(i + 24 + 3, item);
+		}
+		for (int i = 0; i < 12; ++i)
+		{
+			auto item = ItemManager::GetInstance()->FindCopyItem(2002000 + i);
+			item->SetQuantity(rand() % 100);
+			_inventory[::ObjectType::kConsume]->AddItem(i + 24 + 3 + 25, item);
+		}
+
+		for (int i = 0; i < 96; ++i)
+		{
+			auto item = ItemManager::GetInstance()->FindCopyItem(4000000 + i);
+			item->SetQuantity(rand() % 100);
+			_inventory[::ObjectType::kEtc]->AddItem(i, item);
+		}
+		auto shoesParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072001));
+		_eqp_inventory->AddItem(0, std::make_shared<SkinInfo>(SkinInfo(*shoesParts)));
 	}
 	if (_frame_this != nullptr)
 	{
@@ -975,6 +1026,16 @@ void Player::SettingPushKnockBack(bool fancing)
 {
 	_knockback_facing_direction = fancing;
 	_knockback_tick = GetTickCount64();
+}
+
+Inventory* Player::GetInventory(::ObjectType::InventoryTabState type)
+{
+	return _inventory[type];
+}
+
+EqpInventory* Player::GetEqpInventory()
+{
+	return _eqp_inventory;
 }
 
 void Player::ApplySkill()

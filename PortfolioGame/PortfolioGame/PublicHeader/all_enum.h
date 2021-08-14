@@ -6,4 +6,5 @@ namespace ObjectType
 		kPlayer,
 		kEnd
 	};
+	enum InventoryTabState { kEqp, kConsume, kInstall, kEtc, kCash, kEnd };
 }
