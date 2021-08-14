@@ -67,22 +67,22 @@ std::string SkinInfo::GetName() const
 }
 
 
-void SkinInfo::SetIcon(std::shared_ptr<MyBitmap*> icon)
+void SkinInfo::SetIcon(std::shared_ptr<MyBitmap> icon)
 {
 	_icon = icon;
 }
 
-void SkinInfo::SetIconRaw(std::shared_ptr<MyBitmap*> icon)
+void SkinInfo::SetIconRaw(std::shared_ptr<MyBitmap> icon)
 {
 	_icon_raw = icon;
 }
 
-std::shared_ptr<MyBitmap*> SkinInfo::GetIcon() const
+std::shared_ptr<MyBitmap> SkinInfo::GetIcon() const
 {
 	return _icon;
 }
 
-std::shared_ptr<MyBitmap*> SkinInfo::GetIconRaw() const
+std::shared_ptr<MyBitmap> SkinInfo::GetIconRaw() const
 {
 	return _icon_raw;
 }

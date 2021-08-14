@@ -16,6 +16,6 @@ public:
 
 	Skill* GetSkill(KeyBoard key) const;
 private:
-	std::shared_ptr<MyBitmap*> _background;
+	std::shared_ptr<MyBitmap> _background;
 	Skill* _skills[8]{};
 };

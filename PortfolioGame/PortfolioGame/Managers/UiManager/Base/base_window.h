@@ -34,8 +34,8 @@ private:
 protected:
 	Info _info;
 	KeyManager* _key_manager;
-	std::shared_ptr<MyBitmap*> _background;
-	std::vector<std::shared_ptr<UiTabButton*>> _tab_buttons;
+	std::shared_ptr<MyBitmap> _background;
+	std::vector<std::shared_ptr<UiTabButton>> _tab_buttons;
 	bool _show;
 	bool _move_window;
 	POINT _click_pos;

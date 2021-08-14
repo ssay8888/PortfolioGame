@@ -17,10 +17,10 @@ void ScrollManager::ScrollLock()
 	if (0 < _scrollY)
 		_scrollY = 0;
 
-	if (WindowCX - (*now_map)->GetMapSize().x > _scrollX)
-		_scrollX = WindowCX - static_cast<float>((*now_map)->GetMapSize().x);
-	if (WindowCY - (*now_map)->GetMapSize().y > _scrollY)
-		_scrollY = WindowCY - static_cast<float>((*now_map)->GetMapSize().y);
+	if (WindowCX - now_map->GetMapSize().x > _scrollX)
+		_scrollX = WindowCX - static_cast<float>(now_map->GetMapSize().x);
+	if (WindowCY - now_map->GetMapSize().y > _scrollY)
+		_scrollY = WindowCY - static_cast<float>(now_map->GetMapSize().y);
 }
 
 float ScrollManager::GetScrollX()

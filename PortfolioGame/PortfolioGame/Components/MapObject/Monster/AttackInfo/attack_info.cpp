@@ -59,7 +59,7 @@ void AttackInfo::SetDeadlyAttack(const bool is_deadly_attack)
 	_is_deadly_attack = is_deadly_attack;
 }
 
-void AttackInfo::SetEffect(const std::vector<std::shared_ptr<MonsterParts*>> effect)
+void AttackInfo::SetEffect(const std::vector<std::shared_ptr<MonsterParts>> effect)
 {
 	_effect = effect;
 	if (_effect_frame == nullptr)
@@ -68,7 +68,7 @@ void AttackInfo::SetEffect(const std::vector<std::shared_ptr<MonsterParts*>> eff
 	}
 }
 
-void AttackInfo::SetHitEffect(const std::vector<std::shared_ptr<MonsterParts*>> effect)
+void AttackInfo::SetHitEffect(const std::vector<std::shared_ptr<MonsterParts>> effect)
 {
 	_hit_effect = effect;
 
@@ -78,7 +78,7 @@ void AttackInfo::SetHitEffect(const std::vector<std::shared_ptr<MonsterParts*>> 
 	}
 }
 
-void AttackInfo::SetAreaWarning(const std::vector<std::shared_ptr<MonsterParts*>> effect)
+void AttackInfo::SetAreaWarning(const std::vector<std::shared_ptr<MonsterParts>> effect)
 {
 	_area_warning = effect;
 	if (_area_warning_frame == nullptr)
@@ -147,17 +147,17 @@ RECT AttackInfo::GetRange() const
 	return _range;
 }
 
-std::vector<std::shared_ptr<MonsterParts*>>& AttackInfo::GetAreaWarning()
+std::vector<std::shared_ptr<MonsterParts>>& AttackInfo::GetAreaWarning()
 {
 	return _area_warning;
 }
 
-std::vector<std::shared_ptr<MonsterParts*>>& AttackInfo::GetEffect()
+std::vector<std::shared_ptr<MonsterParts>>& AttackInfo::GetEffect()
 {
 	return _effect;
 }
 
-std::vector<std::shared_ptr<MonsterParts*>>& AttackInfo::GetHitEffect()
+std::vector<std::shared_ptr<MonsterParts>>& AttackInfo::GetHitEffect()
 {
 	return _hit_effect;
 }

@@ -263,19 +263,19 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 				auto data = begin.node().select_node("canvas[@name='icon']");
 				if (data)
 				{
-					auto icon = std::make_shared<MyBitmap*>(new MyBitmap());
+					auto icon = std::make_shared<MyBitmap>(MyBitmap());
 					std::wstring bmp_path;
 					wchar_t bmpPath[100];
 					swprintf(bmpPath, 100, L"Client\\%s\\%08d.img\\info.icon.bmp",
 						StringTools::StringToWString(type.c_str()).c_str(), code);
-					(*icon)->Insert_Bitmap(_hWnd, bmpPath);
+					icon->Insert_Bitmap(_hWnd, bmpPath);
 					info->SetIcon(icon);
 
 					data = begin.node().select_node("canvas[@name='iconRaw']");
-					auto icon2 = std::make_shared<MyBitmap*>(new MyBitmap());
+					auto icon2 = std::make_shared<MyBitmap>(MyBitmap());
 					swprintf(bmpPath, 100, L"Client\\%s\\%08d.img\\info.iconRaw.bmp",
 						StringTools::StringToWString(type.c_str()).c_str(), code);
-					(*icon2)->Insert_Bitmap(_hWnd, bmpPath);
+					icon2->Insert_Bitmap(_hWnd, bmpPath);
 					info->SetIconRaw(icon2);
 				}
 				continue;
@@ -397,21 +397,21 @@ void XmlReader::LoadMonsters()
 				{
 					auto data = doc.select_nodes("imgdir/imgdir[@name='info']/*");
 
-					std::shared_ptr<Monster*> monster = std::make_shared<Monster*>(new Monster());
-					(*monster)->SetMonsterCode(path);
+					std::shared_ptr<Monster> monster = std::make_shared<Monster>(Monster());
+					monster->SetMonsterCode(path);
 					SetInfoMonster(data, monster);
 
 					data = doc.select_nodes("imgdir/imgdir");
-					std::shared_ptr<MonsterMovement*> movement = std::make_shared<MonsterMovement*>(new MonsterMovement());
+					std::shared_ptr<MonsterMovement> movement = std::make_shared<MonsterMovement>(MonsterMovement());
 					for (auto nodes : data)
 					{
 						if (strcmp(nodes.node().attribute("name").value(), "info"))
 						{
-							(*monster)->SetMovement(movement);
-							std::vector<std::shared_ptr<MonsterParts*>>  list;
+							monster->SetMovement(movement);
+							std::vector<std::shared_ptr<MonsterParts>>  list;
 							for (auto node : nodes.node())
 							{
-								auto parts = std::make_shared<MonsterParts*>(new MonsterParts());
+								auto parts = std::make_shared<MonsterParts>(MonsterParts());
 
 								if (!strcmp(node.name(), "canvas"))
 								{
@@ -424,10 +424,10 @@ void XmlReader::LoadMonsters()
 										.append(".bmp");
 									//Client\Mob\0100100.img.xml
 									snprintf(imagePath, 100, "%s\\%s", StringTools::WStringToString(xmlPath.substr(0, xmlPath.size() - 4).c_str()).c_str(), path.c_str());
-									if ((*parts)->GetImage() == nullptr) {
-										std::shared_ptr<MyBitmap*> bitmap = std::make_shared<MyBitmap*>(new MyBitmap());
-										(*bitmap)->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
-										(*parts)->SetImage(bitmap);
+									if (parts->GetImage() == nullptr) {
+										std::shared_ptr<MyBitmap> bitmap = std::make_shared<MyBitmap>(MyBitmap());
+										bitmap->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
+										parts->SetImage(bitmap);
 									}
 									CanvasMonster(node, parts, list);
 									list.push_back(parts);
@@ -457,10 +457,10 @@ void XmlReader::LoadMonsters()
 											!strcmp(info_node.attribute("name").value(), "hit") ||
 											!strcmp(info_node.attribute("name").value(), "areaWarning"))
 										{
-											std::vector<std::shared_ptr<MonsterParts*>>  list2;
+											std::vector<std::shared_ptr<MonsterParts>>  list2;
 											for (auto effect_node : info_node)
 											{
-												auto parts2 = std::make_shared<MonsterParts*>(new MonsterParts());
+												auto parts2 = std::make_shared<MonsterParts>(MonsterParts());
 												if(!strcmp(effect_node.name(), "canvas"))
 												{
 													CanvasMonster(effect_node, parts2, list2);
@@ -472,18 +472,18 @@ void XmlReader::LoadMonsters()
 														.append(".").append(effect_node.attribute("name").value()).append(".bmp");
 													snprintf(imagePath, 100, "%s\\%s", StringTools::WStringToString(xmlPath.substr(0, xmlPath.size() - 4).c_str()).c_str(), path.c_str());
 
-													if ((*parts2)->GetImage() == nullptr)
+													if (parts2->GetImage() == nullptr)
 													{
-														std::shared_ptr<MyBitmap*> bitmap2 = std::make_shared<MyBitmap*>(new MyBitmap());
-														(*bitmap2)->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
-														(*parts2)->SetImage(bitmap2);
+														std::shared_ptr<MyBitmap> bitmap2 = std::make_shared<MyBitmap>(MyBitmap());
+														bitmap2->Insert_Bitmap(_hWnd, StringTools::StringToWString(imagePath).c_str());
+														parts2->SetImage(bitmap2);
 													}
 													list2.emplace_back(parts2);
 												}
 												else if (!strcmp(effect_node.name(), "uol"))
 												{
-													auto parts2 = std::make_shared<MonsterParts*>(new MonsterParts());
-													(*parts2)->SetUol(effect_node.attribute("value").value());
+													auto parts2 = std::make_shared<MonsterParts>(MonsterParts());
+													parts2->SetUol(effect_node.attribute("value").value());
 													list2.emplace_back(parts2);
 												}
 											}
@@ -525,28 +525,28 @@ void XmlReader::LoadMonsters()
 										}
 									}
 
-									(*monster)->InsertAttackInfo(nodes.node().attribute("name").value(), attack_info);
+									monster->InsertAttackInfo(nodes.node().attribute("name").value(), attack_info);
 								}
 								if (!strcmp(node.name(), "uol"))
 								{
-									(*parts)->SetUol(node.attribute("value").value());
+									parts->SetUol(node.attribute("value").value());
 									list.push_back(parts);
 								}
-								(*parts)->SetPartner(movement);
+								parts->SetPartner(movement);
 							}
-							(*movement)->InsertMovement(nodes.node().attribute("name").value(), list);
+							movement->InsertMovement(nodes.node().attribute("name").value(), list);
 						}
 					}
 
 
-					MonsterManager::GetInstance()->InsertMonster((*monster)->GetMonsteCode(), monster);
+					MonsterManager::GetInstance()->InsertMonster(monster->GetMonsteCode(), monster);
 				}
 			}
 		}
 	}
 }
 
-void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monster*> monster)
+void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monster> monster)
 {
 
 	for (auto info : data)
@@ -554,54 +554,54 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 
 		if (!strcmp(info.node().attribute("name").value(), "level"))
 		{
-			(*monster)->SetLevel(std::stoi(info.node().attribute("value").value()));
+			monster->SetLevel(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "bodyAttack"))
 		{
-			(*monster)->SetBodyAttack(std::stoi(info.node().attribute("value").value()));
+			monster->SetBodyAttack(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "maxHP"))
 		{
-			(*monster)->SetMaxHp(std::stoi(info.node().attribute("value").value()));
-			(*monster)->SetHp(std::stoi(info.node().attribute("value").value()));
+			monster->SetMaxHp(std::stoi(info.node().attribute("value").value()));
+			monster->SetHp(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "maxMP"))
 		{
-			(*monster)->SetMaxMp(std::stoi(info.node().attribute("value").value()));
-			(*monster)->SetMp(std::stoi(info.node().attribute("value").value()));
+			monster->SetMaxMp(std::stoi(info.node().attribute("value").value()));
+			monster->SetMp(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "speed"))
 		{
-			(*monster)->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 100);
+			monster->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 100);
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "PADamage"))
 		{
-			(*monster)->SetPad(std::stoi(info.node().attribute("value").value()));
+			monster->SetPad(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "PDDamage"))
 		{
-			(*monster)->SetPdd(std::stoi(info.node().attribute("value").value()));
+			monster->SetPdd(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "MADamage"))
 		{
-			(*monster)->SetMad(std::stoi(info.node().attribute("value").value()));
+			monster->SetMad(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "MDDamage"))
 		{
-			(*monster)->SetMdd(std::stoi(info.node().attribute("value").value()));
+			monster->SetMdd(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "undead"))
 		{
-			(*monster)->SetUndead(std::stoi(info.node().attribute("value").value()));
+			monster->SetUndead(std::stoi(info.node().attribute("value").value()));
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "exp"))
 		{
-			(*monster)->SetExp(std::stoi(info.node().attribute("value").value()));
+			monster->SetExp(std::stoi(info.node().attribute("value").value()));
 		}
 	}
 }
 
-void XmlReader::CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts*> parts, std::vector<std::shared_ptr<MonsterParts*>>& list)
+void XmlReader::CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts> parts, std::vector<std::shared_ptr<MonsterParts>>& list)
 {
 
 	for (auto canvans : node) // canvas info
@@ -609,27 +609,27 @@ void XmlReader::CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts*
 		//std::cout << nodes.node().attribute("name").value() << std::endl;
 		if (!strcmp(canvans.attribute("name").value(), "origin"))
 		{
-			(*parts)->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
-			(*parts)->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
+			parts->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
+			parts->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
 		}
 		else if (!strcmp(canvans.attribute("name").value(), "lt"))
 		{
-			(*parts)->SetRectLeft(std::stoi(canvans.attribute("x").value()));
-			(*parts)->SetRectTop(std::stoi(canvans.attribute("y").value()));
+			parts->SetRectLeft(std::stoi(canvans.attribute("x").value()));
+			parts->SetRectTop(std::stoi(canvans.attribute("y").value()));
 		}
 		else if (!strcmp(canvans.attribute("name").value(), "rb"))
 		{
-			(*parts)->SetRectRight(std::stoi(canvans.attribute("x").value()));
-			(*parts)->SetRectBottom(std::stoi(canvans.attribute("y").value()));
+			parts->SetRectRight(std::stoi(canvans.attribute("x").value()));
+			parts->SetRectBottom(std::stoi(canvans.attribute("y").value()));
 		}
 		else if (!strcmp(canvans.attribute("name").value(), "head"))
 		{
-			(*parts)->SetHeadPosX(std::stoi(canvans.attribute("x").value()));
-			(*parts)->SetHeadPosY(std::stoi(canvans.attribute("y").value()));
+			parts->SetHeadPosX(std::stoi(canvans.attribute("x").value()));
+			parts->SetHeadPosY(std::stoi(canvans.attribute("y").value()));
 		}
 		else if (!strcmp(canvans.attribute("name").value(), "delay"))
 		{
-			(*parts)->SetDelay(std::stoi(canvans.attribute("value").value()));
+			parts->SetDelay(std::stoi(canvans.attribute("value").value()));
 		}
 	}
 }
@@ -847,8 +847,8 @@ void XmlReader::LoadItem(std::string path)
 							path.c_str(), 
 							item_id, 
 							info.attribute("name").value());
-						auto icon = std::make_shared<MyBitmap*>(new MyBitmap());
-						(*icon)->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
+						auto icon = std::make_shared<MyBitmap>(MyBitmap());
+						icon->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
 						if (!strcmp(info.attribute("name").value(), "icon"))
 						{
 							item->SetIcon(icon);

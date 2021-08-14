@@ -45,7 +45,7 @@ void DamageInfo::ReadyDamage(bool is_attack)
 		static_cast<int>(_targetObject->GetInfo().y - upY + (upY * i) )
 		};
 		auto temp_damage = damage;
-		std::list<std::shared_ptr<MyBitmap*>> dam;
+		std::list<std::shared_ptr<MyBitmap>> dam;
 
 		if (damage == 0)
 		{
@@ -100,17 +100,17 @@ void DamageInfo::RenderDamage(HDC hdc)
 			int width = 0;
 			for (auto& damage : damage_image.second)
 			{
-				totalWidth += (*damage)->GetWidth();
+				totalWidth += damage->GetWidth();
 			}
 			totalWidth >>= 1;
 			for (auto& damage : damage_image.second)
 			{
-				(*damage)->RenderBitmapImage(hdc,
+				damage->RenderBitmapImage(hdc,
 					static_cast<int>(damage_image.first.x - totalWidth + width + ScrollManager::GetScrollX()),
 					static_cast<int>(damage_image.first.y - _targetObject->GetInfo().cy + ScrollManager::GetScrollY()),
-					(*damage)->GetWidth(),
-					(*damage)->GetHeight());
-				width += (*damage)->GetWidth();
+					damage->GetWidth(),
+					damage->GetHeight());
+				width += damage->GetWidth();
 			}
 			damage_image.first.y -= 1;
 		}

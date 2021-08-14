@@ -245,13 +245,13 @@ std::map<std::string, AttackInfo*>& Monster::GetAttackInfo()
 	return _attack_info;
 }
 
-void Monster::SetMovement(const std::shared_ptr<MonsterMovement*> movement)
+void Monster::SetMovement(const std::shared_ptr<MonsterMovement> movement)
 {
 	_movement = movement;
-	_this_frame = (*_movement)->FindMovement("stand");
+	_this_frame = _movement->FindMovement("stand");
 }
 
-std::shared_ptr<MonsterMovement*> Monster::GetMovement() const
+std::shared_ptr<MonsterMovement> Monster::GetMovement() const
 {
 	return _movement;
 }
@@ -541,36 +541,36 @@ void Monster::RenderGameObject(HDC hdc)
 		return;
 	}
 	const auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
-	const auto image = (*data)->GetImage();
+	const auto image = data->GetImage();
 
 	const HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 	const HBRUSH brushPrev = static_cast<HBRUSH>(SelectObject(_memDC, brush));
 	Rectangle(_memDC,
 		0 - 10,
 		0 - 10,
-		static_cast<int>((*image)->GetWidth() + 10),
-		static_cast<int>((*image)->GetHeight()) + 10);
+		static_cast<int>(image->GetWidth() + 10),
+		static_cast<int>(image->GetHeight()) + 10);
 	SelectObject(_memDC, brushPrev);
 	DeleteObject(brush);
 	DeleteObject(brushPrev);
-	(*image)->RenderBitmapImage(_memDC,
+	image->RenderBitmapImage(_memDC,
 		0,
 		0,
-		static_cast<int>((*image)->GetWidth()),
-		static_cast<int>((*image)->GetHeight()));
+		static_cast<int>(image->GetWidth()),
+		static_cast<int>(image->GetHeight()));
 
 	if (GetFacingDirection())
 	{
 		StretchBlt(_memDC,
 			0,
 			0,
-			(*image)->GetWidth(),
-			(*image)->GetHeight(),
+			image->GetWidth(),
+			image->GetHeight(),
 			_memDC,
-			(*image)->GetWidth() - 1,
+			image->GetWidth() - 1,
 			0,
-			-(*image)->GetWidth(),
-			(*image)->GetHeight(), SRCCOPY);
+			-image->GetWidth(),
+			image->GetHeight(), SRCCOPY);
 	}
 
 	if (!IsAlive() && _die_wait_tick > 0)
@@ -584,33 +584,33 @@ void Monster::RenderGameObject(HDC hdc)
 		}
 
 		BitBlt(_memDC2, 0, 0,
-			(*image)->GetWidth(),
-			(*image)->GetHeight(), hdc,
+			image->GetWidth(),
+			image->GetHeight(), hdc,
 			static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
-			static_cast<int>(_rect.bottom - ((*image)->GetHeight()) + ScrollManager::GetScrollY()), SRCCOPY);
+			static_cast<int>(_rect.bottom - image->GetHeight() + ScrollManager::GetScrollY()), SRCCOPY);
 
 		GdiTransparentBlt(_memDC2,
 			0,
 			0,
-			(*image)->GetWidth(),
-			(*image)->GetHeight(),
+			image->GetWidth(),
+			image->GetHeight(),
 			_memDC,
 			0,
 			0,
-			(*image)->GetWidth(),
-			(*image)->GetHeight(),
+			image->GetWidth(),
+			image->GetHeight(),
 			RGB(255, 0, 255));
 
 
 		GdiAlphaBlend(hdc,
-			static_cast<int>((_info.x - (*data)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-			static_cast<int>(_rect.bottom - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()),
-			(*image)->GetWidth(),
-			(*image)->GetHeight(),
+			static_cast<int>((_info.x - data->GetOriginPos().x) + ScrollManager::GetScrollX()),
+			static_cast<int>(_rect.bottom - data->GetOriginPos().y + ScrollManager::GetScrollY()),
+			image->GetWidth(),
+			image->GetHeight(),
 			_memDC2,
 			0, 0,
-			(*image)->GetWidth(),
-			(*image)->GetHeight(), bf);
+			image->GetWidth(),
+			image->GetHeight(), bf);
 	}
 	else
 	{
@@ -621,15 +621,15 @@ void Monster::RenderGameObject(HDC hdc)
 		case MonsterState::kDie:
 		{
 			GdiTransparentBlt(hdc,
-				static_cast<int>((_info.x - (*data)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_info.y - ((*data)->GetOriginPos().y /2) + ScrollManager::GetScrollY()),
-				(*image)->GetWidth(),
-				(*image)->GetHeight(),
+				static_cast<int>((_info.x - data->GetOriginPos().x) + ScrollManager::GetScrollX()),
+				static_cast<int>(_info.y - (data->GetOriginPos().y /2) + ScrollManager::GetScrollY()),
+				image->GetWidth(),
+				image->GetHeight(),
 				_memDC,
 				0,
 				0,
-				(*image)->GetWidth(),
-				(*image)->GetHeight(),
+				image->GetWidth(),
+				image->GetHeight(),
 				RGB(255, 0, 255));
 			break;
 		}
@@ -637,17 +637,17 @@ void Monster::RenderGameObject(HDC hdc)
 		case MonsterState::kAttack2:
 		case MonsterState::kAttack3:
 		{
-			auto reduceY = std::abs(static_cast<int>(_rect.bottom - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()));
+			auto reduceY = std::abs(static_cast<int>(_rect.bottom - data->GetOriginPos().y + ScrollManager::GetScrollY()));
 			GdiTransparentBlt(hdc,
-				static_cast<int>((_info.x - (*data)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_info.y - ((*data)->GetOriginPos().y / 2) + ScrollManager::GetScrollY()),
-				(*image)->GetWidth(),
-				(*image)->GetHeight(),
+				static_cast<int>(_info.x - (data->GetOriginPos().x) + ScrollManager::GetScrollX()),
+				static_cast<int>(_info.y - (data->GetOriginPos().y / 2) + ScrollManager::GetScrollY()),
+				image->GetWidth(),
+				image->GetHeight(),
 				_memDC,
 				0,
 				0,
-				(*image)->GetWidth(),
-				(*image)->GetHeight(),
+				image->GetWidth(),
+				image->GetHeight(),
 				RGB(255, 0, 255));
 
 			auto attack_info = _attack_info.find(_state_string);
@@ -667,12 +667,12 @@ void Monster::RenderGameObject(HDC hdc)
 						if (attack_info->second->GetEffectFrame()->GetFrameNumber() < effect_list.size())
 						{
 							const auto effect_shared_image = effect_list[attack_info->second->GetEffectFrame()->GetFrameNumber() % effect_list.size()];
-							const auto effect_image = (*effect_shared_image)->GetImage();
-							(*effect_image)->RenderBitmapImage(hdc,
-								static_cast<int>((_info.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-								static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
-								(*effect_image)->GetWidth(),
-								(*effect_image)->GetHeight());
+							const auto effect_image = effect_shared_image->GetImage();
+							effect_image->RenderBitmapImage(hdc,
+								static_cast<int>((_info.x - effect_shared_image->GetOriginPos().x) + ScrollManager::GetScrollX()),
+								static_cast<int>(_rect.bottom - effect_shared_image->GetOriginPos().y + ScrollManager::GetScrollY()),
+								effect_image->GetWidth(),
+								effect_image->GetHeight());
 						}
 					}
 				}
@@ -689,12 +689,12 @@ void Monster::RenderGameObject(HDC hdc)
 						if (attack_info->second->GetAreaWarningFrame()->GetFrameNumber() < effect_list.size())
 						{
 							const auto effect_shared_image = effect_list[attack_info->second->GetAreaWarningFrame()->GetFrameNumber() % effect_list.size()];
-							const auto effect_image = (*effect_shared_image)->GetImage();
-							(*effect_image)->RenderBitmapImage(hdc,
-								static_cast<int>((area.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-								static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
-								(*effect_image)->GetWidth(),
-								(*effect_image)->GetHeight());
+							const auto effect_image = effect_shared_image->GetImage();
+							effect_image->RenderBitmapImage(hdc,
+								static_cast<int>((area.x - effect_shared_image->GetOriginPos().x) + ScrollManager::GetScrollX()),
+								static_cast<int>(_rect.bottom - effect_shared_image->GetOriginPos().y + ScrollManager::GetScrollY()),
+								effect_image->GetWidth(),
+								effect_image->GetHeight());
 						}
 					}
 				}
@@ -812,8 +812,8 @@ void Monster::UpdateRect()
 	//_rect.top = static_cast<int>(_info.y + (*data)->GetOriginPos().y) - std::abs(rect.top);
 	//_rect.right = static_cast<int>(_info.x + (*data)->GetOriginPos().x) + std::abs(rect.right);
 	//_rect.bottom = static_cast<int>(_info.y + (*data)->GetOriginPos().y) + std::abs(rect.bottom);
-	_info.cx = (*data)->GetOriginPos().x;
-	_info.cy = (*data)->GetOriginPos().y;
+	_info.cx = data->GetOriginPos().x;
+	_info.cy = data->GetOriginPos().y;
 }
 
 void Monster::ChangeState(MonsterState state)
@@ -825,14 +825,14 @@ void Monster::ChangeState(MonsterState state)
 		{
 		case Monster::MonsterState::kStand:
 		{
-			_this_frame = (*_movement)->FindMovement("stand");
+			_this_frame = _movement->FindMovement("stand");
 			break;
 		}
 		case Monster::MonsterState::kMove:
-			_this_frame = (*_movement)->FindMovement("move");
+			_this_frame = _movement->FindMovement("move");
 			break;
 		case Monster::MonsterState::kHit:
-			_this_frame = (*_movement)->FindMovement("hit1");
+			_this_frame = _movement->FindMovement("hit1");
 			if (_attack_info.find(_state_string) != _attack_info.end())
 			{
 				_attack_info.find(_state_string)->second->ResetEffectFrame();
@@ -840,22 +840,22 @@ void Monster::ChangeState(MonsterState state)
 			}
 			break;
 		case Monster::MonsterState::kAttack1:
-			_this_frame = (*_movement)->FindMovement("attack1");
+			_this_frame = _movement->FindMovement("attack1");
 			_state_string.clear();
 			_state_string.append("attack1");
 			break;
 		case Monster::MonsterState::kAttack2:
-			_this_frame = (*_movement)->FindMovement("attack2");
+			_this_frame = _movement->FindMovement("attack2");
 			_state_string.clear();
 			_state_string.append("attack2");
 			break;
 		case Monster::MonsterState::kAttack3:
-			_this_frame = (*_movement)->FindMovement("attack3");
+			_this_frame = _movement->FindMovement("attack3");
 			_state_string.clear();
 			_state_string.append("attack3");
 			break;
 		case Monster::MonsterState::kDie:
-			_this_frame = (*_movement)->FindMovement("die1");
+			_this_frame = _movement->FindMovement("die1");
 			break;
 		default:
 			break;

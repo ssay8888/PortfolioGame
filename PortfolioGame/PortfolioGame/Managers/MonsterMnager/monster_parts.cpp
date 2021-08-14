@@ -106,22 +106,22 @@ void MonsterParts::SetUol(std::string uol)
 	_uol = uol;
 }
 
-void MonsterParts::SetImage(const std::shared_ptr<MyBitmap*> image)
+void MonsterParts::SetImage(const std::shared_ptr<MyBitmap> image)
 {
 	_image = image;
 }
 
-std::shared_ptr<MyBitmap*> MonsterParts::GetImage() const
+std::shared_ptr<MyBitmap> MonsterParts::GetImage() const
 {
 	return _image;
 }
 
-void MonsterParts::SetPartner(std::shared_ptr<MonsterMovement*> partner)
+void MonsterParts::SetPartner(std::shared_ptr<MonsterMovement> partner)
 {
 	_partner = partner;
 }
 
-std::shared_ptr<MonsterMovement*> MonsterParts::GetPartner() const
+std::shared_ptr<MonsterMovement> MonsterParts::GetPartner() const
 {
 	return _partner;
 }

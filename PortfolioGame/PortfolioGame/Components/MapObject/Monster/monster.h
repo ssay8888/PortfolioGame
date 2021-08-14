@@ -58,8 +58,8 @@ public:
 	AttackInfo* FindAttackInfo(std::string key) const;
 	std::map<std::string, AttackInfo*>& GetAttackInfo();
 
-	void SetMovement(std::shared_ptr<MonsterMovement*> movement);
-	std::shared_ptr<MonsterMovement*> GetMovement() const;
+	void SetMovement(std::shared_ptr<MonsterMovement> movement);
+	std::shared_ptr<MonsterMovement> GetMovement() const;
 	void SetName(std::string name);
 	std::string GetName() const;
 
@@ -91,7 +91,7 @@ private:
 	
 private:
 	MonsterInfo _monster_info;
-	std::shared_ptr<MonsterMovement*> _movement;
+	std::shared_ptr<MonsterMovement> _movement;
 	std::string _monster_code;
 
 
@@ -110,7 +110,7 @@ private:
 
 	//프레임관련변수
 	MonsterFrameManager* _base_state_frame;
-	std::vector<std::shared_ptr<MonsterParts*>> _this_frame;
+	std::vector<std::shared_ptr<MonsterParts>> _this_frame;
 
 	//몬스터이동
 	FootHold* _this_foothold;

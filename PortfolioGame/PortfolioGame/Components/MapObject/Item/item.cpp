@@ -9,25 +9,24 @@ Item::Item(): _price(0),
 
 Item::~Item()
 {
-	std::cout << "¾ÆÀÌÅÛ ¼Ò¸ê" << std::endl;
 }
 
-void Item::SetIcon(const std::shared_ptr<MyBitmap*> icon)
+void Item::SetIcon(const std::shared_ptr<MyBitmap> icon)
 {
 	_icon = icon;
 }
 
-void Item::SetIconRaw(const std::shared_ptr<MyBitmap*> icon_raw)
+void Item::SetIconRaw(const std::shared_ptr<MyBitmap> icon_raw)
 {
 	_icon_raw = icon_raw;
 }
 
-std::shared_ptr<MyBitmap*> Item::GetIcon() const
+std::shared_ptr<MyBitmap> Item::GetIcon() const
 {
 	return _icon;
 }
 
-std::shared_ptr<MyBitmap*> Item::GetIconRaw() const
+std::shared_ptr<MyBitmap> Item::GetIconRaw() const
 {
 	return _icon_raw;
 }

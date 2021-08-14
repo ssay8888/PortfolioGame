@@ -20,16 +20,16 @@ public:
 	void SetName(const std::string name);
 	std::string GetName() const;
 
-	void SetIcon(std::shared_ptr<MyBitmap*>);
-	void SetIconRaw(std::shared_ptr<MyBitmap*>);
-	std::shared_ptr<MyBitmap*> GetIcon() const;
-	std::shared_ptr<MyBitmap*> GetIconRaw() const;
+	void SetIcon(std::shared_ptr<MyBitmap>);
+	void SetIconRaw(std::shared_ptr<MyBitmap>);
+	std::shared_ptr<MyBitmap> GetIcon() const;
+	std::shared_ptr<MyBitmap> GetIconRaw() const;
 
 private:
 	std::map<std::string, SkinItem*> _bodySkinItem;
 	std::map<std::string, SkinItem*> _headSkinItem;
-	std::shared_ptr<MyBitmap*> _icon;
-	std::shared_ptr<MyBitmap*> _icon_raw;
+	std::shared_ptr<MyBitmap> _icon;
+	std::shared_ptr<MyBitmap> _icon_raw;
 	std::string _name;
 };
 

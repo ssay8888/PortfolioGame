@@ -57,11 +57,11 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 					if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
 						static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
 					{
-						(*icon)->RenderBitmapImage(hdc,
+						icon->RenderBitmapImage(hdc,
 							static_cast<int>(_info.x) + x,
 							static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
-							(*icon)->GetWidth(),
-							(*icon)->GetHeight());
+							icon->GetWidth(),
+							icon->GetHeight());
 					}
 				}
 			}
@@ -90,11 +90,11 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 				if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
 					static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
 				{
-					(*icon)->RenderBitmapImage(hdc,
+					icon->RenderBitmapImage(hdc,
 						static_cast<int>(_info.x) + x,
 						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
-						(*icon)->GetWidth(),
-						(*icon)->GetHeight());
+						icon->GetWidth(),
+						icon->GetHeight());
 					std::wstring quantity;
 					quantity.append(std::to_wstring(item_list[i]->Getquantity()));
 					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + x + 20,
@@ -114,10 +114,10 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 
 void InventoryWindow::ReadyWindow()
 {
-	_background = std::make_shared<MyBitmap*>(new MyBitmap());
-	(*_background)->Insert_Bitmap(_hWnd, L"Client\\Ui\\Inventory.img\\Item.backgrnd.bmp");
-	_info.cx = (*_background)->GetWidth();
-	_info.cy = (*_background)->GetWidth();
+	_background = std::make_shared<MyBitmap>(MyBitmap());
+	_background->Insert_Bitmap(_hWnd, L"Client\\Ui\\Inventory.img\\Item.backgrnd.bmp");
+	_info.cx = _background->GetWidth();
+	_info.cy = _background->GetWidth();
 
 	_key_manager = new KeyManager();
 	float x = 2;
@@ -125,14 +125,14 @@ void InventoryWindow::ReadyWindow()
 	{
 		wchar_t path[150];
 		swprintf_s(path, 150, L"Inventory.img\\%d", i);
-		auto button = std::make_shared<UiTabButton*>(new UiTabButton());
-		(*button)->ReadyButton(path);
-		(*button)->SetInfoPosX(x);
-		(*button)->SetInfoPosY(23);
+		auto button = std::make_shared<UiTabButton>(UiTabButton());
+		button->ReadyButton(path);
+		button->SetInfoPosX(x);
+		button->SetInfoPosY(23);
 		x += 34;
 		if (i == 0)
 		{
-			(*button)->SetState(UiTabButton::ButtonState::kEnable);
+			button->SetState(UiTabButton::ButtonState::kEnable);
 		}
 		_tab_buttons.emplace_back(button);
 	}
@@ -234,8 +234,8 @@ void InventoryWindow::SelectItem(POINT mouse)
 					{
 						RECT icon_rect{ static_cast<int>(_info.x + x),
 							static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
-									static_cast<int>(_info.x + x) + (*icon)->GetWidth(),
-							static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + (*icon)->GetHeight() };
+									static_cast<int>(_info.x + x) + icon->GetWidth(),
+							static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + icon->GetHeight() };
 						if (PtInRect(&icon_rect, mouse))
 						{
 							_is_select_item = true;
@@ -273,8 +273,8 @@ void InventoryWindow::SelectItem(POINT mouse)
 				{
 					RECT icon_rect{ static_cast<int>(_info.x + x),
 						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
-								static_cast<int>(_info.x + x) + (*icon)->GetWidth(),
-						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + (*icon)->GetHeight() };
+								static_cast<int>(_info.x + x) + icon->GetWidth(),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + icon->GetHeight() };
 					if (PtInRect(&icon_rect, mouse))
 					{
 						_is_select_item = true;
@@ -299,14 +299,14 @@ void InventoryWindow::SelectItemMoveing(HDC hdc)
 	if (_is_select_item && (_select_item || _select_eqp_item))
 	{
 		const POINT mouse = InGameScene::GetMouse()->GetPoint();
-		MyBitmap* icon = nullptr;
+		std::shared_ptr<MyBitmap> icon;
 		if (_select_item)
 		{
-			icon = (*(_select_item)->GetIconRaw());
+			icon = ((_select_item)->GetIconRaw());
 		}
 		else
 		{
-			icon = (*(_select_eqp_item)->GetIconRaw());
+			icon = ((_select_eqp_item)->GetIconRaw());
 		}
 		icon->RenderBitmapImage(hdc, 
 			mouse.x - (icon->GetWidth() >> 1),
@@ -433,7 +433,7 @@ ObjectType::InventoryTabState InventoryWindow::FindTab()
 {
 	for (int i = 0; i < _tab_buttons.size(); ++i)
 	{
-		const auto state = (*_tab_buttons[i])->GetState();
+		const auto state = _tab_buttons[i]->GetState();
 		if (UiTabButton::ButtonState::kEnable == state)
 		{
 			return static_cast<ObjectType::InventoryTabState>(i);

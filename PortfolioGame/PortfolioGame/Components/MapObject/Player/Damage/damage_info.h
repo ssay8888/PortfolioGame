@@ -18,6 +18,6 @@ private:
 	uint32_t _delay;
 	uint64_t _tick;
 	bool _is_alive;
-	std::list<std::pair<POINT, std::list<std::shared_ptr<MyBitmap*>>>> _damage_image;
+	std::list<std::pair<POINT, std::list<std::shared_ptr<MyBitmap>>>> _damage_image;
 };
 

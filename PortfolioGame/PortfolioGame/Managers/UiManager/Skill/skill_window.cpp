@@ -360,7 +360,7 @@ void SkillWindow::DropSkillIcon(POINT mouse)
 				if (PtInRect(&slot, mouse))
 				{
 					auto quick_slot = 	UiManager::GetInstance()->GetQuickSlot();
-					(*quick_slot)->ChangeSlotSkill(static_cast<QuickSlot::KeyBoard>(totalNum), _select_skill);
+					quick_slot->ChangeSlotSkill(static_cast<QuickSlot::KeyBoard>(totalNum), _select_skill);
 				}
 				++totalNum;
 			}

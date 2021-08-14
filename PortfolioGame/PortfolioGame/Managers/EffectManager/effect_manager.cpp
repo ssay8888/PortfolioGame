@@ -13,8 +13,8 @@ void EffectManager::LoadDamageNumber()
 		auto path = StringTools::WStringToString(wpath.c_str());
 		if (!_access(path.c_str(), 0))
 		{
-			std::shared_ptr<MyBitmap*> image = std::make_shared<MyBitmap*>(new MyBitmap);
-			(*image)->Insert_Bitmap(_hWnd, wpath.c_str());
+			std::shared_ptr<MyBitmap> image = std::make_shared<MyBitmap>(MyBitmap());
+			image->Insert_Bitmap(_hWnd, wpath.c_str());
 			if (wpath.find(L"NoRed") != std::wstring::npos)
 			{
 				_attack_damage_unmber.push_back(image);
@@ -27,7 +27,7 @@ void EffectManager::LoadDamageNumber()
 	}
 }
 
-std::shared_ptr<MyBitmap*> EffectManager::GetAttackDamageNumber(uint32_t number)
+std::shared_ptr<MyBitmap> EffectManager::GetAttackDamageNumber(uint32_t number)
 {
 	if (number >= _attack_damage_unmber.size())
 	{
@@ -36,7 +36,7 @@ std::shared_ptr<MyBitmap*> EffectManager::GetAttackDamageNumber(uint32_t number)
 	return _attack_damage_unmber[number];
 }
 
-std::shared_ptr<MyBitmap*> EffectManager::GetTakeDamageNumber(uint32_t number)
+std::shared_ptr<MyBitmap> EffectManager::GetTakeDamageNumber(uint32_t number)
 {
 	if (number >= _take_damage_unmber.size())
 	{

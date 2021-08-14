@@ -51,8 +51,8 @@ void MapManager::LoadMapData(uint32_t mapid)
 		return;
 	}
 	
-	std::shared_ptr<MapInstance*> map_instance = std::make_shared<MapInstance*>(new MapInstance());
-	MapInstance* map = (*map_instance);
+	std::shared_ptr<MapInstance> map_instance = std::make_shared<MapInstance>(MapInstance());
+	MapInstance* map = &*map_instance;
 
 	DWORD dwByte = 0;
 
@@ -110,7 +110,7 @@ void MapManager::LoadMapData(uint32_t mapid)
 			{
 
 				auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
-				auto monsterCopy = new Monster(*(*monster));
+				auto monsterCopy = new Monster((*monster));
 				monsterCopy->SetInfo(obj->GetInfo());
 				monsterCopy->DoReadyGame();
 
@@ -206,7 +206,7 @@ void MapManager::ReleaseAllData()
 void MapManager::UpdateGameObjectManager(const float deltaTime)
 {
 	
-	auto now_map = (*GetNowMap());
+	auto now_map = GetNowMap();
 	for (int i = 0; i < MaxLayer; i++)
 	{
 		auto& list = now_map->GetGameObjectList(i);
@@ -232,7 +232,7 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 
 void MapManager::RenderGameObjectManager(HDC hdc)
 {
-	auto now_map = (*GetNowMap());
+	auto now_map = GetNowMap();
 	Rectangle(hdc,
 		0 + static_cast<int>(ScrollManager::GetScrollX()),
 		0 + static_cast<int>(ScrollManager::GetScrollY()),
@@ -278,11 +278,11 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 
 void MapManager::RenderFootHoldManager(HDC hDC)
 {
-	for (auto iter = (*GetNowMap())->GetFootHoldList().begin(); iter != (*GetNowMap())->GetFootHoldList().end(); ++iter)
+	for (auto iter = GetNowMap()->GetFootHoldList().begin(); iter != GetNowMap()->GetFootHoldList().end(); ++iter)
 	{
 		(*iter)->RenderFootHold(hDC);
 	}
-	for (auto iter = (*GetNowMap())->GetRopeLadderList().begin(); iter != (*GetNowMap())->GetRopeLadderList().end(); ++iter)
+	for (auto iter = GetNowMap()->GetRopeLadderList().begin(); iter != GetNowMap()->GetRopeLadderList().end(); ++iter)
 	{
 		(*iter)->RenderFootHold(hDC);
 	}
@@ -292,7 +292,7 @@ void MapManager::LateUpdateGameObjectManager()
 {
 	for (int i = 0; i < MaxLayer; i++)
 	{
-		for (auto iter : (*GetNowMap())->GetGameObjectList(i))
+		for (auto iter : GetNowMap()->GetGameObjectList(i))
 		{
 			GameObject::State iEvent = iter->DoLateUpdateGameObject();
 		}
@@ -305,13 +305,13 @@ void MapManager::ReleaseGameObjectManager()
 
 bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** outHold)
 {
-	if ((*GetNowMap())->GetFootHoldList().empty())
+	if (GetNowMap()->GetFootHoldList().empty())
 		return false;
 
 	FootHold* pTarget = nullptr;
 
 
-	for (FootHold* footHold : (*GetNowMap())->GetFootHoldList())
+	for (FootHold* footHold : GetNowMap()->GetFootHoldList())
 	{
 		float xas = footHold->GetStartPos().x;
 		if (object->GetInfo().x >= footHold->GetStartPos().x &&
@@ -349,7 +349,7 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 	}
 	if (pTarget == nullptr)
 	{
-		for (FootHold* footHold : (*GetNowMap())->GetFootHoldList())
+		for (FootHold* footHold : GetNowMap()->GetFootHoldList())
 		{
 			float xas = footHold->GetStartPos().x;
 			// 528
@@ -405,12 +405,12 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 bool MapManager::FootholdAndRectCollision(GameObject* object)
 {
 	//90도정도의 라인이라면 길을막는다.
-	if ((*GetNowMap())->GetFootHoldList().empty())
+	if (GetNowMap()->GetFootHoldList().empty())
 		return false;
 
 	FootHold* pTarget = nullptr;
 
-	for (FootHold* footHold : (*GetNowMap())->GetFootHoldList())
+	for (FootHold* footHold : GetNowMap()->GetFootHoldList())
 	{
 		float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
 		float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
@@ -447,13 +447,13 @@ bool MapManager::MonsterHitBoxCollision(const RECT hit_box)
 
 bool MapManager::LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold)
 {
-	if ((*GetNowMap())->GetRopeLadderList().empty())
+	if (GetNowMap()->GetRopeLadderList().empty())
 		return false;
 
 	FootHold* pTarget = nullptr;
 
 
-	for (FootHold* footHold : (*GetNowMap())->GetRopeLadderList())
+	for (FootHold* footHold : GetNowMap()->GetRopeLadderList())
 	{
 		float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
 		float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
@@ -485,7 +485,7 @@ bool MapManager::LadderRopeCollsition(GameObject* object, float* outX, FootHold*
 bool MapManager::PortalCollsition(GameObject* object, Portal** outPortal)
 {
 	RECT rc;
-	auto map = (*GetNowMap());
+	auto map = GetNowMap();
 	for (auto portal : map->GetPortalList())
 	{
 		RECT portalRect = portal->GetRect();
@@ -543,7 +543,7 @@ AniMapObject* MapManager::FindAniObjectCopy(std::string key)
 	return nullptr;
 }
 
-std::shared_ptr<MapInstance*> MapManager::GetNowMap()
+std::shared_ptr<MapInstance> MapManager::GetNowMap()
 {
 	return _now_map;
 }
@@ -568,7 +568,7 @@ void MapManager::ChangeMap(int32_t next_map, ObjectPos pos)
 	auto map = _listMap.find(next_map);
 	if (map != _listMap.end())
 	{
-		(*map->second)->SetPlayer(_map_player);
+		map->second->SetPlayer(_map_player);
 		_now_map = map->second;
 		_map_player->SetInfo({pos.x, pos.y, _map_player->GetInfo().cx, _map_player->GetInfo().cy});
 	}
@@ -596,7 +596,7 @@ std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 	std::list<Monster*> monsters;
 	for (int i = 0; i < MaxLayer; ++i)
 	{
-		auto list = (*GetNowMap())->InMapMonsterObjectList(i);
+		auto list = GetNowMap()->InMapMonsterObjectList(i);
 		for (auto object : *list)
 		{
 			if (monsters.size() >= count) {

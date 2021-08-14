@@ -117,7 +117,7 @@ void Player::UpdateGameObject(const float deltaTime)
 				_info.x = outX;
 			}
 			_info.y += GetSpeed();
-			if (CollisionManager::LineAndRectCollsition((*MapManager::GetInstance()->GetNowMap())->GetFootHoldList(), this))
+			if (CollisionManager::LineAndRectCollsition(MapManager::GetInstance()->GetNowMap()->GetFootHoldList(), this))
 			{
 				if (!_is_first_foothold)
 				{
@@ -218,7 +218,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (finished_attack_frame && !_is_prone && keymanager->KeyPressing(KEY_UP))
 	{
-		auto rope = (*MapManager::GetInstance()->GetNowMap())->GetRopeLadderList();
+		auto rope = MapManager::GetInstance()->GetNowMap()->GetRopeLadderList();
 		float outX = 0;
 		FootHold* outHold = nullptr;
 		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
@@ -1041,7 +1041,7 @@ EqpInventory* Player::GetEqpInventory()
 void Player::ApplySkill()
 {
 	const auto key_manager = KeyManager::GetInstance();
-	const auto quick_slot = (*UiManager::GetInstance()->GetQuickSlot());
+	const auto quick_slot = UiManager::GetInstance()->GetQuickSlot();
 	QuickSlot::KeyBoard key_board = QuickSlot::KeyBoard::kEnd;
 	if (key_manager->KeyPressing(KEY_SHIFT))
 	{

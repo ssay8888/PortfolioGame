@@ -20,20 +20,22 @@ void SceneManager::SceneChange(SceneState nextState)
 	_nextScene = nextState;
 	if (_curScene != _nextScene)
 	{
+		delete _scene;
+
 		switch (_nextScene)
 		{
 		case SceneManager::SceneState::kLoading:
-			_scene = std::make_shared<Scene*>(new LoadingScene());
+			_scene = new LoadingScene();
 			break;
 		case SceneManager::SceneState::kLogin:
-			_scene = std::make_shared<Scene*>(new LoginUiScene());
+			_scene = new LoginUiScene();
 			break;
 		case SceneManager::SceneState::kChannel:
 			break;
 		case SceneManager::SceneState::kCharacterSelect:
 			break;
 		case SceneManager::SceneState::kInGame:
-			_scene = std::make_shared<Scene*>(new InGameScene());
+			_scene = new InGameScene();
 			break;
 		case SceneManager::SceneState::kEnd:
 			break;
@@ -47,17 +49,17 @@ void SceneManager::SceneChange(SceneState nextState)
 
 void SceneManager::UpdateSceneManager()
 {
-	(*_scene.get())->UpdateScene();
+	_scene->UpdateScene();
 }
 
 void SceneManager::LateUpdateSceneManager()
 {
-	(*_scene.get())->LateUpdateScene();
+	_scene->LateUpdateScene();
 }
 
 void SceneManager::RenderSceneManager(HDC hdc)
 {
-	(*_scene.get())->RenderScene(hdc);
+	_scene->RenderScene(hdc);
 
 }
 

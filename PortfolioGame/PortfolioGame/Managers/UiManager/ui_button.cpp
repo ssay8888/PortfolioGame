@@ -26,10 +26,10 @@ void UiButton::ReadyButton(std::wstring buttonPath)
 	path.append(L"Client\\Ui\\").append(buttonPath).append(L".normal.0.bmp");
 	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
 	{
-		_normalImage = std::make_shared<MyBitmap*>(new MyBitmap());
-		(*_normalImage)->Insert_Bitmap(_hWnd, path.c_str());
-		_info.cx = (*_normalImage)->GetWidth();
-		_info.cy = (*_normalImage)->GetHeight();
+		_normalImage = std::make_shared<MyBitmap>(MyBitmap());
+		_normalImage->Insert_Bitmap(_hWnd, path.c_str());
+		_info.cx = _normalImage->GetWidth();
+		_info.cy = _normalImage->GetHeight();
 		_rect.left = static_cast<int>(_info.x);
 		_rect.top = static_cast<int>(_info.y);
 		_rect.right = static_cast<int>(_info.x) + static_cast<int>(_info.cx);
@@ -40,16 +40,16 @@ void UiButton::ReadyButton(std::wstring buttonPath)
 	path.append(L"Client\\Ui\\").append(buttonPath).append(L".mouseOver.0.bmp");
 	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
 	{
-		_overImage = std::make_shared<MyBitmap*>(new MyBitmap());
-		(*_overImage)->Insert_Bitmap(_hWnd, path.c_str());
+		_overImage = std::make_shared<MyBitmap>(MyBitmap());
+		_overImage->Insert_Bitmap(_hWnd, path.c_str());
 	}
 
 	path.clear();
 	path.append(L"Client\\Ui\\").append(buttonPath).append(L".pressed.0.bmp");
 	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
 	{
-		_pressedImage = std::make_shared<MyBitmap*>(new MyBitmap());
-		(*_pressedImage)->Insert_Bitmap(_hWnd, path.c_str());
+		_pressedImage = std::make_shared<MyBitmap>(MyBitmap());
+		_pressedImage->Insert_Bitmap(_hWnd, path.c_str());
 	}
 
 
@@ -79,25 +79,25 @@ void UiButton::RenderButtonUi(HDC hdc)
 	switch (_state)
 	{
 	case UiButton::ButtonState::kNormal:
-		(*_normalImage)->RenderBitmapImage(hdc, 
+		_normalImage->RenderBitmapImage(hdc, 
 			static_cast<int>(_info.x), 
 			static_cast<int>(_info.y), 
-			static_cast<int>((*_normalImage)->GetWidth()), 
-			static_cast<int>((*_normalImage)->GetHeight()));
+			static_cast<int>(_normalImage->GetWidth()), 
+			static_cast<int>(_normalImage->GetHeight()));
 		break;
 	case UiButton::ButtonState::kMouseOver:
-		(*_overImage)->RenderBitmapImage(hdc, 
+		_overImage->RenderBitmapImage(hdc, 
 			static_cast<int>(_info.x), 
 			static_cast<int>(_info.y),
-			static_cast<int>((*_normalImage)->GetWidth()),
-			static_cast<int>((*_normalImage)->GetHeight()));
+			static_cast<int>(_normalImage->GetWidth()),
+			static_cast<int>(_normalImage->GetHeight()));
 		break;
 	case UiButton::ButtonState::kPressed:
-		(*_pressedImage)->RenderBitmapImage(hdc, 
+		_pressedImage->RenderBitmapImage(hdc, 
 			static_cast<int>(_info.x), 
 			static_cast<int>(_info.y),
-			static_cast<int>((*_normalImage)->GetWidth()),
-			static_cast<int>((*_normalImage)->GetHeight()));
+			static_cast<int>(_normalImage->GetWidth()),
+			static_cast<int>(_normalImage->GetHeight()));
 		break;
 	default:
 		break;

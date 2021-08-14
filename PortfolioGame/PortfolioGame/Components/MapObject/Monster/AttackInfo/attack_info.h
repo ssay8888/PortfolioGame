@@ -15,9 +15,9 @@ public:
 	void SetEffectAfterTick(int64_t after);
 	void SetMpCon(int32_t after);
 	void SetDeadlyAttack(bool is_deadly_attack);
-	void SetEffect(std::vector<std::shared_ptr<MonsterParts*>> effect);
-	void SetHitEffect(const std::vector<std::shared_ptr<MonsterParts*>> effect);
-	void SetAreaWarning(const std::vector<std::shared_ptr<MonsterParts*>> effect);
+	void SetEffect(std::vector<std::shared_ptr<MonsterParts>> effect);
+	void SetHitEffect(const std::vector<std::shared_ptr<MonsterParts>> effect);
+	void SetAreaWarning(const std::vector<std::shared_ptr<MonsterParts>> effect);
 	void SetRange(RECT range);
 	void SetType(int32_t type);
 	void SetEffectFinish(bool check);
@@ -32,9 +32,9 @@ public:
 	bool IsAttackFinish() const;
 	bool IsEffectFinish() const;
 	RECT GetRange() const;
-	std::vector<std::shared_ptr<MonsterParts*>>& GetAreaWarning();
-	std::vector<std::shared_ptr<MonsterParts*>>& GetEffect();
-	std::vector<std::shared_ptr<MonsterParts*>>& GetHitEffect();
+	std::vector<std::shared_ptr<MonsterParts>>& GetAreaWarning();
+	std::vector<std::shared_ptr<MonsterParts>>& GetEffect();
+	std::vector<std::shared_ptr<MonsterParts>>& GetHitEffect();
 	int32_t GetType() const;
 	MonsterFrameManager* GetAreaWarningFrame() const;
 	MonsterFrameManager* GetEffectFrame() const;
@@ -57,9 +57,9 @@ private:
 
 	int32_t _con_mp;
 	bool _is_deadly_attack;
-	std::vector<std::shared_ptr<MonsterParts*>> _area_warning;
-	std::vector<std::shared_ptr<MonsterParts*>> _effect;
-	std::vector<std::shared_ptr<MonsterParts*>> _hit_effect;
+	std::vector<std::shared_ptr<MonsterParts>> _area_warning;
+	std::vector<std::shared_ptr<MonsterParts>> _effect;
+	std::vector<std::shared_ptr<MonsterParts>> _hit_effect;
 	RECT _range;
 	int32_t _type;
 	MonsterFrameManager* _area_warning_frame;

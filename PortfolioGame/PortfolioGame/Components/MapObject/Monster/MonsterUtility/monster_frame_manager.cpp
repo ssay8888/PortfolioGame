@@ -41,7 +41,7 @@ void MonsterFrameManager::SetFrameRevers(const bool revers)
     _frame_revers = revers;
 }
 
-void MonsterFrameManager::SetThisFrame(std::vector<std::shared_ptr<MonsterParts*>> frame)
+void MonsterFrameManager::SetThisFrame(std::vector<std::shared_ptr<MonsterParts>> frame)
 {
     _this_frame = frame;
 }
@@ -61,7 +61,7 @@ bool MonsterFrameManager::NextFrame(bool revers)
         return true;
     }
     uint64_t tick = GetTickCount64();
-    if (tick > _frame_tick + (*_this_frame[_frame_number % _this_frame.size()])->GetDelay())
+    if (tick > _frame_tick + _this_frame[_frame_number % _this_frame.size()]->GetDelay())
     {
 
         if (_frame_revers)

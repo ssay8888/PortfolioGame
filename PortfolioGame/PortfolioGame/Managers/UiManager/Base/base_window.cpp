@@ -84,18 +84,18 @@ bool BaseWindow::InMouserSkillWindow() const
 
 void BaseWindow::BackgroundRender(HDC hdc) const
 {
-	(*_background)->RenderBitmapImage(hdc,
+	_background->RenderBitmapImage(hdc,
 		static_cast<int>(_info.x),
 		static_cast<int>(_info.y),
-		(*_background)->GetWidth(),
-		(*_background)->GetHeight());
+		_background->GetWidth(),
+		_background->GetHeight());
 }
 
 void BaseWindow::TabRender(const HDC hdc)
 {
 	for (auto& tab : _tab_buttons)
 	{
-		(*tab)->RenderButtonUi(hdc);
+		tab->RenderButtonUi(hdc);
 	}
 }
 
@@ -123,7 +123,7 @@ void BaseWindow::TitleBarMove(const POINT mouse)
 		_info.y -= static_cast<float>(_click_pos.y);
 		for (const auto tab_button : _tab_buttons)
 		{
-			(*tab_button)->GainInfoPosXY(static_cast<float>(-_click_pos.x), static_cast<float>(-_click_pos.y));
+			tab_button->GainInfoPosXY(static_cast<float>(-_click_pos.x), static_cast<float>(-_click_pos.y));
 		}
 		_click_pos = mouse;
 	}
@@ -141,13 +141,13 @@ void BaseWindow::SelectTab(const POINT mouse)
 {
 	bool check = false;
 	uint32_t i = 0;
-	std::shared_ptr<UiTabButton*> select_button(nullptr);
+	std::shared_ptr<UiTabButton> select_button(nullptr);
 	for (const auto& button : _tab_buttons)
 	{
-		RECT tab_bar = (*button)->GetRect();
+		RECT tab_bar = button->GetRect();
 		if (PtInRect(&tab_bar, mouse))
 		{
-			(*button)->SetState(UiTabButton::ButtonState::kEnable);
+			button->SetState(UiTabButton::ButtonState::kEnable);
 			select_button = button;
 		}
 		++i;
@@ -158,7 +158,7 @@ void BaseWindow::SelectTab(const POINT mouse)
 		{
 			if (button != select_button)
 			{
-				(*button)->SetState(UiTabButton::ButtonState::kDisable);
+				button->SetState(UiTabButton::ButtonState::kDisable);
 			}
 		}
 	}

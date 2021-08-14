@@ -23,10 +23,10 @@ void UiTabButton::ReadyButton(std::wstring button_path)
 	path.append(L"Client\\Ui\\").append(button_path).append(L".enable.bmp");
 	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
 	{
-		_enable = std::make_shared<MyBitmap*>(new MyBitmap());
-		(*_enable)->Insert_Bitmap(_hWnd, path.c_str());
-		_info.cx = (*_enable)->GetWidth();
-		_info.cy = (*_enable)->GetHeight();
+		_enable = std::make_shared<MyBitmap>(MyBitmap());
+		_enable->Insert_Bitmap(_hWnd, path.c_str());
+		_info.cx = _enable->GetWidth();
+		_info.cy = _enable->GetHeight();
 		UpdateRect();
 	}
 
@@ -34,8 +34,8 @@ void UiTabButton::ReadyButton(std::wstring button_path)
 	path.append(L"Client\\Ui\\").append(button_path).append(L".disable.bmp");
 	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
 	{
-		_disable = std::make_shared<MyBitmap*>(new MyBitmap());
-		(*_disable)->Insert_Bitmap(_hWnd, path.c_str());
+		_disable = std::make_shared<MyBitmap>(MyBitmap());
+		_disable->Insert_Bitmap(_hWnd, path.c_str());
 	}
 
 }
@@ -61,18 +61,18 @@ void UiTabButton::RenderButtonUi(const HDC hdc)
 	switch (_state)
 	{
 	case UiTabButton::ButtonState::kEnable:
-		(*_enable)->RenderBitmapImage(hdc,
+		_enable->RenderBitmapImage(hdc,
 			static_cast<int>(_info.x),
 			static_cast<int>(_info.y),
-			static_cast<int>((*_enable)->GetWidth()),
-			static_cast<int>((*_enable)->GetHeight()));
+			static_cast<int>(_enable->GetWidth()),
+			static_cast<int>(_enable->GetHeight()));
 		break;
 	case UiTabButton::ButtonState::kDisable:
-		(*_disable)->RenderBitmapImage(hdc,
+		_disable->RenderBitmapImage(hdc,
 			static_cast<int>(_info.x),
 			static_cast<int>(_info.y),
-			static_cast<int>((*_disable)->GetWidth()),
-			static_cast<int>((*_disable)->GetHeight()));
+			static_cast<int>(_disable->GetWidth()),
+			static_cast<int>(_disable->GetHeight()));
 		break;
 	default:
 		break;

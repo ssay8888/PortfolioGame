@@ -43,7 +43,7 @@ public:
 	void MapObjectImageLoad();
 	void AniObjectImageLoad();
 	std::list<Monster*> MonsterCollision(RECT rect, uint32_t count);
-	std::shared_ptr<MapInstance*> GetNowMap();
+	std::shared_ptr<MapInstance> GetNowMap();
 
 	void SetPlayer(Player* player);
 	Player* GetPlayer();
@@ -53,12 +53,12 @@ public:
 private:
 	Player* _map_player;
 
-	std::shared_ptr<MapInstance*> _now_map;
+	std::shared_ptr<MapInstance> _now_map;
 
 	std::map<std::string, std::map<std::string, std::vector<MyBitmap*>>> _listBitmap;
 	std::map<std::string, MyBitmap*> _listObjBitmap;
 	std::map<std::string, AniMapObject*> _listAniObject;
-	std::map<uint32_t, std::shared_ptr<MapInstance*>> _listMap;
+	std::map<uint32_t, std::shared_ptr<MapInstance>> _listMap;
 
 
 };

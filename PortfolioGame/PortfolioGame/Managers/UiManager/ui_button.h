@@ -20,9 +20,9 @@ private:
 	RECT _rect{};
 	ButtonState _state;
 
-	std::shared_ptr<MyBitmap*> _normalImage;
-	std::shared_ptr<MyBitmap*> _overImage;
-	std::shared_ptr<MyBitmap*> _pressedImage;
+	std::shared_ptr<MyBitmap> _normalImage;
+	std::shared_ptr<MyBitmap> _overImage;
+	std::shared_ptr<MyBitmap> _pressedImage;
 
 
 };

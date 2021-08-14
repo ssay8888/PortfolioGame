@@ -14,8 +14,8 @@ QuickSlot::~QuickSlot()
 
 void QuickSlot::ReadyQuickSlot()
 {
-	_background = std::make_shared<MyBitmap*>(new MyBitmap());
-	(*_background)->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\quickSlot.bmp");
+	_background = std::make_shared<MyBitmap>(MyBitmap());
+	_background->Insert_Bitmap(_hWnd, L"Client\\Ui\\StatusBar\\quickSlot.bmp");
 }
 
 void QuickSlot::ChangeSlotSkill(KeyBoard key, Skill* skill)
@@ -36,7 +36,7 @@ void QuickSlot::UpdateQuickSlot()
 
 void QuickSlot::RenderQuickSlot(HDC hdc)
 {
-	(*_background)->RenderBitmapImage(hdc, 647, 453, (*_background)->GetWidth(), (*_background)->GetHeight());
+	_background->RenderBitmapImage(hdc, 647, 453, _background->GetWidth(), _background->GetHeight());
 
 	constexpr int max_count = static_cast<int>(KeyBoard::kEnd);
 	for (int i = 0; i < max_count; ++i)

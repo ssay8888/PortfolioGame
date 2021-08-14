@@ -19,7 +19,7 @@ public:
 private:
     uint32_t _frameCount;
     MouseState _state;
-    std::map<MouseState, std::vector<std::shared_ptr<MyBitmap*>>> _mouseImage;
+    std::map<MouseState, std::vector<std::shared_ptr<MyBitmap>>> _mouseImage;
     POINT _cursorPos;
     KeyManager* _key_manager;
 };

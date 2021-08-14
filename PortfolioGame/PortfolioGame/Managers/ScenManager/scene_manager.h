@@ -23,7 +23,7 @@ public:
 	void ReleaseSceneManager();
 
 private:
-	std::shared_ptr<Scene*> _scene;
+	Scene* _scene;
 	SceneState _curScene;
 	SceneState _nextScene;
 };

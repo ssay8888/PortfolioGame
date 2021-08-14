@@ -6,10 +6,10 @@ public:
 	Item();
 	~Item();
 
-	void SetIcon(std::shared_ptr<MyBitmap*> icon);
-	void SetIconRaw(std::shared_ptr<MyBitmap*> icon_raw);
-	std::shared_ptr<MyBitmap*> GetIcon() const;
-	std::shared_ptr<MyBitmap*> GetIconRaw() const;
+	void SetIcon(std::shared_ptr<MyBitmap> icon);
+	void SetIconRaw(std::shared_ptr<MyBitmap> icon_raw);
+	std::shared_ptr<MyBitmap> GetIcon() const;
+	std::shared_ptr<MyBitmap> GetIconRaw() const;
 
 	void SetPrice(int32_t price);
 	int32_t GetPrice() const;
@@ -23,8 +23,8 @@ public:
 	void InsertSpec(const std::string& name, int32_t value);
 	std::map<std::string, int32_t>& GetSpec();
 private:
-	std::shared_ptr<MyBitmap*> _icon;
-	std::shared_ptr<MyBitmap*> _icon_raw;
+	std::shared_ptr<MyBitmap> _icon;
+	std::shared_ptr<MyBitmap> _icon_raw;
 	int32_t _price;
 	int32_t _slot_max;
 	int32_t _quantity;

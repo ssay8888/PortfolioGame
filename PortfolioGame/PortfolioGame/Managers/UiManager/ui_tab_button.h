@@ -31,8 +31,8 @@ protected:
 	ButtonState _state;
 	bool _show;
 
-	std::shared_ptr<MyBitmap*> _enable;
-	std::shared_ptr<MyBitmap*> _disable;
+	std::shared_ptr<MyBitmap> _enable;
+	std::shared_ptr<MyBitmap> _disable;
 
 };
 

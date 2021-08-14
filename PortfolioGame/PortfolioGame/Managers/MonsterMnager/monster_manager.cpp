@@ -13,12 +13,12 @@ void MonsterManager::LoadMonster()
 	UolFindSetting();
 }
 
-void MonsterManager::InsertMonster(std::string key, std::shared_ptr<Monster*> data)
+void MonsterManager::InsertMonster(std::string key, std::shared_ptr<Monster> data)
 {
 	_list_monster.insert(std::make_pair(key, data));
 }
 
-std::shared_ptr<Monster*> MonsterManager::FindMonster(std::string key)
+std::shared_ptr<Monster> MonsterManager::FindMonster(std::string key)
 {
 	auto data = _list_monster.find(key);
 	if (data != _list_monster.end())
@@ -32,18 +32,18 @@ void MonsterManager::UolFindSetting()
 {
 	for (auto& pair_data : _list_monster)
 	{
-		const auto& monster = (*pair_data.second);
+		const auto& monster = pair_data.second;
 
-		const auto movemnet = (*monster->GetMovement());
+		const auto movemnet = monster->GetMovement();
 		for(const auto& move_frame : movemnet->GetMovemnet())
 		{
 			for (const auto& parts : move_frame.second)
 			{
-				const auto part = (*parts);
+				auto part = (*parts);
 
-				if (!part->GetUol().empty())
+				if (!part.GetUol().empty())
 				{
-					MonsterPartsUolSetting(part, move_frame.second);
+					MonsterPartsUolSetting(&part, move_frame.second);
 				}
 			}
 		}
@@ -52,7 +52,7 @@ void MonsterManager::UolFindSetting()
 			auto effect_vector = info.second->GetEffect();
 			for (const auto& effect_frame_shared : effect_vector)
 			{
-				const auto& effect_frame = (*effect_frame_shared);
+				const auto& effect_frame = effect_frame_shared;
 
 				if (!effect_frame->GetUol().empty())
 				{
@@ -61,7 +61,7 @@ void MonsterManager::UolFindSetting()
 
 					if (overlapCount == 0)
 					{
-						auto copy_target = (*effect_vector[std::stoi(splitString[0])]);
+						auto copy_target = effect_vector[std::stoi(splitString[0])];
 
 						effect_frame->SetDelay(copy_target->GetDelay());
 						effect_frame->SetHeadPos(copy_target->GetHeadPos());
@@ -75,7 +75,7 @@ void MonsterManager::UolFindSetting()
 			auto area_warning_vector = info.second->GetAreaWarning();
 			for (const auto& effect_frame_shared : area_warning_vector)
 			{
-				const auto& effect_frame = (*effect_frame_shared);
+				const auto& effect_frame = effect_frame_shared;
 
 				if (!effect_frame->GetUol().empty())
 				{
@@ -84,7 +84,7 @@ void MonsterManager::UolFindSetting()
 
 					if (overlapCount == 0)
 					{
-						auto copy_target = (*area_warning_vector[std::stoi(splitString[0])]);
+						auto copy_target = area_warning_vector[std::stoi(splitString[0])];
 
 						effect_frame->SetDelay(copy_target->GetDelay());
 						effect_frame->SetHeadPos(copy_target->GetHeadPos());
@@ -98,7 +98,7 @@ void MonsterManager::UolFindSetting()
 			auto hit_effect = info.second->GetHitEffect();
 			for (const auto& effect_frame_shared : hit_effect)
 			{
-				const auto& effect_frame = (*effect_frame_shared);
+				const auto& effect_frame = effect_frame_shared;
 
 				if (!effect_frame->GetUol().empty())
 				{
@@ -107,7 +107,7 @@ void MonsterManager::UolFindSetting()
 
 					if (overlapCount == 0)
 					{
-						auto copy_target = (*hit_effect[std::stoi(splitString[0])]);
+						auto copy_target = hit_effect[std::stoi(splitString[0])];
 
 						effect_frame->SetDelay(copy_target->GetDelay());
 						effect_frame->SetHeadPos(copy_target->GetHeadPos());
@@ -121,13 +121,13 @@ void MonsterManager::UolFindSetting()
 	}
 }
 
-void MonsterManager::MonsterPartsUolSetting(MonsterParts* part, const std::vector<std::shared_ptr<MonsterParts*>> move_frame) const
+void MonsterManager::MonsterPartsUolSetting(MonsterParts* part, const std::vector<std::shared_ptr<MonsterParts>> move_frame) const
 {
 	uint16_t overlapCount = StringTools::FindOverlapCount(part->GetUol(), "../");
 	auto splitString = StringTools::SplitString(part->GetUol(), '/');
 	if (overlapCount == 0)
 	{
-		auto frame = (*move_frame[std::stoi(splitString[0])]);
+		auto frame = move_frame[std::stoi(splitString[0])];
 		part->SetDelay(frame->GetDelay());
 		part->SetHeadPos(frame->GetHeadPos());
 		part->SetImage(frame->GetImage());
@@ -136,8 +136,8 @@ void MonsterManager::MonsterPartsUolSetting(MonsterParts* part, const std::vecto
 	}
 	else if (overlapCount == 1)
 	{
-		auto move_frame = (*part->GetPartner())->FindMovement(splitString[1]);
-		auto frame = (*move_frame[std::stoi(splitString[2])]);
+		auto move_frame = part->GetPartner()->FindMovement(splitString[1]);
+		auto frame = move_frame[std::stoi(splitString[2])];
 		part->SetDelay(frame->GetDelay());
 		part->SetHeadPos(frame->GetHeadPos());
 		part->SetImage(frame->GetImage());

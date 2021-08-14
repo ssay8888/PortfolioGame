@@ -8,7 +8,8 @@
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 
 MapInstance::MapInstance() :
-	_map_size({})
+	_map_size({}),
+	_player(nullptr)
 {
 	_back_ground_image = new MyBitmap();
 	_back_ground_image->Insert_Bitmap(_hWnd, L"Client\\Map\\Back\\back.bmp");
