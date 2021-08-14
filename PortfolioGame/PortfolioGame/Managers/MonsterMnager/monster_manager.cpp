@@ -47,9 +47,9 @@ void MonsterManager::UolFindSetting()
 				}
 			}
 		}
-		if (monster->GetAttackInfo() != nullptr)
+		for (auto info : monster->GetAttackInfo())
 		{
-			auto effect_vector = monster->GetAttackInfo()->GetEffect();
+			auto effect_vector = info.second->GetEffect();
 			for (const auto& effect_frame_shared : effect_vector)
 			{
 				const auto& effect_frame = (*effect_frame_shared);
@@ -72,7 +72,7 @@ void MonsterManager::UolFindSetting()
 				}
 			}
 
-			auto area_warning_vector = monster->GetAttackInfo()->GetAreaWarning();
+			auto area_warning_vector = info.second->GetAreaWarning();
 			for (const auto& effect_frame_shared : area_warning_vector)
 			{
 				const auto& effect_frame = (*effect_frame_shared);
@@ -95,7 +95,7 @@ void MonsterManager::UolFindSetting()
 				}
 			}
 
-			auto hit_effect = monster->GetAttackInfo()->GetHitEffect();
+			auto hit_effect = info.second->GetHitEffect();
 			for (const auto& effect_frame_shared : hit_effect)
 			{
 				const auto& effect_frame = (*effect_frame_shared);

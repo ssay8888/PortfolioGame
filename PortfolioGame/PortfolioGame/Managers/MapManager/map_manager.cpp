@@ -434,6 +434,17 @@ bool MapManager::FootholdAndRectCollision(GameObject* object)
 	return false;
 }
 
+bool MapManager::MonsterHitBoxCollision(const RECT hit_box)
+{
+	RECT rc;
+	RECT player = _map_player->GetRect();
+	if (IntersectRect(&rc, &player, &hit_box))
+	{
+		return true;
+	}
+	return false;
+}
+
 bool MapManager::LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold)
 {
 	if ((*GetNowMap())->GetRopeLadderList().empty())

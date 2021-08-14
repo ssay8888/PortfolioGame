@@ -32,6 +32,7 @@ public:
 
 	bool FootholdYCollision(GameObject* object, float* outY, FootHold** outHold);
 	bool FootholdAndRectCollision(GameObject* object);
+	bool MonsterHitBoxCollision(RECT rect);
 	bool LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold);
 	bool PortalCollsition(GameObject* object, Portal** outPortal);
 

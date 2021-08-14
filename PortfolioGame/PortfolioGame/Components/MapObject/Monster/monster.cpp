@@ -1,5 +1,8 @@
 #include "../../../pch.h"
 #include "monster.h"
+
+#include "../foot_hold.h"
+#include "../Player/player.h"
 #include "AiMovement/ai_movement.h"
 #include "MonsterUtility/monster_frame_manager.h"
 #include "../../../Managers/MonsterMnager/monster_manager.h"
@@ -8,24 +11,26 @@
 #include "../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../Player/Damage/damage_handler.h"
 #include "AttackInfo/attack_info.h"
 
 Monster::Monster() :
 	GameObject(0),
 	_monster_info({}),
 	_now_foothold(nullptr),
-	_facing_direction(false),
-	_base_state_frame(nullptr),
-	_is_alive(true),
 	_monster_state(MonsterState::kStand),
+	_facing_direction(false),
+	_is_alive(true),
 	_die_wait_tick(0),
 	_alpha_value(255),
-	_ai_movement(nullptr),
 	_alpha_tick(0),
+	_base_state_frame(nullptr),
 	_this_foothold(nullptr),
+	_ai_movement(nullptr),
+	_target(nullptr),
+	_memDC2(nullptr),
 	_bitmap2(nullptr),
-	_old_bitmap2(nullptr),
-	_memDC2(nullptr)
+	_old_bitmap2(nullptr)
 
 
 {
@@ -191,7 +196,12 @@ uint32_t Monster::GetMp() const
 	return _monster_info.mp;
 }
 
-void Monster::SetMaxMp(uint32_t maxmp)
+void Monster::GainMp(const int32_t mp)
+{
+	_monster_info.mp += mp;
+}
+
+void Monster::SetMaxMp(const uint32_t maxmp)
 {
 	_monster_info.max_mp = maxmp;
 }
@@ -201,28 +211,49 @@ uint32_t Monster::GetMaxMp() const
 	return _monster_info.max_mp;
 }
 
-void Monster::SetAttackInfo(AttackInfo* attack_info)
+void Monster::SetPlayer(GameObject* player)
 {
-	_attack_info = attack_info;
+	_target = player;
 }
 
-AttackInfo* Monster::GetAttackInfo() const
+GameObject* Monster::GetPlayer() const
+{
+	return _target;
+}
+
+void Monster::InsertAttackInfo(const std::string& key, AttackInfo* attack_info)
+{
+	_attack_info.insert(std::make_pair(key, attack_info));
+}
+
+AttackInfo* Monster::FindAttackInfo(const std::string key) const
+{
+	auto data = _attack_info.find(key);
+
+	if (data != _attack_info.end())
+	{
+		return data->second;
+	}
+	return nullptr;
+}
+
+std::map<std::string, AttackInfo*>& Monster::GetAttackInfo()
 {
 	return _attack_info;
 }
 
-void Monster::SetMovement(std::shared_ptr<MonsterMovement*> movement)
+void Monster::SetMovement(const std::shared_ptr<MonsterMovement*> movement)
 {
 	_movement = movement;
 	_this_frame = (*_movement)->FindMovement("stand");
 }
 
-std::shared_ptr<MonsterMovement*> Monster::GetMovement()
+std::shared_ptr<MonsterMovement*> Monster::GetMovement() const
 {
 	return _movement;
 }
 
-void Monster::SetName(std::string name)
+void Monster::SetName(const std::string name)
 {
 	_monster_info.name = name;
 }
@@ -232,7 +263,33 @@ std::string Monster::GetName() const
 	return _monster_info.name;
 }
 
-bool Monster::GetFacingDirection()
+void Monster::InsertAttackDelay(std::string key, uint64_t tick)
+{
+	auto data = _attack_delay.find(key);
+	if (data != _attack_delay.end())
+	{
+		data->second = tick;
+		return;
+	}
+	_attack_delay.insert(std::make_pair(key, tick));
+}
+
+uint64_t Monster::FindAttackDelay(std::string key)
+{
+	auto data = _attack_delay.find(key);
+	if (data != _attack_delay.end())
+	{
+		return data->second;
+	}
+	return 0;
+}
+
+size_t Monster::GetAttackDelaySize() const
+{
+	return _attack_delay.size();
+}
+
+bool Monster::GetFacingDirection() const
 {
 	return _facing_direction;
 }
@@ -240,6 +297,16 @@ bool Monster::GetFacingDirection()
 bool Monster::IsAlive() const
 {
 	return _is_alive;
+}
+
+void Monster::SetStateString(std::string str)
+{
+	_state_string = str;
+}
+
+std::string Monster::GetStateString() const
+{
+	return _state_string;
 }
 
 void Monster::IsJumping()
@@ -285,17 +352,93 @@ bool Monster::IsChangeFoothold()
 	return false;
 }
 
+void Monster::AttackApply(const std::string key)
+{
+	if (_target == nullptr)
+	{
+		return;
+	}
+	RECT rc;
+	AttackInfo* attack_info = _attack_info.find(key)->second;
+	RECT range = attack_info->GetRange();
+	range.left = static_cast<int>(_info.x) - std::abs(range.left);
+	range.top = static_cast<int>(_info.y) - std::abs(range.top);
+	range.right = static_cast<int>(_info.x) + std::abs(range.right);
+	range.bottom = static_cast<int>(_info.y) + std::abs(range.bottom);
+	const RECT target = _target->GetRect();
+
+	const uint64_t tick = GetTickCount64();
+	const auto player = dynamic_cast<Player*>(_target);
+	if (!player->IsInvincibility() && tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter())
+	{
+		if (IntersectRect(&rc, &range, &target))
+		{
+			if (attack_info->IsDeadlyAttack())
+			{
+				if (player != nullptr)
+				{
+					player->SetHp(1);
+					player->SetMp(1);
+					player->SetInvincibility();
+					player->SettingPushKnockBack(true);
+					player->GetDamageHandler()->InsertTakeDamageEffect(player, 30000, 1000);
+				}
+			}
+			else
+			{
+				player->SetInvincibility();
+				player->SettingPushKnockBack(true);
+				player->GetDamageHandler()->InsertTakeDamageEffect(player, rand() % 500 + 500, 1000);
+			}
+
+		}
+		if (!player->IsInvincibility() && !attack_info->GetAreaAttack().empty())
+		{
+			for (const auto area : attack_info->GetAreaAttack())
+			{
+				const RECT range3 = attack_info->GetRange();
+				RECT range2{
+
+				area.x - std::abs(range3.left),
+				area.y - std::abs(range3.top),
+				area.x + std::abs(range3.right),
+				area.y + std::abs(range3.bottom) };
+				if (IntersectRect(&rc, &range2, &target))
+				{
+					player->SetInvincibility();
+					player->SettingPushKnockBack(true);
+					player->GetDamageHandler()->InsertTakeDamageEffect(player, rand() % 1500, 1000);
+					int a = 0;
+				}
+			}
+		}
+		this->GainMp(-attack_info->GetConMp());
+	}
+
+}
+
+uint64_t Monster::GetAttackTick() const
+{
+	return _attack_tick;
+}
+
+void Monster::SetAttackTick()
+{
+	_attack_tick = GetTickCount64();
+}
+
 int Monster::ReadyGameObject()
 {
 
 	HDC hDC = GetDC(_hWnd);
 	_memDC = CreateCompatibleDC(hDC);
 	_bitmap = CreateCompatibleBitmap(hDC, 800, 800);
-	_old_bitmap = (HBITMAP)SelectObject(_memDC, _bitmap);
+	_old_bitmap = static_cast<HBITMAP>(SelectObject(_memDC, _bitmap));
 	_memDC2 = CreateCompatibleDC(hDC);
 	_bitmap2 = CreateCompatibleBitmap(hDC, 800, 800);
-	_old_bitmap2 = (HBITMAP)SelectObject(_memDC2, _bitmap2);
+	_old_bitmap2 = static_cast<HBITMAP>(SelectObject(_memDC2, _bitmap2));
 	_ai_movement = new AiMovement(GetSpeed());
+	_ai_movement->SetPartner(this);
 	ReleaseDC(_hWnd, hDC);
 	_base_state_frame = new MonsterFrameManager();
 	return 0;
@@ -303,6 +446,12 @@ int Monster::ReadyGameObject()
 
 void Monster::UpdateGameObject(const float deltaTime)
 {
+	if (_base_state_frame->GetFrameSize() == 0)
+	{
+		_base_state_frame->SetThisFrame(_this_frame);
+	}
+	UpdateRect();
+	float movingVluae = 0;
 	if (!IsAlive())
 	{
 		ChangeState(MonsterState::kDie);
@@ -324,25 +473,40 @@ void Monster::UpdateGameObject(const float deltaTime)
 		return;
 	}
 	if (_monster_state != MonsterState::kHit)
-	{
-		if (_ai_movement->Moveing() != 0)
+	{/*
+		if (_target != nullptr)
 		{
-			ChangeState(MonsterState::kMove);
+			Attack1Apply(_state_string);
 		}
 		else
-		{
-			ChangeState(MonsterState::kAttack1);
-		}
+		{*/
+			movingVluae = _ai_movement->Moveing();
+			if (movingVluae != 0.f)
+			{
+				ChangeState(MonsterState::kMove);
+			}
+			else
+			{
+				if (_monster_state == MonsterState::kStand ||
+					_monster_state == MonsterState::kDie || 
+					_monster_state == MonsterState::kHit)
+				{
+					ChangeState(MonsterState::kStand);
+				}
+			}
+		//}
 		float totalMoveX = 0;
 		float totalMoveY = 0;
 		float outY = 0;
 		FootHold* footHold = nullptr;
-		totalMoveX += _ai_movement->Moveing();
+		totalMoveX += movingVluae;
 
-
-		if (totalMoveX != 0 || totalMoveY != 0)
+		if (strcmp(_monster_code.c_str(), "Client\\Mob\\8800000.img.xml"))
 		{
 			_facing_direction = _ai_movement->GetFacingDirection();
+		}
+		if (totalMoveX != 0 || totalMoveY != 0)
+		{
 			_info.x += totalMoveX;
 			_info.y += totalMoveY;
 		}
@@ -363,16 +527,16 @@ void Monster::UpdateGameObject(const float deltaTime)
 
 void Monster::RenderGameObject(HDC hdc)
 {
-	UpdateRectGameObject();
+	UpdateRect();
 	if (_this_frame.empty())
 	{
 		return;
 	}
-	auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
-	auto image = (*data)->GetImage();
+	const auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
+	const auto image = (*data)->GetImage();
 
-	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
-	HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
+	const HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+	const HBRUSH brushPrev = static_cast<HBRUSH>(SelectObject(_memDC, brush));
 	Rectangle(_memDC,
 		0 - 10,
 		0 - 10,
@@ -450,7 +614,7 @@ void Monster::RenderGameObject(HDC hdc)
 		{
 			GdiTransparentBlt(hdc,
 				static_cast<int>((_info.x - (*data)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_rect.bottom - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()),
+				static_cast<int>(_info.y - ((*data)->GetOriginPos().y /2) + ScrollManager::GetScrollY()),
 				(*image)->GetWidth(),
 				(*image)->GetHeight(),
 				_memDC,
@@ -465,9 +629,10 @@ void Monster::RenderGameObject(HDC hdc)
 		case MonsterState::kAttack2:
 		case MonsterState::kAttack3:
 		{
+			auto reduceY = std::abs(static_cast<int>(_rect.bottom - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()));
 			GdiTransparentBlt(hdc,
 				static_cast<int>((_info.x - (*data)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_rect.bottom - (*data)->GetOriginPos().y + ScrollManager::GetScrollY()),
+				static_cast<int>(_info.y - ((*data)->GetOriginPos().y / 2) + ScrollManager::GetScrollY()),
 				(*image)->GetWidth(),
 				(*image)->GetHeight(),
 				_memDC,
@@ -477,31 +642,55 @@ void Monster::RenderGameObject(HDC hdc)
 				(*image)->GetHeight(),
 				RGB(255, 0, 255));
 
-			if (_attack_info!= nullptr)
+			auto attack_info = _attack_info.find(_state_string);
+			if (attack_info != _attack_info.end())
 			{
-				if (!_attack_info->GetEffect().empty())
+				if (!attack_info->second->GetEffect().empty())
 				{
-					const auto effect_list = _attack_info->GetEffect();
-					const auto effect_shared_image = effect_list[_attack_info->GetEffectFrame()->GetFrameNumber() % effect_list.size()];
-					const auto effect_image = (*effect_shared_image)->GetImage();
-					(*effect_image)->RenderBitmapImage(hdc,
-						static_cast<int>((_info.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-						static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
-						(*effect_image)->GetWidth(),
-						(*effect_image)->GetHeight());
+					if (attack_info->second->GetEffectAfterTick() == 0)
+					{
+						attack_info->second->SetEffectAfterTick(GetTickCount64());
+					}
+					const auto effect_list = attack_info->second->GetEffect();
+					const int64_t tick = GetTickCount64();
+					if (tick > attack_info->second->GetEffectAfterTick() + attack_info->second->GetEffectAfter() && 
+						!attack_info->second->IsEffectFinish())
+					{
+						if (attack_info->second->GetEffectFrame()->GetFrameNumber() < effect_list.size())
+						{
+							const auto effect_shared_image = effect_list[attack_info->second->GetEffectFrame()->GetFrameNumber() % effect_list.size()];
+							const auto effect_image = (*effect_shared_image)->GetImage();
+							(*effect_image)->RenderBitmapImage(hdc,
+								static_cast<int>((_info.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
+								static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
+								(*effect_image)->GetWidth(),
+								(*effect_image)->GetHeight());
+						}
+					}
 				}
-				if (!_attack_info->GetAreaWarning().empty())
+				if (!attack_info->second->GetAreaWarning().empty())
 				{
-					const auto effect_list = _attack_info->GetAreaWarning();
-					const auto effect_shared_image = effect_list[_attack_info->GetAreaWarningFrame()->GetFrameNumber() % effect_list.size()];
-					const auto effect_image = (*effect_shared_image)->GetImage();
-					(*effect_image)->RenderBitmapImage(hdc,
-						static_cast<int>((_info.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
-						static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
-						(*effect_image)->GetWidth(),
-						(*effect_image)->GetHeight());
+					if (attack_info->second->GetAttackAfter() == 0)
+					{
+						attack_info->second->SetAttackAfterTick(GetTickCount64());
+					}
+					const auto effect_list = attack_info->second->GetAreaWarning();
+					for (auto area : attack_info->second->GetAreaAttack())
+					{
+						const int64_t tick = GetTickCount64();
+						if (attack_info->second->GetAreaWarningFrame()->GetFrameNumber() < effect_list.size())
+						{
+							const auto effect_shared_image = effect_list[attack_info->second->GetAreaWarningFrame()->GetFrameNumber() % effect_list.size()];
+							const auto effect_image = (*effect_shared_image)->GetImage();
+							(*effect_image)->RenderBitmapImage(hdc,
+								static_cast<int>((area.x - (*effect_shared_image)->GetOriginPos().x) + ScrollManager::GetScrollX()),
+								static_cast<int>(_rect.bottom - (*effect_shared_image)->GetOriginPos().y + ScrollManager::GetScrollY()),
+								(*effect_image)->GetWidth(),
+								(*effect_image)->GetHeight());
+						}
+					}
 				}
-				if (!_attack_info->GetHitEffect().empty())
+				if (!attack_info->second->GetHitEffect().empty())
 				{
 					/*	const auto effect_list = _attack_info->GetHitEffect();
 						const auto effect_shared_image = effect_list[_attack_info->GetHitEffectFrame()->GetFrameNumber() % effect_list.size()];
@@ -518,12 +707,23 @@ void Monster::RenderGameObject(HDC hdc)
 		break;
 		default:;
 		}
-
+		/*Rectangle(hdc,
+			static_cast<int>(_info.x - (_info.cx >> 1)) + static_cast<int>(ScrollManager::GetScrollX()),
+			static_cast<int>(_info.y - (_info.cy >> 1)) + static_cast<int>(ScrollManager::GetScrollY()),
+			static_cast<int>(_info.x + (_info.cx >> 1)) + static_cast<int>(ScrollManager::GetScrollX()),
+			static_cast<int>(_info.y + (_info.cy >> 1)) + + static_cast<int>(ScrollManager::GetScrollY()));*/
 	}
 }
 
 void Monster::LateUpdateGameObject()
 {
+	if (_base_state_frame->NextFrame(false))
+	{
+		if (_monster_state == MonsterState::kHit)
+		{
+			ChangeState(MonsterState::kStand);
+		}
+	}
 	switch (_monster_state) {
 	case MonsterState::kStand:
 	case MonsterState::kMove:
@@ -533,28 +733,73 @@ void Monster::LateUpdateGameObject()
 	case MonsterState::kAttack1:
 	case MonsterState::kAttack2: 
 	case MonsterState::kAttack3:
-		if (!_attack_info->GetEffect().empty())
+	{
+		const auto attack_info = _attack_info.find(_state_string);
+		if (attack_info->second->IsEffectFinish() && attack_info->second->IsAttackFinish() &&
+			_base_state_frame->IsFrameFinish())
 		{
-			_attack_info->GetEffectFrame()->NextFrame();
+			attack_info->second->ResetEffectFrame();
+			attack_info->second->ResetAreaFrame();
+			_base_state_frame->ResetFrame();
+			ChangeState(MonsterState::kStand);
+			return;
 		}
-		if (!_attack_info->GetHitEffect().empty())
+		if (attack_info != _attack_info.end())
 		{
-			_attack_info->GetHitEffectFrame()->NextFrame();
-		}
-		if (!_attack_info->GetAreaWarning().empty())
-		{
-			_attack_info->GetAreaWarningFrame()->NextFrame();
+			if (!attack_info->second->GetEffect().empty())
+			{
+				const int64_t tick = GetTickCount64();
+				if (tick > attack_info->second->GetAttackAfterTick() + attack_info->second->GetAttackAfter())
+				{
+					if (attack_info->second->GetEffectFrame()->NextFrame(false))
+					{
+						attack_info->second->SetEffectFinish(true);
+					}
+				}
+			}
+			else
+			{
+				attack_info->second->SetEffectFinish(true);
+			}
+			if (!attack_info->second->GetAreaWarning().empty())
+			{
+				if (!attack_info->second->GetAreaAttack().empty())
+				{
+					if (attack_info->second->GetAreaWarningFrame()->NextFrame(false))
+					{
+						attack_info->second->SetAttackFinish(true);
+					}
+				}
+				else
+				{
+					attack_info->second->SetAttackFinish(true);
+				}
+			}
+			else
+			{
+				attack_info->second->SetAttackFinish(true);
+			}
+			if (!attack_info->second->GetHitEffect().empty())
+			{
+				attack_info->second->GetHitEffectFrame()->NextFrame(false);
+			}
 		}
 		break;
+	}
 	default:;
 	}
-	if (_base_state_frame->NextFrame())
-	{
-		if (_monster_state == MonsterState::kHit)
-		{
-			ChangeState(MonsterState::kStand);
-		}
-	}
+}
+
+void Monster::UpdateRect()
+{
+	const auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
+	//RECT rect = (*data)->GetRect();
+	//_rect.left = static_cast<int>(_info.x + (*data)->GetOriginPos().x) - std::abs(rect.left);
+	//_rect.top = static_cast<int>(_info.y + (*data)->GetOriginPos().y) - std::abs(rect.top);
+	//_rect.right = static_cast<int>(_info.x + (*data)->GetOriginPos().x) + std::abs(rect.right);
+	//_rect.bottom = static_cast<int>(_info.y + (*data)->GetOriginPos().y) + std::abs(rect.bottom);
+	_info.cx = (*data)->GetOriginPos().x;
+	_info.cy = (*data)->GetOriginPos().y;
 }
 
 void Monster::ChangeState(MonsterState state)
@@ -574,9 +819,26 @@ void Monster::ChangeState(MonsterState state)
 			break;
 		case Monster::MonsterState::kHit:
 			_this_frame = (*_movement)->FindMovement("hit1");
+			if (_attack_info.find(_state_string) != _attack_info.end())
+			{
+				_attack_info.find(_state_string)->second->ResetEffectFrame();
+				_attack_info.find(_state_string)->second->ResetAreaFrame();
+			}
 			break;
 		case Monster::MonsterState::kAttack1:
 			_this_frame = (*_movement)->FindMovement("attack1");
+			_state_string.clear();
+			_state_string.append("attack1");
+			break;
+		case Monster::MonsterState::kAttack2:
+			_this_frame = (*_movement)->FindMovement("attack2");
+			_state_string.clear();
+			_state_string.append("attack2");
+			break;
+		case Monster::MonsterState::kAttack3:
+			_this_frame = (*_movement)->FindMovement("attack3");
+			_state_string.clear();
+			_state_string.append("attack3");
 			break;
 		case Monster::MonsterState::kDie:
 			_this_frame = (*_movement)->FindMovement("die1");
@@ -586,19 +848,38 @@ void Monster::ChangeState(MonsterState state)
 		}
 		_base_state_frame->ResetFrame();
 		_base_state_frame->SetThisFrame(_this_frame);
-		if (_attack_info != nullptr)
+		if(!_attack_info.empty())
 		{
-			if (!_attack_info->GetEffect().empty())
+			if (_monster_state == MonsterState::kAttack1 || 
+				_monster_state == MonsterState::kAttack2 || 
+				_monster_state == MonsterState::kAttack3)
 			{
-				_attack_info->GetEffectFrame()->SetThisFrame(_this_frame);
-			}
-			if (!_attack_info->GetHitEffect().empty())
-			{
-				_attack_info->GetHitEffectFrame()->SetThisFrame(_this_frame);
-			}
-			if (!_attack_info->GetAreaWarning().empty())
-			{
-				_attack_info->GetAreaWarningFrame()->SetThisFrame(_this_frame);
+				auto attack_info = _attack_info.find(_state_string);
+				if (attack_info != _attack_info.end())
+				{
+					if (!attack_info->second->GetEffect().empty())
+					{
+						attack_info->second->GetEffectFrame()->SetThisFrame(attack_info->second->GetEffect());
+					}
+					if (!attack_info->second->GetHitEffect().empty())
+					{
+						attack_info->second->GetHitEffectFrame()->SetThisFrame(attack_info->second->GetHitEffect());
+					}
+					if (!attack_info->second->GetAreaWarning().empty())
+					{
+						attack_info->second->GetAreaWarningFrame()->SetThisFrame(attack_info->second->GetAreaWarning());
+						
+						if (attack_info->second->GetAreaAttack().empty())
+						{
+							attack_info->second->InsertAreaAttack({ static_cast<long>(_info.x) + -400, static_cast<long>((_this_foothold->GetStartPos().y)) });
+							attack_info->second->InsertAreaAttack({ static_cast<long>(_info.x) + -200 , static_cast<long>(_this_foothold->GetStartPos().y) });
+							attack_info->second->InsertAreaAttack({ static_cast<long>(_info.x), static_cast<long>(_this_foothold->GetStartPos().y) });
+							attack_info->second->InsertAreaAttack({ static_cast<long>(_info.x) + 200, static_cast<long>(_this_foothold->GetStartPos().y) });
+							attack_info->second->InsertAreaAttack({ static_cast<long>(_info.x) + 400, static_cast<long>(_this_foothold->GetStartPos().y) });
+
+						}
+					}
+				}
 			}
 		}
 	}

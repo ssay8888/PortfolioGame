@@ -1,4 +1,6 @@
 #pragma once
+class Monster;
+
 class AiMovement
 {
 public:
@@ -8,11 +10,13 @@ public:
 	float Moveing();
 
 	void SetFacingDirection(bool facing);
-	bool GetFacingDirection();
+	bool GetFacingDirection() const;
 
 	void GainMoveRange(float value);
 	float GetMoveRange() const;
 
+	void SetPartner(Monster* partner);
+	Monster* GetPartner();
 	void ResetMoveRange();
 private:
 	float _move_range;
@@ -20,5 +24,6 @@ private:
 	bool _is_stand;
 	uint64_t _stand_tick;
 	float _speed;
+	Monster* _partner;
 };
 

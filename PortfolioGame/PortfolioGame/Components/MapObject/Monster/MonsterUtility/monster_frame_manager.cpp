@@ -51,9 +51,10 @@ void MonsterFrameManager::ResetFrame()
     _frame_tick = 0;
     _frame_number = 0;
     _frame_revers = false;
+    _frame_finish = false;
 }
 
-bool MonsterFrameManager::NextFrame()
+bool MonsterFrameManager::NextFrame(bool revers)
 {
     if (_this_frame.empty())
     {
@@ -65,10 +66,13 @@ bool MonsterFrameManager::NextFrame()
 
         if (_frame_revers)
         {
-            if (_frame_number-- == 0)
+            if (revers)
             {
-                _frame_number = 0;
-                _frame_revers = false;
+                if (_frame_number-- == 0)
+                {
+                    _frame_number = 0;
+                    _frame_revers = false;
+                }
             }
         }
         else
@@ -88,4 +92,9 @@ bool MonsterFrameManager::NextFrame()
 bool MonsterFrameManager::IsFrameFinish() const
 {
     return _frame_finish;
+}
+
+size_t MonsterFrameManager::GetFrameSize() const
+{
+    return _this_frame.size();
 }

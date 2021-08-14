@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Base/game_object.h"
+class Player;
 class AttackInfo;
 class AiMovement;
 class MonsterMovement;
@@ -47,28 +48,45 @@ public:
 	uint32_t GetMaxHp() const;
 	void SetMp(uint32_t mp);
 	uint32_t GetMp() const;
+	void GainMp(const int32_t mp);
 	void SetMaxMp(uint32_t maxmp);
 	uint32_t GetMaxMp() const;
 
-	void SetAttackInfo(AttackInfo* attack_info);
-	AttackInfo* GetAttackInfo() const;
+	void SetPlayer(GameObject* player);
+	GameObject* GetPlayer() const;
+	void InsertAttackInfo(const std::string& key, AttackInfo* attack_info);
+	AttackInfo* FindAttackInfo(std::string key) const;
+	std::map<std::string, AttackInfo*>& GetAttackInfo();
 
 	void SetMovement(std::shared_ptr<MonsterMovement*> movement);
-	std::shared_ptr<MonsterMovement*> GetMovement();
+	std::shared_ptr<MonsterMovement*> GetMovement() const;
 	void SetName(std::string name);
 	std::string GetName() const;
 
-	bool GetFacingDirection();
+	void InsertAttackDelay(std::string key, uint64_t tick);
+	uint64_t FindAttackDelay(std::string key);
+	size_t GetAttackDelaySize() const;
+
+	bool GetFacingDirection() const;
 	bool IsAlive() const;
+	void SetStateString(std::string str);
+	std::string GetStateString() const;
 	void ChangeState(MonsterState state);
+	void AttackApply(std::string key);
+
+	void SetAttackTick();
+	uint64_t GetAttackTick()const;
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
 	virtual void RenderGameObject(HDC hdc) override;
 	virtual void LateUpdateGameObject() override;
+
+	void UpdateRect();
 	
 	void IsJumping();
 	bool IsChangeFoothold();
+
 	
 private:
 	MonsterInfo _monster_info;
@@ -82,6 +100,7 @@ private:
 	MonsterState _monster_state;
 	bool _facing_direction;
 	bool _is_alive;
+	std::string _state_string;
 
 	//죽음 관련
 	uint64_t _die_wait_tick;
@@ -95,9 +114,12 @@ private:
 	//몬스터이동
 	FootHold* _this_foothold;
 	AiMovement* _ai_movement;
+	GameObject* _target;
 
 	//공격관련
-	AttackInfo* _attack_info;
+	std::map<std::string, AttackInfo*> _attack_info;
+	std::map<std::string, uint64_t> _attack_delay;
+	uint64_t _attack_tick;
 
 	HDC _memDC2;
 	HBITMAP _bitmap2;

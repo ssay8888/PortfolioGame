@@ -249,7 +249,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	{
 		ApplySkill();
 	}
-	IsTakeDamage();
+	TakeDamage();
 	bool isKnockback = GetTickCount64() < _knockback_tick + _knockback_time;
 	int32_t knockbackMoveX = 0;
 	int32_t knockbackMoveY = 0;
@@ -933,7 +933,22 @@ void Player::AttackMonster(Monster* monster)
 	monster->ChangeState(Monster::MonsterState::kHit);
 }
 
-void Player::IsTakeDamage()
+bool Player::IsInvincibility()
+{
+	if (GetTickCount64() > _take_damage_tick + 3000)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Player::SetInvincibility()
+{
+	_take_damage_tick = GetTickCount64();
+	_alert_tick = GetTickCount64();
+}
+
+void Player::TakeDamage()
 {
 	auto mosnters = MapManager::GetInstance()->MonsterCollision(_rect, 1);
 
@@ -1058,6 +1073,7 @@ void Player::ApplySkill()
 			}
 			_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
 			monster->ChangeState(Monster::MonsterState::kHit);
+			monster->SetPlayer(this);
 		}
 	}
 }
@@ -1264,6 +1280,11 @@ int16_t Player::GetJob() const
 void Player::SetJob(const int16_t value)
 {
 	_player_info.job = value;
+}
+
+DamageHandler* Player::GetDamageHandler() const
+{
+	return _damage_handler;
 }
 
 void Player::GainHp(const int16_t value)

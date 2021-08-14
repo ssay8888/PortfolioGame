@@ -16,8 +16,9 @@ public:
 	void SetFrameRevers(bool revers);
 	void SetThisFrame(std::vector<std::shared_ptr<MonsterParts*>> frame);
 	void ResetFrame();
-	bool NextFrame();
+	bool NextFrame(bool revers = true);
 	bool IsFrameFinish() const;
+	size_t GetFrameSize() const;
 private:
 	uint64_t _frame_tick;
 	uint16_t _frame_number;

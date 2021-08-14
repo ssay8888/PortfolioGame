@@ -410,7 +410,7 @@ void XmlReader::LoadMonsters()
 								}
 								else if (!strcmp(node.attribute("name").value(), "info"))
 								{
-									AttackInfo* attack_info = new AttackInfo();
+									auto attack_info = new AttackInfo();
 									for (auto info_node : node)
 									{
 										if (!strcmp(info_node.attribute("name").value(), "attackAfter"))
@@ -501,7 +501,7 @@ void XmlReader::LoadMonsters()
 										}
 									}
 
-									(*monster)->SetAttackInfo(attack_info);
+									(*monster)->InsertAttackInfo(nodes.node().attribute("name").value(), attack_info);
 								}
 								if (!strcmp(node.name(), "uol"))
 								{
@@ -588,10 +588,10 @@ void XmlReader::CanvasMonster(pugi::xml_node node, std::shared_ptr<MonsterParts*
 			(*parts)->SetOriginPosX(std::stoi(canvans.attribute("x").value()));
 			(*parts)->SetOriginPosY(std::stoi(canvans.attribute("y").value()));
 		}
-		else if (!strcmp(canvans.attribute("name").value(), "It"))
+		else if (!strcmp(canvans.attribute("name").value(), "lt"))
 		{
 			(*parts)->SetRectLeft(std::stoi(canvans.attribute("x").value()));
-			(*parts)->SetRectRight(std::stoi(canvans.attribute("y").value()));
+			(*parts)->SetRectTop(std::stoi(canvans.attribute("y").value()));
 		}
 		else if (!strcmp(canvans.attribute("name").value(), "rb"))
 		{

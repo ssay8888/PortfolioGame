@@ -64,6 +64,11 @@ public:
     void GainAp(int16_t value);
     void GainSp(int16_t value);
     void SetJob(int16_t value);
+    bool IsInvincibility();
+    void SetInvincibility();
+
+    DamageHandler* GetDamageHandler() const;
+    void SettingPushKnockBack(bool fancing);
 
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
@@ -75,8 +80,7 @@ private:
     bool IsAlertStateTick();
     void UpdateAlertTick();
     void AttackMonster(Monster* monster);
-    void IsTakeDamage();
-    void SettingPushKnockBack(bool fancing);
+    void TakeDamage();
 
     void ApplySkill();
 private:
