@@ -45,5 +45,9 @@ public:
 
 	//아이템 메소드
 	void LoadItem(std::string path);
+
+
+	//스트링 메소드
+	void LoadItemString(std::string path, const std::string node_path);
 };
 

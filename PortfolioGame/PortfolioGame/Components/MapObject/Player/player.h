@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class Equipment;
 class EqpInventory;
 class Inventory;
 class MagicAttack;
@@ -74,6 +75,8 @@ public:
 
     Inventory* GetInventory(::ObjectType::InventoryTabState type);
     EqpInventory* GetEqpInventory();
+
+    Equipment* GetEquipment();
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);
@@ -147,6 +150,7 @@ private:
     /// </summary>
     Inventory* _inventory[::ObjectType::InventoryTabState::kEnd];
     EqpInventory* _eqp_inventory;
+    Equipment* _equipment;
 
     uint64_t _portal_tick;
     /// <summary>

@@ -1,16 +1,17 @@
 #include "../pch.h"
-#include <sstream>
 #include <fstream> 
+#include <sstream>
 
 #include "xml_reader.h"
+#include "../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../Common/Utility/file_manager.h"
 #include "../Components/Base/game_object.h"
+#include "../Components/MapObject/ani_map_object.h"
 #include "../Components/MapObject/Item/item.h"
+#include "../Components/MapObject/Monster/monster.h"
+#include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
+#include "../Managers/ItemManager/item_manager.h"
 #include "../Managers/MapManager/map_manager.h"
-#include "../Managers/Skins/skin_info.h"
-#include "../Managers/Skins/skin_item.h"
-#include "../Managers/Skins/skin_frame.h"
-#include "../Managers/Skins/skin_parts.h"
-#include "../Managers/Skins/skin_manager.h"
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/MonsterMnager/monster_movement.h"
 #include "../Managers/MonsterMnager/monster_parts.h"
@@ -18,12 +19,13 @@
 #include "../Managers/SkillManager/Skill/skill.h"
 #include "../Managers/SkillManager/Skill/skill_effect_image.h"
 #include "../Managers/SkillManager/Skill/skill_info.h"
-#include "../Managers/ItemManager/item_manager.h"
-#include "../Components/MapObject/Monster/monster.h"
-#include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
-#include "../Components/MapObject/ani_map_object.h"
-#include "../../Common/Managers/BitmapManager/my_bitmap.h"
-#include "../../Common/Utility/file_manager.h"
+#include "../Managers/Skins/skin_frame.h"
+#include "../Managers/Skins/skin_info.h"
+#include "../Managers/Skins/skin_item.h"
+#include "../Managers/Skins/skin_manager.h"
+#include "../Managers/Skins/skin_parts.h"
+#include "../Managers/StringManager/string_Info.h"
+#include "../Managers/StringManager/string_manager.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -89,6 +91,7 @@ std::vector<std::string> XmlReader::LoadCharecterSkin(int32_t size)
 		auto data = doc.select_nodes("imgdir/imgdir");
 		SkinInfo* info = new SkinInfo();
 		info->SetName(std::to_string(size));
+		info->SetItemId(size);
 		for (auto begin : data) // alert ..
 		{
 			auto itemName = begin.node().attribute("name").value();
@@ -252,6 +255,7 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 		auto data = doc.select_nodes("imgdir/imgdir");
 		SkinInfo* info = new SkinInfo();
 		info->SetName(std::to_string(code));
+		info->SetItemId(code);
 		for (auto begin : data) // alert ..
 		{
 			auto itemName = begin.node().attribute("name").value();
@@ -260,6 +264,61 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 			item->SetPartner(info);
 			if (!strcmp(begin.node().attribute("name").value(), "info"))
 			{
+				for (auto info_node : begin.node())
+				{
+					if (!strcmp(info_node.attribute("name").value(), "reqLevel"))
+					{
+						info->GetItemInfo().SetReqLevel(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "reqSTR"))
+					{
+						info->GetItemInfo().SetReqStr(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "reqDEX"))
+					{
+						info->GetItemInfo().SetReqDex(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "reqINT"))
+					{
+						info->GetItemInfo().SetReqInt(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "reqLUK"))
+					{
+						info->GetItemInfo().SetReqLuk(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incSTR"))
+					{
+						info->GetItemInfo().SetIncStr(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incDEX"))
+					{
+						info->GetItemInfo().SetIncDex(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incINT"))
+					{
+						info->GetItemInfo().SetIncInt(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incLUK"))
+					{
+						info->GetItemInfo().SetIncLuk(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incPAD"))
+					{
+						info->GetItemInfo().SetIncPad(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incMAD"))
+					{
+						info->GetItemInfo().SetIncMad(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incPDD"))
+					{
+						info->GetItemInfo().SetIncPdd(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incMDD"))
+					{
+						info->GetItemInfo().SetIncMdd(std::stoi(info_node.attribute("value").value()));
+					}
+				}
 				auto data = begin.node().select_node("canvas[@name='icon']");
 				if (data)
 				{
@@ -833,7 +892,7 @@ void XmlReader::LoadItem(std::string path)
 			int32_t item_id = std::stoi(item_code.node().attribute("name").value());
 			std::shared_ptr<Item> item_shared = std::make_shared<Item>(Item());
 			auto item = (item_shared);
-
+			item->SetItemId(item_id);
 			auto info_node = item_code.node().select_node("imgdir[@name='info']");
 
 			if (info_node)
@@ -879,6 +938,36 @@ void XmlReader::LoadItem(std::string path)
 				}
 			}
 			ItemManager::GetInstance()->InsertItem(item_id, item_shared);
+		}
+	}
+}
+
+void XmlReader::LoadItemString(const std::string path, const std::string node_path)
+{
+	pugi::xml_document doc;
+	char buff[255];
+	snprintf(buff, 255, "Client\\String\\%s", path.c_str()); // Etc.img.xml
+	const auto err = doc.load_file(buff);
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes(node_path.c_str());
+		for (auto item_id_node : datas)
+		{
+			StringInfo str_info;
+			str_info.SetItemId(std::stoi(item_id_node.node().attribute("name").value()));
+			for (auto info_node : item_id_node.node())
+			{
+				if (!strcmp(info_node.attribute("name").value(), "name"))
+				{
+					str_info.SetName(StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+				else if(!strcmp(info_node.attribute("name").value(), "desc"))
+				{
+					str_info.SetDesc(StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+			}
+			StringManager::GetInstance()->InsertStringInfo(str_info);
 		}
 	}
 }

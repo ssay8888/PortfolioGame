@@ -7,4 +7,5 @@ namespace ObjectType
 		kEnd
 	};
 	enum InventoryTabState { kEqp, kConsume, kInstall, kEtc, kCash, kEnd };
+	enum EquipPosition { kCap, kCoat, kPants, kShoes, kWeapon, kEquipEnd };
 }

@@ -1,8 +1,7 @@
 #include "../../pch.h"
 #include "skin_info.h"
 #include "skin_item.h"
-#include "skin_frame.h"
-#include "skin_parts.h"
+#include "item_info.h"
 
 SkinInfo::SkinInfo() :
 	_name("")
@@ -66,6 +65,16 @@ std::string SkinInfo::GetName() const
 	return _name;
 }
 
+void SkinInfo::SetItemId(int32_t item_id)
+{
+	_item_id = item_id;
+}
+
+int32_t SkinInfo::GetItemId() const
+{
+	return _item_id;
+}
+
 
 void SkinInfo::SetIcon(std::shared_ptr<MyBitmap> icon)
 {
@@ -85,4 +94,9 @@ std::shared_ptr<MyBitmap> SkinInfo::GetIcon() const
 std::shared_ptr<MyBitmap> SkinInfo::GetIconRaw() const
 {
 	return _icon_raw;
+}
+
+ItemInfo& SkinInfo::GetItemInfo()
+{
+	return _item_info;
 }

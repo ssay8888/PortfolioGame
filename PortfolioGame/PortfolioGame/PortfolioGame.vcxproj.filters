@@ -116,6 +116,18 @@
     <Filter Include="Managers\ItemManager">
       <UniqueIdentifier>{2f61bdd9-1ce4-48c4-8f15-088a5f2cf859}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\UiManager\Equip">
+      <UniqueIdentifier>{998a62bf-06d8-4b0f-9ac6-9cb66057e1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\MapObject\Player\Equip">
+      <UniqueIdentifier>{bba81ba0-3c3c-466d-93a7-622a4a369028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\ToolTipUi">
+      <UniqueIdentifier>{1e2ec327-a410-4800-a717-66ec2926a92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\StringManager">
+      <UniqueIdentifier>{ae1dba16-ec86-4f86-86dc-c4805e8aa4fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -295,6 +307,24 @@
     <ClInclude Include="Components\MapObject\Player\Inventory\eqp_inventory.h">
       <Filter>Components\MapObject\Player\Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\UiManager\Equip\equipment_window.h">
+      <Filter>Managers\UiManager\Equip</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Equip\equipment.h">
+      <Filter>Components\MapObject\Player\Equip</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.h">
+      <Filter>Managers\UiManager\ToolTipUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\StringManager\string_manager.h">
+      <Filter>Managers\StringManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\StringManager\string_Info.h">
+      <Filter>Managers\StringManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Skins\item_info.h">
+      <Filter>Managers\Skins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -455,6 +485,24 @@
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\Inventory\eqp_inventory.cpp">
       <Filter>Components\MapObject\Player\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Equip\equipment_window.cpp">
+      <Filter>Managers\UiManager\Equip</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Equip\equipment.cpp">
+      <Filter>Components\MapObject\Player\Equip</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.cpp">
+      <Filter>Managers\UiManager\ToolTipUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\StringManager\string_manager.cpp">
+      <Filter>Managers\StringManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\StringManager\string_Info.cpp">
+      <Filter>Managers\StringManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Skins\item_info.cpp">
+      <Filter>Managers\Skins</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

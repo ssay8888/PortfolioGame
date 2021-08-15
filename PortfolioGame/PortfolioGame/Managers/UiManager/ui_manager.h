@@ -4,6 +4,8 @@ class SkillWindow;
 class MyBitmap;
 class UiButton;
 class QuickSlot;
+class EquipmentWindow;
+class ItemInfoToolTip;
 class UiManager
 {
 	UiManager();
@@ -16,7 +18,8 @@ public:
 	void RenderUiManager(HDC hdc);
 
 	std::shared_ptr<QuickSlot> GetQuickSlot() const;
-
+	std::shared_ptr<InventoryWindow> GetInventoryWindow() const;
+	std::shared_ptr<EquipmentWindow> GetEquipmentWindow() const;
 private:
 	void ButtonUiLoad();
 	void PlayerInfoUiLoad();
@@ -34,5 +37,7 @@ private:
 
 	std::shared_ptr<SkillWindow> _skill_window;
 	std::shared_ptr<InventoryWindow> _inventory_window;
+	std::shared_ptr<EquipmentWindow> _equipment_window;
+	std::shared_ptr<ItemInfoToolTip> _item_info_tool_tip;
 
 };

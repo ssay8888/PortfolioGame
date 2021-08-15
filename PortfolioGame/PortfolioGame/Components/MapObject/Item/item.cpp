@@ -61,6 +61,16 @@ void Item::GainQuantity(int32_t quantity)
 	_quantity += quantity;
 }
 
+void Item::SetItemId(int32_t item_id)
+{
+	_item_id = item_id;
+}
+
+int32_t Item::GetItemId() const
+{
+	return _item_id;
+}
+
 int32_t Item::Getquantity() const
 {
 	return _quantity;

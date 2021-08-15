@@ -5,6 +5,7 @@
 
 int GameMouse::ReadyGameObject()
 {
+
 	std::shared_ptr<MyBitmap> basic = std::make_shared<MyBitmap>(MyBitmap());
 	basic->Insert_Bitmap(_hWnd, L"Client\\Ui\\Basic.img\\Cursor.0.0.bmp");
 	_mouseImage.insert({ MouseState::kBasic, { basic } });
@@ -29,6 +30,8 @@ int GameMouse::ReadyGameObject()
 	isButton2->Insert_Bitmap(_hWnd, L"Client\\Ui\\Basic.img\\Cursor.3.1.bmp");
 	_mouseImage.insert({ MouseState::kIsButton, { isButton1, isButton2 } });
 
+	_info.cx = 24;
+	_info.cy = 28;
 	_key_manager = new KeyManager();
 	return 0;
 }
@@ -38,7 +41,10 @@ void GameMouse::UpdateGameObject(const float deltaTime)
 	_key_manager->KeyUpdate();
 	GetCursorPos(&_cursorPos);
 	ScreenToClient(_hWnd, &_cursorPos);
-	this->SetInfo({ static_cast<float>(_cursorPos.x), static_cast<float>(_cursorPos.y) });
+	this->SetInfo({ static_cast<float>(_cursorPos.x), 
+		static_cast<float>(_cursorPos.y),
+	24,
+	28 });
 
 	if (_key_manager->KeyDown(KEY_LBUTTON))
 	{

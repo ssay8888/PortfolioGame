@@ -5,6 +5,7 @@
 #include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Components/MapObject/Monster/monster.h"
 #include "../../../Managers/EffectManager/effect_manager.h"
+#include "../../../Managers/ItemManager/item_manager.h"
 #include "../../../Managers/KeyManaer/key_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../Managers/MapManager/Map/map_instance.h"
@@ -17,19 +18,19 @@
 #include "../../../Managers/Skins/skin_manager.h"
 #include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/UiManager/ui_manager.h"
-#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
 #include "../../../Managers/UiManager/Inventory/inventory_window.h"
-#include "../../../Managers/ItemManager/item_manager.h"
+#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
 #include "../../MapObject/portal.h"
+#include "../Item/item.h"
 #include "Damage/damage_handler.h"
+#include "Equip/equipment.h"
+#include "Inventory/eqp_inventory.h"
+#include "Inventory/inventory.h"
 #include "MagicAttack/magic_attack.h"
 
 
 #include <time.h>
 
-#include "../Item/item.h"
-#include "Inventory/eqp_inventory.h"
-#include "Inventory/inventory.h"
 
 
 Player::Player(uint8_t layer) :
@@ -52,6 +53,8 @@ Player::~Player()
 	{
 		delete _inventory[i];
 	}
+	delete _eqp_inventory;
+	delete _equipment;
 	SelectObject(_memDC, _old_bitmap);
 	DeleteObject(_bitmap);
 	DeleteDC(_memDC);
@@ -81,6 +84,7 @@ int Player::ReadyGameObject()
 		_inventory[i] = new Inventory();
 	}
 	_eqp_inventory = new EqpInventory();
+	_equipment = new Equipment();
     return 0;
 }
 
@@ -383,6 +387,12 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 		auto shoesParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072001));
 		_eqp_inventory->AddItem(0, std::make_shared<SkinInfo>(SkinInfo(*shoesParts)));
+		auto itemParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1302000));
+		_eqp_inventory->AddItem(1, std::make_shared<SkinInfo>(SkinInfo(*itemParts)));
+		auto coatParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1040002));
+		_eqp_inventory->AddItem(2, std::make_shared<SkinInfo>(SkinInfo(*coatParts)));
+		auto pantsParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060002));
+		_eqp_inventory->AddItem(3, std::make_shared<SkinInfo>(SkinInfo(*pantsParts)));
 	}
 	if (_frame_this != nullptr)
 	{
@@ -414,12 +424,8 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 		snprintf(headStr, 100, "000%05d.img/%s/%d", _skin_id + 12000, frameName.c_str(), maxSize);
 		auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 2000));
 		auto headSkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 12000));
-		auto itemParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1302000));
 		auto hiarParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(30000));
 		auto faceParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(20000));
-		auto coatParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1040002));
-		auto pantsParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060002));
-		auto shoesParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072001));
 		if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
 		{
 			_skin_frames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
@@ -427,14 +433,6 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 			//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
 			//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
 		}
-		_skin_frames.erase(std::to_string(1302000));
-		_skin_frames.insert({ std::to_string(1302000), itemParts->FindBodySkinItem(frameName) });
-		_skin_frames.erase(std::to_string(1040002));
-		_skin_frames.insert({ std::to_string(1040002), coatParts->FindBodySkinItem(frameName) });
-		_skin_frames.erase(std::to_string(1060002));
-		_skin_frames.insert({ std::to_string(1060002), pantsParts->FindBodySkinItem(frameName) });
-		_skin_frames.erase(std::to_string(1072001));
-		_skin_frames.insert({ std::to_string(1072001), shoesParts->FindBodySkinItem(frameName) });
 		_skin_frames.erase(std::to_string(30000));
 		_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem(frameName) });
 		_skin_frames.erase(std::to_string(20000));
@@ -448,10 +446,6 @@ void Player::RenderCharacter(HDC hdc)
 
 	auto bodyFrameIter = _skin_frames.find(_frame_state.c_str());
 	auto headFrameIter = _head_skin_frames.find(_frame_state.c_str());
-	auto ItemFrameIter = _skin_frames.find(std::to_string(1302000));
-	auto Item2FrameIter = _skin_frames.find(std::to_string(1040002));
-	auto Item3FrameIter = _skin_frames.find(std::to_string(1060002));
-	auto Item4FrameIter = _skin_frames.find(std::to_string(1072001));
 	auto hairFrameIter = _skin_frames.find(std::to_string(30000));
 	auto faceFrameItre = _skin_frames.find(std::to_string(20000));
 	if (bodyFrameIter != _skin_frames.end() 
@@ -465,10 +459,6 @@ void Player::RenderCharacter(HDC hdc)
 		_this_frame_max_count = bodyFrameIter->second->GetFrameSize();
 		auto bodyskinItem = bodyFrameIter->second;
 		auto headskinItem = headFrameIter->second;
-		auto bodyItemParts = ItemFrameIter->second;
-		auto bodyItem2Parts = Item2FrameIter->second;
-		auto bodyItem3Parts = Item3FrameIter->second;
-		auto bodyItem4Parts = Item4FrameIter->second;
 		auto bodyHairParts = hairFrameIter->second;
 		auto faceParts = faceFrameItre->second;
 
@@ -489,39 +479,10 @@ void Player::RenderCharacter(HDC hdc)
 				partsFrames.emplace_back(part->second);
 				offsets.emplace_back(part->second);
 			}
-			if (bodyItemParts)
+			for (auto& data : GetEquipment()->GetEquipItems())
 			{
-				auto itemFrames = bodyItemParts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-				auto itemParts = itemFrames->GetParts();
-				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
-				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
-				}
-			}
-			if (bodyItem2Parts)
-			{
-				auto itemFrames = bodyItem2Parts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-				auto itemParts = itemFrames->GetParts();
-				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
-				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
-				}
-			}
-			if (bodyItem3Parts)
-			{
-				auto itemFrames = bodyItem3Parts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-				auto itemParts = itemFrames->GetParts();
-				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
-				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
-				}
-			}
-			if (bodyItem4Parts)
-			{
-				auto itemFrames = bodyItem4Parts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
+				auto item = data.second->FindBodySkinItem(_frame_state);
+				auto itemFrames = item->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 				auto itemParts = itemFrames->GetParts();
 				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
 				{
@@ -1036,6 +997,11 @@ Inventory* Player::GetInventory(::ObjectType::InventoryTabState type)
 EqpInventory* Player::GetEqpInventory()
 {
 	return _eqp_inventory;
+}
+
+Equipment* Player::GetEquipment()
+{
+	return _equipment;
 }
 
 void Player::ApplySkill()

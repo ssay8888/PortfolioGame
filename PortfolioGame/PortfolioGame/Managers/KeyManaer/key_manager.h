@@ -19,6 +19,7 @@
 #define KEY_PAGEDOWN	0x00020000
 #define KEY_I			0x00040000
 #define KEY_Z			0x00080000
+#define KEY_E			0x00100000
 
 
 class KeyManager

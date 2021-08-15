@@ -585,7 +585,8 @@ void Monster::RenderGameObject(HDC hdc)
 
 		BitBlt(_memDC2, 0, 0,
 			image->GetWidth(),
-			image->GetHeight(), hdc,
+			image->GetHeight(), 
+			hdc,
 			static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
 			static_cast<int>(_rect.bottom - image->GetHeight() + ScrollManager::GetScrollY()), SRCCOPY);
 

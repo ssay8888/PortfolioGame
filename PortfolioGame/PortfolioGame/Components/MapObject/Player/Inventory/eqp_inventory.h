@@ -13,6 +13,8 @@ public:
 	std::shared_ptr<SkinInfo>* GetItem();
 
 	void MoveItem(int32_t src, int32_t dst);
+
+	int32_t FindFreeSlot() const;
 private:
 
 	std::shared_ptr<SkinInfo> _item[inventory_slot_max]{ nullptr };

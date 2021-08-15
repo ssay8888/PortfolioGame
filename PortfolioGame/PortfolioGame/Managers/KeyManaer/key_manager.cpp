@@ -25,6 +25,7 @@ void KeyManager::KeyUpdate()
 		return;
 	}
 	m_dwKey = 0;
+
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		m_dwKey |= KEY_LEFT;
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
@@ -35,6 +36,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_DOWN;
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		m_dwKey |= KEY_LBUTTON;
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+		m_dwKey |= KEY_RBUTTON;
 	if (GetAsyncKeyState('A') & 0x8000)
 		m_dwKey |= KEY_A;
 	if (GetAsyncKeyState('B') & 0x8000)
@@ -47,6 +50,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_I;
 	if (GetAsyncKeyState('Z') & 0x8000)
 		m_dwKey |= KEY_Z;
+	if (GetAsyncKeyState('E') & 0x8000)
+		m_dwKey |= KEY_E;
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 		m_dwKey |= KEY_SHIFT;
 	if (GetAsyncKeyState(VK_INSERT) & 0x8000)

@@ -73,8 +73,14 @@ bool BaseWindow::IsShow() const
 
 bool BaseWindow::InMouserSkillWindow() const
 {
+	if (!_show)
+	{
+		return false;
+	}
 	const POINT mouse = InGameScene::GetMouse()->GetPoint();
-	const RECT rc{ static_cast<int>(_info.x), static_cast<int>(_info.y), 175, 289 };
+	const RECT rc{ static_cast<int>(_info.x), static_cast<int>(_info.y),
+		static_cast<int>(_info.x) +_info.cx,
+		static_cast<int>(_info.y) + _info.cy };
 	if (PtInRect(&rc, mouse))
 	{
 		return true;

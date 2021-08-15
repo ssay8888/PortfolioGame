@@ -15,6 +15,9 @@ public:
 	void SetTab(ObjectType::InventoryTabState tab);
 	ObjectType::InventoryTabState GetTab() const;
 	void CharacterInventoryItemRender(HDC hdc);
+
+	std::shared_ptr<Item> PointCollisionItem(POINT pos);
+	std::shared_ptr<SkinInfo> PointCollisionEqp(POINT pos);
 private:
 	void ReadyWindow() override;
 	void UpdateWindow() override;
@@ -24,6 +27,8 @@ private:
 	void SelectItem(POINT mouse);
 	void SelectItemMoveing(HDC hdc);
 	void CancelSelectItem(POINT mouse);
+
+	void EquipMove(POINT mouse);
 
 	ObjectType::InventoryTabState FindTab();
 private:

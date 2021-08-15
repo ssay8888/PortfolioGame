@@ -6,6 +6,7 @@
 #include "../../../Components/game_mouse.h"
 #include "../../../Components/MapObject/Item/item.h"
 #include "../../../Components/MapObject/Player/player.h"
+#include "../../../Components/MapObject/Player/Equip/equipment.h"
 #include "../../../Components/MapObject/Player/Inventory/inventory.h"
 #include "../../../Components/MapObject/Player/Inventory/eqp_inventory.h"
 #include "../../KeyManaer/key_manager.h"
@@ -14,17 +15,17 @@
 #include "../../ScenManager/InGameScene/in_game_scene.h"
 #include "../UiScroll/ui_scroll.h"
 
-InventoryWindow::InventoryWindow(): _this_tab(),
-                                    _select_position(-1),
-                                    _scroll(new UiScroll()),
-                                    _item_distance(34),
-                                    _is_select_item(false)
+InventoryWindow::InventoryWindow() : _this_tab(),
+_select_position(-1),
+_scroll(new UiScroll()),
+_item_distance(34),
+_is_select_item(false)
 {
 }
 
 InventoryWindow::~InventoryWindow()
 {
-	delete _scroll;
+
 }
 
 void InventoryWindow::SetTab(const ObjectType::InventoryTabState tab)
@@ -112,12 +113,92 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 	}
 }
 
+std::shared_ptr<Item> InventoryWindow::PointCollisionItem(POINT pos)
+{
+	auto player = MapManager::GetInstance()->GetPlayer();
+	auto inventory = player->GetInventory(_this_tab);
+	auto item_list = inventory->GetItem();
+	int32_t x = 9;
+	int32_t y = 51;
+	auto paddingsize = 51;
+	for (int i = 0; i < inventory_slot_max; ++i)
+	{
+		if (item_list[i] != nullptr)
+		{
+			auto icon = item_list[i]->GetIcon();
+			if (icon)
+			{
+				if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
+					static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
+				{
+					RECT icon_rect{ static_cast<int>(_info.x + x),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+								static_cast<int>(_info.x + x) + icon->GetWidth(),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + icon->GetHeight() };
+					if (PtInRect(&icon_rect, pos))
+					{
+						return item_list[i];
+					}
+				}
+			}
+		}
+		x += (36 + (36 * (i + 1) % 4));
+		if ((i > 0 && (i + 1) % 4 == 0))
+		{
+			x = 9;
+			y += _item_distance;
+			paddingsize += _item_distance;
+		}
+	}
+	return nullptr;
+}
+
+std::shared_ptr<SkinInfo> InventoryWindow::PointCollisionEqp(POINT pos)
+{
+	auto player = MapManager::GetInstance()->GetPlayer();
+	auto inventory = player->GetEqpInventory();
+	auto item_list = inventory->GetItem();
+	int32_t x = 9;
+	int32_t y = 51;
+	auto paddingsize = 51;
+	for (int i = 0; i < inventory_slot_max; ++i)
+	{
+		if (item_list[i] != nullptr)
+		{
+			auto icon = item_list[i]->GetIcon();
+			if (icon)
+			{
+				if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
+					static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
+				{
+					RECT icon_rect{ static_cast<int>(_info.x + x),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+								static_cast<int>(_info.x + x) + icon->GetWidth(),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + icon->GetHeight() };
+					if (PtInRect(&icon_rect, pos))
+					{
+						return item_list[i];
+					}
+				}
+			}
+		}
+		x += (36 + (36 * (i + 1) % 4));
+		if ((i > 0 && (i + 1) % 4 == 0))
+		{
+			x = 9;
+			y += _item_distance;
+			paddingsize += _item_distance;
+		}
+	}
+	return nullptr;
+}
+
 void InventoryWindow::ReadyWindow()
 {
 	_background = std::make_shared<MyBitmap>(MyBitmap());
 	_background->Insert_Bitmap(_hWnd, L"Client\\Ui\\Inventory.img\\Item.backgrnd.bmp");
 	_info.cx = _background->GetWidth();
-	_info.cy = _background->GetWidth();
+	_info.cy = _background->GetHeight();
 
 	_key_manager = new KeyManager();
 	float x = 2;
@@ -144,29 +225,40 @@ void InventoryWindow::UpdateWindow()
 	_key_manager->KeyUpdate();
 	//BaseUiEvent();
 
-	if (_key_manager->KeyDown(KEY_LBUTTON))
-	{
-		TitleBarClick(mouse);
-		SelectTab(mouse);
-		SetTab(FindTab());
-		SelectItem(mouse);
-	}
-	if (_key_manager->KeyPressing(KEY_LBUTTON))
-	{
-		TitleBarMove(mouse);
-		ScrollBarUp(mouse);
-		ScrollBarDown(mouse);
-	}
-	if (_key_manager->KeyUp(KEY_LBUTTON))
-	{
-		TitleBarUp(mouse);
-		CancelSelectItem(mouse);
-	}
-
 	if (_key_manager->KeyDown(KEY_I))
 	{
 		SetShow(!IsShow());
 	}
+	if (InMouserSkillWindow())
+	{
+		if (_key_manager->KeyDown(KEY_LBUTTON))
+		{
+			TitleBarClick(mouse);
+			SelectTab(mouse);
+			SetTab(FindTab());
+			SelectItem(mouse);
+		}
+		if (_key_manager->KeyPressing(KEY_LBUTTON))
+		{
+			TitleBarMove(mouse);
+			ScrollBarUp(mouse);
+			ScrollBarDown(mouse);
+		}
+		if (_key_manager->KeyUp(KEY_LBUTTON))
+		{
+			TitleBarUp(mouse);
+			CancelSelectItem(mouse);
+		}
+
+		if (_key_manager->KeyDown(KEY_RBUTTON))
+		{
+			if (GetTab() == ObjectType::InventoryTabState::kEqp)
+			{
+				EquipMove(mouse);
+			}
+		}
+	}
+
 }
 
 void InventoryWindow::RenderWinodw(const HDC hdc)
@@ -201,7 +293,8 @@ void InventoryWindow::ScrollBarDown(POINT mouse)
 		static_cast<int>(_info.x + 156),
 		static_cast<int>(_info.y + 242),
 		static_cast<int>(_info.x + 164),
-		static_cast<int>(_info.y) + 250 };
+		static_cast<int>(_info.y + 250) };
+
 	if (PtInRect(&up_button, mouse))
 	{
 		const auto max_distance = _item_distance * 24;
@@ -412,6 +505,53 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 			if (PtInRect(&icon_rect, mouse))
 			{
 				inventory->MoveItem(_select_position, i);
+			}
+		}
+		x += (36 + (36 * (i + 1) % 4));
+		if ((i > 0 && (i + 1) % 4 == 0))
+		{
+			x = 9;
+			y += _item_distance;
+			paddingsize += _item_distance;
+		}
+	}
+
+	_select_item = nullptr;
+	_is_select_item = false;
+	_select_eqp_item = nullptr;
+	_select_position = -1;
+}
+
+void InventoryWindow::EquipMove(POINT mouse)
+{
+	const auto player = MapManager::GetInstance()->GetPlayer();
+	const auto inventory = player->GetEqpInventory();
+	auto equipment = player->GetEquipment();
+	auto item_list = inventory->GetItem();
+	int32_t x = 9;
+	int32_t y = 51;
+	auto paddingsize = 51;
+	for (int i = 0; i < inventory_slot_max; ++i)
+	{
+		if (item_list[i] != nullptr)
+		{
+			auto icon = item_list[i]->GetIcon();
+			if (icon)
+			{
+				if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
+					static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
+				{
+					RECT icon_rect{ static_cast<int>(_info.x + x),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+								static_cast<int>(_info.x + x) + 30,
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 30 };
+					if (PtInRect(&icon_rect, mouse))
+					{
+						equipment->InsertEquipItem(item_list[i]);
+						item_list[i] = nullptr;
+						//inventory->MoveItem(_select_position, i);
+					}
+				}
 			}
 		}
 		x += (36 + (36 * (i + 1) % 4));

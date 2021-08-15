@@ -1,4 +1,5 @@
 #pragma once
+#include "item_info.h"
 class MyBitmap;
 class SkinItem;
 class SkinParts;
@@ -19,17 +20,21 @@ public:
 
 	void SetName(const std::string name);
 	std::string GetName() const;
+	void SetItemId(int32_t item_id);
+	int32_t GetItemId() const;
 
 	void SetIcon(std::shared_ptr<MyBitmap>);
 	void SetIconRaw(std::shared_ptr<MyBitmap>);
 	std::shared_ptr<MyBitmap> GetIcon() const;
 	std::shared_ptr<MyBitmap> GetIconRaw() const;
-
+	ItemInfo& GetItemInfo();
 private:
 	std::map<std::string, SkinItem*> _bodySkinItem;
 	std::map<std::string, SkinItem*> _headSkinItem;
 	std::shared_ptr<MyBitmap> _icon;
 	std::shared_ptr<MyBitmap> _icon_raw;
 	std::string _name;
+	std::int32_t _item_id{};
+	ItemInfo _item_info;
 };
 

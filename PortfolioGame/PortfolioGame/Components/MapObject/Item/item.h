@@ -15,10 +15,10 @@ public:
 	int32_t GetPrice() const;
 	void SetSlotMax(int32_t slot_max);
 	int32_t GetSlotMax() const;
-
-
 	void SetQuantity(int32_t quantity);
 	void GainQuantity(int32_t quantity);
+	void SetItemId(int32_t item_id);
+	int32_t GetItemId() const;
 	int32_t Getquantity() const;
 	void InsertSpec(const std::string& name, int32_t value);
 	std::map<std::string, int32_t>& GetSpec();
@@ -28,6 +28,7 @@ private:
 	int32_t _price;
 	int32_t _slot_max;
 	int32_t _quantity;
+	int32_t _item_id;
 	std::map<std::string, int32_t> _spec;
 };
 

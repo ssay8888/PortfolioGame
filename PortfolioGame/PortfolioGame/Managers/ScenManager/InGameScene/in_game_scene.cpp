@@ -2,6 +2,7 @@
 #include "in_game_scene.h"
 #include "../../Skins/skin_manager.h"
 #include "../../MapManager/map_manager.h"
+#include "../../StringManager/string_manager.h"
 #include "../../UiManager/ui_manager.h"
 #include "../../UiManager/ui_button.h"
 #include "../../EffectManager/effect_manager.h"
@@ -38,7 +39,7 @@ int InGameScene::ReadyScene()
 	ShowCursor(false);
 	UiManager::GetInstance()->ReadyUiManager();
 	EffectManager::GetInstance()->LoadDamageNumber();
-
+	StringManager::GetInstance()->LoadStringInfo();
 	return 0;
 }
 

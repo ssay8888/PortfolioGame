@@ -167,6 +167,7 @@
     <ClInclude Include="Components\MapObject\Monster\MonsterUtility\monster_frame_manager.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_handler.h" />
     <ClInclude Include="Components\MapObject\Player\Damage\damage_info.h" />
+    <ClInclude Include="Components\MapObject\Player\Equip\equipment.h" />
     <ClInclude Include="Components\MapObject\Player\Inventory\eqp_inventory.h" />
     <ClInclude Include="Components\MapObject\Player\Inventory\inventory.h" />
     <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h" />
@@ -192,15 +193,20 @@
     <ClInclude Include="Managers\SkillManager\Skill\skill_effect_image.h" />
     <ClInclude Include="Managers\SkillManager\Skill\skill_info.h" />
     <ClInclude Include="Managers\SkillManager\skill_manager.h" />
+    <ClInclude Include="Managers\Skins\item_info.h" />
     <ClInclude Include="Managers\Skins\skin_frame.h" />
     <ClInclude Include="Managers\Skins\skin_info.h" />
     <ClInclude Include="Managers\Skins\skin_item.h" />
     <ClInclude Include="Managers\Skins\skin_manager.h" />
     <ClInclude Include="Managers\Skins\skin_parts.h" />
+    <ClInclude Include="Managers\StringManager\string_Info.h" />
+    <ClInclude Include="Managers\StringManager\string_manager.h" />
     <ClInclude Include="Managers\UiManager\Base\base_window.h" />
+    <ClInclude Include="Managers\UiManager\Equip\equipment_window.h" />
     <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h" />
     <ClInclude Include="Managers\UiManager\QuickSlot\quick_slot.h" />
     <ClInclude Include="Managers\UiManager\Skill\skill_window.h" />
+    <ClInclude Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.h" />
     <ClInclude Include="Managers\UiManager\UiScroll\ui_scroll.h" />
     <ClInclude Include="Managers\UiManager\ui_button.h" />
     <ClInclude Include="Managers\UiManager\ui_manager.h" />
@@ -261,6 +267,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\Damage\damage_info.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Equip\equipment.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -360,6 +370,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Managers\Skins\item_info.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Managers\Skins\skin_frame.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
@@ -380,7 +394,19 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Managers\StringManager\string_Info.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\StringManager\string_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Managers\UiManager\Base\base_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Equip\equipment_window.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -393,6 +419,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\UiManager\Skill\skill_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
