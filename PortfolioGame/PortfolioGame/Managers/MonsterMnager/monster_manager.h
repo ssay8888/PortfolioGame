@@ -19,7 +19,7 @@ public:
 
 private:
 	void UolFindSetting();
-	void MonsterPartsUolSetting(MonsterParts* part, std::vector<std::shared_ptr<MonsterParts>> move_frame) const;
+	void MonsterPartsUolSetting(std::shared_ptr<MonsterParts> part, std::vector<std::shared_ptr<MonsterParts>> move_frame) const;
 private:
 	std::map<std::string, std::shared_ptr<Monster>> _list_monster;
 };

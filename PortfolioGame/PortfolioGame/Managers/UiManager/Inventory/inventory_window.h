@@ -18,6 +18,7 @@ public:
 
 	std::shared_ptr<Item> PointCollisionItem(POINT pos);
 	std::shared_ptr<SkinInfo> PointCollisionEqp(POINT pos);
+	std::shared_ptr<SkinInfo> PointCollisionEquipment(POINT pos);
 private:
 	void ReadyWindow() override;
 	void UpdateWindow() override;

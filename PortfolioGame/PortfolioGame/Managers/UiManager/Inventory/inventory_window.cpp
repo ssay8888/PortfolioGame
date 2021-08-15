@@ -11,6 +11,8 @@
 #include "../../../Components/MapObject/Player/Inventory/eqp_inventory.h"
 #include "../../KeyManaer/key_manager.h"
 #include "../../MapManager/map_manager.h"
+#include "../../UiManager/Equip/equipment_window.h"
+#include "../../UiManager/ui_manager.h"
 #include "../../Skins/skin_info.h"
 #include "../../ScenManager/InGameScene/in_game_scene.h"
 #include "../UiScroll/ui_scroll.h"
@@ -188,6 +190,35 @@ std::shared_ptr<SkinInfo> InventoryWindow::PointCollisionEqp(POINT pos)
 			x = 9;
 			y += _item_distance;
 			paddingsize += _item_distance;
+		}
+	}
+	return nullptr;
+}
+
+std::shared_ptr<SkinInfo> InventoryWindow::PointCollisionEquipment(POINT pos)
+{
+	auto player = MapManager::GetInstance()->GetPlayer();
+	auto inventory = player->GetEquipment();
+	auto item_list = inventory->GetEquipItems();
+	int32_t x = 9;
+	int32_t y = 51;
+	auto paddingsize = 51;
+	for (auto& data: item_list)
+	{
+		auto icon = data.second->GetIcon();
+		if (icon)
+		{
+			auto ui_eqpmanage = UiManager::GetInstance()->GetEquipmentWindow();
+			auto point = ui_eqpmanage->FindEquipRenderPoint(data.first);
+			RECT icon_rect{
+			 static_cast<int>(ui_eqpmanage->GetInfo().x) + point.x,
+			static_cast<int>(ui_eqpmanage->GetInfo().y) + point.y,
+			static_cast<int>(ui_eqpmanage->GetInfo().x) + point.x + 30,
+			static_cast<int>(ui_eqpmanage->GetInfo().y) + point.y + 30 };
+			if (PtInRect(&icon_rect, pos))
+			{
+				return data.second;
+			}
 		}
 	}
 	return nullptr;

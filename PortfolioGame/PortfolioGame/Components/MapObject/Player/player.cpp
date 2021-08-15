@@ -391,8 +391,19 @@ void Player::UpdateGameObject(const float deltaTime)
 		_eqp_inventory->AddItem(1, std::make_shared<SkinInfo>(SkinInfo(*itemParts)));
 		auto coatParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1040002));
 		_eqp_inventory->AddItem(2, std::make_shared<SkinInfo>(SkinInfo(*coatParts)));
+		auto coatParts2 = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1040000));
+		_eqp_inventory->AddItem(3, std::make_shared<SkinInfo>(SkinInfo(*coatParts2)));
 		auto pantsParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060002));
-		_eqp_inventory->AddItem(3, std::make_shared<SkinInfo>(SkinInfo(*pantsParts)));
+		_eqp_inventory->AddItem(4, std::make_shared<SkinInfo>(SkinInfo(*pantsParts)));
+		auto pantsParts2 = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060000));
+		_eqp_inventory->AddItem(5, std::make_shared<SkinInfo>(SkinInfo(*pantsParts2)));
+		pantsParts2 = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072168));
+		_eqp_inventory->AddItem(6, std::make_shared<SkinInfo>(SkinInfo(*pantsParts2)));
+		for (int i = 0; i < 6; i++)
+		{
+			pantsParts2 = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1382000 + i));
+			_eqp_inventory->AddItem(7 + i, std::make_shared<SkinInfo>(SkinInfo(*pantsParts2)));
+		}
 	}
 	if (_frame_this != nullptr)
 	{

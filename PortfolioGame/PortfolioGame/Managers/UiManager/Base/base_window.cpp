@@ -88,6 +88,11 @@ bool BaseWindow::InMouserSkillWindow() const
 	return false;
 }
 
+Info BaseWindow::GetInfo() const
+{
+	return _info;
+}
+
 void BaseWindow::BackgroundRender(HDC hdc) const
 {
 	_background->RenderBitmapImage(hdc,

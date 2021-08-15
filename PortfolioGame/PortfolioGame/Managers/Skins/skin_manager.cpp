@@ -6,6 +6,7 @@
 #include "skin_frame.h"
 #include "skin_parts.h"
 #include "../../Utility/xml_reader.h"
+#include "../../../Common/Utility/file_manager.h"
 
 SkinManager::SkinManager()
 {
@@ -15,12 +16,71 @@ void SkinManager::LoadSkin()
 {
 	XmlReader::GetInstance().LoadCharecterSkin(2000);
 	XmlReader::GetInstance().LoadCharecterSkin(12000);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Weapon", 1302000);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Hair", 30000);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Face", 20000);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Coat", 1040002);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Pants", 1060002);
-	XmlReader::GetInstance().LoadCharacterItem("Character\\Shoes", 1072001);
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Weapon\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(1, 7);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Weapon", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Hair\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(1, 7);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Hair", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Hair\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(3, 5);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Hair", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Face\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(3, 5);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Face", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Coat\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(1, 7);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Coat", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Pants\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(1, 7);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Pants", std::stoi(fileName));
+		}
+	}
+	for (auto filePath : FileManager::GetInstance()->GetDirFileName(L"Client\\Character\\Shoes\\"))
+	{
+		auto fileName = FileManager::GetInstance()->GetFileName(filePath);
+		if (fileName.find(L".xml") != std::wstring::npos)
+		{
+			fileName = fileName.substr(1, 7);
+			XmlReader::GetInstance().LoadCharacterItem("Character\\Shoes", std::stoi(fileName));
+		}
+	}
+	
 
 	LoadBase();
 

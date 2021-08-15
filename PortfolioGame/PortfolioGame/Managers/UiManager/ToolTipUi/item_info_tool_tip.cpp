@@ -10,6 +10,7 @@
 #include "../../Skins/skin_info.h"
 #include "../../StringManager/string_manager.h"
 #include "../../StringManager/string_Info.h"
+#include "../Equip/equipment_window.h"
 
 ItemInfoToolTip::ItemInfoToolTip() : count(1)
 {
@@ -59,6 +60,17 @@ void ItemInfoToolTip::BaseToolToolTipRender(HDC hdc)
 				SelectEquipRedner(hdc, item);
 				AlphaBlueScreenEquipInfo(hdc, item);
 			}
+		}
+	}
+	if (ui_manager->GetEquipmentWindow()->IsShow())
+	{
+		auto item = ui_manager->GetInventoryWindow()->PointCollisionEquipment(mouse->GetPoint());
+		if (item != nullptr)
+		{
+			AlphaBlueScreenEquipIcon(hdc);
+			AlphaEquipWhiteMiniScreen(hdc);
+			SelectEquipRedner(hdc, item);
+			AlphaBlueScreenEquipInfo(hdc, item);
 		}
 	}
 }

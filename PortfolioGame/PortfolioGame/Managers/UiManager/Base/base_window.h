@@ -19,6 +19,7 @@ public:
 
 
 	bool InMouserSkillWindow() const;
+	Info GetInfo() const;
 protected:
 
 	void BackgroundRender(HDC hdc) const;

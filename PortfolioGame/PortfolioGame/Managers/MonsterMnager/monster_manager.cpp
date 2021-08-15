@@ -39,11 +39,9 @@ void MonsterManager::UolFindSetting()
 		{
 			for (const auto& parts : move_frame.second)
 			{
-				auto part = (*parts);
-
-				if (!part.GetUol().empty())
+				if (!parts->GetUol().empty())
 				{
-					MonsterPartsUolSetting(&part, move_frame.second);
+					MonsterPartsUolSetting(parts, move_frame.second);
 				}
 			}
 		}
@@ -121,7 +119,7 @@ void MonsterManager::UolFindSetting()
 	}
 }
 
-void MonsterManager::MonsterPartsUolSetting(MonsterParts* part, const std::vector<std::shared_ptr<MonsterParts>> move_frame) const
+void MonsterManager::MonsterPartsUolSetting(std::shared_ptr<MonsterParts> part, const std::vector<std::shared_ptr<MonsterParts>> move_frame) const
 {
 	uint16_t overlapCount = StringTools::FindOverlapCount(part->GetUol(), "../");
 	auto splitString = StringTools::SplitString(part->GetUol(), '/');
@@ -143,6 +141,7 @@ void MonsterManager::MonsterPartsUolSetting(MonsterParts* part, const std::vecto
 		part->SetImage(frame->GetImage());
 		part->SetOriginPos(frame->GetOriginPos());
 		part->SetRect(frame->GetRect());
+		part->SetUol("");
 	}
 	else
 	{
