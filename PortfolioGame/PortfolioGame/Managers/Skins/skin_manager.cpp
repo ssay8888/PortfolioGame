@@ -296,8 +296,7 @@ void SkinManager::UolSetting(uint32_t skinId, std::map<std::string, SkinInfo*> i
 				}
 				//auto frame = skinItem->FindFrame(std::stoi(splitString[1]));
 				//auto part = frame->FindParts(splitString[2]);
-
-				std::cout << skinId << " : "  << parts->second->GetUol() << std::endl;
+				
 				parts->second->SetMap(part->GetMap());
 				parts->second->SetBitmap(part->GetBitmap());
 				parts->second->SetDelay(part->GetDelay());

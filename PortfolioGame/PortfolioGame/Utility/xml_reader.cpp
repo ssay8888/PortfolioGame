@@ -11,6 +11,8 @@
 #include "../Components/MapObject/Monster/monster.h"
 #include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
 #include "../Managers/ItemManager/item_manager.h"
+#include "../Managers/DropDataManager/drop_data_manager.h"
+#include "../Managers/DropDataManager/drop_data_info.h"
 #include "../Managers/MapManager/map_manager.h"
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/MonsterMnager/monster_movement.h"
@@ -462,11 +464,13 @@ void XmlReader::LoadMonsters()
 
 				if (err.status == status_ok)
 				{
+					std::string monster_id(doc.select_node("imgdir").node().attribute("name").value());
 					auto data = doc.select_nodes("imgdir/imgdir[@name='info']/*");
 
 					std::shared_ptr<Monster> monster = std::make_shared<Monster>(Monster());
 					monster->SetMonsterCode(path);
 					SetInfoMonster(data, monster);
+					monster->SetMonsterId(std::stoi(monster_id.substr(0, 7)));
 
 					data = doc.select_nodes("imgdir/imgdir");
 					std::shared_ptr<MonsterMovement> movement = std::make_shared<MonsterMovement>(MonsterMovement());
@@ -572,7 +576,6 @@ void XmlReader::LoadMonsters()
 											RECT ragne{};
 											for (auto range_node : info_node)
 											{
-												std::cout << range_node.attribute("name").value() << std::endl;
 												if (!strcmp(range_node.attribute("name").value(), "lt"))
 												{
 													ragne.left = std::stol(range_node.attribute("x").value());
@@ -909,20 +912,23 @@ void XmlReader::LoadItem(std::string path)
 				{
 					if (!strcmp(info.attribute("name").value(), "icon") || !strcmp(info.attribute("name").value(), "iconRaw"))
 					{
-						char bmp_path[150];
-						snprintf(bmp_path, 150, "Client\\Item\\%s\\%08d.info.%s.bmp", 
-							path.c_str(), 
-							item_id, 
-							info.attribute("name").value());
-						auto icon = std::make_shared<MyBitmap>(MyBitmap());
-						icon->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
-						if (!strcmp(info.attribute("name").value(), "icon"))
+						if (!strcmp(info.name(), "canvas"))
 						{
-							item->SetIcon(icon);
-						}
-						else
-						{
-							item->SetIconRaw(icon);
+							char bmp_path[150];
+							snprintf(bmp_path, 150, "Client\\Item\\%s\\%08d.info.%s.bmp",
+								path.c_str(),
+								item_id,
+								info.attribute("name").value());
+							auto icon = std::make_shared<MyBitmap>(MyBitmap());
+							icon->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
+							if (!strcmp(info.attribute("name").value(), "icon"))
+							{
+								item->SetIcon(icon);
+							}
+							else
+							{
+								item->InsertIconRaw(icon);
+							}
 						}
 
 					}
@@ -946,6 +952,70 @@ void XmlReader::LoadItem(std::string path)
 				}
 			}
 			ItemManager::GetInstance()->InsertItem(item_id, item_shared);
+		}
+	}
+}
+
+void XmlReader::LoadSpecialItem(std::string path)
+{
+	pugi::xml_document doc;
+	char buff[255];
+	snprintf(buff, 255, "Client\\Item\\%s.xml", path.c_str()); // Consume\\0200.img.xml
+	const auto err = doc.load_file(buff);
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir");
+
+		for (auto item_code : datas)
+		{
+			int32_t item_id = std::stoi(item_code.node().attribute("name").value());
+			std::shared_ptr<Item> item = std::make_shared<Item>(Item());
+			for (auto iconRaw : item_code.node())
+			{
+				for (auto canvas : iconRaw)
+				{
+					char bmp_path[150];
+					snprintf(bmp_path, 150, "Client\\Item\\%s\\%08d.iconRaw.%s.bmp",
+						path.c_str(),
+						item_id,
+						canvas.attribute("name").value());
+					auto icon = std::make_shared<MyBitmap>(MyBitmap());
+					icon->Insert_Bitmap(_hWnd, StringTools::StringToWString(bmp_path).c_str());
+
+					item->SetItemId(item_id);
+					item->InsertIconRaw(icon);
+				}
+			}
+			ItemManager::GetInstance()->InsertItem(item_id, item);
+		}
+	}
+}
+
+void XmlReader::LoadDropData()
+{
+	pugi::xml_document doc;
+	const auto err = doc.load_file("DropData\\dropdata.xml");
+
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir");
+		for (auto monster_id_node : datas)
+		{
+			int32_t monster_id = std::stoi(monster_id_node.node().attribute("name").value());
+			std::list<std::shared_ptr<DropDataInfo>> list;
+			for (auto info_node : monster_id_node.node())
+			{
+				std::shared_ptr<DropDataInfo> info = std::make_shared<DropDataInfo>(DropDataInfo());
+
+				info->SetItemId(std::stoi(info_node.attribute("item").value()));
+				info->SetRate(std::stoi(info_node.attribute("rate").value()));
+				info->SetMinPrice(std::stoi(info_node.attribute("minprice").value()));
+				info->SetMaxPrice(std::stoi(info_node.attribute("maxprice").value()));
+				list.emplace_back(info);
+			}
+			DropDataManager::GetInstance()->InsertDropData(monster_id, list);
 		}
 	}
 }

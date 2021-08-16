@@ -5,7 +5,9 @@
 #include "../../../Components/MapObject/foot_hold.h"
 #include "../../../Components/MapObject/portal.h"
 #include "../../../Components/MapObject/Monster/monster.h"
+#include "../../../Components/MapObject/Item/item.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../ScrollManager/scroll_manager.h"
 
 MapInstance::MapInstance() :
 	_map_size({}),
@@ -48,6 +50,37 @@ void MapInstance::AddRopeLadder(FootHold* foothold)
 void MapInstance::AddPortal(Portal* portal)
 {
 	_list_portal.push_back(portal);
+}
+
+void MapInstance::AddDropItem(std::pair<POINT, std::shared_ptr<Item>> item)
+{
+	_list_drop_item.emplace_back(item);
+}
+
+std::list<std::pair<POINT, std::shared_ptr<Item>>>& MapInstance::GetListDropItem()
+{
+	return _list_drop_item;
+}
+
+void MapInstance::RenderDropItems(HDC hdc)
+{
+	for (auto& data : this->GetListDropItem())
+	{
+		auto item = data.second;
+		if (item->IsNextFrameDelay())
+		{
+			item->AddFrameNumber();
+			item->SetDelayTick();
+		}
+		auto icons = item->GetIconRaws();
+		auto icon = icons[item->GetFrameNumber() % item->GetIconRaws().size()];
+
+		icon->RenderBitmapImage(hdc,
+			data.first.x + static_cast<int>(ScrollManager::GetScrollX()),
+			data.first.y - icon->GetHeight() + static_cast<int>(ScrollManager::GetScrollY()),
+			icon->GetWidth(),
+			icon->GetHeight());
+	}
 }
 
 std::list<GameObject*>& MapInstance::GetGameObjectList(int32_t layer)

@@ -1,6 +1,8 @@
 #include "../../../../pch.h"
 #include "inventory.h"
 
+#include "../../Item/item.h"
+
 Inventory::Inventory()
 = default;
 
@@ -15,6 +17,20 @@ void Inventory::AddItem(int32_t slot, std::shared_ptr<Item> item)
 		return;
 	}
 
+	for (auto item_shared : _item)
+	{
+		if (item_shared != nullptr)
+		{
+			if (item_shared->GetItemId() == item->GetItemId())
+			{
+				if (item_shared->GetSlotMax() > item_shared->GetQuantity() + item->GetQuantity())
+				{
+					item_shared->GainQuantity(item->GetQuantity());
+					return;
+				}
+			}
+		}
+	}
 	_item[slot] = item;
 
 }

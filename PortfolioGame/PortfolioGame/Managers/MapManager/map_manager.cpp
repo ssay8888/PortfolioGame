@@ -9,12 +9,15 @@
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../Components/MapObject/ani_map_object.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
+#include "../../Managers/DropDataManager/drop_data_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Common/Utility/file_manager.h"
 #include "../ScrollManager/scroll_manager.h"
 #include "../../Utility/xml_reader.h"
 #include "map_manager.h"
+
+#include "../../Components/MapObject/Item/item.h"
 
 MapManager::MapManager() :
 	_map_player(nullptr),
@@ -273,6 +276,8 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 		data->RenderPortal(hdc);
 	}
 
+	now_map->RenderDropItems(hdc);
+
 
 }
 
@@ -493,7 +498,6 @@ bool MapManager::PortalCollsition(GameObject* object, Portal** outPortal)
 		if (IntersectRect(&rc, &portalRect, &objectRect))
 		{
 			*outPortal = portal;
-			std::cout << "Æ÷Å»Ãæµ¹" << std::endl;
 			return true;
 		}
 	}

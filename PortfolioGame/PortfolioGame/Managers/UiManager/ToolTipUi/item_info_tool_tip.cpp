@@ -178,7 +178,7 @@ void ItemInfoToolTip::SelectItemRedner(HDC hdc, const std::shared_ptr<Item> item
 		StringTools::CreateTextOut(hdc,
 			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + (290 >> 1),
 			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 10,
-			string_info.GetName(), 14, RGB(255, 255, 255), L"돋움", true, true);
+			string_info.GetName(), 14, RGB(255, 255, 255), L"돋움", TA_CENTER, true);
 
 		auto desc = string_info.GetDesc();
 
@@ -296,7 +296,7 @@ void ItemInfoToolTip::SelectEquipRedner(HDC hdc, const std::shared_ptr<SkinInfo>
 		StringTools::CreateTextOut(hdc,
 			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + (232 >> 1),
 			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 10,
-			string_info.GetName(), 14, RGB(255, 255, 255), L"돋움", true, true);
+			string_info.GetName(), 14, RGB(255, 255, 255), L"돋움", TA_CENTER, true);
 
 		/*std::wstring list[8]
 		{
@@ -374,7 +374,7 @@ void ItemInfoToolTip::SelectEquipRedner(HDC hdc, const std::shared_ptr<SkinInfo>
 		StringTools::CreateTextOut(hdc,
 			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + (232 >> 1),
 			static_cast<int>(mouse->GetInfo().y + 110) + mouse->GetInfo().cy + 20,
-			L"초보자  전사  마법사  궁수  도적  해적", 12, RGB(255, 255, 255), L"돋움", true);
+			L"초보자  전사  마법사  궁수  도적  해적", 12, RGB(255, 255, 255), L"돋움", TA_CENTER);
 
 		HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
 		HPEN hOldPen = static_cast<HPEN>(SelectObject(hdc, hPen));

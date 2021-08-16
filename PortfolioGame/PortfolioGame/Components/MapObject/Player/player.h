@@ -80,6 +80,7 @@ public:
     int16_t GetEqpMdd() const;
     uint32_t GetMinPower() const;
     uint32_t GetMaxPower() const;
+    uint32_t GetMeso() const;
 
     std::string GetName() const;
 
@@ -110,6 +111,7 @@ public:
     void GainEqpMdd(int16_t value);
     void GainMinPower(uint32_t value);
     void GainMaxPower(uint32_t value);
+    void GainMeso(uint32_t value);
 
     bool IsInvincibility();
     void SetInvincibility();

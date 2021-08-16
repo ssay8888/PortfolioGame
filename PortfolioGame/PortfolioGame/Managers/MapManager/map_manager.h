@@ -1,4 +1,5 @@
 #pragma once
+class Item;
 class GameObject;
 class FootHold;
 class MyBitmap;
@@ -44,7 +45,7 @@ public:
 	void AniObjectImageLoad();
 	std::list<Monster*> MonsterCollision(RECT rect, uint32_t count);
 	std::shared_ptr<MapInstance> GetNowMap();
-
+	
 	void SetPlayer(Player* player);
 	Player* GetPlayer();
 

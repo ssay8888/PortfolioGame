@@ -5,6 +5,7 @@
 #include "../../StringManager/string_manager.h"
 #include "../../UiManager/ui_manager.h"
 #include "../../UiManager/ui_button.h"
+#include "../../DropDataManager/drop_data_manager.h"
 #include "../../EffectManager/effect_manager.h"
 #include "../../MonsterMnager/monster_manager.h"
 #include "../../../Components/game_mouse.h"
@@ -40,6 +41,7 @@ int InGameScene::ReadyScene()
 	UiManager::GetInstance()->ReadyUiManager();
 	EffectManager::GetInstance()->LoadDamageNumber();
 	StringManager::GetInstance()->LoadStringInfo();
+	DropDataManager::GetInstance()->LoadDropData();
 	return 0;
 }
 

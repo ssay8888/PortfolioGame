@@ -100,7 +100,7 @@ void QuickSlot::RenderQuickSlot(HDC hdc)
 				str.append(std::to_wstring(_items[i]->GetQuantity()));
 				StringTools::CreateTextOut(hdc,
 					655 + (34 * (i % 4)) + 17,
-					462, str.c_str(), 10, RGB(0, 0 ,0), L"±¼¸²Ã¼", false, true);
+					462, str.c_str(), 10, RGB(0, 0 ,0), L"±¼¸²Ã¼", TA_TOP, true);
 				break;
 			}
 			case KeyBoard::kControl:
@@ -117,7 +117,7 @@ void QuickSlot::RenderQuickSlot(HDC hdc)
 				str.append(std::to_wstring(_items[i]->GetQuantity()));
 				StringTools::CreateTextOut(hdc,
 					655 + (34 * (i % 4)) + 17,
-					462 + 31, str.c_str(), 10, RGB(0, 0, 0), L"±¼¸²Ã¼", false, true);
+					462 + 31, str.c_str(), 10, RGB(0, 0, 0), L"±¼¸²Ã¼", TA_TOP, true);
 			}
 				break;
 			case KeyBoard::kEnd:

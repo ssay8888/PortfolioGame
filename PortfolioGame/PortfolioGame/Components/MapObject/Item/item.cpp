@@ -3,7 +3,10 @@
 
 Item::Item(): _price(0),
               _slot_max(0),
-              _quantity(0)
+              _quantity(0),
+              _item_id(0),
+              _icon_raw_delay_tick(0),
+              _frame_number(0)
 {
 }
 
@@ -16,9 +19,9 @@ void Item::SetIcon(const std::shared_ptr<MyBitmap> icon)
 	_icon = icon;
 }
 
-void Item::SetIconRaw(const std::shared_ptr<MyBitmap> icon_raw)
+void Item::InsertIconRaw(const std::shared_ptr<MyBitmap> icon_raw)
 {
-	_icon_raw = icon_raw;
+	_icon_raw.emplace_back(icon_raw);
 }
 
 std::shared_ptr<MyBitmap> Item::GetIcon() const
@@ -27,6 +30,11 @@ std::shared_ptr<MyBitmap> Item::GetIcon() const
 }
 
 std::shared_ptr<MyBitmap> Item::GetIconRaw() const
+{
+	return _icon_raw[0];
+}
+
+std::vector<std::shared_ptr<MyBitmap>> Item::GetIconRaws() const
 {
 	return _icon_raw;
 }
@@ -84,4 +92,24 @@ void Item::InsertSpec(const std::string& name, int32_t value)
 std::map<std::string, int32_t>& Item::GetSpec()
 {
 	return _spec;
+}
+
+void Item::SetDelayTick()
+{
+	_icon_raw_delay_tick = GetTickCount64();
+}
+
+bool Item::IsNextFrameDelay() const
+{
+	return GetTickCount64() > _icon_raw_delay_tick + 75;
+}
+
+void Item::AddFrameNumber()
+{
+	++_frame_number;
+}
+
+uint32_t Item::GetFrameNumber() const
+{
+	return _frame_number;
 }

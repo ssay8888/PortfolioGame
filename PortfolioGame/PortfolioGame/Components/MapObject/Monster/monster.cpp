@@ -13,6 +13,7 @@
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../Player/Damage/damage_handler.h"
 #include "AttackInfo/attack_info.h"
+#include "../../../Managers/DropDataManager/drop_data_manager.h"
 
 Monster::Monster() :
 	GameObject(0),
@@ -24,6 +25,7 @@ Monster::Monster() :
 	_die_wait_tick(0),
 	_alpha_value(255),
 	_alpha_tick(0),
+	_is_drop_item(false),
 	_base_state_frame(nullptr),
 	_this_foothold(nullptr),
 	_ai_movement(nullptr),
@@ -64,6 +66,16 @@ void Monster::SetMonsterCode(std::string code)
 std::string Monster::GetMonsteCode() const
 {
 	return _monster_code;
+}
+
+void Monster::SetMonsterId(int32_t code)
+{
+	_monster_id = code;
+}
+
+int32_t Monster::GetMonsterId() const
+{
+	return _monster_id;
 }
 
 void Monster::SetLevel(uint8_t level)
@@ -467,6 +479,14 @@ void Monster::UpdateGameObject(const float deltaTime)
 		{
 			return;
 		}
+
+		if (!_is_drop_item)
+		{
+			DropDataManager::GetInstance()->DropFromMonster(this->GetMonsterId(), this);
+			_is_drop_item = true;
+		}
+
+
 		auto endFrame = _base_state_frame->NextFrame();
 		if (_die_wait_tick == 0) {
 			if (endFrame)

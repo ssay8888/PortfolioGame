@@ -21,6 +21,7 @@
 #define KEY_Z			0x00080000
 #define KEY_E			0x00100000
 #define KEY_S			0x00200000
+#define KEY_F1			0x00400000
 
 
 class KeyManager

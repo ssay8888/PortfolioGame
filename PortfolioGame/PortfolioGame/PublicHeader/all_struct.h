@@ -37,6 +37,7 @@ typedef struct {
 	int16_t eqp_mdd;
 	uint32_t min_power;
 	uint32_t max_power;
+	uint32_t meso;
 	std::string name;
 } ObjectInfo;
 

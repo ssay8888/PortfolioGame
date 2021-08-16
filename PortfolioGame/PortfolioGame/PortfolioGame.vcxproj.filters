@@ -131,6 +131,9 @@
     <Filter Include="Managers\UiManager\Stat">
       <UniqueIdentifier>{f734257e-9267-45c9-8259-91befb890236}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\DropDataManager">
+      <UniqueIdentifier>{23c02ff0-0cce-47ed-b81c-72583aefb335}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -331,6 +334,12 @@
     <ClInclude Include="Managers\UiManager\Stat\stat_window.h">
       <Filter>Managers\UiManager\Stat</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\DropDataManager\drop_data_manager.h">
+      <Filter>Managers\DropDataManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\DropDataManager\drop_data_info.h">
+      <Filter>Managers\DropDataManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -512,6 +521,12 @@
     </ClCompile>
     <ClCompile Include="Managers\UiManager\Stat\stat_window.cpp">
       <Filter>Managers\UiManager\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\DropDataManager\drop_data_manager.cpp">
+      <Filter>Managers\DropDataManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\DropDataManager\drop_data_info.cpp">
+      <Filter>Managers\DropDataManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

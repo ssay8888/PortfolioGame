@@ -44,7 +44,6 @@ std::list<std::wstring> FileManager::GetDirFileName(std::wstring folderPath)
             {
                 std::wstring path(folderPath);
                 path.append(data.cFileName);
-                std::wcout << data.cAlternateFileName << std::endl;
                 list.emplace_back(path);
             }
         } while (FindNextFileW(hFind, &data));

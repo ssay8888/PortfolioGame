@@ -15,6 +15,7 @@ void ItemManager::LoadItem()
 {
 	XmlReader::GetInstance().LoadItem("Consume\\0200.img");
 	XmlReader::GetInstance().LoadItem("Etc\\0400.img");
+	XmlReader::GetInstance().LoadSpecialItem("Special\\0900.img");
 }
 
 void ItemManager::InsertItem(int32_t item_id, std::shared_ptr<Item> item)

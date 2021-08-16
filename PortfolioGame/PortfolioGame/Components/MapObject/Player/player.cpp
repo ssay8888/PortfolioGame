@@ -44,7 +44,7 @@ Player::Player(uint8_t layer) :
                               	13, 4, 4, 4,
                               	0, 0, 0, 0,
                               	0, 0, 0, 0,
-                              	0, 0,"公具龋"}),
+                              	0, 0,0,"公具龋"}),
                               _now_foothold(nullptr),
                               _next_foothold(nullptr),
                               _is_first_foothold(false)
@@ -358,7 +358,49 @@ void Player::UpdateGameObject(const float deltaTime)
 	{
 		this->ChangeFrameState("swingT1");
 	}
+
 	if (keymanager->KeyPressing(KEY_Z))
+	{
+		auto& drop_list = MapManager::GetInstance()->GetNowMap()->GetListDropItem();
+		for (auto drop = drop_list.begin(); drop != drop_list.end(); )
+		{
+			RECT rc;
+			auto icon = drop->second->GetIconRaw();
+			int left = drop->first.x;
+			int top = drop->first.y - icon->GetHeight();
+			int right = left + icon->GetWidth();
+			int bottom = top + icon->GetHeight();
+			RECT item_rect{
+			left,
+			top,
+				right,
+			bottom,
+			};
+
+			if (IntersectRect(&rc, &item_rect, &_rect))
+			{
+				const auto inven_type = InventoryWindow::SearchItemTab(drop->second->GetItemId());
+
+				if (drop->second->GetItemId() < 9000000)
+				{
+					if (inven_type != ::ObjectType::kEnd)
+					{
+						_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), drop->second);
+						drop = drop_list.erase(drop);
+						continue;;
+					}
+				}
+				else if (drop->second->GetItemId() < 9000005)
+				{
+					GainMeso(drop->second->GetQuantity());
+					drop = drop_list.erase(drop);
+					continue;;
+				}
+			}
+			++drop;
+		}
+	}
+	if (keymanager->KeyPressing(KEY_F1))
 	{
 		for (int i = 0; i < 24; ++i)
 		{
@@ -410,7 +452,12 @@ void Player::UpdateGameObject(const float deltaTime)
 			pantsParts2 = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1382000 + i));
 			_eqp_inventory->AddItem(7 + i, std::make_shared<SkinInfo>(SkinInfo(*pantsParts2)));
 		}
+		auto item = ItemManager::GetInstance()->FindCopyItem(9000000);
+		POINT ps = { static_cast<int>(_info.x), static_cast<int>(_rect.bottom) };
+		auto data = std::make_pair(ps, item);
+		MapManager::GetInstance()->GetNowMap()->AddDropItem(data);
 	}
+
 	if (_frame_this != nullptr)
 	{
 		if (_is_rope)
@@ -1549,6 +1596,11 @@ uint32_t Player::GetMaxPower() const
 	return _player_info.max_power;
 }
 
+uint32_t Player::GetMeso() const
+{
+	return _player_info.meso;
+}
+
 
 std::string Player::GetName() const
 {
@@ -1608,6 +1660,11 @@ void Player::GainMinPower(uint32_t value)
 void Player::GainMaxPower(uint32_t value)
 {
 	_player_info.max_power += value;
+}
+
+void Player::GainMeso(uint32_t value)
+{
+	_player_info.meso += value;
 }
 
 DamageHandler* Player::GetDamageHandler() const

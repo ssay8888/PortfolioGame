@@ -19,6 +19,8 @@ public:
 	std::shared_ptr<Item> PointCollisionItem(POINT pos);
 	std::shared_ptr<SkinInfo> PointCollisionEqp(POINT pos);
 	std::shared_ptr<SkinInfo> PointCollisionEquipment(POINT pos);
+
+	static ObjectType::InventoryTabState SearchItemTab(int32_t item_id);
 private:
 	void ReadyWindow() override;
 	void UpdateWindow() override;

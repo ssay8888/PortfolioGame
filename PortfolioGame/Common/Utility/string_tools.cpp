@@ -51,7 +51,7 @@ uint16_t StringTools::FindOverlapCount(std::string text, std::string mod)
 	return count;
 }
 
-void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fontSize, COLORREF color, std::wstring font, bool center, bool bold)
+void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fontSize, COLORREF color, std::wstring font, UINT center, bool bold)
 {
 	SetBkMode(hdc, TRANSPARENT);
 	auto hFont = CreateFont(fontSize, 0, 0, 0, (bold ? FW_BOLD : 0), 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
@@ -59,15 +59,10 @@ void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fon
 	auto OldFont = (HFONT)SelectObject(hdc, hFont);
 	auto old_color = SetTextColor(hdc, color);
 	RECT rc;
-	if (center)
-	{
-		SetTextAlign(hdc, TA_CENTER);
-	}
-	else
-	{
-		SetTextAlign(hdc, TA_TOP);
-	}
+
+	auto align = SetTextAlign(hdc, center);
 	TextOut(hdc, x, y, str.c_str(), lstrlen(str.c_str()));
+	SetTextAlign(hdc, align);
 	SetTextColor(hdc, old_color);
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);

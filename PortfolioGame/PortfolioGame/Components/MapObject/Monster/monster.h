@@ -19,6 +19,8 @@ public:
 
 	void SetMonsterCode(std::string code);
 	std::string GetMonsteCode() const;
+	void SetMonsterId(int32_t code);
+	int32_t GetMonsterId() const;
 
 	void SetLevel(uint8_t level);
 	uint8_t GetLevel() const;
@@ -93,6 +95,7 @@ private:
 	MonsterInfo _monster_info;
 	std::shared_ptr<MonsterMovement> _movement;
 	std::string _monster_code;
+	int32_t _monster_id;
 
 
 
@@ -107,6 +110,7 @@ private:
 	uint64_t _die_wait_tick;
 	uint8_t _alpha_value;
 	uint64_t _alpha_tick;
+	bool _is_drop_item;
 
 	//프레임관련변수
 	MonsterFrameManager* _base_state_frame;

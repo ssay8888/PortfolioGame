@@ -175,6 +175,8 @@
     <ClInclude Include="Components\MapObject\portal.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainGame\main_game.h" />
+    <ClInclude Include="Managers\DropDataManager\drop_data_manager.h" />
+    <ClInclude Include="Managers\DropDataManager\drop_data_info.h" />
     <ClInclude Include="Managers\EffectManager\effect_manager.h" />
     <ClInclude Include="Managers\ItemManager\item_manager.h" />
     <ClInclude Include="Managers\KeyManaer\key_manager.h" />
@@ -298,6 +300,14 @@
     <ClCompile Include="MainGame\main_game.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\DropDataManager\drop_data_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\DropDataManager\drop_data_info.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\EffectManager\effect_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>

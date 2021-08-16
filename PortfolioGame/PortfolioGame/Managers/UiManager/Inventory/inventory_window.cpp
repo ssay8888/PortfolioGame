@@ -225,6 +225,19 @@ std::shared_ptr<SkinInfo> InventoryWindow::PointCollisionEquipment(POINT pos)
 	return nullptr;
 }
 
+ObjectType::InventoryTabState InventoryWindow::SearchItemTab(int32_t item_id)
+{
+	const int item_division = item_id / 1000000;
+	switch (item_division)
+	{
+	case 2:
+		return ObjectType::InventoryTabState::kConsume;
+	case 4:
+		return ObjectType::InventoryTabState::kEtc;
+	}
+	return ObjectType::InventoryTabState::kEnd;
+}
+
 void InventoryWindow::ReadyWindow()
 {
 	_background = std::make_shared<MyBitmap>(MyBitmap());
@@ -318,6 +331,11 @@ void InventoryWindow::RenderWinodw(const HDC hdc)
 	{
 		CharacterInventoryItemRender(hdc);
 		SelectItemMoveing(hdc);
+		const auto player = MapManager::GetInstance()->GetPlayer();
+		std::wstring str;
+		str.append(std::to_wstring(player->GetMeso()));
+		StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 140, static_cast<int>(_info.y) + 268, str, 11, RGB(0, 0, 0), L"µ¸¿ò", TA_RIGHT);
+
 	}
 }
 
@@ -542,6 +560,55 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 						quick_slot->ChangeSlotItem(static_cast<QuickSlot::KeyBoard>(totalNum), _select_item);
 					}
 					++totalNum;
+				}
+			}
+		}
+		else
+		{
+			auto player = MapManager::GetInstance()->GetPlayer();
+			auto inventory = player->GetInventory(_this_tab);
+			auto item_list = inventory->GetItem();
+			int32_t x = 9;
+			int32_t y = 51;
+			auto paddingsize = 51;
+			for (int i = 0; i < inventory_slot_max; ++i)
+			{
+				if (item_list[i] != nullptr)
+				{
+					auto icon = item_list[i]->GetIcon();
+					if (icon)
+					{
+						if (static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() >= static_cast<int>(_info.y) + 51 &&
+							static_cast<int>(_info.y) + paddingsize + _scroll->GetScrollY() <= static_cast<int>(_info.y) + 224)
+						{
+							RECT icon_rect{ static_cast<int>(_info.x + x),
+								static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+										static_cast<int>(_info.x + x) + 30,
+								static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 30 };
+							if (PtInRect(&icon_rect, mouse))
+							{
+								inventory->MoveItem(_select_position, i);
+							}
+						}
+					}
+				}
+				else
+				{
+					RECT icon_rect{ static_cast<int>(_info.x + x),
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+								static_cast<int>(_info.x + x) + 30,
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 30 };
+					if (PtInRect(&icon_rect, mouse))
+					{
+						inventory->MoveItem(_select_position, i);
+					}
+				}
+				x += (36 + (36 * (i + 1) % 4));
+				if ((i > 0 && (i + 1) % 4 == 0))
+				{
+					x = 9;
+					y += _item_distance;
+					paddingsize += _item_distance;
 				}
 			}
 		}
