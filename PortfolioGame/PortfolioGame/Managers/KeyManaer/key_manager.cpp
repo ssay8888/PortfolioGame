@@ -52,6 +52,8 @@ void KeyManager::KeyUpdate()
 		m_dwKey |= KEY_Z;
 	if (GetAsyncKeyState('E') & 0x8000)
 		m_dwKey |= KEY_E;
+	if (GetAsyncKeyState('S') & 0x8000)
+		m_dwKey |= KEY_S;
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 		m_dwKey |= KEY_SHIFT;
 	if (GetAsyncKeyState(VK_INSERT) & 0x8000)

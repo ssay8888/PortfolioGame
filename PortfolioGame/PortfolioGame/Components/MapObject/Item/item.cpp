@@ -71,7 +71,7 @@ int32_t Item::GetItemId() const
 	return _item_id;
 }
 
-int32_t Item::Getquantity() const
+int32_t Item::GetQuantity() const
 {
 	return _quantity;
 }

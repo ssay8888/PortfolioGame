@@ -18,7 +18,7 @@ public:
 	bool IsShow() const;
 
 
-	bool InMouserSkillWindow() const;
+	bool InMouserWindow() const;
 	Info GetInfo() const;
 protected:
 

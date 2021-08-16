@@ -57,7 +57,7 @@ void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fon
 	auto hFont = CreateFont(fontSize, 0, 0, 0, (bold ? FW_BOLD : 0), 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
 		VARIABLE_PITCH | FF_ROMAN | FW_BOLD, font.c_str());
 	auto OldFont = (HFONT)SelectObject(hdc, hFont);
-	SetTextColor(hdc, color);
+	auto old_color = SetTextColor(hdc, color);
 	RECT rc;
 	if (center)
 	{
@@ -68,6 +68,7 @@ void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fon
 		SetTextAlign(hdc, TA_TOP);
 	}
 	TextOut(hdc, x, y, str.c_str(), lstrlen(str.c_str()));
+	SetTextColor(hdc, old_color);
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);
 	DeleteObject(OldFont);

@@ -48,17 +48,46 @@ public:
 
     ObjectInfo* GetPlayerInfo();
 
-    int16_t GetHp() const; 
+    int16_t GetHp() const;
     int16_t GetMaxHp() const;
+    int16_t GetEqpMaxHp() const;
+    int16_t GetTotalMaxHp() const;
     int16_t GetMp() const;
     int16_t GetMaxMp() const;
+    int16_t GetEqpMaxMp() const;
+    int16_t GetTotalMaxMp() const;
     int16_t GetAp() const;
     int16_t GetSp() const;
     int16_t GetJob() const;
+    int16_t GetLevel() const;
+    int32_t GetExp() const;
+    int16_t GetStr() const;
+    int16_t GetDex() const;
+    int16_t GetInt() const;
+    int16_t GetLuk() const;
+    int16_t GetEqpStr() const;
+    int16_t GetEqpDex() const;
+    int16_t GetEqpInt() const;
+    int16_t GetEqpLuk() const;
+    int16_t GetTotalStr() const;
+    int16_t GetTotalDex() const;
+    int16_t GetTotalInt() const;
+    int16_t GetTotalMad() const;
+    int16_t GetTotalLuk() const;
+    int16_t GetEqpPad() const;
+    int16_t GetEqpMad() const;
+    int16_t GetEqpPdd() const;
+    int16_t GetEqpMdd() const;
+    uint32_t GetMinPower() const;
+    uint32_t GetMaxPower() const;
+
+    std::string GetName() const;
 
     void GainHp(int16_t value);
+    void GainEqpMaxHp(int16_t value);
     void GainMaxHp(int16_t value);
     void GainMp(int16_t value);
+    void GainEqpMaxMp(int16_t value);
     void GainMaxMp(int16_t value);
     void SetHp(int16_t value);
     void SetMaxHp(int16_t value);
@@ -66,9 +95,26 @@ public:
     void SetMaxMp(int16_t value);
     void GainAp(int16_t value);
     void GainSp(int16_t value);
+    void GainStr(int16_t value);
+    void GainDex(int16_t value);
+    void GainInt(int16_t value);
+    void GainLuk(int16_t value);
     void SetJob(int16_t value);
+    void GainEqpStr(int16_t value);
+    void GainEqpDex(int16_t value);
+    void GainEqpInt(int16_t value);
+    void GainEqpLuk(int16_t value);
+    void GainEqpPad(int16_t value);
+    void GainEqpMad(int16_t value);
+    void GainEqpPdd(int16_t value);
+    void GainEqpMdd(int16_t value);
+    void GainMinPower(uint32_t value);
+    void GainMaxPower(uint32_t value);
+
     bool IsInvincibility();
     void SetInvincibility();
+    void ResetEqpStat();
+    void RecalcEqpStat();
 
     DamageHandler* GetDamageHandler() const;
     void SettingPushKnockBack(bool fancing);
@@ -151,6 +197,7 @@ private:
     Inventory* _inventory[::ObjectType::InventoryTabState::kEnd];
     EqpInventory* _eqp_inventory;
     Equipment* _equipment;
+    uint64_t _use_item_tick;
 
     uint64_t _portal_tick;
     /// <summary>

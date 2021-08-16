@@ -19,7 +19,7 @@ public:
 	void GainQuantity(int32_t quantity);
 	void SetItemId(int32_t item_id);
 	int32_t GetItemId() const;
-	int32_t Getquantity() const;
+	int32_t GetQuantity() const;
 	void InsertSpec(const std::string& name, int32_t value);
 	std::map<std::string, int32_t>& GetSpec();
 private:

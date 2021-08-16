@@ -39,7 +39,12 @@ Player::Player(uint8_t layer) :
                               _frame_revers(false),
                               _frame_state("stand1"),
                               _frame_tick(0),
-                              _player_info({51, 1000, 432, 1000, 534, 10, 10, 1000, 222, "公具龋"}),
+                              _player_info({51, 1000, 0, 432, 
+								  1000, 0, 534, 100, 100, 1000, 222,
+                              	13, 4, 4, 4,
+                              	0, 0, 0, 0,
+                              	0, 0, 0, 0,
+                              	0, 0,"公具龋"}),
                               _now_foothold(nullptr),
                               _next_foothold(nullptr),
                               _is_first_foothold(false)
@@ -85,6 +90,7 @@ int Player::ReadyGameObject()
 	}
 	_eqp_inventory = new EqpInventory();
 	_equipment = new Equipment();
+	RecalcEqpStat();
     return 0;
 }
 
@@ -971,6 +977,80 @@ void Player::SetInvincibility()
 	_alert_tick = GetTickCount64();
 }
 
+void Player::ResetEqpStat()
+{
+	_player_info.eqp_str = 0;
+	_player_info.eqp_dex = 0;
+	_player_info.eqp_int_ = 0;
+	_player_info.eqp_luk = 0;
+	_player_info.eqp_max_hp = 0;
+	_player_info.eqp_max_mp = 0;
+	_player_info.eqp_pad = 0;
+	_player_info.eqp_mad = 0;
+	_player_info.eqp_pdd = 0;
+	_player_info.eqp_mdd = 0;
+	_player_info.min_power = 0;
+	_player_info.max_power = 0;
+}
+
+void Player::RecalcEqpStat()
+{
+	ResetEqpStat();
+	for (auto& item_pair : _equipment->GetEquipItems())
+	{
+		auto item = item_pair.second;
+		if (item->GetItemInfo().GetIncStr() > 0)
+		{
+			this->GainEqpStr(item->GetItemInfo().GetIncStr());
+		}
+		if (item->GetItemInfo().GetIncDex() > 0)
+		{
+			this->GainEqpDex(item->GetItemInfo().GetIncDex());
+		}
+		if (item->GetItemInfo().GetIncInt() > 0)
+		{
+			this->GainEqpInt(item->GetItemInfo().GetIncInt());
+		}
+		if (item->GetItemInfo().GetIncLuk() > 0)
+		{
+			this->GainEqpLuk(item->GetItemInfo().GetIncLuk());
+		}
+		if (item->GetItemInfo().GetIncPad() > 0)
+		{
+			this->GainEqpPad(item->GetItemInfo().GetIncPad());
+		}
+		if (item->GetItemInfo().GetIncMad() > 0)
+		{
+			this->GainEqpMad(item->GetItemInfo().GetIncMad());
+		}
+		if (item->GetItemInfo().GetIncPdd() > 0)
+		{
+			this->GainEqpPdd(item->GetItemInfo().GetIncPdd());
+		}
+		if (item->GetItemInfo().GetIncMdd() > 0)
+		{
+			this->GainEqpMdd(item->GetItemInfo().GetIncMdd());
+		}
+		if (item->GetItemInfo().GetIncMhp() > 0)
+		{
+			this->GainEqpMaxHp(item->GetItemInfo().GetIncMhp());
+		}
+		if (item->GetItemInfo().GetIncMmp() > 0)
+		{
+			this->GainEqpMaxMp(item->GetItemInfo().GetIncMmp());
+		}
+	}
+
+	uint32_t min_power = 0;
+	min_power += 3 * this->GetTotalStr();
+	min_power += 5 * this->GetEqpPad();
+	this->GainMinPower(min_power);
+	uint32_t max_power = 0;
+	max_power += 6 * this->GetTotalStr();
+	max_power += 10 * this->GetEqpPad();
+	this->GainMaxPower(max_power);
+}
+
 void Player::TakeDamage()
 {
 	auto mosnters = MapManager::GetInstance()->MonsterCollision(_rect, 1);
@@ -1055,63 +1135,92 @@ void Player::ApplySkill()
 
 	if (key_board != QuickSlot::KeyBoard::kEnd)
 	{
-		auto attack_skill = quick_slot->GetSkill(key_board);
-		if (attack_skill == nullptr)
+		const auto attack_skill = quick_slot->GetSkill(key_board);
+		if (attack_skill != nullptr)
 		{
-			return;
-		}
-		auto skill_info = attack_skill->GetSkillInfo()[attack_skill->GetSkillInfo().size() - 1];
+			auto skill_info = attack_skill->GetSkillInfo()[attack_skill->GetSkillInfo().size() - 1];
 
-		RECT rect {
-			static_cast<long>(_info.x) - std::abs(skill_info->GetRect().left),
-			static_cast<long>(_info.y) - std::abs(skill_info->GetRect().top),
-			static_cast<long>(_info.x) + std::abs(skill_info->GetRect().right) ,
-			static_cast<long>(_info.y) + std::abs(skill_info->GetRect().bottom) };
+			RECT rect{
+				static_cast<long>(_info.x) - std::abs(skill_info->GetRect().left),
+				static_cast<long>(_info.y) - std::abs(skill_info->GetRect().top),
+				static_cast<long>(_info.x) + std::abs(skill_info->GetRect().right) ,
+				static_cast<long>(_info.y) + std::abs(skill_info->GetRect().bottom) };
 
-		if (skill_info->GetRect().left == 0 && skill_info->GetRect().right == 0 && skill_info->GetRect().top == 0 && skill_info->GetRect().bottom == 0)
-		{
-			if (GetFacingDirection())
+			if (skill_info->GetRect().left == 0 && skill_info->GetRect().right == 0 && skill_info->GetRect().top == 0 && skill_info->GetRect().bottom == 0)
 			{
-				rect = {
-					static_cast<long>(_info.x),
-					static_cast<long>(_info.y) - 65,
-					static_cast<long>(_info.x) + 200,
-					static_cast<long>(_info.y) + 65 };
+				if (GetFacingDirection())
+				{
+					rect = {
+						static_cast<long>(_info.x),
+						static_cast<long>(_info.y) - 65,
+						static_cast<long>(_info.x) + 200,
+						static_cast<long>(_info.y) + 65 };
+				}
+				else
+				{
+					rect = {
+						static_cast<long>(_info.x) + -200 ,
+						static_cast<long>(_info.y) + -65,
+						static_cast<long>(_info.x),
+						static_cast<long>(_info.y) + 65 };
+				}
+			}
+
+			const auto mosnters = MapManager::GetInstance()->MonsterCollision(rect, skill_info->GetMobCount());
+
+			if (_attack_skill == nullptr)
+			{
+				_attack_skill = new MagicAttack(attack_skill, this, mosnters);
+				_attack_skill->ReadyMagicAttack();
 			}
 			else
 			{
-				rect = {
-					static_cast<long>(_info.x) + -200 ,
-					static_cast<long>(_info.y) + -65,
-					static_cast<long>(_info.x),
-					static_cast<long>(_info.y) + 65 };
+				_attack_skill->ResetSkill(attack_skill, this, mosnters);
 			}
-		}
-
-		const auto mosnters = MapManager::GetInstance()->MonsterCollision(rect, skill_info->GetMobCount());
-
-		if (_attack_skill == nullptr)
-		{
-			_attack_skill = new MagicAttack(attack_skill, this, mosnters);
-			_attack_skill->ReadyMagicAttack();
-		}
-		else
-		{
-			_attack_skill->ResetSkill(attack_skill, this, mosnters);
-		}
-		this->ChangeFrameState("swingO2");
-		UpdateAlertTick();
-		_is_attacking = true;
-		for (auto& monster : mosnters)
-		{
-			std::list<uint32_t> damages;
-			for (int i = 0; i < skill_info->GetAttackCount(); ++i)
+			this->ChangeFrameState("swingO2");
+			UpdateAlertTick();
+			_is_attacking = true;
+			for (auto& monster : mosnters)
 			{
-				damages.emplace_back(rand());
+				std::list<uint32_t> damages;
+				for (int i = 0; i < skill_info->GetAttackCount(); ++i)
+				{
+					damages.emplace_back(rand());
+				}
+				_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
+				monster->ChangeState(Monster::MonsterState::kHit);
+				monster->SetPlayer(this);
 			}
-			_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
-			monster->ChangeState(Monster::MonsterState::kHit);
-			monster->SetPlayer(this);
+			return;
+		}
+		const auto use_item = quick_slot->GetItem(key_board);
+		if (use_item != nullptr && GetTickCount64() > _use_item_tick + 500)
+		{
+			if (use_item->GetQuantity() <= 0)
+			{
+				return;
+			}
+			for (auto& spec : use_item->GetSpec())
+			{
+				if (!strcmp(spec.first.c_str(), "hp"))
+				{
+					this->GainHp(spec.second);
+				}
+				else if (!strcmp(spec.first.c_str(), "mp"))
+				{
+					this->GainMp(spec.second);
+				}
+				else if (!strcmp(spec.first.c_str(), "hpR"))
+				{
+					this->GainMp(this->GetMaxHp() * spec.second / 100);
+				}
+				else if (!strcmp(spec.first.c_str(), "mpR"))
+				{
+					this->GainMp(this->GetMaxMp() * spec.second / 100);
+				}
+			}
+			use_item->GainQuantity(-1);
+			_use_item_tick = GetTickCount64();
 		}
 	}
 }
@@ -1290,6 +1399,16 @@ int16_t Player::GetMaxHp() const
 	return _player_info.max_hp;
 }
 
+int16_t Player::GetEqpMaxHp() const
+{
+	return _player_info.eqp_max_hp;
+}
+
+int16_t Player::GetTotalMaxHp() const
+{
+	return _player_info.max_hp + _player_info.eqp_max_hp;
+}
+
 int16_t Player::GetMp() const
 {
 	return _player_info.mp;
@@ -1298,6 +1417,16 @@ int16_t Player::GetMp() const
 int16_t Player::GetMaxMp() const
 {
 	return _player_info.max_mp;
+}
+
+int16_t Player::GetEqpMaxMp() const
+{
+	return _player_info.eqp_max_mp;
+}
+
+int16_t Player::GetTotalMaxMp() const
+{
+	return _player_info.max_mp + _player_info.eqp_max_mp;
 }
 
 int16_t Player::GetAp() const
@@ -1315,9 +1444,170 @@ int16_t Player::GetJob() const
 	return _player_info.job;
 }
 
+int16_t Player::GetLevel() const
+{
+	return _player_info.level;
+}
+
+int32_t Player::GetExp() const
+{
+	return _player_info.exp;
+}
+
+int16_t Player::GetStr() const
+{
+	return _player_info.str;
+}
+
+int16_t Player::GetDex() const
+{
+	return _player_info.dex;
+}
+
+int16_t Player::GetInt() const
+{
+	return _player_info.int_;
+}
+
+int16_t Player::GetLuk() const
+{
+	return _player_info.luk;
+}
+
+int16_t Player::GetEqpStr() const
+{
+	return _player_info.eqp_str;
+}
+
+int16_t Player::GetEqpDex() const
+{
+	return _player_info.eqp_dex;
+}
+
+int16_t Player::GetEqpInt() const
+{
+	return _player_info.eqp_int_;
+}
+
+int16_t Player::GetEqpLuk() const
+{
+	return _player_info.eqp_luk;
+}
+
+int16_t Player::GetTotalStr() const
+{
+	return _player_info.str + _player_info.eqp_str;
+}
+
+int16_t Player::GetTotalDex() const
+{
+	return _player_info.dex + _player_info.eqp_dex;
+}
+
+int16_t Player::GetTotalInt() const
+{
+	return _player_info.int_ + _player_info.eqp_int_;
+}
+
+int16_t Player::GetTotalMad() const
+{
+	return _player_info.int_ + _player_info.eqp_int_ + _player_info.eqp_mad;
+}
+
+int16_t Player::GetTotalLuk() const
+{
+	return _player_info.luk + _player_info.eqp_luk;
+}
+
+int16_t Player::GetEqpPad() const
+{
+	return _player_info.eqp_pad;
+}
+
+int16_t Player::GetEqpMad() const
+{
+	return _player_info.eqp_mad;
+}
+
+int16_t Player::GetEqpPdd() const
+{
+	return _player_info.eqp_pdd;
+}
+
+int16_t Player::GetEqpMdd() const
+{
+	return _player_info.eqp_mdd;
+}
+
+uint32_t Player::GetMinPower() const
+{
+	return _player_info.min_power;
+}
+
+uint32_t Player::GetMaxPower() const
+{
+	return _player_info.max_power;
+}
+
+
+std::string Player::GetName() const
+{
+	return _player_info.name;
+}
+
 void Player::SetJob(const int16_t value)
 {
 	_player_info.job = value;
+}
+
+void Player::GainEqpStr(int16_t value)
+{
+	_player_info.eqp_str += value;
+}
+
+void Player::GainEqpDex(int16_t value)
+{
+	_player_info.eqp_dex += value;
+}
+
+void Player::GainEqpInt(int16_t value)
+{
+	_player_info.eqp_int_ += value;
+}
+
+void Player::GainEqpLuk(int16_t value)
+{
+	_player_info.eqp_luk += value;
+}
+
+void Player::GainEqpPad(int16_t value)
+{
+	_player_info.eqp_pad += value;
+}
+
+void Player::GainEqpMad(int16_t value)
+{
+	_player_info.eqp_mad += value;
+}
+
+void Player::GainEqpPdd(int16_t value)
+{
+	_player_info.eqp_pdd += value;
+}
+
+void Player::GainEqpMdd(int16_t value)
+{
+	_player_info.eqp_mdd += value;
+}
+
+void Player::GainMinPower(uint32_t value)
+{
+	_player_info.min_power += value;
+}
+
+void Player::GainMaxPower(uint32_t value)
+{
+	_player_info.max_power += value;
 }
 
 DamageHandler* Player::GetDamageHandler() const
@@ -1328,6 +1618,15 @@ DamageHandler* Player::GetDamageHandler() const
 void Player::GainHp(const int16_t value)
 {
 	_player_info.hp += value;
+	if (_player_info.hp  >= _player_info.max_hp)
+	{
+		_player_info.hp = _player_info.max_hp;
+	}
+}
+
+void Player::GainEqpMaxHp(int16_t value)
+{
+	_player_info.eqp_max_hp += value;
 }
 
 void Player::GainMaxHp(const int16_t value)
@@ -1338,6 +1637,15 @@ void Player::GainMaxHp(const int16_t value)
 void Player::GainMp(const int16_t value)
 {
 	_player_info.mp += value;
+	if (_player_info.mp >= _player_info.max_mp)
+	{
+		_player_info.mp = _player_info.max_mp;
+	}
+}
+
+void Player::GainEqpMaxMp(int16_t value)
+{
+	_player_info.eqp_max_mp += value;
 }
 
 void Player::GainMaxMp(const int16_t value)
@@ -1373,4 +1681,24 @@ void Player::GainAp(const int16_t value)
 void Player::GainSp(const int16_t value)
 {
 	_player_info.sp += value;
+}
+
+void Player::GainStr(int16_t value)
+{
+	_player_info.str += value;
+}
+
+void Player::GainDex(int16_t value)
+{
+	_player_info.dex += value;
+}
+
+void Player::GainInt(int16_t value)
+{
+	_player_info.int_ += value;
+}
+
+void Player::GainLuk(int16_t value)
+{
+	_player_info.luk += value;
 }

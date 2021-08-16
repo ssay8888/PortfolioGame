@@ -71,7 +71,7 @@ bool BaseWindow::IsShow() const
 	return _show;
 }
 
-bool BaseWindow::InMouserSkillWindow() const
+bool BaseWindow::InMouserWindow() const
 {
 	if (!_show)
 	{

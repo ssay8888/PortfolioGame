@@ -9,6 +9,7 @@
 #include "Skill/skill_window.h"
 #include "Equip/equipment_window.h"
 #include "ToolTipUi/item_info_tool_tip.h"
+#include "Stat/stat_window.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
@@ -38,6 +39,7 @@ void UiManager::UpdateUiManager()
 	_skill_window->UpdateWindow();
 	_inventory_window->DoUpdateWindow();
 	_equipment_window->DoUpdateWindow();
+	_stat_window->DoUpdateWindow();
 }
 
 void UiManager::ReadyUiManager()
@@ -50,6 +52,8 @@ void UiManager::ReadyUiManager()
 	_inventory_window->DoReadyWindow();
 	_equipment_window = std::make_shared<EquipmentWindow>(EquipmentWindow());
 	_equipment_window->DoReadyWindow();
+	_stat_window = std::make_shared<StatWindow>(StatWindow());
+	_stat_window->DoReadyWindow();
 	_item_info_tool_tip = std::make_shared<ItemInfoToolTip>(ItemInfoToolTip());
 }
 
@@ -73,6 +77,7 @@ void UiManager::RenderUiManager(HDC hdc)
 	_skill_window->RenderWindow(hdc);
 	_inventory_window->DoRenderWindow(hdc);
 	_equipment_window->DoRenderWindow(hdc);
+	_stat_window->DoRenderWindow(hdc);
 	_item_info_tool_tip->BaseToolToolTipRender(hdc);
 }
 
@@ -263,4 +268,9 @@ std::shared_ptr<InventoryWindow> UiManager::GetInventoryWindow() const
 std::shared_ptr<EquipmentWindow> UiManager::GetEquipmentWindow() const
 {
 	return _equipment_window;
+}
+
+std::shared_ptr<StatWindow> UiManager::GetStatWindow() const
+{
+	return _stat_window;
 }

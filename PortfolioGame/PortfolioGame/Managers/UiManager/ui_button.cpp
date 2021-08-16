@@ -8,7 +8,8 @@
 UiButton::UiButton() :
 	_normalImage(nullptr),
 	_overImage(nullptr),
-	_pressedImage(nullptr)
+	_pressedImage(nullptr),
+	_state(ButtonState::kNormal)
 {
 }
 
@@ -30,10 +31,7 @@ void UiButton::ReadyButton(std::wstring buttonPath)
 		_normalImage->Insert_Bitmap(_hWnd, path.c_str());
 		_info.cx = _normalImage->GetWidth();
 		_info.cy = _normalImage->GetHeight();
-		_rect.left = static_cast<int>(_info.x);
-		_rect.top = static_cast<int>(_info.y);
-		_rect.right = static_cast<int>(_info.x) + static_cast<int>(_info.cx);
-		_rect.bottom = static_cast<int>(_info.y) + static_cast<int>(_info.cy);
+		UpdateRect();
 	}
 
 	path.clear();
@@ -51,18 +49,37 @@ void UiButton::ReadyButton(std::wstring buttonPath)
 		_pressedImage = std::make_shared<MyBitmap>(MyBitmap());
 		_pressedImage->Insert_Bitmap(_hWnd, path.c_str());
 	}
+	path.clear();
+	path.append(L"Client\\Ui\\").append(buttonPath).append(L".disabled.0.bmp");
+	if (!_access(StringTools::WStringToString(path.c_str()).c_str(), 0))
+	{
+		_disableImage = std::make_shared<MyBitmap>(MyBitmap());
+		_disableImage->Insert_Bitmap(_hWnd, path.c_str());
+	}
 
-
+	
 }
 
 void UiButton::UpdateButton()
 {
 	GameMouse* gameMouse = InGameScene::GetMouse();
 
+	if (_state == ButtonState::kDisable)
+	{
+		return;
+	}
 	if (PtInRect(&_rect, gameMouse->GetPoint()))
 	{
 		_state = ButtonState::kMouseOver;
-		if (KeyManager::GetInstance()->KeyPressing(KEY_LBUTTON))
+		if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
+		{
+			_state = ButtonState::kPressed;
+			if (_call_back != nullptr)
+			{
+				_call_back();
+			}
+		}
+		else if (KeyManager::GetInstance()->KeyPressing(KEY_LBUTTON))
 		{
 			_state = ButtonState::kPressed;
 		}
@@ -78,6 +95,13 @@ void UiButton::RenderButtonUi(HDC hdc)
 
 	switch (_state)
 	{
+	case UiButton::ButtonState::kDisable:
+		_disableImage->RenderBitmapImage(hdc,
+			static_cast<int>(_info.x),
+			static_cast<int>(_info.y),
+			static_cast<int>(_disableImage->GetWidth()),
+			static_cast<int>(_disableImage->GetHeight()));
+		break;
 	case UiButton::ButtonState::kNormal:
 		_normalImage->RenderBitmapImage(hdc, 
 			static_cast<int>(_info.x), 
@@ -104,17 +128,55 @@ void UiButton::RenderButtonUi(HDC hdc)
 	}
 }
 
+void UiButton::UpdateRect()
+{
+	_rect.left = static_cast<int>(_info.x);
+	_rect.top = static_cast<int>(_info.y);
+	_rect.right = static_cast<int>(_info.x) + static_cast<int>(_info.cx);
+	_rect.bottom = static_cast<int>(_info.y) + static_cast<int>(_info.cy);
+}
+
+UiButton::ButtonState UiButton::GetState() const
+{
+	return _state;
+}
+
 void UiButton::SetObjectPos(Info pos)
 {
 	_info = pos;
+	UpdateRect();
 }
 
 void UiButton::SetObjectPosX(float x)
 {
 	_info.x = x;
+	UpdateRect();
 }
 
 void UiButton::SetObjectPosY(float y)
 {
 	_info.y = y;
+	UpdateRect();
+}
+
+void UiButton::GainObjectPosXY(float x, float y)
+{
+	_info.x += x;
+	_info.y += y;
+	UpdateRect();
+}
+
+void UiButton::SetState(ButtonState state)
+{
+	_state = state;
+}
+
+void UiButton::SetCallBack(std::function<void()> _method)
+{
+	_call_back = _method;
+}
+
+std::function<void()> UiButton::GetCallBack()
+{
+	return _call_back;
 }

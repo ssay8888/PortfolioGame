@@ -318,6 +318,14 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 					{
 						info->GetItemInfo().SetIncMdd(std::stoi(info_node.attribute("value").value()));
 					}
+					else if (!strcmp(info_node.attribute("name").value(), "incMHP"))
+					{
+						info->GetItemInfo().SetIncMhp(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "incMMP"))
+					{
+						info->GetItemInfo().SetIncMmp(std::stoi(info_node.attribute("value").value()));
+					}
 				}
 				auto data = begin.node().select_node("canvas[@name='icon']");
 				if (data)

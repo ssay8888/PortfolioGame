@@ -14,13 +14,29 @@ typedef struct {
 typedef struct {
 	uint8_t level;
 	int16_t max_hp;
+	int16_t eqp_max_hp;
 	int16_t hp;
 	int16_t max_mp;
+	int16_t eqp_max_mp;
 	int16_t mp;
 	int16_t ap;
 	int16_t sp;
 	int32_t exp;
 	int16_t job;
+	int16_t str;
+	int16_t dex;
+	int16_t int_;
+	int16_t luk;
+	int16_t eqp_str;
+	int16_t eqp_dex;
+	int16_t eqp_int_;
+	int16_t eqp_luk;
+	int16_t eqp_pad;
+	int16_t eqp_mad;
+	int16_t eqp_pdd;
+	int16_t eqp_mdd;
+	uint32_t min_power;
+	uint32_t max_power;
 	std::string name;
 } ObjectInfo;
 

@@ -15,6 +15,7 @@
 #include "../../UiManager/ui_manager.h"
 #include "../../Skins/skin_info.h"
 #include "../../ScenManager/InGameScene/in_game_scene.h"
+#include "../QuickSlot/quick_slot.h"
 #include "../UiScroll/ui_scroll.h"
 
 InventoryWindow::InventoryWindow() : _this_tab(),
@@ -99,7 +100,7 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 						icon->GetWidth(),
 						icon->GetHeight());
 					std::wstring quantity;
-					quantity.append(std::to_wstring(item_list[i]->Getquantity()));
+					quantity.append(std::to_wstring(item_list[i]->GetQuantity()));
 					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + x + 20,
 						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 20, quantity, 13, RGB(0, 0, 0));
 				}
@@ -256,11 +257,29 @@ void InventoryWindow::UpdateWindow()
 	_key_manager->KeyUpdate();
 	//BaseUiEvent();
 
+	auto player = MapManager::GetInstance()->GetPlayer();
+
+	for (int i = 0; i < ObjectType::InventoryTabState::kEnd; ++i)
+	{
+		auto inventory = player->GetInventory(static_cast<ObjectType::InventoryTabState>(i));
+		auto item_list = inventory->GetItem();
+		for (int i = 0; i < inventory_slot_max; ++i)
+		{
+			if (item_list[i] != nullptr)
+			{
+				if (item_list[i]->GetQuantity() <= 0)
+				{
+					item_list[i] = nullptr;
+				}
+			}
+		}
+	}
+
 	if (_key_manager->KeyDown(KEY_I))
 	{
 		SetShow(!IsShow());
 	}
-	if (InMouserSkillWindow())
+	if (InMouserWindow())
 	{
 		if (_key_manager->KeyDown(KEY_LBUTTON))
 		{
@@ -275,11 +294,6 @@ void InventoryWindow::UpdateWindow()
 			ScrollBarUp(mouse);
 			ScrollBarDown(mouse);
 		}
-		if (_key_manager->KeyUp(KEY_LBUTTON))
-		{
-			TitleBarUp(mouse);
-			CancelSelectItem(mouse);
-		}
 
 		if (_key_manager->KeyDown(KEY_RBUTTON))
 		{
@@ -290,6 +304,11 @@ void InventoryWindow::UpdateWindow()
 		}
 	}
 
+	if (_key_manager->KeyUp(KEY_LBUTTON))
+	{
+		TitleBarUp(mouse);
+		CancelSelectItem(mouse);
+	}
 }
 
 void InventoryWindow::RenderWinodw(const HDC hdc)
@@ -501,6 +520,38 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 		_select_position = -1;
 		return;
 	}
+	if (_this_tab == ObjectType::InventoryTabState::kConsume)
+	{
+		RECT quick_slot_rect{ 655, 462, 655 + 134, 462 + 63 };
+		if (PtInRect(&quick_slot_rect, mouse))
+		{
+			int totalNum = 0;
+			for (int y = 0; y <= 2; ++y)
+			{
+				for (int x = 0; x < 4; ++x)
+				{
+					RECT slot{
+						655 + (34 * x),
+						462 + (y * 31),
+						655 + (34 * x) + 34,
+						462 + (31 * y) + 31 };
+
+					if (PtInRect(&slot, mouse))
+					{
+						auto quick_slot = UiManager::GetInstance()->GetQuickSlot();
+						quick_slot->ChangeSlotItem(static_cast<QuickSlot::KeyBoard>(totalNum), _select_item);
+					}
+					++totalNum;
+				}
+			}
+		}
+
+		_select_item = nullptr;
+		_is_select_item = false;
+		_select_eqp_item = nullptr;
+		_select_position = -1;
+		return;
+	}
 	auto player = MapManager::GetInstance()->GetPlayer();
 	auto inventory = player->GetInventory(_this_tab);
 	auto item_list = inventory->GetItem();
@@ -580,6 +631,8 @@ void InventoryWindow::EquipMove(POINT mouse)
 					{
 						equipment->InsertEquipItem(item_list[i]);
 						item_list[i] = nullptr;
+						player->RecalcEqpStat();
+						break;
 						//inventory->MoveItem(_select_position, i);
 					}
 				}

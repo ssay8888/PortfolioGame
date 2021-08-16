@@ -54,7 +54,7 @@ void EquipmentWindow::UpdateWindow()
 	{
 		SetShow(!IsShow());
 	}
-	if (InMouserSkillWindow())
+	if (InMouserWindow())
 	{
 		if (_key_manager->KeyDown(KEY_LBUTTON))
 		{
@@ -107,6 +107,7 @@ void EquipmentWindow::UnEquipItem(POINT mouse)
 				auto free_slot = player->GetEqpInventory()->FindFreeSlot();
 				player->GetEqpInventory()->AddItem(free_slot, item);
 				player->GetEquipment()->RemoveItem(pos_enum);
+				player->RecalcEqpStat();
 				return;
 			}
 		}

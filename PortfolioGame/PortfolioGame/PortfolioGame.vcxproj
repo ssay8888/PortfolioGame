@@ -206,6 +206,7 @@
     <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h" />
     <ClInclude Include="Managers\UiManager\QuickSlot\quick_slot.h" />
     <ClInclude Include="Managers\UiManager\Skill\skill_window.h" />
+    <ClInclude Include="Managers\UiManager\Stat\stat_window.h" />
     <ClInclude Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.h" />
     <ClInclude Include="Managers\UiManager\UiScroll\ui_scroll.h" />
     <ClInclude Include="Managers\UiManager\ui_button.h" />
@@ -419,6 +420,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\UiManager\Skill\skill_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Stat\stat_window.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>

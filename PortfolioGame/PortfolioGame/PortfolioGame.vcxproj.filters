@@ -128,6 +128,9 @@
     <Filter Include="Managers\StringManager">
       <UniqueIdentifier>{ae1dba16-ec86-4f86-86dc-c4805e8aa4fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\UiManager\Stat">
+      <UniqueIdentifier>{f734257e-9267-45c9-8259-91befb890236}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -325,6 +328,9 @@
     <ClInclude Include="Managers\Skins\item_info.h">
       <Filter>Managers\Skins</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\UiManager\Stat\stat_window.h">
+      <Filter>Managers\UiManager\Stat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -503,6 +509,9 @@
     </ClCompile>
     <ClCompile Include="Managers\Skins\item_info.cpp">
       <Filter>Managers\Skins</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Stat\stat_window.cpp">
+      <Filter>Managers\UiManager\Stat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
