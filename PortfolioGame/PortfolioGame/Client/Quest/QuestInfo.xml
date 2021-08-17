@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="Info">
-    <quest name="say">
-        <quest name="0" value="ë‹¤ìŒìœ¼ë¡œ ë„˜ê²¨ë³¼ê¹Œìš”" type="0"/>
-        <quest name="1" value="ë˜ë‹¤ìŒì€ìš”?" type="0"/>
-        <quest name="2" value="ìˆ˜ë½í• ëž˜ìš”?" type="2"/>
+<quest name="Info">
+    <quest name="2103">
+        <quest name="say">
+            <quest name="0" value="´ÙÀ½À¸·Î ³Ñ°Üº¼±î¿ä" type="0"/>
+            <quest name="1" value="¶Ç´ÙÀ½Àº¿ä?" type="0"/>
+            <quest name="2" value="¼ö¶ôÇÒ·¡¿ä?" type="2"/>
+        </quest>
+        <quest name="success">
+            <quest name="0" value="º¸»óÀ» È¹µæÇß¾î¿ä~!" type="1"/>
+        </quest>
+        <quest name="ing">
+            <quest name="0" value="Àç·á¸¦ ¸ð¾Æ¿Í¿ä." type="1"/>
+        </quest>
+        <quest name="check">
+            <quest item="4000000" price="5" />
+        </quest>
+        <quest name="reward">
+            <quest name="exp" item="0" value="500" />
+            <quest name="meso" item="0" value="5000000" />
+            <quest name="item" item="2000001" value="50" />
+        </quest>
     </quest>
-    <quest name="check">
-        <quest name="" />
-    </quest>
-</imgdir>
+</quest>

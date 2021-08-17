@@ -13,6 +13,7 @@
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/SkillManager/skill_manager.h"
 #include "../Managers/ItemManager/item_manager.h"
+#include "../Managers/NpcManager/npc_manager.h"
 #include <fstream>
 #include <algorithm>
 #include "../Managers/NpcManager/npc_manager.h"
@@ -68,6 +69,11 @@ void MainGame::UpdateGame()
 	KeyManager::GetInstance()->KeyUpdate();
 
 	SceneManager::GetInstance()->UpdateSceneManager();
+	if (GetTickCount64() > NpcManager::GetInstance()->GetQuestIconTick()  + 150)
+	{
+		NpcManager::GetInstance()->GainQuestFrameNumber(1);
+		NpcManager::GetInstance()->SetQuestIconTick();
+	}
 	ScrollManager::ScrollLock();
 }
 

@@ -25,6 +25,7 @@ private:
 	void RenderGameObject(HDC hdc) override;
 	void LateUpdateGameObject() override;
 
+	void QuestCheckRender(HDC hdc);
 private:
 	int32_t _npc_id;
 	std::string _npc_path;

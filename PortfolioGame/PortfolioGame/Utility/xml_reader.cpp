@@ -30,6 +30,11 @@
 #include "../Managers/StringManager/string_Info.h"
 #include "../Managers/StringManager/string_manager.h"
 #include "../Managers/NpcManager/npc_manager.h"
+#include "../Managers/QuestManager/quest_manager.h"
+#include "../Managers/QuestManager/Quest/quest_info.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_say.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_check.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_reward.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -1069,6 +1074,81 @@ void XmlReader::LoadNpc()
 					NpcManager::GetInstance()->InsertNpc(npc->GetNpcPath(), npc);
 				}
 			}
+		}
+	}
+}
+
+void XmlReader::LoadQuest()
+{
+	pugi::xml_document doc;
+	const auto err = doc.load_file("Client\\Quest\\QuestInfo.xml");
+
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("quest/quest");
+		std::shared_ptr<QuestInfo> quest_info = std::make_shared<QuestInfo>(QuestInfo());
+		for (auto npcid_node: datas)
+		{
+			quest_info->SetNpcId(std::stoi(npcid_node.node().attribute("name").value()));
+			for (auto info_node : npcid_node.node())
+			{
+				if (!strcmp(info_node.attribute("name").value(), "say"))
+				{
+					for (auto say_node : info_node)
+					{
+						std::shared_ptr<QuestSay> say = std::make_shared<QuestSay>(QuestSay());
+						say->SetId(std::stoi(say_node.attribute("name").value()));
+						say->SetSay(say_node.attribute("value").value());
+						say->SetType(static_cast<ObjectType::NpcTalkType>(std::stoi(say_node.attribute("type").value())));
+						quest_info->InsertSay(say);
+					}
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "success"))
+				{
+					for (auto say_node : info_node)
+					{
+						std::shared_ptr<QuestSay> say = std::make_shared<QuestSay>(QuestSay());
+						say->SetId(std::stoi(say_node.attribute("name").value()));
+						say->SetSay(say_node.attribute("value").value());
+						say->SetType(static_cast<ObjectType::NpcTalkType>(std::stoi(say_node.attribute("type").value())));
+						quest_info->InsertSuccess(say);
+					}
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "ing"))
+				{
+					for (auto say_node : info_node)
+					{
+						std::shared_ptr<QuestSay> say = std::make_shared<QuestSay>(QuestSay());
+						say->SetId(std::stoi(say_node.attribute("name").value()));
+						say->SetSay(say_node.attribute("value").value());
+						say->SetType(static_cast<ObjectType::NpcTalkType>(std::stoi(say_node.attribute("type").value())));
+						quest_info->InsertIngSay(say);
+					}
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "check"))
+				{
+					for (auto check_node : info_node)
+					{
+						std::shared_ptr<QuestCheck> check = std::make_shared<QuestCheck>(QuestCheck());
+						check->SetItemId(std::stoi(check_node.attribute("item").value()));
+						check->SetPrice(std::stoi(check_node.attribute("price").value()));
+						quest_info->InsertCheck(check);
+					}
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "reward"))
+				{
+					for (auto check_node : info_node)
+					{
+						std::shared_ptr<QuestReward> reward = std::make_shared<QuestReward>(QuestReward());
+						reward->SetRewardType(check_node.attribute("name").value());
+						reward->SetItemId(std::stoi(check_node.attribute("item").value()));
+						reward->SetValue(std::stoi(check_node.attribute("value").value()));
+						quest_info->InsertReward(reward);
+					}
+				}
+			}
+			QuestManager::GetInstance()->InsertQuestInfo(quest_info);
 		}
 	}
 }

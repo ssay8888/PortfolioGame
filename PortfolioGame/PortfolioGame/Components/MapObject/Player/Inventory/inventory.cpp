@@ -69,3 +69,16 @@ int32_t Inventory::FindFreeSlot() const
 	}
 	return -1;
 }
+
+int32_t Inventory::TotalQuantity(int32_t item_id)
+{
+	int count = 0;
+	for (int i = 0; i < inventory_slot_max; ++i)
+	{
+		if (_item[i] != nullptr && _item[i]->GetItemId() == item_id)
+		{
+			count += _item[i]->GetQuantity();
+		}
+	}
+	return count;
+}

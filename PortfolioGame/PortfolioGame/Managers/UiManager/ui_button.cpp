@@ -97,32 +97,44 @@ void UiButton::RenderButtonUi(HDC hdc)
 	switch (_state)
 	{
 	case UiButton::ButtonState::kDisable:
-		_disableImage->RenderBitmapImage(hdc,
-			static_cast<int>(_info.x),
-			static_cast<int>(_info.y),
-			static_cast<int>(_disableImage->GetWidth()),
-			static_cast<int>(_disableImage->GetHeight()));
+		if (_disableImage != nullptr)
+		{
+			_disableImage->RenderBitmapImage(hdc,
+				static_cast<int>(_info.x),
+				static_cast<int>(_info.y),
+				static_cast<int>(_disableImage->GetWidth()),
+				static_cast<int>(_disableImage->GetHeight()));
+		}
 		break;
 	case UiButton::ButtonState::kNormal:
-		_normalImage->RenderBitmapImage(hdc, 
-			static_cast<int>(_info.x), 
-			static_cast<int>(_info.y), 
-			static_cast<int>(_normalImage->GetWidth()), 
-			static_cast<int>(_normalImage->GetHeight()));
+		if (_normalImage != nullptr)
+		{
+			_normalImage->RenderBitmapImage(hdc,
+				static_cast<int>(_info.x),
+				static_cast<int>(_info.y),
+				static_cast<int>(_normalImage->GetWidth()),
+				static_cast<int>(_normalImage->GetHeight()));
+		}
 		break;
 	case UiButton::ButtonState::kMouseOver:
-		_overImage->RenderBitmapImage(hdc, 
-			static_cast<int>(_info.x), 
-			static_cast<int>(_info.y),
-			static_cast<int>(_normalImage->GetWidth()),
-			static_cast<int>(_normalImage->GetHeight()));
+		if (_overImage != nullptr)
+		{
+			_overImage->RenderBitmapImage(hdc,
+				static_cast<int>(_info.x),
+				static_cast<int>(_info.y),
+				static_cast<int>(_normalImage->GetWidth()),
+				static_cast<int>(_normalImage->GetHeight()));
+		}
 		break;
 	case UiButton::ButtonState::kPressed:
-		_pressedImage->RenderBitmapImage(hdc, 
-			static_cast<int>(_info.x), 
-			static_cast<int>(_info.y),
-			static_cast<int>(_normalImage->GetWidth()),
-			static_cast<int>(_normalImage->GetHeight()));
+		if (_pressedImage != nullptr)
+		{
+			_pressedImage->RenderBitmapImage(hdc,
+				static_cast<int>(_info.x),
+				static_cast<int>(_info.y),
+				static_cast<int>(_normalImage->GetWidth()),
+				static_cast<int>(_normalImage->GetHeight()));
+		}
 		break;
 	default:
 		break;

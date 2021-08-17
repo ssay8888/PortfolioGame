@@ -17,8 +17,22 @@ public:
 	NpcTalkWindow();
 	~NpcTalkWindow();
 
+	void SetNpc(Npc*);
+	Npc* GetNpc() const;
+
+	void SetTalkType(ObjectType::NpcTalkType type);
+	ObjectType::NpcTalkType GetTalkType() const;
+
+	void AddSayNumber(int32_t value);
+	void AddSuccessNumber(int32_t value);
+
+	bool CheckQuest();
+	
 public:
+	static void NextNpcTalk();
+	static void AcceptNpcTalk();
 	static void CancelNpcTalk();
+	static void OkNpcTalk();
 private:
 	void ReadyWindow() override;
 	void UpdateWindow() override;
@@ -26,7 +40,10 @@ private:
 
 private:
 	std::map<NpcTalkButton, std::shared_ptr<UiButton>> _list_button;
-	std::shared_ptr<Npc> _this_npc;
+	Npc* _this_npc;
 	ObjectType::NpcTalkType _talk_type;
+
+	int32_t _say_number;
+	int32_t _success_number;
 };
 

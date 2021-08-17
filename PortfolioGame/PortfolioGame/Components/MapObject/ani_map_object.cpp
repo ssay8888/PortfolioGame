@@ -4,7 +4,9 @@
 #include "../../Managers/ScrollManager/scroll_manager.h"
 
 AniMapObject::AniMapObject() :
-	GameObject(5)
+	GameObject(5),
+	_frame_number(0),
+	_frame_tick(0)
 {
 }
 

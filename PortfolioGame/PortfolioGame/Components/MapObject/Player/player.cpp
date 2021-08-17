@@ -20,6 +20,10 @@
 #include "../../../Managers/UiManager/ui_manager.h"
 #include "../../../Managers/UiManager/Inventory/inventory_window.h"
 #include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../../Managers/UiManager/NpcTalk/npc_talk_window.h"
+#include "../../../Managers/QuestManager/quest_manager.h"
+#include "../Npc/npc.h"
+
 #include "../../../Managers/ScenManager/InGameScene/in_game_scene.h"
 
 #include "../../MapObject/portal.h"
@@ -34,6 +38,7 @@
 #include <time.h>
 
 #include "../../game_mouse.h"
+#include "../../../Managers/QuestManager/Quest/quest_info.h"
 
 
 Player::Player(uint8_t layer) :
@@ -410,7 +415,11 @@ void Player::UpdateGameObject(const float deltaTime)
 		
 		if (!npc_list.empty())
 		{
-			std::cout << "엔피시 충돌 !" << std::endl;
+			auto npc_talk = UiManager::GetInstance()->GetNpcTalkWindow();
+			auto quest_info = QuestManager::GetInstance()->FindQuestInfo((*npc_list.begin())->GetNpcId());
+			npc_talk->SetShow(true);
+			npc_talk->SetNpc((*npc_list.begin()));
+			_select_npc = quest_info;
 		}
 	}
 	if (keymanager->KeyPressing(KEY_F1))
@@ -1623,9 +1632,59 @@ std::string Player::GetName() const
 	return _player_info.name;
 }
 
+std::shared_ptr<QuestInfo> Player::FindClearQuest(int32_t npc_id)
+{
+	auto data = _clear_quest_list.find(npc_id);
+	if (data != _clear_quest_list.end())
+	{
+		return data->second;
+	}
+	return nullptr;
+}
+
+void Player::InsertClearQuest(std::shared_ptr<QuestInfo> info)
+{
+	_clear_quest_list.insert(std::make_pair(info->GetNpcId(), info));
+}
+
+void Player::RemoveClearQuest(std::shared_ptr<QuestInfo> info)
+{
+	_clear_quest_list.erase(info->GetNpcId());
+}
+
+void Player::RemoveIngQuest(std::shared_ptr<QuestInfo> info)
+{
+	_ing_quest_list.erase(info->GetNpcId());
+}
+
+std::shared_ptr<QuestInfo> Player::FindIngQuest(int32_t npc_id)
+{
+	auto data = _ing_quest_list.find(npc_id);
+	if (data != _ing_quest_list.end())
+	{
+		return data->second;
+	}
+	return nullptr;
+}
+
+void Player::InsertIngQuest(std::shared_ptr<QuestInfo> info)
+{
+	_ing_quest_list.insert(std::make_pair(info->GetNpcId(), info));
+}
+
 void Player::SetJob(const int16_t value)
 {
 	_player_info.job = value;
+}
+
+void Player::GainLevel(int16_t value)
+{
+	_player_info.level += value;
+}
+
+void Player::GainExp(int16_t value)
+{
+	_player_info.exp += value;
 }
 
 void Player::GainEqpStr(int16_t value)

@@ -1,6 +1,8 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class Npc;
+class QuestInfo;
 class Equipment;
 class EqpInventory;
 class Inventory;
@@ -81,8 +83,13 @@ public:
     uint32_t GetMinPower() const;
     uint32_t GetMaxPower() const;
     uint32_t GetMeso() const;
-
     std::string GetName() const;
+    std::shared_ptr<QuestInfo> FindClearQuest(int32_t npc_id);
+    void InsertClearQuest(std::shared_ptr<QuestInfo> info);
+    void RemoveClearQuest(std::shared_ptr<QuestInfo> info);
+    std::shared_ptr<QuestInfo> FindIngQuest(int32_t npc_id);
+    void InsertIngQuest(std::shared_ptr<QuestInfo> info);
+    void RemoveIngQuest(std::shared_ptr<QuestInfo> info);
 
     void GainHp(int16_t value);
     void GainEqpMaxHp(int16_t value);
@@ -101,6 +108,8 @@ public:
     void GainInt(int16_t value);
     void GainLuk(int16_t value);
     void SetJob(int16_t value);
+    void GainLevel(int16_t value);
+    void GainExp(int16_t value);
     void GainEqpStr(int16_t value);
     void GainEqpDex(int16_t value);
     void GainEqpInt(int16_t value);
@@ -202,6 +211,13 @@ private:
     uint64_t _use_item_tick;
 
     uint64_t _portal_tick;
+
+    /// <summary>
+    /// 퀘스트 관련
+    /// </summary>
+    std::map<int32_t, std::shared_ptr<QuestInfo>> _clear_quest_list;
+    std::map<int32_t, std::shared_ptr<QuestInfo>> _ing_quest_list;
+    std::shared_ptr<QuestInfo> _select_npc;
     /// <summary>
     /// 기타
     /// </summary>

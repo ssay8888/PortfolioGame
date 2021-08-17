@@ -1,7 +1,8 @@
 #include "../../../../pch.h"
 #include "quest_reward.h"
 
-QuestReward::QuestReward()
+QuestReward::QuestReward(): _item_id(0),
+                            _value(0)
 {
 }
 
