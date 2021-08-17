@@ -5,11 +5,12 @@
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../ScenManager/InGameScene/in_game_scene.h"
 
-UiButton::UiButton() :
+UiButton::UiButton(KeyManager* key) :
 	_normalImage(nullptr),
 	_overImage(nullptr),
 	_pressedImage(nullptr),
-	_state(ButtonState::kNormal)
+	_state(ButtonState::kNormal),
+	_key_manager(key)
 {
 }
 
@@ -71,7 +72,7 @@ void UiButton::UpdateButton()
 	if (PtInRect(&_rect, gameMouse->GetPoint()))
 	{
 		_state = ButtonState::kMouseOver;
-		if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
+		if (_key_manager->KeyDown(KEY_LBUTTON))
 		{
 			_state = ButtonState::kPressed;
 			if (_call_back != nullptr)
@@ -79,7 +80,7 @@ void UiButton::UpdateButton()
 				_call_back();
 			}
 		}
-		else if (KeyManager::GetInstance()->KeyPressing(KEY_LBUTTON))
+		else if (_key_manager->KeyPressing(KEY_LBUTTON))
 		{
 			_state = ButtonState::kPressed;
 		}
@@ -169,6 +170,26 @@ void UiButton::GainObjectPosXY(float x, float y)
 void UiButton::SetState(ButtonState state)
 {
 	_state = state;
+}
+
+float UiButton::GetObjectPosX() const
+{
+	return _info.x;
+}
+
+float UiButton::GetObjectPosY() const
+{
+	return _info.y;
+}
+
+int UiButton::GetWidth() const
+{
+	return _normalImage->GetWidth();
+}
+
+int UiButton::GetHeight() const
+{
+	return _normalImage->GetHeight();
 }
 
 void UiButton::SetCallBack(std::function<void()> _method)

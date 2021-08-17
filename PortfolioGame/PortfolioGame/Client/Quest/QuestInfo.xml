@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<imgdir name="Info">
+    <quest name="say">
+        <quest name="0" value="다음으로 넘겨볼까요" type="0"/>
+        <quest name="1" value="또다음은요?" type="0"/>
+        <quest name="2" value="수락할래요?" type="2"/>
+    </quest>
+    <quest name="check">
+        <quest name="" />
+    </quest>
+</imgdir>

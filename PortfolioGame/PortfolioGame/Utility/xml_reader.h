@@ -48,6 +48,9 @@ public:
 	void LoadSpecialItem(std::string path);
 	void LoadDropData();
 
+	//엔피시 메소드
+	void LoadNpc();
+
 	//스트링 메소드
 	void LoadItemString(std::string path, const std::string node_path);
 };

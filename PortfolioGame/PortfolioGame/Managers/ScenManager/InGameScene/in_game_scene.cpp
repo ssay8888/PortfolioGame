@@ -9,6 +9,8 @@
 #include "../../EffectManager/effect_manager.h"
 #include "../../MonsterMnager/monster_manager.h"
 #include "../../../Components/game_mouse.h"
+#include "../../../Components/MapObject/Player/player.h"
+#include "../../NpcManager/npc_manager.h"
 
 GameMouse* InGameScene::_mouse = nullptr;
 
@@ -31,7 +33,8 @@ int InGameScene::ReadyScene()
 	{
 		object_manager->LoadMapData(i);
 	}
-	object_manager->ChangeMap(0, {0, 0});
+	auto player = MapManager::GetInstance()->GetPlayer();
+	object_manager->ChangeMap(0, { player->GetInfo().y, player->GetInfo().y });
 	RECT rc{ 0, 0, static_cast<LONG>(800), static_cast<LONG>(600) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	SetWindowPos(_hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, 0);

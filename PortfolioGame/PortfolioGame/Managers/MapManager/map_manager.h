@@ -8,6 +8,7 @@ class Monster;
 class MapInstance;
 class AniMapObject;
 class Portal;
+class Npc;
 class MapManager
 {
 	MapManager();
@@ -44,6 +45,8 @@ public:
 	void MapObjectImageLoad();
 	void AniObjectImageLoad();
 	std::list<Monster*> MonsterCollision(RECT rect, uint32_t count);
+	std::list<Npc*> NpcCollision(RECT rect);
+	std::list<Npc*> NpcCollision(POINT pos);
 	std::shared_ptr<MapInstance> GetNowMap();
 	
 	void SetPlayer(Player* player);

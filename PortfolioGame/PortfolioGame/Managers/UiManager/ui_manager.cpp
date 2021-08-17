@@ -3,6 +3,7 @@
 #include "ui_button.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../Components/MapObject/Player/player.h"
+#include "../KeyManaer/key_manager.h"
 #include "../MapManager/map_manager.h"
 #include "Inventory/inventory_window.h"
 #include "QuickSlot/quick_slot.h"
@@ -26,6 +27,23 @@ UiManager* UiManager::GetInstance()
 	return &instance;
 }
 
+void UiManager::ReadyUiManager()
+{
+	ButtonUiLoad();
+	PlayerInfoUiLoad();
+	_skill_window = std::make_shared<SkillWindow>(SkillWindow());
+	_skill_window->ReadyWindow();
+	_inventory_window = std::make_shared<InventoryWindow>(InventoryWindow());
+	_inventory_window->DoReadyWindow();
+	_equipment_window = std::make_shared<EquipmentWindow>(EquipmentWindow());
+	_equipment_window->DoReadyWindow();
+	_stat_window = std::make_shared<StatWindow>(StatWindow());
+	_stat_window->DoReadyWindow();
+	_item_info_tool_tip = std::make_shared<ItemInfoToolTip>(ItemInfoToolTip());
+	_npc_talk_window = std::make_shared<NpcTalkWindow>(NpcTalkWindow());
+	_npc_talk_window->DoReadyWindow();
+}
+
 void UiManager::UpdateUiManager()
 {
 	for (auto buttonName : buttons)
@@ -40,21 +58,7 @@ void UiManager::UpdateUiManager()
 	_inventory_window->DoUpdateWindow();
 	_equipment_window->DoUpdateWindow();
 	_stat_window->DoUpdateWindow();
-}
-
-void UiManager::ReadyUiManager()
-{
-	ButtonUiLoad();
-	PlayerInfoUiLoad();
-	_skill_window = std::make_shared<SkillWindow>(SkillWindow());
-	_skill_window->ReadyWindow();
-	_inventory_window = std::make_shared<InventoryWindow>(InventoryWindow());
-	_inventory_window->DoReadyWindow();
-	_equipment_window = std::make_shared<EquipmentWindow>(EquipmentWindow());
-	_equipment_window->DoReadyWindow();
-	_stat_window = std::make_shared<StatWindow>(StatWindow());
-	_stat_window->DoReadyWindow();
-	_item_info_tool_tip = std::make_shared<ItemInfoToolTip>(ItemInfoToolTip());
+	_npc_talk_window->DoUpdateWindow();
 }
 
 void UiManager::RenderUiManager(HDC hdc)
@@ -79,6 +83,7 @@ void UiManager::RenderUiManager(HDC hdc)
 	_equipment_window->DoRenderWindow(hdc);
 	_stat_window->DoRenderWindow(hdc);
 	_item_info_tool_tip->BaseToolToolTipRender(hdc);
+	_npc_talk_window->DoRenderWindow(hdc);
 }
 
 void UiManager::ButtonUiLoad()
@@ -92,7 +97,7 @@ void UiManager::ButtonUiLoad()
 	{
 		wchar_t path[256];
 		swprintf_s(path, 256, L"StatusBar\\%s", buttonName.c_str());
-		std::shared_ptr<UiButton> button(std::make_shared<UiButton>(UiButton()));
+		std::shared_ptr<UiButton> button(std::make_shared<UiButton>(UiButton(KeyManager::GetInstance())));
 		if (!wcscmp(buttonName.c_str(), L"BtShop"))
 		{
 			button->SetObjectPos({ 575, 565 });
@@ -273,4 +278,9 @@ std::shared_ptr<EquipmentWindow> UiManager::GetEquipmentWindow() const
 std::shared_ptr<StatWindow> UiManager::GetStatWindow() const
 {
 	return _stat_window;
+}
+
+std::shared_ptr<NpcTalkWindow> UiManager::GetNpcTalkWindow() const
+{
+	return _npc_talk_window;
 }

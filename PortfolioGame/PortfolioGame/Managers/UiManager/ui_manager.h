@@ -1,4 +1,5 @@
 #pragma once
+#include "NpcTalk/npc_talk_window.h"
 class StatWindow;
 class InventoryWindow;
 class SkillWindow;
@@ -22,6 +23,7 @@ public:
 	std::shared_ptr<InventoryWindow> GetInventoryWindow() const;
 	std::shared_ptr<EquipmentWindow> GetEquipmentWindow() const;
 	std::shared_ptr<StatWindow> GetStatWindow() const;
+	std::shared_ptr<NpcTalkWindow> GetNpcTalkWindow() const;
 private:
 	void ButtonUiLoad();
 	void PlayerInfoUiLoad();
@@ -42,5 +44,6 @@ private:
 	std::shared_ptr<EquipmentWindow> _equipment_window;
 	std::shared_ptr<StatWindow> _stat_window;
 	std::shared_ptr<ItemInfoToolTip> _item_info_tool_tip;
+	std::shared_ptr<NpcTalkWindow> _npc_talk_window;
 
 };

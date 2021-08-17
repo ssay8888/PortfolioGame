@@ -1,12 +1,13 @@
 #pragma once
 #include <functional>
+class KeyManager;
 class MyBitmap;
 class UiButton
 {
 
 public:
 	enum class ButtonState { kDisable, kNormal, kMouseOver, kPressed };
-	UiButton();
+	UiButton(KeyManager* key);
 	~UiButton();
 	void ReadyButton(std::wstring buttonPath);
 	void UpdateButton();
@@ -19,7 +20,10 @@ public:
 	void SetObjectPosY(float y);
 	void GainObjectPosXY(float x, float y);
 	void SetState(ButtonState state);
-
+	float GetObjectPosX() const;
+	float GetObjectPosY() const;
+	int GetWidth() const;
+	int GetHeight() const;
 	void SetCallBack(std::function<void()> _method);
 	std::function<void()> GetCallBack();
 private:
@@ -32,6 +36,7 @@ private:
 	std::shared_ptr<MyBitmap> _overImage;
 	std::shared_ptr<MyBitmap> _pressedImage;
 	std::function<void()> _call_back;
+	KeyManager* _key_manager;
 
 
 };

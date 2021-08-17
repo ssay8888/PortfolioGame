@@ -58,8 +58,6 @@ void StringTools::CreateTextOut(HDC hdc, int x, int y, std::wstring str, int fon
 		VARIABLE_PITCH | FF_ROMAN | FW_BOLD, font.c_str());
 	auto OldFont = (HFONT)SelectObject(hdc, hFont);
 	auto old_color = SetTextColor(hdc, color);
-	RECT rc;
-
 	auto align = SetTextAlign(hdc, center);
 	TextOut(hdc, x, y, str.c_str(), lstrlen(str.c_str()));
 	SetTextAlign(hdc, align);

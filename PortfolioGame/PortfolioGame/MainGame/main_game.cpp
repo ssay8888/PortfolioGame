@@ -15,6 +15,7 @@
 #include "../Managers/ItemManager/item_manager.h"
 #include <fstream>
 #include <algorithm>
+#include "../Managers/NpcManager/npc_manager.h"
 MainGame::MainGame(HDC hdc) :
 	_hdc(hdc),
 	_hdc_buffer(nullptr),
@@ -47,6 +48,7 @@ void MainGame::ReadeyGame()
 
 	SkillManager::GetInstance()->LoadSkillData();
 	MonsterManager::GetInstance()->LoadMonster();
+	NpcManager::GetInstance()->LoadNpc();
 	MapManager::GetInstance()->AniObjectImageLoad();
 	ItemManager::GetInstance()->LoadItem();
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);

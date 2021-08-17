@@ -11,7 +11,7 @@ private:
 	MapManager();
 	~MapManager() = default;
 public:
-	enum class SelectState { kTile, kObject, kEtc, kMob, kEnd};
+	enum class SelectState { kTile, kObject, kEtc, kMob, kNpc, kEnd};
 	static MapManager* GetInstance()
 	{
 		static MapManager instance;
@@ -29,6 +29,7 @@ public:
 	void SelectObjectImage(POINT& pt);
 	void SelectEtcImage(POINT& pt);
 	void SelectMobImage(POINT& pt);
+	void SelectNpcImage(POINT& pt);
 	void MouseUpdate(POINT& pt);
 
 	void SaveData();
@@ -47,6 +48,9 @@ public:
 
 	void MonsterImageLoad();
 	void MonsterRender(HDC hdc);
+
+	void NpcImageLoad();
+	void NpcRender(HDC hdc);
 
 	void ButtonLoad();
 	void ButtonRender(HDC hdc);
@@ -77,6 +81,9 @@ private:
 
 	std::pair<std::string, MyBitmap*> _selectMonsterImage;
 	std::map<std::string, MyBitmap*> _monsterImage;
+
+	std::pair<std::string, MyBitmap*> _selectNpcImage;
+	std::map<std::string, MyBitmap*> _npcImage;
 
 
 	std::vector<std::pair<std::string, MyBitmap*>> _buttons;

@@ -20,6 +20,8 @@
 #include "../../../Managers/UiManager/ui_manager.h"
 #include "../../../Managers/UiManager/Inventory/inventory_window.h"
 #include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../../Managers/ScenManager/InGameScene/in_game_scene.h"
+
 #include "../../MapObject/portal.h"
 #include "../Item/item.h"
 #include "Damage/damage_handler.h"
@@ -31,6 +33,7 @@
 
 #include <time.h>
 
+#include "../../game_mouse.h"
 
 
 Player::Player(uint8_t layer) :
@@ -67,8 +70,8 @@ Player::~Player()
 
 int Player::ReadyGameObject()
 {
-	_info.x = 0.f;
-	_info.y = 0.f;
+	_info.x = 100.f;
+	_info.y = 100.f;
 	_info.cx = 42;
 	_info.cy = 64;
 	_speed = 5.f;
@@ -400,6 +403,16 @@ void Player::UpdateGameObject(const float deltaTime)
 			++drop;
 		}
 	}
+	if (keymanager->KeyDown(KEY_LBUTTON))
+	{
+		auto pos = InGameScene::GetMouse()->GetPoint();
+		auto npc_list = MapManager::GetInstance()->NpcCollision(pos);
+		
+		if (!npc_list.empty())
+		{
+			std::cout << "엔피시 충돌 !" << std::endl;
+		}
+	}
 	if (keymanager->KeyPressing(KEY_F1))
 	{
 		for (int i = 0; i < 24; ++i)
@@ -546,12 +559,15 @@ void Player::RenderCharacter(HDC hdc)
 			for (auto& data : GetEquipment()->GetEquipItems())
 			{
 				auto item = data.second->FindBodySkinItem(_frame_state);
-				auto itemFrames = item->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-				auto itemParts = itemFrames->GetParts();
-				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+				if(item != nullptr)
 				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
+					auto itemFrames = item->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
+					auto itemParts = itemFrames->GetParts();
+					for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+					{
+						partsFrames.emplace_back(part->second);
+						offsets.emplace_back(part->second);
+					}
 				}
 			}
 			if (bodyHairParts)
@@ -1259,7 +1275,7 @@ void Player::ApplySkill()
 				}
 				else if (!strcmp(spec.first.c_str(), "hpR"))
 				{
-					this->GainMp(this->GetMaxHp() * spec.second / 100);
+					this->GainHp(this->GetMaxHp() * spec.second / 100);
 				}
 				else if (!strcmp(spec.first.c_str(), "mpR"))
 				{

@@ -1,4 +1,5 @@
 #pragma once
+class Npc;
 class Item;
 class GameObject;
 class Monster;
@@ -21,6 +22,7 @@ public:
 
 	std::list<GameObject*>& GetGameObjectList(int32_t layer);
 	std::list<Monster*>* InMapMonsterObjectList(int32_t layer);
+	std::list<Npc*>* InMapNpcObjectList();
 	std::list<Monster*>& GetSpawnPointMonsterList(int32_t layer);
 	std::list<FootHold*>& GetFootHoldList();
 	std::list<FootHold*>& GetRopeLadderList();

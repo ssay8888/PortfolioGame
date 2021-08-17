@@ -8,6 +8,7 @@
 #include "../Components/Base/game_object.h"
 #include "../Components/MapObject/ani_map_object.h"
 #include "../Components/MapObject/Item/item.h"
+#include "../Components/MapObject/Npc/npc.h"
 #include "../Components/MapObject/Monster/monster.h"
 #include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
 #include "../Managers/ItemManager/item_manager.h"
@@ -28,6 +29,7 @@
 #include "../Managers/Skins/skin_parts.h"
 #include "../Managers/StringManager/string_Info.h"
 #include "../Managers/StringManager/string_manager.h"
+#include "../Managers/NpcManager/npc_manager.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -642,7 +644,7 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "speed"))
 		{
-			monster->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 100);
+			monster->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 65);
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "PADamage"))
 		{
@@ -1016,6 +1018,57 @@ void XmlReader::LoadDropData()
 				list.emplace_back(info);
 			}
 			DropDataManager::GetInstance()->InsertDropData(monster_id, list);
+		}
+	}
+}
+
+void XmlReader::LoadNpc()
+{
+	pugi::xml_document doc;
+
+	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Npc\\");
+
+	for (auto xmlPath : files)
+	{
+		auto path = StringTools::WStringToString(xmlPath.c_str());
+		if (xmlPath.find(L".xml") != std::wstring::npos)
+		{
+			if (!_access(path.c_str(), 0))
+			{
+				auto err = doc.load_file(StringTools::WStringToString(xmlPath.c_str()).c_str());
+
+				if (err.status == status_ok)
+				{
+					auto stand_node = doc.select_node("imgdir/imgdir[@name='stand']");
+
+					std::shared_ptr<Npc> npc = std::make_shared<Npc>(Npc());
+					npc->SetNpcPath(StringTools::WStringToString(xmlPath.c_str()));
+					for (auto canvas_name : stand_node.node())
+					{
+						std::shared_ptr<MyBitmap> image = std::make_shared<MyBitmap>(MyBitmap());
+						wchar_t image_path[128];
+						swprintf_s(image_path, 128, L"Client\\Npc\\%s\\%s.%s.bmp", 
+							StringTools::StringToWString(canvas_name.parent().parent().attribute("name").value()).c_str(),
+							StringTools::StringToWString(canvas_name.parent().attribute("name").value()).c_str(),
+							StringTools::StringToWString(canvas_name.attribute("name").value()).c_str());
+						image->Insert_Bitmap(_hWnd, image_path);
+						npc->InsertImage(image);
+						std::string str(canvas_name.parent().parent().attribute("name").value());
+
+						str = str.substr(0, 7);
+						npc->SetNpcId(std::stoi(str));
+						for (auto canvas_info : canvas_name)
+						{
+							if (!strcmp(canvas_info.attribute("name").value(), "origin"))
+							{
+								npc->SetOriginX(std::stoi(canvas_info.attribute("x").value()));
+								npc->SetOriginX(std::stoi(canvas_info.attribute("y").value()));
+							}
+						}
+					}
+					NpcManager::GetInstance()->InsertNpc(npc->GetNpcPath(), npc);
+				}
+			}
 		}
 	}
 }

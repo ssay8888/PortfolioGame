@@ -91,7 +91,7 @@ void StatWindow::ReadyWindow()
 
 	for (int i = 0; i < 4; ++i)
 	{
-		auto button = std::make_shared<UiButton>(UiButton());
+		auto button = std::make_shared<UiButton>(UiButton(_key_manager));
 		button->SetObjectPos({ 152, float(237 + (18 * i)) });
 		switch (i)
 		{
@@ -112,12 +112,12 @@ void StatWindow::ReadyWindow()
 		button->ReadyButton(L"Stat.img\\Stat.BtApUp");
 		_ap_up_button[i] = button;
 	}
-	auto button = std::make_shared<UiButton>(UiButton());
+	auto button = std::make_shared<UiButton>(UiButton(_key_manager));
 	button->SetObjectPos({ 98, 187 });
 	button->ReadyButton(L"Stat.img\\Stat.BtAuto");
 	_ap_up_auto_button = button;
 
-	button = std::make_shared<UiButton>(UiButton());
+	button = std::make_shared<UiButton>(UiButton(_key_manager));
 	button->SetObjectPos({ 123, 315 });
 	button->ReadyButton(L"Stat.img\\Stat.BtDetail");
 	button->SetCallBack(DetailBackGroundSlide);

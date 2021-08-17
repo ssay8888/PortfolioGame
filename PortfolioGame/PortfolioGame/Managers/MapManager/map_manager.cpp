@@ -8,6 +8,7 @@
 #include "../../Components/MapObject/Monster/monster.h"
 #include "../../Components/MapObject/foot_hold.h"
 #include "../../Components/MapObject/ani_map_object.h"
+#include "../../Components/MapObject/Npc/npc.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../Managers/DropDataManager/drop_data_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
@@ -18,6 +19,7 @@
 #include "map_manager.h"
 
 #include "../../Components/MapObject/Item/item.h"
+#include "../NpcManager/npc_manager.h"
 
 MapManager::MapManager() :
 	_map_player(nullptr),
@@ -111,15 +113,27 @@ void MapManager::LoadMapData(uint32_t mapid)
 			} 
 			else if (obj->GetImageNumber() == -2)
 			{
+				if (obj->GetObjectType() == GameObject::ObjectType::kLife)
+				{
+					auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
+					auto monsterCopy = new Monster((*monster));
+					monsterCopy->SetInfo(obj->GetInfo());
+					monsterCopy->DoReadyGame();
 
-				auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
-				auto monsterCopy = new Monster((*monster));
-				monsterCopy->SetInfo(obj->GetInfo());
-				monsterCopy->DoReadyGame();
+					map->AddGameObject(monsterCopy);
+					map->AddMonsterObject(monsterCopy);
+					delete obj;
+				}
+				else if (obj->GetObjectType() == GameObject::ObjectType::kNpc)
+				{
+					auto npc = NpcManager::GetInstance()->FindNpc(obj->GetPath());
+					auto npcCopy = new Npc((*npc));
+					npcCopy->SetInfo(obj->GetInfo());
+					npcCopy->DoReadyGame();
 
-				map->AddGameObject(monsterCopy);
-				map->AddMonsterObject(monsterCopy);
-				delete obj;
+					map->AddGameObject(npcCopy);
+					delete obj;
+				}
 			}
 			else
 			{
@@ -621,4 +635,48 @@ std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 		delete list;
 	}
 	return monsters;
+}
+
+std::list<Npc*> MapManager::NpcCollision(RECT rect)
+{
+	RECT rc;
+	std::list<Npc*> npcs;
+	auto list = GetNowMap()->InMapNpcObjectList();
+	for (auto data : *list)
+	{
+		if (data != nullptr)
+		{
+			RECT dist = data->GetRect();
+			if (IntersectRect(&rc, &rect, &dist))
+			{
+				npcs.emplace_back(data);
+			}
+		}
+	}
+	delete list;
+	return npcs;
+}
+
+std::list<Npc*> MapManager::NpcCollision(POINT pos)
+{
+	std::list<Npc*> npcs;
+	auto list = GetNowMap()->InMapNpcObjectList();
+	for (auto data : *list)
+	{
+		if (data != nullptr)
+		{
+			RECT dist{
+				static_cast<int>(data->GetInfo().x - (data->GetInfo().cx >> 1) + ScrollManager::GetScrollX()),
+				static_cast<int>(data->GetInfo().y - (data->GetInfo().cy >> 1) + ScrollManager::GetScrollY()),
+				static_cast<int>(data->GetInfo().x + (data->GetInfo().cx >> 1) + ScrollManager::GetScrollX()),
+				static_cast<int>(data->GetInfo().y + (data->GetInfo().cy >> 1) + ScrollManager::GetScrollY())
+			};
+			if (PtInRect(&dist, pos))
+			{
+				npcs.emplace_back(data);
+			}
+		}
+	}
+	delete list;
+	return npcs;
 }

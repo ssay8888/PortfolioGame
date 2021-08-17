@@ -134,6 +134,24 @@
     <Filter Include="Managers\DropDataManager">
       <UniqueIdentifier>{23c02ff0-0cce-47ed-b81c-72583aefb335}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\MapObject\Npc">
+      <UniqueIdentifier>{bb32e45f-8898-4d61-a11c-bb40d03b1ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\NpcManager">
+      <UniqueIdentifier>{7ad52161-dfc8-46e7-b0ff-e21b27c903dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\NpcTalk">
+      <UniqueIdentifier>{d795d108-ec84-4d5d-8733-96740444fa31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\QuestManager">
+      <UniqueIdentifier>{95cc5623-d0fe-4697-a5fe-b0d799aea432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\QuestManager\Quest">
+      <UniqueIdentifier>{aef1510b-c4ab-4e66-b033-0f3fd5278a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\QuestManager\Quest\SubInfo">
+      <UniqueIdentifier>{b1e262d2-26b8-49a5-b5d7-0dff4d654c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -340,6 +358,30 @@
     <ClInclude Include="Managers\DropDataManager\drop_data_info.h">
       <Filter>Managers\DropDataManager</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MapObject\Npc\npc.h">
+      <Filter>Components\MapObject\Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\NpcManager\npc_manager.h">
+      <Filter>Managers\NpcManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\NpcTalk\npc_talk_window.h">
+      <Filter>Managers\UiManager\NpcTalk</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\QuestManager\quest_manager.h">
+      <Filter>Managers\QuestManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\QuestManager\Quest\quest_info.h">
+      <Filter>Managers\QuestManager\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\QuestManager\Quest\SubInfo\quest_say.h">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\QuestManager\Quest\SubInfo\quest_check.h">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\QuestManager\Quest\SubInfo\quest_reward.h">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -527,6 +569,30 @@
     </ClCompile>
     <ClCompile Include="Managers\DropDataManager\drop_data_info.cpp">
       <Filter>Managers\DropDataManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Npc\npc.cpp">
+      <Filter>Components\MapObject\Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\NpcManager\npc_manager.cpp">
+      <Filter>Managers\NpcManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\NpcTalk\npc_talk_window.cpp">
+      <Filter>Managers\UiManager\NpcTalk</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\QuestManager\quest_manager.cpp">
+      <Filter>Managers\QuestManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\QuestManager\Quest\quest_info.cpp">
+      <Filter>Managers\QuestManager\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\QuestManager\Quest\SubInfo\quest_say.cpp">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\QuestManager\Quest\SubInfo\quest_check.cpp">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\QuestManager\Quest\SubInfo\quest_reward.cpp">
+      <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

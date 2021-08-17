@@ -6,6 +6,7 @@
 #include "../../../Components/MapObject/portal.h"
 #include "../../../Components/MapObject/Monster/monster.h"
 #include "../../../Components/MapObject/Item/item.h"
+#include "../../../Components/MapObject/Npc/npc.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../ScrollManager/scroll_manager.h"
 
@@ -98,6 +99,23 @@ std::list<Monster*>* MapInstance::InMapMonsterObjectList(int32_t layer)
 		if (monster != nullptr)
 		{
 			list->push_back(monster);
+		}
+	}
+	return list;
+}
+
+std::list<Npc*>* MapInstance::InMapNpcObjectList()
+{
+	std::list<Npc*>* list = new std::list<Npc*>();
+	for (int i = 0; i < MaxLayer; ++i)
+	{
+		for (auto& data : _list_game_object[i])
+		{
+			Npc* npc = dynamic_cast<Npc*>(data);
+			if (npc != nullptr)
+			{
+				list->push_back(npc);
+			}
 		}
 	}
 	return list;
