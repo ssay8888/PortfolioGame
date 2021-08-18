@@ -64,7 +64,7 @@ void UiButton::ReadyButton(std::wstring buttonPath)
 void UiButton::UpdateButton()
 {
 	GameMouse* gameMouse = InGameScene::GetMouse();
-
+	_key_manager->KeyUpdate();
 	if (_state == ButtonState::kDisable)
 	{
 		return;

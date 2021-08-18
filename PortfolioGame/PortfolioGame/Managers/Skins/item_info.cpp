@@ -1,7 +1,8 @@
 #include "../../pch.h"
 #include "item_info.h"
 
-ItemInfo::ItemInfo(): _req_level(0),
+ItemInfo::ItemInfo(): _tuc(0),
+                      _req_level(0),
                       _req_str(0),
                       _req_dex(0),
                       _req_int(0),
@@ -15,12 +16,28 @@ ItemInfo::ItemInfo(): _req_level(0),
                       _inc_pdd(0),
                       _inc_mdd(0),
                       _inc_mhp(0),
-                      _inc_mmp(0)
+                      _inc_mmp(0),
+                      _price(0)
 {
 }
 
 ItemInfo::~ItemInfo()
 {
+}
+
+int8_t ItemInfo::GetTuc() const
+{
+	return _tuc;
+}
+
+int8_t ItemInfo::GetSucessTuc() const
+{
+	return _success_tuc;
+}
+
+void ItemInfo::SetSucessTuc(int8_t tuc)
+{
+	_success_tuc = tuc;
 }
 
 int16_t ItemInfo::GetReqLevel() const
@@ -98,6 +115,16 @@ int16_t ItemInfo::GetIncMmp() const
 	return _inc_mmp;
 }
 
+int32_t ItemInfo::GetPrice() const
+{
+	return _price;
+}
+
+void ItemInfo::SetTuc(int8_t tuc)
+{
+	_tuc = tuc;
+}
+
 void ItemInfo::SetReqLevel(int16_t level)
 {
 	_req_level = level;
@@ -171,4 +198,9 @@ void ItemInfo::SetIncMhp(int16_t mhp)
 void ItemInfo::SetIncMmp(int16_t mmp)
 {
 	_inc_mmp = mmp;
+}
+
+void ItemInfo::SetPrice(int32_t price)
+{
+	_price = price;
 }

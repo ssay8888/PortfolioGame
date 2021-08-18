@@ -4,6 +4,7 @@
 #include "../player.h"
 #include "../../../../Managers/Skins/skin_info.h"
 #include "../../../../Managers/MapManager/map_manager.h"
+#include "../../Item/item.h"
 #include "../Inventory/eqp_inventory.h"
 
 void Equipment::InsertEquipItem(const std::shared_ptr<SkinInfo>& skin_info)
@@ -41,6 +42,24 @@ std::shared_ptr<SkinInfo> Equipment::FindItem(ObjectType::EquipPosition pos)
 void Equipment::RemoveItem(ObjectType::EquipPosition pos)
 {
 	_equip_item.erase(pos);
+}
+
+void Equipment::UseScrollItem(std::shared_ptr<SkinInfo> eqpi_tem, std::shared_ptr<Item> scroll_item)
+{
+	if (scroll_item != nullptr && eqpi_tem != nullptr)
+	{
+		if (eqpi_tem->GetItemInfo().GetTuc() > 0)
+		{
+			if (scroll_item->GetSuccess() >= rand() % 100 + 1)
+			{
+				eqpi_tem->GetItemInfo().SetIncInt(eqpi_tem->GetItemInfo().GetIncInt() + scroll_item->GetIncInt());
+				eqpi_tem->GetItemInfo().SetIncMad(eqpi_tem->GetItemInfo().GetIncMad() + scroll_item->GetIncMad());
+				eqpi_tem->GetItemInfo().SetSucessTuc(eqpi_tem->GetItemInfo().GetSucessTuc() + 1);
+				std::cout << "주문서 성공 " << std::endl;
+			}
+			eqpi_tem->GetItemInfo().SetTuc(eqpi_tem->GetItemInfo().GetTuc() - 1);
+		}
+	}
 }
 
 ObjectType::EquipPosition Equipment::FindItemPosition(const int32_t item_id)

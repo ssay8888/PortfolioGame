@@ -14,6 +14,7 @@ ItemManager::~ItemManager()
 void ItemManager::LoadItem()
 {
 	XmlReader::GetInstance().LoadItem("Consume\\0200.img");
+	XmlReader::GetInstance().LoadItem("Consume\\0204.img");
 	XmlReader::GetInstance().LoadItem("Etc\\0400.img");
 	XmlReader::GetInstance().LoadSpecialItem("Special\\0900.img");
 }

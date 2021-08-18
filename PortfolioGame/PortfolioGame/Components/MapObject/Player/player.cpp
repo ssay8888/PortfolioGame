@@ -39,6 +39,8 @@
 
 #include "../../game_mouse.h"
 #include "../../../Managers/QuestManager/Quest/quest_info.h"
+#include "../../../Managers/ShopManager/shop_manager.h"
+#include "../../../Managers/UiManager/Shop/shop_window.h"
 
 
 Player::Player(uint8_t layer) :
@@ -417,10 +419,21 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			auto npc_talk = UiManager::GetInstance()->GetNpcTalkWindow();
 			auto quest_info = QuestManager::GetInstance()->FindQuestInfo((*npc_list.begin())->GetNpcId());
-			npc_talk->SetShow(true);
-			npc_talk->SetNpc((*npc_list.begin()));
-			_select_npc = quest_info;
+			if (quest_info != nullptr)
+			{
+				npc_talk->SetShow(true);
+				npc_talk->SetNpc((*npc_list.begin()));
+				_select_npc = quest_info;
+			}
+			auto shop = ShopManager::GetInstance()->FindShop((*npc_list.begin())->GetNpcId());
+			if (!shop.empty())
+			{
+				auto shop_window = UiManager::GetInstance()->GetShopWindow();
+				shop_window->SetShow(true);
+				shop_window->LoadShopData((*npc_list.begin())->GetNpcId());
+			}
 		}
+
 	}
 	if (keymanager->KeyPressing(KEY_F1))
 	{
@@ -1621,7 +1634,7 @@ uint32_t Player::GetMaxPower() const
 	return _player_info.max_power;
 }
 
-uint32_t Player::GetMeso() const
+int32_t Player::GetMeso() const
 {
 	return _player_info.meso;
 }

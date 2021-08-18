@@ -5,6 +5,8 @@ public:
 	ItemInfo();
 	~ItemInfo();
 
+	int8_t GetTuc() const;
+	int8_t GetSucessTuc() const;
 	int16_t GetReqLevel() const;
 	int16_t GetReqStr() const;
 	int16_t GetReqDex() const;
@@ -20,7 +22,10 @@ public:
 	int16_t GetIncMdd() const;
 	int16_t GetIncMhp() const;
 	int16_t GetIncMmp() const;
+	int32_t GetPrice() const;
 
+	void SetTuc(int8_t tuc);
+	void SetSucessTuc(int8_t tuc);
 	void SetReqLevel(int16_t level);
 	void SetReqStr(int16_t str);
 	void SetReqDex(int16_t dex);
@@ -36,8 +41,11 @@ public:
 	void SetIncMdd(int16_t mdd);
 	void SetIncMhp(int16_t mhp);
 	void SetIncMmp(int16_t mmp);
+	void SetPrice(int32_t price);
 	
 private:
+	int8_t _tuc;
+	int8_t _success_tuc;
 	int16_t _req_level;
 	int16_t _req_str;
 	int16_t _req_dex;
@@ -53,6 +61,8 @@ private:
 	int16_t _inc_mdd;
 	int16_t _inc_mhp;
 	int16_t _inc_mmp;
+	int32_t _price;
+
 
 };
 

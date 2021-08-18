@@ -23,7 +23,7 @@ void Inventory::AddItem(int32_t slot, std::shared_ptr<Item> item)
 		{
 			if (item_shared->GetItemId() == item->GetItemId())
 			{
-				if (item_shared->GetSlotMax() > item_shared->GetQuantity() + item->GetQuantity())
+				if (item_shared->GetSlotMax() >= item_shared->GetQuantity() + item->GetQuantity())
 				{
 					item_shared->GainQuantity(item->GetQuantity());
 					return;

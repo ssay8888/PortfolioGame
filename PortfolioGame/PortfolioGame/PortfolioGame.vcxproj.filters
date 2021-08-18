@@ -152,6 +152,12 @@
     <Filter Include="Managers\QuestManager\Quest\SubInfo">
       <UniqueIdentifier>{b1e262d2-26b8-49a5-b5d7-0dff4d654c04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\UiManager\Shop">
+      <UniqueIdentifier>{59e7a710-f2d2-4682-9076-23dee7c6242c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ShopManager">
+      <UniqueIdentifier>{28bbf4ae-24b7-4b36-92c5-8103a2fef0bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -382,6 +388,15 @@
     <ClInclude Include="Managers\QuestManager\Quest\SubInfo\quest_reward.h">
       <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\UiManager\Shop\shop_window.h">
+      <Filter>Managers\UiManager\Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShopManager\shop_manager.h">
+      <Filter>Managers\ShopManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShopManager\shop_item.h">
+      <Filter>Managers\ShopManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -593,6 +608,15 @@
     </ClCompile>
     <ClCompile Include="Managers\QuestManager\Quest\SubInfo\quest_reward.cpp">
       <Filter>Managers\QuestManager\Quest\SubInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Shop\shop_window.cpp">
+      <Filter>Managers\UiManager\Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ShopManager\shop_manager.cpp">
+      <Filter>Managers\ShopManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ShopManager\shop_item.cpp">
+      <Filter>Managers\ShopManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

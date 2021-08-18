@@ -82,7 +82,7 @@ public:
     int16_t GetEqpMdd() const;
     uint32_t GetMinPower() const;
     uint32_t GetMaxPower() const;
-    uint32_t GetMeso() const;
+    int32_t GetMeso() const;
     std::string GetName() const;
     std::shared_ptr<QuestInfo> FindClearQuest(int32_t npc_id);
     void InsertClearQuest(std::shared_ptr<QuestInfo> info);

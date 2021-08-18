@@ -293,10 +293,15 @@ void ItemInfoToolTip::SelectEquipRedner(HDC hdc, const std::shared_ptr<SkinInfo>
 			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 45, 40, 40);
 		auto string_info = StringManager::GetInstance()->FindItemStringInfo(item->GetItemId());
 
+		std::wstring item_name(string_info.GetName());
+		if (item->GetItemInfo().GetSucessTuc() > 0)
+		{
+			item_name.append(L" (+").append(std::to_wstring(item->GetItemInfo().GetSucessTuc())).append(L")");
+		}
 		StringTools::CreateTextOut(hdc,
 			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + (232 >> 1),
 			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 10,
-			string_info.GetName(), 14, RGB(255, 255, 255), L"돋움", TA_CENTER, true);
+			item_name, 14, RGB(255, 255, 255), L"돋움", TA_CENTER, true);
 
 		/*std::wstring list[8]
 		{
@@ -502,10 +507,12 @@ std::pair<int32_t, std::wstring> ItemInfoToolTip::SelectEquipInfo(const std::sha
 		count++;
 	}
 
-	str.append(L"\r\n보스 몬스터 공격 시 데미지 : + 40%\r\n");
-	str.append(L"보스 몬스터 공격 시 데미지 : + 40%\r\n");
-	str.append(L"보스 몬스터 공격 시 데미지 : + 40%\r\n");
-	count += 4;
+	str.append(L"업그레이드 남은 횟수 : ").append(std::to_wstring(item->GetItemInfo().GetTuc()));
+	count++;
+	//str.append(L"\r\n보스 몬스터 공격 시 데미지 : + 40%\r\n");
+	//str.append(L"보스 몬스터 공격 시 데미지 : + 40%\r\n");
+	//str.append(L"보스 몬스터 공격 시 데미지 : + 40%\r\n");
+	//count += 4;
 
 	return std::make_pair(count, str);
 }

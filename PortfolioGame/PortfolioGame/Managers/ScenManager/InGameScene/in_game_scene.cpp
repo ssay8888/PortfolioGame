@@ -12,6 +12,7 @@
 #include "../../../Components/game_mouse.h"
 #include "../../../Components/MapObject/Player/player.h"
 #include "../../NpcManager/npc_manager.h"
+#include "../../ShopManager/shop_manager.h"
 
 GameMouse* InGameScene::_mouse = nullptr;
 
@@ -42,10 +43,11 @@ int InGameScene::ReadyScene()
 	_mouse = new GameMouse();
 	_mouse->DoReadyGame();
 	ShowCursor(false);
+	DropDataManager::GetInstance()->LoadDropData();
+	ShopManager::GetInstance()->LoadShopData();
 	UiManager::GetInstance()->ReadyUiManager();
 	EffectManager::GetInstance()->LoadDamageNumber();
 	StringManager::GetInstance()->LoadStringInfo();
-	DropDataManager::GetInstance()->LoadDropData();
 	QuestManager::GetInstance()->LoadQuest();
 	return 0;
 }

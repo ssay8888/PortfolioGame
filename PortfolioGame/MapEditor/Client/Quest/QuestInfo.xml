@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<quest name="Info">
+    <quest name="2103">
+        <quest name="say">
+            <quest name="0" value="다음으로 넘겨볼까요" type="0"/>
+            <quest name="1" value="또다음은요?" type="0"/>
+            <quest name="2" value="수락할래요?" type="2"/>
+        </quest>
+        <quest name="success">
+            <quest name="0" value="보상을 획득했어요~!" type="1"/>
+        </quest>
+        <quest name="ing">
+            <quest name="0" value="재료를 모아와요." type="1"/>
+        </quest>
+        <quest name="check">
+            <quest item="4000000" price="5" />
+        </quest>
+        <quest name="reward">
+            <quest name="exp" item="0" value="500" />
+            <quest name="meso" item="0" value="5000000" />
+            <quest name="item" item="2000001" value="50" />
+        </quest>
+    </quest>
+</quest>

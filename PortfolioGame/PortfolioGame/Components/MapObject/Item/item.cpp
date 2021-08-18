@@ -2,7 +2,7 @@
 #include "item.h"
 
 Item::Item(): _price(0),
-              _slot_max(0),
+              _slot_max(200),
               _quantity(0),
               _item_id(0),
               _icon_raw_delay_tick(0),
@@ -92,6 +92,36 @@ void Item::InsertSpec(const std::string& name, int32_t value)
 std::map<std::string, int32_t>& Item::GetSpec()
 {
 	return _spec;
+}
+
+void Item::SetIncMad(int32_t mad)
+{
+	_inc_mad = mad;
+}
+
+void Item::SetIncInt(int32_t mad)
+{
+	_inc_int = mad;
+}
+
+void Item::SetSuccess(int32_t mad)
+{
+	_success = mad;
+}
+
+int32_t Item::GetIncMad() const
+{
+	return _inc_mad;
+}
+
+int32_t Item::GetIncInt() const
+{
+	return _inc_int;
+}
+
+int32_t Item::GetSuccess() const
+{
+	return _success;
 }
 
 void Item::SetDelayTick()

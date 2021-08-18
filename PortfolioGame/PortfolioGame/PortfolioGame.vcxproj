@@ -198,6 +198,8 @@
     <ClInclude Include="Managers\ScenManager\scene.h" />
     <ClInclude Include="Managers\ScenManager\scene_manager.h" />
     <ClInclude Include="Managers\ScrollManager\scroll_manager.h" />
+    <ClInclude Include="Managers\ShopManager\shop_item.h" />
+    <ClInclude Include="Managers\ShopManager\shop_manager.h" />
     <ClInclude Include="Managers\SkillManager\Skill\skill.h" />
     <ClInclude Include="Managers\SkillManager\Skill\skill_effect_image.h" />
     <ClInclude Include="Managers\SkillManager\Skill\skill_info.h" />
@@ -215,6 +217,7 @@
     <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h" />
     <ClInclude Include="Managers\UiManager\NpcTalk\npc_talk_window.h" />
     <ClInclude Include="Managers\UiManager\QuickSlot\quick_slot.h" />
+    <ClInclude Include="Managers\UiManager\Shop\shop_window.h" />
     <ClInclude Include="Managers\UiManager\Skill\skill_window.h" />
     <ClInclude Include="Managers\UiManager\Stat\stat_window.h" />
     <ClInclude Include="Managers\UiManager\ToolTipUi\item_info_tool_tip.h" />
@@ -401,6 +404,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Managers\ShopManager\shop_item.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\ShopManager\shop_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Managers\SkillManager\Skill\skill.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
@@ -466,6 +477,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\UiManager\QuickSlot\quick_slot.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\Shop\shop_window.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<imgdir name="0204.img">
+    <imgdir name="02043700">
+        <imgdir name="info">
+            <canvas name="icon" width="32" height="32">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <canvas name="iconRaw" width="32" height="31">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <int name="price" value="1" />
+            <int name="incMAD" value="1" />
+            <int name="success" value="100" />
+        </imgdir>
+    </imgdir>
+    <imgdir name="02043701">
+        <imgdir name="info">
+            <canvas name="icon" width="32" height="32">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <canvas name="iconRaw" width="32" height="31">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <int name="price" value="1" />
+            <int name="incMAD" value="2" />
+            <int name="incINT" value="1" />
+            <int name="success" value="60" />
+        </imgdir>
+    </imgdir>
+    <imgdir name="02043702">
+        <imgdir name="info">
+            <canvas name="icon" width="32" height="32">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <canvas name="iconRaw" width="32" height="31">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <int name="price" value="1" />
+            <int name="incMAD" value="5" />
+            <int name="incINT" value="3" />
+            <int name="incMDD" value="1" />
+            <int name="success" value="10" />
+        </imgdir>
+    </imgdir>
+    <imgdir name="02043703">
+        <imgdir name="info">
+            <canvas name="icon" width="32" height="32">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <canvas name="iconRaw" width="32" height="31">
+                <vector name="origin" x="0" y="32" />
+            </canvas>
+            <int name="price" value="1" />
+            <int name="incMAD" value="5" />
+            <int name="incINT" value="3" />
+            <int name="incMDD" value="1" />
+            <int name="success" value="100" />
+        </imgdir>
+    </imgdir>
+</imgdir>

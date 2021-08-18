@@ -1029,6 +1029,7 @@ void MapManager::LoadData()
 				auto image = _monsterImage.find(obj->GetPath());
 				obj->SetImage(image->second);
 				_list[layer].push_back(obj);
+				
 			}
 			else
 			{
@@ -1219,6 +1220,25 @@ void MapManager::LadderRopeRender(HDC hdc)
 void MapManager::MonsterImageLoad()
 {
 	auto files = FileManager::GetInstance()->GetDirFileName(L"Client\\Mob\\");
+
+	for (auto wpath : files)
+	{
+		auto path = StringTools::WStringToString(wpath.c_str());
+		if (wpath.find(L".xml") != std::wstring::npos)
+		{
+			if (!_access(path.c_str(), 0))
+			{
+				// Client\\Mob\\0100100.img.xml
+				auto name = FileManager::GetInstance()->GetFileName(path);
+				auto  fullpath = wpath.substr(0, wpath.size() - 4);
+				fullpath.append(L"\\stand.0.bmp");
+				MyBitmap* image = new MyBitmap;
+				image->Insert_Bitmap(_hWnd, fullpath.c_str());
+				_monsterImage.insert(std::make_pair(StringTools::WStringToString(wpath.c_str()), image));
+			}
+		}
+	}
+	files = FileManager::GetInstance()->GetDirFileName(L"Client\\Npc\\");
 
 	for (auto wpath : files)
 	{

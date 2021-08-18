@@ -5,12 +5,14 @@
 #include "../../Components/MapObject/Player/player.h"
 #include "../KeyManaer/key_manager.h"
 #include "../MapManager/map_manager.h"
-#include "Inventory/inventory_window.h"
-#include "QuickSlot/quick_slot.h"
-#include "Skill/skill_window.h"
 #include "Equip/equipment_window.h"
-#include "ToolTipUi/item_info_tool_tip.h"
+#include "Inventory/inventory_window.h"
+#include "NpcTalk/npc_talk_window.h"
+#include "QuickSlot/quick_slot.h"
+#include "Shop/shop_window.h"
+#include "Skill/skill_window.h"
 #include "Stat/stat_window.h"
+#include "ToolTipUi/item_info_tool_tip.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
@@ -42,6 +44,8 @@ void UiManager::ReadyUiManager()
 	_item_info_tool_tip = std::make_shared<ItemInfoToolTip>(ItemInfoToolTip());
 	_npc_talk_window = std::make_shared<NpcTalkWindow>(NpcTalkWindow());
 	_npc_talk_window->DoReadyWindow();
+	_shop_window = std::make_shared<ShopWindow>(ShopWindow());
+	_shop_window->DoReadyWindow();
 }
 
 void UiManager::UpdateUiManager()
@@ -59,6 +63,7 @@ void UiManager::UpdateUiManager()
 	_equipment_window->DoUpdateWindow();
 	_stat_window->DoUpdateWindow();
 	_npc_talk_window->DoUpdateWindow();
+	_shop_window->DoUpdateWindow();
 }
 
 void UiManager::RenderUiManager(HDC hdc)
@@ -79,11 +84,12 @@ void UiManager::RenderUiManager(HDC hdc)
 	StatusLevelRender(hdc);
 
 	_skill_window->RenderWindow(hdc);
-	_inventory_window->DoRenderWindow(hdc);
 	_equipment_window->DoRenderWindow(hdc);
+	_inventory_window->DoRenderWindow(hdc);
 	_stat_window->DoRenderWindow(hdc);
 	_item_info_tool_tip->BaseToolToolTipRender(hdc);
 	_npc_talk_window->DoRenderWindow(hdc);
+	_shop_window->DoRenderWindow(hdc);
 }
 
 void UiManager::ButtonUiLoad()
@@ -283,4 +289,9 @@ std::shared_ptr<StatWindow> UiManager::GetStatWindow() const
 std::shared_ptr<NpcTalkWindow> UiManager::GetNpcTalkWindow() const
 {
 	return _npc_talk_window;
+}
+
+std::shared_ptr<ShopWindow> UiManager::GetShopWindow() const
+{
+	return _shop_window;
 }

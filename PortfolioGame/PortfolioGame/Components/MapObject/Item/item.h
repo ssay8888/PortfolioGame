@@ -25,6 +25,13 @@ public:
 	void InsertSpec(const std::string& name, int32_t value);
 	std::map<std::string, int32_t>& GetSpec();
 
+	void SetIncMad(int32_t mad);
+	void SetIncInt(int32_t mad);
+	void SetSuccess(int32_t mad);
+	int32_t GetIncMad() const;
+	int32_t GetIncInt() const;
+	int32_t GetSuccess() const;
+
 	void SetDelayTick();
 	bool IsNextFrameDelay() const;
 	void AddFrameNumber();
@@ -40,5 +47,10 @@ private:
 
 	uint64_t _icon_raw_delay_tick;
 	uint32_t _frame_number;
+
+
+	int32_t _inc_mad;
+	int32_t _inc_int;
+	int32_t _success;
 };
 

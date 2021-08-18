@@ -565,6 +565,47 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 		}
 		else
 		{
+
+			if (_select_item->GetItemId() / 10000 == 204  && UiManager::GetInstance()->GetEquipmentWindow()->IsShow())
+			{
+				auto eqp_window = UiManager::GetInstance()->GetEquipmentWindow();
+
+				RECT eqp_rect{
+					static_cast<int>(eqp_window->GetInfo().x),
+					static_cast<int>(eqp_window->GetInfo().y),
+					static_cast<int>(eqp_window->GetInfo().x + eqp_window->GetInfo().cx),
+					static_cast<int>(eqp_window->GetInfo().y + eqp_window->GetInfo().cy) };
+
+				if (PtInRect(&eqp_rect, mouse))
+				{
+					const auto player = MapManager::GetInstance()->GetPlayer();
+					for (int i = 0; i < ObjectType::EquipPosition::kEquipEnd; ++i)
+					{
+						auto pos_enum = static_cast<ObjectType::EquipPosition>(i);
+						auto pos = eqp_window->FindEquipRenderPoint(pos_enum);
+
+						RECT rc{
+							static_cast<int>(eqp_window->GetInfo().x + pos.x),
+							static_cast<int>(eqp_window->GetInfo().y + pos.y),
+							static_cast<int>(eqp_window->GetInfo().x + pos.x + 30),
+							static_cast<int>(eqp_window->GetInfo().y + pos.y + 30) };
+						if (PtInRect(&rc, mouse))
+						{
+							auto item = player->GetEquipment()->FindItem(pos_enum);
+							if (item != nullptr)
+							{
+								player->GetEquipment()->UseScrollItem(item, _select_item);
+								std::cout << item->GetItemId() << std::endl;
+								_select_item = nullptr;
+								_is_select_item = false;
+								_select_eqp_item = nullptr;
+								_select_position = -1;
+								return;
+							}
+						}
+					}
+				}
+			}
 			auto player = MapManager::GetInstance()->GetPlayer();
 			auto inventory = player->GetInventory(_this_tab);
 			auto item_list = inventory->GetItem();

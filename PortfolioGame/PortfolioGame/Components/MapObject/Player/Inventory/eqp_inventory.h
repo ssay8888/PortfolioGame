@@ -13,6 +13,8 @@ public:
 	std::shared_ptr<SkinInfo>* GetItem();
 
 	void MoveItem(int32_t src, int32_t dst);
+	void ReMoveItem(int32_t src);
+	void ReMoveItem(std::shared_ptr<SkinInfo> src);
 
 	int32_t FindFreeSlot() const;
 private:

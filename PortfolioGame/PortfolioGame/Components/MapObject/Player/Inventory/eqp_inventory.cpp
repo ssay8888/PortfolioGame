@@ -37,6 +37,22 @@ void EqpInventory::MoveItem(int32_t src, int32_t dst)
 	_item[src] = dst_item;
 }
 
+void EqpInventory::ReMoveItem(int32_t src)
+{
+	_item[src] = nullptr;
+}
+
+void EqpInventory::ReMoveItem(std::shared_ptr<SkinInfo> src)
+{
+	for (int i = 0; i < inventory_slot_max; ++i)
+	{
+		if (_item[i] == src)
+		{
+			_item[i] = nullptr;
+		}
+	}
+}
+
 int32_t EqpInventory::FindFreeSlot() const
 {
 	for (int i = 0; i < inventory_slot_max; ++i)

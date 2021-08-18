@@ -27,6 +27,7 @@
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_manager.h"
 #include "../Managers/Skins/skin_parts.h"
+#include "../Managers/ShopManager/shop_item.h"
 #include "../Managers/StringManager/string_Info.h"
 #include "../Managers/StringManager/string_manager.h"
 #include "../Managers/NpcManager/npc_manager.h"
@@ -35,6 +36,7 @@
 #include "../Managers/QuestManager/Quest/SubInfo/quest_say.h"
 #include "../Managers/QuestManager/Quest/SubInfo/quest_check.h"
 #include "../Managers/QuestManager/Quest/SubInfo/quest_reward.h"
+#include "../Managers/ShopManager/shop_manager.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -334,6 +336,14 @@ std::vector<std::string> XmlReader::LoadCharacterItem(std::string type, const in
 					else if (!strcmp(info_node.attribute("name").value(), "incMMP"))
 					{
 						info->GetItemInfo().SetIncMmp(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "price"))
+					{
+						info->GetItemInfo().SetPrice(std::stoi(info_node.attribute("value").value()));
+					}
+					else if (!strcmp(info_node.attribute("name").value(), "tuc"))
+					{
+						info->GetItemInfo().SetTuc(std::stoi(info_node.attribute("value").value()));
 					}
 				}
 				auto data = begin.node().select_node("canvas[@name='icon']");
@@ -947,6 +957,18 @@ void XmlReader::LoadItem(std::string path)
 					{
 						item->SetSlotMax(std::stoi(info.attribute("value").value()));
 					}
+					else if (!strcmp(info.attribute("name").value(), "incMAD"))
+					{
+						item->SetIncMad(std::stoi(info.attribute("value").value()));
+					}
+					else if (!strcmp(info.attribute("name").value(), "incINT"))
+					{
+						item->SetIncInt(std::stoi(info.attribute("value").value()));
+					}
+					else if (!strcmp(info.attribute("name").value(), "success"))
+					{
+						item->SetSuccess(std::stoi(info.attribute("value").value()));
+					}
 				}
 			}
 
@@ -1149,6 +1171,33 @@ void XmlReader::LoadQuest()
 				}
 			}
 			QuestManager::GetInstance()->InsertQuestInfo(quest_info);
+		}
+	}
+}
+
+void XmlReader::LoadShop()
+{
+	pugi::xml_document doc;
+	const auto err = doc.load_file("ShopData\\ShopData.xml");
+
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("shop/shop");
+		for (auto shop_id_node : datas)
+		{
+			int32_t shop_id = std::stoi(shop_id_node.node().attribute("name").value());
+			std::vector<std::shared_ptr<ShopItem>> list;
+			for (auto info_node : shop_id_node.node())
+			{
+				std::shared_ptr<ShopItem> info = std::make_shared<ShopItem>(ShopItem());
+
+				info->SetItemId(std::stoi(info_node.attribute("item").value()));
+				info->SetPrice(std::stoi(info_node.attribute("price").value()));
+				info->SetMeso(std::stoi(info_node.attribute("meso").value()));
+				list.emplace_back(info);
+			}
+			ShopManager::GetInstance()->InsertShop(shop_id, list);
 		}
 	}
 }
