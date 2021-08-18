@@ -36,6 +36,9 @@ public:
 	MyBitmap* GetBackGroundImage();
 	Player* GetPlayer();
 	void SetPlayer(Player* player);
+
+	void RespawnMonster();
+	bool IsRespawnTick();
 private:
 	MyBitmap* _back_ground_image;
 	std::list<GameObject*> _list_game_object[MaxLayer];
@@ -46,5 +49,7 @@ private:
 	ObjectPos _map_size;
 	std::list<Portal*> _list_portal;
 	Player* _player;
+
+	uint64_t _respawn_tick;
 };
 

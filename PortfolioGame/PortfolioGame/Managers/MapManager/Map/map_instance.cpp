@@ -12,7 +12,8 @@
 
 MapInstance::MapInstance() :
 	_map_size({}),
-	_player(nullptr)
+	_player(nullptr),
+	_respawn_tick(0)
 {
 	_back_ground_image = new MyBitmap();
 	_back_ground_image->Insert_Bitmap(_hWnd, L"Client\\Map\\Back\\back.bmp");
@@ -169,4 +170,49 @@ void MapInstance::SetPlayer(Player* player)
 		AddGameObject(player);
 	}
 	_player = player;
+}
+
+void MapInstance::RespawnMonster()
+{
+
+	for (int i = 0; i < MaxLayer; ++i)
+	{
+		for (auto spawn_point : _spawn_point[i])
+		{
+			const auto spawn_mob = spawn_point;
+			if (spawn_mob != nullptr)
+			{
+				bool check = false;
+				Monster* temp_mob = nullptr;
+				for (auto monster : _list_game_object[i])
+				{
+					if (monster->GetSpawnPoint().x == spawn_mob->GetSpawnPoint().x &&
+						monster->GetSpawnPoint().y == spawn_mob->GetSpawnPoint().y)
+					{
+						check = true;
+						break;
+					}
+				}
+				if (!check)
+				{
+					auto redy = new Monster(*spawn_mob);
+					redy->DoReadyGame();
+					_list_game_object[i].emplace_back(redy);
+				}
+			}
+		}
+
+	}
+
+}
+
+bool MapInstance::IsRespawnTick()
+{
+	if (GetTickCount64() > _respawn_tick  + 5000)
+	{
+		RespawnMonster();
+		_respawn_tick = GetTickCount64();
+		return true;
+	}
+	return false;
 }

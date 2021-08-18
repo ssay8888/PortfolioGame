@@ -24,6 +24,7 @@ public:
 	uint8_t GetLayer() const;
 	GameObject::State GetState() const;
 	Info GetInfo() const;
+	Info GetSpawnPoint() const;
 	RECT GetRect() const;
 	MyBitmap* GetImage();
 	float GetSpeed() const;
@@ -35,6 +36,7 @@ public:
 	void SetLayer(uint8_t layer);
 	void SetState(GameObject::State state);
 	void SetInfo(Info info);
+	void SetSpawnPoint(Info info);
 	void SetRect(RECT rect);
 	void SetImage(MyBitmap* image);
 	void SetImageNumber(uint32_t number);
@@ -52,6 +54,7 @@ protected:
 	uint32_t _imageNumber;
 	State _state;
 	Info _info;
+	Info _spawn_point;
 	RECT _rect;
 	float _speed;
 	MyBitmap* _image;

@@ -82,6 +82,11 @@ Info GameObject::GetInfo() const
 	return _info;
 }
 
+Info GameObject::GetSpawnPoint() const
+{
+	return _spawn_point;
+}
+
 RECT GameObject::GetRect() const
 {
 	return _rect;
@@ -130,6 +135,11 @@ void GameObject::SetState(GameObject::State state)
 void GameObject::SetInfo(Info info)
 {
 	_info = info;
+}
+
+void GameObject::SetSpawnPoint(Info info)
+{
+	_spawn_point = info;
 }
 
 void GameObject::SetRect(RECT rect)

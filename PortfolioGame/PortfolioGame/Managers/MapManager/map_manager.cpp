@@ -118,9 +118,13 @@ void MapManager::LoadMapData(uint32_t mapid)
 					auto monster = MonsterManager::GetInstance()->FindMonster(obj->GetPath());
 					auto monsterCopy = new Monster((*monster));
 					monsterCopy->SetInfo(obj->GetInfo());
+					monsterCopy->SetSpawnPoint(obj->GetInfo());
 					monsterCopy->DoReadyGame();
-
 					map->AddGameObject(monsterCopy);
+
+					monsterCopy = new Monster((*monster));
+					monsterCopy->SetInfo(obj->GetInfo());
+					monsterCopy->SetSpawnPoint(obj->GetInfo());
 					map->AddMonsterObject(monsterCopy);
 					delete obj;
 				}
@@ -245,6 +249,7 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 			}
 		}
 	}
+	now_map->IsRespawnTick();
 }
 
 void MapManager::RenderGameObjectManager(HDC hdc)
