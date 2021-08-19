@@ -101,8 +101,8 @@ void InventoryWindow::CharacterInventoryItemRender(const HDC hdc)
 						icon->GetHeight());
 					std::wstring quantity;
 					quantity.append(std::to_wstring(item_list[i]->GetQuantity()));
-					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + x + 20,
-						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 20, quantity, 13, RGB(0, 0, 0));
+					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + x + 28,
+						static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 20, quantity, 13, RGB(0, 0, 0), L"±¼¸²Ã¼", TA_RIGHT);
 				}
 			}
 		}

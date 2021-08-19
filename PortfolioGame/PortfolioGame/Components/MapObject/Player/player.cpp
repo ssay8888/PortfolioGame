@@ -18,6 +18,7 @@
 #include "../../../Managers/Skins/skin_manager.h"
 #include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/UiManager/ui_manager.h"
+#include "../../../Managers/UiManager/DeadMessage/dead_message.h"
 #include "../../../Managers/UiManager/Inventory/inventory_window.h"
 #include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
 #include "../../../Managers/UiManager/NpcTalk/npc_talk_window.h"
@@ -40,6 +41,7 @@
 #include "../../game_mouse.h"
 #include "../../../Managers/QuestManager/Quest/quest_info.h"
 #include "../../../Managers/ShopManager/shop_manager.h"
+#include "../../../Managers/UiManager/DeadMessage/dead_message.h"
 #include "../../../Managers/UiManager/Shop/shop_window.h"
 
 
@@ -111,6 +113,12 @@ void Player::UpdateGameObject(const float deltaTime)
 	float totalMoveY = 0;
 	float outY = 0;
 	FootHold* tempHold;
+	_damage_handler->UpdateDamages();
+	if (_is_dead)
+	{
+		this->ChangeFrameState("dead");
+		return;
+	}
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
 	const bool finished_attack_frame = (_attack_skill != nullptr ? _attack_skill->IsFinishedFrame() : true);
 	if (finished_attack_frame && !_is_fly && !_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
@@ -337,7 +345,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	else
 	{
-		if (!_is_attacking && !_is_fly && !_is_rope && !_is_jump && !_is_prone)
+		if (!_is_attacking && !_is_fly && !_is_rope && !_is_jump && !_is_prone && !_is_dead)
 		{
 			if (IsAlertStateTick())
 			{
@@ -366,7 +374,9 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	if (keymanager->KeyPressing(KEY_B))
 	{
-		this->ChangeFrameState("swingT1");
+		this->ChangeFrameState("dead");
+		_is_dead = true;
+		UiManager::GetInstance()->GetDeadMessage()->SetShow(true);
 	}
 
 	if (keymanager->KeyPressing(KEY_Z))
@@ -506,7 +516,6 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 	}
 	ScrollMove();
-	_damage_handler->UpdateDamages();
 }
 
 void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
@@ -529,11 +538,25 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 		{
 			_skin_frames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
 			_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
+			if (!strcmp(frameName.c_str(), "dead"))
+			{
+				int a = 1;
+				_head_skin_frames.erase(frameName);
+				_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem("front") });
+			}
 			//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
 			//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
 		}
-		_skin_frames.erase(std::to_string(30000));
-		_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem(frameName) });
+		if (!strcmp(frameName.c_str(), "dead"))
+		{
+			_skin_frames.erase(std::to_string(30000));
+			_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem("default") });
+		}
+		else 
+		{
+			_skin_frames.erase(std::to_string(30000));
+			_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem(frameName) });
+		}
 		_skin_frames.erase(std::to_string(20000));
 		_skin_frames.insert({ std::to_string(20000), faceParts->FindBodySkinItem("default") });
 	//}
@@ -594,12 +617,25 @@ void Player::RenderCharacter(HDC hdc)
 			}
 			if (bodyHairParts)
 			{
-				auto itemFrames = bodyHairParts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-				auto itemParts = itemFrames->GetParts();
-				for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+				if (!strcmp(headskinItem->GetName().c_str(), "front"))
 				{
-					partsFrames.emplace_back(part->second);
-					offsets.emplace_back(part->second);
+					auto itemFrames = bodyHairParts->FindFrame("hairOverHead");
+					auto itemParts = itemFrames->GetParts();
+					for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+					{
+						partsFrames.emplace_back(part->second);
+						offsets.emplace_back(part->second);
+					}
+				}
+				else
+				{
+					auto itemFrames = bodyHairParts->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
+					auto itemParts = itemFrames->GetParts();
+					for (auto part = itemParts->begin(); part != itemParts->end(); ++part)
+					{
+						partsFrames.emplace_back(part->second);
+						offsets.emplace_back(part->second);
+					}
 				}
 			}
 			if (faceParts && !_is_rope)
@@ -612,12 +648,26 @@ void Player::RenderCharacter(HDC hdc)
 					offsets.emplace_back(part->second);
 				}
 			}
-			auto headFrames = headskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
-			auto headParts = headFrames->GetParts();
-			for (auto part = headParts->begin(); part != headParts->end(); ++part)
+
+			if (!strcmp(headskinItem->GetName().c_str(), "front"))
 			{
-				partsFrames.emplace_back(part->second);
-			    offsets.emplace_back(part->second);
+				auto headFrames = headskinItem->FindFrame("head");
+				auto headParts = headFrames->GetParts();
+				for (auto part = headParts->begin(); part != headParts->end(); ++part)
+				{
+					partsFrames.emplace_back(part->second);
+					offsets.emplace_back(part->second);
+				}
+			}
+			else
+			{
+				auto headFrames = headskinItem->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
+				auto headParts = headFrames->GetParts();
+				for (auto part = headParts->begin(); part != headParts->end(); ++part)
+				{
+					partsFrames.emplace_back(part->second);
+					offsets.emplace_back(part->second);
+				}
 			}
 		}
 
@@ -703,7 +753,7 @@ void Player::RenderCharacter(HDC hdc)
 		}
 
 		auto neckOffsetBody = bodyFrame->GetMaps()->find("neck")->second;
-		auto navelOffsetBody = bodyFrame->GetMaps()->find("navel")->second;
+		//auto navelOffsetBody = bodyFrame->GetMaps()->find("navel")->second;
 		std::list<std::pair<SkinParts*, ObjectPos>> positionedFramesList;
 		for (auto positionedFrame : partsFrames)
 		{
@@ -1145,10 +1195,11 @@ void Player::TakeDamage()
 
 	if (!mosnters.empty() && GetTickCount64() > _take_damage_tick + 3000)
 	{
-		this->GainHp(-1);
 		_take_damage_tick = GetTickCount64();
 		_alert_tick = GetTickCount64();
-		_damage_handler->InsertTakeDamageEffect(this, 1234, 1000);
+		int damage = rand() % (*mosnters.begin())->GetPad() + ((*mosnters.begin())->GetPad() / 2);
+		_damage_handler->InsertTakeDamageEffect(this, damage, 1000);
+		this->GainHp(-damage);
 		if ((*mosnters.begin())->GetInfo().x > this->GetInfo().x)
 		{
 			SettingPushKnockBack(false);
@@ -1480,6 +1531,16 @@ ObjectInfo* Player::GetPlayerInfo()
 	return &_player_info;
 }
 
+void Player::SetDead(bool isdead)
+{
+	_is_dead = isdead;
+}
+
+bool Player::IsDead()
+{
+	return _is_dead;
+}
+
 int16_t Player::GetHp() const
 {
 	return _player_info.hp;
@@ -1773,6 +1834,12 @@ void Player::GainHp(const int16_t value)
 	{
 		_player_info.hp = _player_info.max_hp;
 	}
+	if (_player_info.hp <= 0)
+	{
+		ChangeFrameState("dead");
+		_is_dead = true;
+		UiManager::GetInstance()->GetDeadMessage()->SetShow(true);
+	}
 }
 
 void Player::GainEqpMaxHp(int16_t value)
@@ -1807,6 +1874,12 @@ void Player::GainMaxMp(const int16_t value)
 void Player::SetHp(const int16_t value)
 {
 	_player_info.hp = value;
+	if (_player_info.hp <= 0)
+	{
+		ChangeFrameState("dead");
+		_is_dead = true;
+		UiManager::GetInstance()->GetDeadMessage()->SetShow(true);
+	}
 }
 
 void Player::SetMaxHp(const int16_t value)

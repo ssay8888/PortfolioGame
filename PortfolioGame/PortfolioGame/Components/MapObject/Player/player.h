@@ -49,6 +49,8 @@ public:
     void SetNowFootHold(FootHold* hold);
 
     ObjectInfo* GetPlayerInfo();
+    void SetDead(bool isdead);
+    bool IsDead();
 
     int16_t GetHp() const;
     int16_t GetMaxHp() const;
@@ -156,6 +158,7 @@ private:
     bool _is_jump;
     bool _is_fly;
     bool _is_rope;
+    bool _is_dead;
     uint16_t _jump_count;
     uint8_t _facing_direction;
     SkinFrame* _frame_this;

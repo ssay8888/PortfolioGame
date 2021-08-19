@@ -351,7 +351,8 @@ void Monster::IsJumping()
 			}
 			else
 			{
-				_info.y += GetSpeed();
+				_info.y = outY;
+				//_info.y += GetSpeed();
 			}
 		}
 		else
@@ -404,54 +405,61 @@ void Monster::AttackApply(const std::string key)
 		
 	}
 
-	if (_is_attack &&
-		(attack_info->GetAttackAfterTick() > 1 && 
-			tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter()))
+	if (!player->IsDead())
 	{
-		if (IntersectRect(&rc, &range, &target))
+		if (_is_attack &&
+			(attack_info->GetAttackAfterTick() > 1 &&
+				tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter()))
 		{
-			if (attack_info->IsDeadlyAttack())
+			if (IntersectRect(&rc, &range, &target))
 			{
-				if (player != nullptr)
+				if (attack_info->IsDeadlyAttack())
 				{
-					player->SetHp(1);
-					player->SetMp(1);
-					player->SetInvincibility();
-					player->SettingPushKnockBack(true);
-					player->GetDamageHandler()->InsertTakeDamageEffect(player, 30000, 1000);
+					if (player != nullptr)
+					{
+						player->SetHp(1);
+						player->SetMp(1);
+						player->SetInvincibility();
+						player->SettingPushKnockBack(true);
+						player->GetDamageHandler()->InsertTakeDamageEffect(player, 30000, 1000);
+					}
 				}
-			}
-			else
-			{
-				player->SetInvincibility();
-				player->SettingPushKnockBack(true);
-				player->GetDamageHandler()->InsertTakeDamageEffect(player, rand() % 500 + 500, 1000);
-			}
-
-		}
-		if (!player->IsInvincibility() && !attack_info->GetAreaAttack().empty())
-		{
-			for (const auto area : attack_info->GetAreaAttack())
-			{
-				const RECT range3 = attack_info->GetRange();
-				RECT range2{
-
-				area.x - std::abs(range3.left),
-				area.y - std::abs(range3.top),
-				area.x + std::abs(range3.right),
-				area.y + std::abs(range3.bottom) };
-				if (IntersectRect(&rc, &range2, &target))
+				else
 				{
 					player->SetInvincibility();
 					player->SettingPushKnockBack(true);
-					player->GetDamageHandler()->InsertTakeDamageEffect(player, rand() % 1500, 1000);
-					int a = 0;
+					int damage = rand() %  this->GetPad() + (this->GetPad() / 2);
+					player->GainHp(-damage);
+					player->GetDamageHandler()->InsertTakeDamageEffect(player, damage, 1000);
+				}
+
+			}
+			if (!player->IsInvincibility() && !attack_info->GetAreaAttack().empty())
+			{
+				for (const auto area : attack_info->GetAreaAttack())
+				{
+					const RECT range3 = attack_info->GetRange();
+					RECT range2{
+
+					area.x - std::abs(range3.left),
+					area.y - std::abs(range3.top),
+					area.x + std::abs(range3.right),
+					area.y + std::abs(range3.bottom) };
+					if (IntersectRect(&rc, &range2, &target))
+					{
+						player->SetInvincibility();
+						player->SettingPushKnockBack(true);
+						int damage = rand() % this->GetPad() + (this->GetPad() / 2);
+						player->GainHp(-damage);
+						player->GetDamageHandler()->InsertTakeDamageEffect(player, damage, 1000);
+						int a = 0;
+					}
 				}
 			}
+			attack_info->SetAttackAfterTick(1);
+			attack_info->SetEffectAfterTick(1);
+			this->GainMp(-attack_info->GetConMp());
 		}
-		attack_info->SetAttackAfterTick(1);
-		attack_info->SetEffectAfterTick(1);
-		this->GainMp(-attack_info->GetConMp());
 	}
 
 }
@@ -520,17 +528,17 @@ void Monster::UpdateGameObject(const float deltaTime)
 			_is_drop_item = true;
 		}
 
-
-		auto endFrame = _base_state_frame->NextFrame();
-		if (_die_wait_tick == 0) {
-			if (endFrame)
-			{
-				_die_wait_tick = GetTickCount64();
-			}
-		}
-		else if (GetTickCount64() > _die_wait_tick + 250) //죽어도 시체가 남아있는 시간..
+		if (_base_state_frame->GetFrameNumber() >= _base_state_frame->GetFrameSize())
 		{
-			_state = State::kDead;
+			_base_state_frame->SetFrameNumber(_base_state_frame->GetFrameNumber() - 1);
+			 if (GetTickCount64() > _die_wait_tick + 250) //죽어도 시체가 남아있는 시간..
+			{
+				_state = State::kDead;
+			}
+			 return;
+		}
+		if (_die_wait_tick == 0) {
+			_die_wait_tick = GetTickCount64();
 		}
 		return;
 	}
@@ -642,7 +650,7 @@ void Monster::RenderGameObject(HDC hdc)
 		auto tick = GetTickCount64();
 		if (tick > _alpha_tick + 40)
 		{
-			_alpha_value -= 30;
+			_alpha_value -= 15;
 			_alpha_tick = tick;
 		}
 
@@ -717,7 +725,7 @@ void Monster::RenderGameObject(HDC hdc)
 			auto attack_info = _attack_info.find(_state_string);
 			if (attack_info != _attack_info.end())
 			{
-				if (!attack_info->second->GetEffect().empty())
+				if (attack_info->second->GetAttackAfter() > 0)
 				{
 					if (attack_info->second->GetEffectAfterTick() == 0)
 					{
@@ -727,6 +735,9 @@ void Monster::RenderGameObject(HDC hdc)
 					{
 						attack_info->second->SetAttackAfterTick(GetTickCount64());
 					}
+				}
+				if (!attack_info->second->GetEffect().empty())
+				{
 					const auto effect_list = attack_info->second->GetEffect();
 					const int64_t tick = GetTickCount64();
 					if (tick > attack_info->second->GetEffectAfterTick() + attack_info->second->GetEffectAfter() && 
@@ -746,14 +757,6 @@ void Monster::RenderGameObject(HDC hdc)
 				}
 				if (!attack_info->second->GetAreaWarning().empty())
 				{
-					if (attack_info->second->GetEffectAfterTick() == 0)
-					{
-						attack_info->second->SetEffectAfterTick(GetTickCount64());
-					}
-					if (attack_info->second->GetAttackAfterTick() == 0)
-					{
-						attack_info->second->SetAttackAfterTick(GetTickCount64());
-					}
 					const auto effect_list = attack_info->second->GetAreaWarning();
 					for (auto area : attack_info->second->GetAreaAttack())
 					{
@@ -864,13 +867,33 @@ void Monster::LateUpdateGameObject()
 	default:;
 	}
 
-	if (_base_state_frame->NextFrame())
-	{
 		if (_monster_state == MonsterState::kHit)
 		{
-			ChangeState(MonsterState::kStand);
+			if (_base_state_frame->NextFrame(false))
+			{
+				ChangeState(MonsterState::kStand);
+			}
 		}
-	}
+		else if (_monster_state == MonsterState::kMove || _monster_state == MonsterState::kStand)
+		{
+			if (_base_state_frame->NextFrame())
+			{
+				ChangeState(MonsterState::kStand);
+			}
+		}
+		else if (_monster_state == MonsterState::kDie)
+		{
+			if (_base_state_frame->NextFrame(false))
+			{
+				
+			}
+		}
+		else
+		{
+			if (_base_state_frame->NextFrame(false))
+			{
+			}
+		}
 }
 
 void Monster::UpdateRect()

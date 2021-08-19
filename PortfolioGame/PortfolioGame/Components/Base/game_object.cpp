@@ -82,6 +82,12 @@ Info GameObject::GetInfo() const
 	return _info;
 }
 
+void GameObject::GainInfo(float x, float y)
+{
+	_info.x += x;
+	_info.y += y;
+}
+
 Info GameObject::GetSpawnPoint() const
 {
 	return _spawn_point;

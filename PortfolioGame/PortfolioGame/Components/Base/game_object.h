@@ -24,6 +24,7 @@ public:
 	uint8_t GetLayer() const;
 	GameObject::State GetState() const;
 	Info GetInfo() const;
+	void GainInfo(float x, float y);
 	Info GetSpawnPoint() const;
 	RECT GetRect() const;
 	MyBitmap* GetImage();

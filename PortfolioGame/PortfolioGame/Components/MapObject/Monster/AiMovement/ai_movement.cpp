@@ -56,7 +56,6 @@ float AiMovement::Moveing()
 					_partner->InsertAttackDelay(attkey, GetTickCount64() + 20000);
 					break;
 				default:
-					std::cout << "À¸¾Ó " << std::endl;
 					break;
 				}
 
@@ -76,28 +75,63 @@ float AiMovement::Moveing()
 		}
 	}
 
-	if (_is_stand)
+	if (_partner->GetPlayer() != nullptr)
+	{ 
+
+		float fX = _partner->GetPlayer()->GetInfo().x - _partner->GetInfo().x;
+		float fY = _partner->GetPlayer()->GetInfo().y - _partner->GetInfo().y;
+		float fDist = sqrtf(fX * fX + fY * fY);
+
+
+		float angle = acosf(fX / fDist);
+		if (_partner->GetPlayer()->GetInfo().x >= _partner->GetInfo().x)
+			//m_fAngle *= -1.f; 
+			angle = 3.141592f * 2.f - angle;
+
+		float fDegree = angle * 180.f / 3.141592f;
+		float i = cosf(angle) * _speed;
+
+		//if (fDist < 100.f)
+		//	return _speed;
+
+		if (i > 0)
+		{
+			_facing_direction = true;
+			return _speed;
+		}
+		else
+		{
+			_facing_direction = false;
+			return -_speed;
+		}
+		//_partner->GetInfo().y -= sinf(angle) * _speed;
+	}
+	else
 	{
-		if (GetTickCount64() > _stand_tick + 3000)
+		if (_is_stand)
+		{
+			if (GetTickCount64() > _stand_tick + 3000)
+			{
+				ResetMoveRange();
+			}
+			return 0;
+		}
+		else if (!_facing_direction)
+		{
+			if (_move_range + _speed > 0)
+			{
+				ResetMoveRange();
+			}
+			_move_range += _speed;
+			return -_speed;
+		}
+		if (_move_range - _speed < 0)
 		{
 			ResetMoveRange();
 		}
-		return 0;
-	} else if (!_facing_direction)
-	{
-		if (_move_range + _speed > 0)
-		{
-			ResetMoveRange();
-		}
-		_move_range += _speed;
-		return -_speed;
+		_move_range -= _speed;
+		return _speed;
 	}
-	if (_move_range - _speed < 0)
-	{
-		ResetMoveRange();
-	}
-	_move_range -= _speed;
-	return _speed;
 }
 
 void AiMovement::SetFacingDirection(bool facing)
@@ -139,7 +173,7 @@ void AiMovement::ResetMoveRange()
 		return;
 	}
 	_facing_direction = rand() % 2;
-	_move_range = static_cast<float>(rand() % 1000);
+	_move_range = static_cast<float>(rand() % 250);
 	if (!_facing_direction)
 		_move_range *= -1;
 

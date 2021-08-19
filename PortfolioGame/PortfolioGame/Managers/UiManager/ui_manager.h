@@ -1,4 +1,5 @@
 #pragma once
+class DeadMessage;
 class NpcTalkWindow;
 class ShopWindow;
 class StatWindow;
@@ -26,6 +27,7 @@ public:
 	std::shared_ptr<StatWindow> GetStatWindow() const;
 	std::shared_ptr<NpcTalkWindow> GetNpcTalkWindow() const;
 	std::shared_ptr<ShopWindow> GetShopWindow() const;
+	std::shared_ptr<DeadMessage> GetDeadMessage() const;
 private:
 	void ButtonUiLoad();
 	void PlayerInfoUiLoad();
@@ -48,5 +50,6 @@ private:
 	std::shared_ptr<ItemInfoToolTip> _item_info_tool_tip;
 	std::shared_ptr<NpcTalkWindow> _npc_talk_window;
 	std::shared_ptr<ShopWindow> _shop_window;
+	std::shared_ptr<DeadMessage> _dead_message;
 
 };

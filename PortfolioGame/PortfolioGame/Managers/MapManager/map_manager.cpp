@@ -445,7 +445,7 @@ bool MapManager::FootholdYCollisionMonster(GameObject* object, float* outY, Foot
 			if (!(degree >= 85 && degree <= 95) &&
 				!(degree >= 175 && degree <= 195))
 			{
-				float characterY = object->GetInfo().y ;
+				float characterY = object->GetInfo().y - 10 ;
 				if (characterY < footHold->GetEndPos().y ||
 					characterY < footHold->GetStartPos().y)
 				{
@@ -483,7 +483,7 @@ bool MapManager::FootholdYCollisionMonster(GameObject* object, float* outY, Foot
 				if (!(degree >= 85 && degree <= 95) &&
 					!(degree >= 175 && degree <= 195))
 				{
-					float characterY = object->GetInfo().y  - 1;
+					float characterY = object->GetInfo().y  - 10;
 					if (characterY < footHold->GetEndPos().y ||
 						characterY < footHold->GetStartPos().y)
 					{

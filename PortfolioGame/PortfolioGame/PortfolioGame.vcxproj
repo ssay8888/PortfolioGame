@@ -213,6 +213,7 @@
     <ClInclude Include="Managers\StringManager\string_Info.h" />
     <ClInclude Include="Managers\StringManager\string_manager.h" />
     <ClInclude Include="Managers\UiManager\Base\base_window.h" />
+    <ClInclude Include="Managers\UiManager\DeadMessage\dead_message.h" />
     <ClInclude Include="Managers\UiManager\Equip\equipment_window.h" />
     <ClInclude Include="Managers\UiManager\Inventory\inventory_window.h" />
     <ClInclude Include="Managers\UiManager\NpcTalk\npc_talk_window.h" />
@@ -461,6 +462,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Managers\UiManager\Base\base_window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\DeadMessage\dead_message.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>

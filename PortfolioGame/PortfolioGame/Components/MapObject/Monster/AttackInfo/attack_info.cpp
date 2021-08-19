@@ -184,16 +184,16 @@ MonsterFrameManager* AttackInfo::GetHitEffectFrame() const
 
 void AttackInfo::ResetEffectFrame()
 {
+	_attack_after_tick = 0;
+	_effect_after_tick = 0;
 	if (_effect_frame != nullptr)
 	{
-		_attack_after_tick = 0;
-		_effect_after_tick = 0;
 		_effect_frame->SetFrameNumber(0);
 		_effect_frame->SetFrameRevers(false);
 		_effect_frame->SetFrameTick(0);
-		_is_effect_finish = false;
-		_is_attack_finish = false;
 	}
+	_is_effect_finish = false;
+	_is_attack_finish = false;
 	//MonsterFrameManager* _effect_frame;
 	//MonsterFrameManager* _hit_effect_frame;
 }

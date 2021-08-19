@@ -16,7 +16,7 @@ uint64_t MonsterFrameManager::GetFrameTick() const
     return _frame_tick;
 }
 
-uint64_t MonsterFrameManager::GetFrameNumber() const
+uint16_t MonsterFrameManager::GetFrameNumber() const
 {
     return _frame_number;
 }

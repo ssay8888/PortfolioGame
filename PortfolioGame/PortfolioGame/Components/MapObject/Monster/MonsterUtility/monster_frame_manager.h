@@ -8,7 +8,7 @@ public:
 	~MonsterFrameManager();
 
 	uint64_t GetFrameTick() const;
-	uint64_t GetFrameNumber() const;
+	uint16_t GetFrameNumber() const;
 	bool IsFrameRevers() const;
 
 	void SetFrameTick(uint64_t tick);

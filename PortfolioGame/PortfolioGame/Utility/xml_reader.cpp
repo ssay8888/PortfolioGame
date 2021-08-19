@@ -659,7 +659,17 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "speed"))
 		{
-			monster->SetSpeed(std::abs(std::stof(info.node().attribute("value").value())) / 65);
+			if (auto speed = std::abs(std::stof(info.node().attribute("value").value())))
+			{
+				if (speed > 0)
+				{
+					float value = 100 - speed;
+					if (value > 0)
+					{
+						monster->SetSpeed(value / 65);
+					}
+				}
+			}
 		}
 		else if (!strcmp(info.node().attribute("name").value(), "PADamage"))
 		{

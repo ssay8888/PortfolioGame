@@ -13,6 +13,7 @@
 #include "Skill/skill_window.h"
 #include "Stat/stat_window.h"
 #include "ToolTipUi/item_info_tool_tip.h"
+#include "DeadMessage/dead_message.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
@@ -46,6 +47,8 @@ void UiManager::ReadyUiManager()
 	_npc_talk_window->DoReadyWindow();
 	_shop_window = std::make_shared<ShopWindow>(ShopWindow());
 	_shop_window->DoReadyWindow();
+	_dead_message = std::make_shared<DeadMessage>(DeadMessage());
+	_dead_message->DoReadyWindow();
 }
 
 void UiManager::UpdateUiManager()
@@ -64,6 +67,7 @@ void UiManager::UpdateUiManager()
 	_stat_window->DoUpdateWindow();
 	_npc_talk_window->DoUpdateWindow();
 	_shop_window->DoUpdateWindow();
+	_dead_message->DoUpdateWindow();
 }
 
 void UiManager::RenderUiManager(HDC hdc)
@@ -90,6 +94,7 @@ void UiManager::RenderUiManager(HDC hdc)
 	_item_info_tool_tip->BaseToolToolTipRender(hdc);
 	_npc_talk_window->DoRenderWindow(hdc);
 	_shop_window->DoRenderWindow(hdc);
+	_dead_message->DoRenderWindow(hdc);
 }
 
 void UiManager::ButtonUiLoad()
@@ -294,4 +299,9 @@ std::shared_ptr<NpcTalkWindow> UiManager::GetNpcTalkWindow() const
 std::shared_ptr<ShopWindow> UiManager::GetShopWindow() const
 {
 	return _shop_window;
+}
+
+std::shared_ptr<DeadMessage> UiManager::GetDeadMessage() const
+{
+	return _dead_message;
 }
