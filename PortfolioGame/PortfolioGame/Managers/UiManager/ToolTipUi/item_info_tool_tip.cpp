@@ -47,7 +47,7 @@ void ItemInfoToolTip::BaseToolToolTipRender(HDC hdc)
 			{
 				AlphaBlueScreenItemInfo(hdc);
 				AlphaItemWhiteMiniScreen(hdc);
-				SelectItemRedner(hdc, item);
+				SelectItemRender(hdc, item);
 			}
 		}
 		else
@@ -164,7 +164,7 @@ void ItemInfoToolTip::AlphaItemWhiteMiniScreen(HDC hdc) const
 		67, bf2);
 }
 
-void ItemInfoToolTip::SelectItemRedner(HDC hdc, const std::shared_ptr<Item> item) const
+void ItemInfoToolTip::SelectItemRender(HDC hdc, const std::shared_ptr<Item> item) const
 {
 	const auto mouse = InGameScene::GetMouse();
 	const auto ui_manager = UiManager::GetInstance()->GetInventoryWindow();

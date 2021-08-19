@@ -20,66 +20,7 @@ float AiMovement::Moveing()
 	bool is_check_attack = false;
 	if (_partner->GetPlayer() != nullptr && !_partner->GetAttackInfo().empty())
 	{
-		std::string useAttack;
-		for (auto attack_info : _partner->GetAttackInfo())
-		{
-			RECT range = attack_info.second->GetRange();
-			RECT rect{
-				static_cast<int>(_partner->GetInfo().x) - std::abs(range.left),
-			static_cast<int>(_partner->GetInfo().y) - std::abs(range.top),
-			static_cast<int>(_partner->GetInfo().x) + std::abs(range.right),
-			static_cast<int>(_partner->GetInfo().y) + std::abs(range.bottom) };
-			if (_partner->GetAttackDelaySize() == 0)
-			{
-				if (MapManager::GetInstance()->MonsterHitBoxCollision(rect))
-				{
-					auto now = GetTickCount64();
-					auto tick = _partner->FindAttackDelay(attack_info.first);
-					if (GetTickCount64() > tick + 10000)
-					{
-						if (attack_info.first == "attack1")
-						{
-							_partner->ChangeState(Monster::MonsterState::kAttack1);
-							useAttack = attack_info.first;
-							_partner->SetStateString(attack_info.first);
-						}
-						else if (attack_info.first == "attack2")
-						{
-							_partner->ChangeState(Monster::MonsterState::kAttack2);
-							useAttack = attack_info.first;
-							_partner->SetStateString(attack_info.first);
-						}
-						else if (attack_info.first == "attack3")
-						{
-							_partner->ChangeState(Monster::MonsterState::kAttack3);
-							useAttack = attack_info.first;
-							_partner->SetStateString(attack_info.first);
-						}
-						_partner->InsertAttackDelay(attack_info.first, GetTickCount64());
-
-						if (_partner->GetPlayer() != nullptr)
-						{
-							if (_partner->GetPlayer()->GetInfo().x > _partner->GetInfo().x)
-							{
-								SetFacingDirection(true);
-							}
-							else if (_partner->GetPlayer()->GetInfo().x < _partner->GetInfo().x)
-							{
-								SetFacingDirection(false);
-							}
-						}
-						return 0;
-					}
-				}
-			}
-			else if (((!attack_info.second->IsEffectFinish() && attack_info.second->IsAttackFinish()) ||
-				(attack_info.second->IsEffectFinish() && !attack_info.second->IsAttackFinish())))
-			{
-				is_check_attack = true;
-				useAttack = attack_info.first;
-			}
-		}
-		if (!is_check_attack)
+		if (!_partner->IsAttacking())
 		{
 			AttackInfo* attack_info = nullptr;
 			std::string key;
@@ -95,17 +36,27 @@ float AiMovement::Moveing()
 				{
 				case 1:
 					_partner->ChangeState(Monster::MonsterState::kAttack1);
-					useAttack = attkey;
 					_partner->SetAttackTick();
+					_partner->SetIsAttacking(true);
 					_partner->SetStateString(attkey);
 					_partner->InsertAttackDelay(attkey, GetTickCount64() + 10000);
 					break;
+				case 2:
+					_partner->ChangeState(Monster::MonsterState::kAttack2);
+					_partner->SetAttackTick();
+					_partner->SetIsAttacking(true);
+					_partner->SetStateString(attkey);
+					_partner->InsertAttackDelay(attkey, GetTickCount64() + 15000);
+					break;
 				case 3:
 					_partner->ChangeState(Monster::MonsterState::kAttack3);
-					useAttack = attkey;
 					_partner->SetAttackTick();
+					_partner->SetIsAttacking(true);
 					_partner->SetStateString(attkey);
 					_partner->InsertAttackDelay(attkey, GetTickCount64() + 20000);
+					break;
+				default:
+					std::cout << "À¸¾Ó " << std::endl;
 					break;
 				}
 
@@ -116,18 +67,13 @@ float AiMovement::Moveing()
 						SetFacingDirection(true);
 					}
 					else if (_partner->GetPlayer()->GetInfo().x < _partner->GetInfo().x)
-					{ 
+					{
 						SetFacingDirection(false);
 					}
 				}
 			}
 			return 0.f;
 		}
-	}
-	
-	if (is_check_attack)
-	{
-		return 0.f;
 	}
 
 	if (_is_stand)

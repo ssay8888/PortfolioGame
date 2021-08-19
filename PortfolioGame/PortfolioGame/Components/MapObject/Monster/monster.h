@@ -31,6 +31,8 @@ public:
 	uint8_t GetUndead() const;
 	void SetBodyAttack(uint8_t body);
 	uint8_t GetBodyAttack() const;
+	void SetBoss(uint8_t boss);
+	bool IsBoss() const;
 
 	void SetPad(uint16_t pad);
 	uint16_t GetPad() const;
@@ -79,6 +81,9 @@ public:
 	void SetAttackTick();
 	uint64_t GetAttackTick()const;
 	MonsterFrameManager* GetBaseFrame() const;
+
+	void SetIsAttacking(bool g);
+	bool IsAttacking() const;
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
@@ -125,6 +130,7 @@ private:
 	std::map<std::string, AttackInfo*> _attack_info;
 	std::map<std::string, uint64_t> _attack_delay;
 	uint64_t _attack_tick;
+	bool _is_attack;
 
 	HDC _memDC2;
 	HBITMAP _bitmap2;

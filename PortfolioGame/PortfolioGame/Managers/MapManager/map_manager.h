@@ -33,6 +33,7 @@ public:
 	void ReleaseGameObjectManager();
 
 	bool FootholdYCollision(GameObject* object, float* outY, FootHold** outHold);
+	bool FootholdYCollisionMonster(GameObject* object, float* outY, FootHold** outHold);
 	bool FootholdAndRectCollision(GameObject* object);
 	bool MonsterHitBoxCollision(RECT rect);
 	bool LadderRopeCollsition(GameObject* object, float* outX, FootHold** outHold);

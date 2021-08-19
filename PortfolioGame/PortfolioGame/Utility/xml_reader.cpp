@@ -685,6 +685,10 @@ void XmlReader::SetInfoMonster(pugi::xpath_node_set data, std::shared_ptr<Monste
 		{
 			monster->SetExp(std::stoi(info.node().attribute("value").value()));
 		}
+		else if (!strcmp(info.node().attribute("name").value(), "boss"))
+		{
+			monster->SetBoss(std::stoi(info.node().attribute("value").value()));
+		}
 	}
 }
 

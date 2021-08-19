@@ -337,7 +337,6 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 
 	for (FootHold* footHold : GetNowMap()->GetFootHoldList())
 	{
-		float xas = footHold->GetStartPos().x;
 		if (object->GetInfo().x >= footHold->GetStartPos().x &&
 			object->GetInfo().x <= footHold->GetEndPos().x)
 		{
@@ -358,7 +357,6 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 						float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
 						float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
  
-						//std::cout << fDistY << " : " << fDistY2 << std::endl;
 						if (fDistY < 0 || fDistY < fDistY2)
 						{
 							continue;
@@ -422,6 +420,101 @@ bool MapManager::FootholdYCollision(GameObject* object, float* outY, FootHold** 
 	float y2 = static_cast<float>(pTarget->GetEndPos().y);
 	*outY = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - x1) + y1;
 	*outY -= (object->GetInfo().cy >> 1);
+	*outHold = pTarget;
+	return true;
+}
+
+bool MapManager::FootholdYCollisionMonster(GameObject* object, float* outY, FootHold** outHold)
+{
+	if (GetNowMap()->GetFootHoldList().empty())
+		return false;
+
+	FootHold* pTarget = nullptr;
+
+
+	for (FootHold* footHold : GetNowMap()->GetFootHoldList())
+	{
+		if (object->GetInfo().x >= footHold->GetStartPos().x &&
+			object->GetInfo().x <= footHold->GetEndPos().x)
+		{
+
+			float x = static_cast<float>(footHold->GetEndPos().x) - static_cast<float>(footHold->GetStartPos().x);
+			float y = static_cast<float>(footHold->GetEndPos().y) - static_cast<float>(footHold->GetStartPos().y);
+			float radian = std::atan2(y, x);
+			float degree = radian * 180 / 3.141592f;
+			if (!(degree >= 85 && degree <= 95) &&
+				!(degree >= 175 && degree <= 195))
+			{
+				float characterY = object->GetInfo().y ;
+				if (characterY < footHold->GetEndPos().y ||
+					characterY < footHold->GetStartPos().y)
+				{
+					if (pTarget != nullptr)
+					{
+						float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
+						float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
+
+						if (fDistY < 0 || fDistY < fDistY2)
+						{
+							continue;
+						}
+					}
+					pTarget = footHold;
+				}
+			}
+
+		}
+	}
+	if (pTarget == nullptr)
+	{
+		for (FootHold* footHold : GetNowMap()->GetFootHoldList())
+		{
+			float xas = footHold->GetStartPos().x;
+			// 528
+			// 249-1093
+			if (object->GetInfo().x <= footHold->GetStartPos().x &&
+				object->GetInfo().x >= footHold->GetEndPos().x)
+			{
+
+				float x = static_cast<float>(footHold->GetStartPos().x) - static_cast<float>(footHold->GetEndPos().x);
+				float y = static_cast<float>(footHold->GetStartPos().y) - static_cast<float>(footHold->GetEndPos().y);
+				float radian = std::atan2(y, x);
+				float degree = radian * 180 / 3.141592f;
+				if (!(degree >= 85 && degree <= 95) &&
+					!(degree >= 175 && degree <= 195))
+				{
+					float characterY = object->GetInfo().y  - 1;
+					if (characterY < footHold->GetEndPos().y ||
+						characterY < footHold->GetStartPos().y)
+					{
+						if (pTarget != nullptr)
+						{
+							float fDistY = std::fabs(pTarget->GetStartPos().y - object->GetInfo().y);
+							float fDistY2 = std::fabs(footHold->GetStartPos().y - object->GetInfo().y);
+
+							if (fDistY < 0 || fDistY < fDistY2)
+							{
+								continue;
+							}
+
+						}
+						pTarget = footHold;
+					}
+				}
+
+			}
+		}
+	}
+	if (nullptr == pTarget)
+	{
+		*outHold = nullptr;
+		return false;
+	}
+	float x1 = static_cast<float>(pTarget->GetStartPos().x);
+	float y1 = static_cast<float>(pTarget->GetStartPos().y);
+	float x2 = static_cast<float>(pTarget->GetEndPos().x);
+	float y2 = static_cast<float>(pTarget->GetEndPos().y);
+	*outY = ((y2 - y1) / (x2 - x1)) * (object->GetInfo().x - x1) + y1;
 	*outHold = pTarget;
 	return true;
 }

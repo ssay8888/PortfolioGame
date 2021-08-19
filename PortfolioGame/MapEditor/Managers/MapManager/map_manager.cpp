@@ -426,6 +426,30 @@ void MapManager::AddListObject()
 	case MapManager::SelectState::kMob:
 		if (_selectMonsterImage.second != nullptr)
 		{
+
+			if (!strcmp(_selectMonsterImage.first.c_str(), "Client\\Mob\\8800000.img.xml"))
+			{
+
+				char path[150];
+				for (int i = 0; i < 8; ++i)
+				{
+					MapObject* obj2 = new MapObject();
+					snprintf(path, 150, "Client\\Mob\\%d.img.xml", 8800003 + i);
+					obj2->SetLayer(SelectLayer);
+					obj2->SetImage(_selectMonsterImage.second);
+					obj2->SetImageNumber(-2);
+					obj2->SetFileName(FileManager::GetInstance()->GetFileName(path));
+					obj2->SetObjectType(MapObject::ObjectType::kLife);
+					obj2->SetPath(path);
+					obj2->SetPos(
+						static_cast<float>(GetMouse()->GetInfo().x) - static_cast<int>(ScrollManager::GetScrollX()),
+						static_cast<float>(GetMouse()->GetInfo().y) - static_cast<int>(ScrollManager::GetScrollY()));
+					obj2->SetCX(_selectMonsterImage.second->GetWidth());
+					obj2->SetCY(_selectMonsterImage.second->GetHeight());
+
+					_list[obj2->GetLayer()].emplace_back(obj2);
+				}
+			}
 			MapObject* obj = new MapObject();
 
 			obj->SetLayer(SelectLayer);

@@ -155,8 +155,8 @@
     <imgdir name="stand">
         <canvas name="0" width="385" height="387">
             <vector name="origin" x="192" y="382" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-380" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -168,8 +168,8 @@
         </canvas>
         <canvas name="1" width="385" height="388">
             <vector name="origin" x="192" y="383" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-382" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -181,8 +181,8 @@
         </canvas>
         <canvas name="2" width="385" height="388">
             <vector name="origin" x="192" y="383" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-382" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -194,8 +194,8 @@
         </canvas>
         <canvas name="3" width="385" height="388">
             <vector name="origin" x="192" y="383" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-382" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -207,8 +207,8 @@
         </canvas>
         <canvas name="4" width="385" height="383">
             <vector name="origin" x="192" y="378" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-378" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -220,8 +220,8 @@
         </canvas>
         <canvas name="5" width="385" height="380">
             <vector name="origin" x="192" y="375" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-374" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -233,8 +233,8 @@
         </canvas>
         <canvas name="6" width="385" height="378">
             <vector name="origin" x="192" y="373" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-372" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -246,8 +246,8 @@
         </canvas>
         <canvas name="7" width="385" height="382">
             <vector name="origin" x="192" y="377" />
-            <vector name="lt" x="-175" y="-65" />
-            <vector name="rb" x="180" y="0" />
+            <vector name="lt" x="-85" y="-376" />
+            <vector name="rb" x="124" y="0" />
             <vector name="head" x="-12" y="-295" />
             <imgdir name="rect">
                 <imgdir name="0">
@@ -1704,7 +1704,7 @@
             <int name="type" value="3" />
             <int name="conMP" value="10" />
             <int name="effectAfter" value="80" />
-            <int name="attackAfter" value="2560" />
+            <int name="attackAfter" value="1560" />
             <int name="PADamage" value="560" />
             <int name="disease" value="123" />
             <int name="level" value="3" />

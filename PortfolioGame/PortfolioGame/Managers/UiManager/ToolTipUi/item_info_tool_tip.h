@@ -15,7 +15,7 @@ private:
 	/// </summary>
 	void AlphaBlueScreenItemInfo(HDC hdc) const;
 	void AlphaItemWhiteMiniScreen(HDC hdc) const;
-	void SelectItemRedner(HDC hdc, std::shared_ptr<Item> item) const;
+	void SelectItemRender(HDC hdc, std::shared_ptr<Item> item) const;
 
 
 	void AlphaBlueScreenEquipIcon(HDC hdc) const;

@@ -32,7 +32,8 @@ Monster::Monster() :
 	_target(nullptr),
 	_memDC2(nullptr),
 	_bitmap2(nullptr),
-	_old_bitmap2(nullptr)
+	_old_bitmap2(nullptr),
+	_is_attack(false)
 
 
 {
@@ -116,6 +117,16 @@ void Monster::SetBodyAttack(uint8_t body)
 uint8_t Monster::GetBodyAttack() const
 {
 	return _monster_info.body_attack;
+}
+
+void Monster::SetBoss(uint8_t boss)
+{
+	_monster_info.boss = boss;
+}
+
+bool Monster::IsBoss() const
+{
+	return _monster_info.boss;
 }
 
 void Monster::SetPad(uint16_t pad)
@@ -328,7 +339,7 @@ void Monster::IsJumping()
 {
 	float outY = 0;
 	FootHold* footHold;
-	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollisionMonster(this, &outY, &footHold);
 
 	if (isFoothold)
 	{
@@ -356,9 +367,9 @@ bool Monster::IsChangeFoothold()
 	FootHold* footHold;
 	if (_this_foothold == nullptr)
 	{
-		MapManager::GetInstance()->FootholdYCollision(this, &outY, &_this_foothold);
+		MapManager::GetInstance()->FootholdYCollisionMonster(this, &outY, &_this_foothold);
 	}
-	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &footHold);
+	bool isFoothold = MapManager::GetInstance()->FootholdYCollisionMonster(this, &outY, &footHold);
 	if (_this_foothold != footHold)
 	{
 		return true;
@@ -384,7 +395,18 @@ void Monster::AttackApply(const std::string key)
 
 	const uint64_t tick = GetTickCount64();
 	const auto player = dynamic_cast<Player*>(_target);
-	if (!player->IsInvincibility() && tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter())
+
+	auto bool1 = tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter();
+	auto bool2 = attack_info->GetAttackAfterTick() > 1;
+	if(bool1 && bool2 && _is_attack)
+	{
+	std::cout << key << bool1 << " / " << bool2 << std::endl;
+		
+	}
+
+	if (_is_attack &&
+		(attack_info->GetAttackAfterTick() > 1 && 
+			tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter()))
 	{
 		if (IntersectRect(&rc, &range, &target))
 		{
@@ -427,6 +449,8 @@ void Monster::AttackApply(const std::string key)
 				}
 			}
 		}
+		attack_info->SetAttackAfterTick(1);
+		attack_info->SetEffectAfterTick(1);
 		this->GainMp(-attack_info->GetConMp());
 	}
 
@@ -440,6 +464,16 @@ uint64_t Monster::GetAttackTick() const
 MonsterFrameManager* Monster::GetBaseFrame() const
 {
 	return _base_state_frame;
+}
+
+void Monster::SetIsAttacking(bool g)
+{
+	_is_attack = g;
+}
+
+bool Monster::IsAttacking() const
+{
+	return _is_attack;
 }
 
 void Monster::SetAttackTick()
@@ -501,35 +535,45 @@ void Monster::UpdateGameObject(const float deltaTime)
 		return;
 	}
 	if (_monster_state != MonsterState::kHit)
-	{/*
-		if (_target != nullptr)
+	{
+		movingVluae = _ai_movement->Moveing();
+		if (movingVluae != 0.f)
 		{
-			Attack1Apply(_state_string);
+			ChangeState(MonsterState::kMove);
 		}
 		else
-		{*/
-			movingVluae = _ai_movement->Moveing();
-			if (movingVluae != 0.f)
+		{
+			if (_monster_state == MonsterState::kStand ||
+				_monster_state == MonsterState::kDie ||
+				_monster_state == MonsterState::kHit)
 			{
-				ChangeState(MonsterState::kMove);
+				ChangeState(MonsterState::kStand);
 			}
-			else
+		}
+		if (_monster_state == MonsterState::kAttack1 || _monster_state == MonsterState::kAttack2
+			 || _monster_state == MonsterState::kAttack3)
+		{
+			if (!this->GetStateString().empty())
 			{
-				if (_monster_state == MonsterState::kStand ||
-					_monster_state == MonsterState::kDie || 
-					_monster_state == MonsterState::kHit)
-				{
-					ChangeState(MonsterState::kStand);
-				}
+				this->AttackApply(this->GetStateString());
 			}
-		//}
+		}
 		float totalMoveX = 0;
 		float totalMoveY = 0;
 		float outY = 0;
 		FootHold* footHold = nullptr;
 		totalMoveX += movingVluae;
 
-		if (strcmp(_monster_code.c_str(), "Client\\Mob\\8800000.img.xml"))
+		if (/*strcmp(_monster_code.c_str(), "Client\\Mob\\8800000.img.xml") &&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800003.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800004.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800005.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800006.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800007.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800008.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800009.img.xml")&&
+			strcmp(_monster_code.c_str(), "Client\\Mob\\8800010.img.xml")*/
+			_monster_code.find("Mob\\88000") == std::string::npos)
 		{
 			_facing_direction = _ai_movement->GetFacingDirection();
 		}
@@ -538,8 +582,7 @@ void Monster::UpdateGameObject(const float deltaTime)
 			_info.x += totalMoveX;
 			_info.y += totalMoveY;
 		}
-
-		UpdateRectGameObject();
+		
 		if (auto changeHold = IsChangeFoothold() || MapManager::GetInstance()->FootholdAndRectCollision(this))
 		{
 			_info.x -= totalMoveX;
@@ -625,7 +668,7 @@ void Monster::RenderGameObject(HDC hdc)
 
 		GdiAlphaBlend(hdc,
 			static_cast<int>((_info.x - data->GetOriginPos().x) + ScrollManager::GetScrollX()),
-			static_cast<int>(_rect.bottom - data->GetOriginPos().y + ScrollManager::GetScrollY()),
+			static_cast<int>(_info.y - (data->GetOriginPos().y) + ScrollManager::GetScrollY()),
 			image->GetWidth(),
 			image->GetHeight(),
 			_memDC2,
@@ -643,7 +686,7 @@ void Monster::RenderGameObject(HDC hdc)
 		{
 			GdiTransparentBlt(hdc,
 				static_cast<int>((_info.x - data->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_info.y - (data->GetOriginPos().y /2) + ScrollManager::GetScrollY()),
+				static_cast<int>(_info.y - (data->GetOriginPos().y) + ScrollManager::GetScrollY()),
 				image->GetWidth(),
 				image->GetHeight(),
 				_memDC,
@@ -661,7 +704,7 @@ void Monster::RenderGameObject(HDC hdc)
 			auto reduceY = std::abs(static_cast<int>(_rect.bottom - data->GetOriginPos().y + ScrollManager::GetScrollY()));
 			GdiTransparentBlt(hdc,
 				static_cast<int>(_info.x - (data->GetOriginPos().x) + ScrollManager::GetScrollX()),
-				static_cast<int>(_info.y - (data->GetOriginPos().y / 2) + ScrollManager::GetScrollY()),
+				static_cast<int>(_info.y - (data->GetOriginPos().y) + ScrollManager::GetScrollY()),
 				image->GetWidth(),
 				image->GetHeight(),
 				_memDC,
@@ -680,6 +723,10 @@ void Monster::RenderGameObject(HDC hdc)
 					{
 						attack_info->second->SetEffectAfterTick(GetTickCount64());
 					}
+					if (attack_info->second->GetAttackAfterTick() == 0)
+					{
+						attack_info->second->SetAttackAfterTick(GetTickCount64());
+					}
 					const auto effect_list = attack_info->second->GetEffect();
 					const int64_t tick = GetTickCount64();
 					if (tick > attack_info->second->GetEffectAfterTick() + attack_info->second->GetEffectAfter() && 
@@ -691,7 +738,7 @@ void Monster::RenderGameObject(HDC hdc)
 							const auto effect_image = effect_shared_image->GetImage();
 							effect_image->RenderBitmapImage(hdc,
 								static_cast<int>((_info.x - effect_shared_image->GetOriginPos().x) + ScrollManager::GetScrollX()),
-								static_cast<int>(_rect.bottom - effect_shared_image->GetOriginPos().y + ScrollManager::GetScrollY()),
+								static_cast<int>(_info.y - (effect_shared_image->GetOriginPos().y) + ScrollManager::GetScrollY()),
 								effect_image->GetWidth(),
 								effect_image->GetHeight());
 						}
@@ -699,7 +746,11 @@ void Monster::RenderGameObject(HDC hdc)
 				}
 				if (!attack_info->second->GetAreaWarning().empty())
 				{
-					if (attack_info->second->GetAttackAfter() == 0)
+					if (attack_info->second->GetEffectAfterTick() == 0)
+					{
+						attack_info->second->SetEffectAfterTick(GetTickCount64());
+					}
+					if (attack_info->second->GetAttackAfterTick() == 0)
 					{
 						attack_info->second->SetAttackAfterTick(GetTickCount64());
 					}
@@ -713,7 +764,7 @@ void Monster::RenderGameObject(HDC hdc)
 							const auto effect_image = effect_shared_image->GetImage();
 							effect_image->RenderBitmapImage(hdc,
 								static_cast<int>((area.x - effect_shared_image->GetOriginPos().x) + ScrollManager::GetScrollX()),
-								static_cast<int>(_rect.bottom - effect_shared_image->GetOriginPos().y + ScrollManager::GetScrollY()),
+								static_cast<int>(_info.y - (effect_shared_image->GetOriginPos().y) + ScrollManager::GetScrollY()),
 								effect_image->GetWidth(),
 								effect_image->GetHeight());
 						}
@@ -736,11 +787,11 @@ void Monster::RenderGameObject(HDC hdc)
 		break;
 		default:;
 		}
-		/*Rectangle(hdc,
-			static_cast<int>(_info.x - (_info.cx >> 1)) + static_cast<int>(ScrollManager::GetScrollX()),
-			static_cast<int>(_info.y - (_info.cy >> 1)) + static_cast<int>(ScrollManager::GetScrollY()),
-			static_cast<int>(_info.x + (_info.cx >> 1)) + static_cast<int>(ScrollManager::GetScrollX()),
-			static_cast<int>(_info.y + (_info.cy >> 1)) + + static_cast<int>(ScrollManager::GetScrollY()));*/
+		//Rectangle(hdc, 
+		//	_rect.left + static_cast<int>(ScrollManager::GetScrollX()), 
+		//	_rect.top + static_cast<int>(ScrollManager::GetScrollY()),
+		//	_rect.right + static_cast<int>(ScrollManager::GetScrollX()),
+		//	_rect.bottom + static_cast<int>(ScrollManager::GetScrollY()));
 	}
 }
 
@@ -762,13 +813,13 @@ void Monster::LateUpdateGameObject()
 			if (!attack_info->second->GetEffect().empty())
 			{
 				const int64_t tick = GetTickCount64();
-				if (tick > attack_info->second->GetAttackAfterTick() + attack_info->second->GetAttackAfter())
-				{
+				//if (tick > attack_info->second->GetAttackAfterTick() + attack_info->second->GetAttackAfter())
+				//{
 					if (attack_info->second->GetEffectFrame()->NextFrame(false))
 					{
 						attack_info->second->SetEffectFinish(true);
 					}
-				}
+				//}
 			}
 			else
 			{
@@ -797,14 +848,11 @@ void Monster::LateUpdateGameObject()
 				attack_info->second->GetHitEffectFrame()->NextFrame(false);
 			}
 
-			if (attack_info->second->IsEffectFinish() && attack_info->second->IsAttackFinish())
+			if (attack_info->second->IsEffectFinish() && attack_info->second->IsAttackFinish() && _base_state_frame->IsFrameFinish())
 			{
-				if (!this->GetStateString().empty())
-				{
-					this->AttackApply(this->GetStateString());
-				}
 				attack_info->second->ResetEffectFrame();
 				attack_info->second->ResetAreaFrame();
+				this->SetIsAttacking(false);
 				_base_state_frame->ResetFrame();
 				ChangeState(MonsterState::kStand);
 				return;
@@ -829,10 +877,10 @@ void Monster::UpdateRect()
 {
 	const auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
 	//RECT rect = (*data)->GetRect();
-	//_rect.left = static_cast<int>(_info.x + (*data)->GetOriginPos().x) - std::abs(rect.left);
-	//_rect.top = static_cast<int>(_info.y + (*data)->GetOriginPos().y) - std::abs(rect.top);
-	//_rect.right = static_cast<int>(_info.x + (*data)->GetOriginPos().x) + std::abs(rect.right);
-	//_rect.bottom = static_cast<int>(_info.y + (*data)->GetOriginPos().y) + std::abs(rect.bottom);
+	_rect.left = static_cast<int>(_info.x + (*data).GetRect().left);
+	_rect.top = static_cast<int>(_info.y + (*data).GetRect().top);
+	_rect.right = static_cast<int>(_info.x +(*data).GetRect().right);
+	_rect.bottom = static_cast<int>(_info.y +(*data).GetRect().bottom);
 	_info.cx = data->GetOriginPos().x;
 	_info.cy = data->GetOriginPos().y;
 }

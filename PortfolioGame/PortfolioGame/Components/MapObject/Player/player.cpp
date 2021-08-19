@@ -1044,7 +1044,10 @@ void Player::AttackMonster(Monster* monster)
 		GetPlayerInfo()->exp += monster->GetExp();
 	}
 	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
-	monster->ChangeState(Monster::MonsterState::kHit);
+	if (!monster->IsBoss())
+	{
+		monster->ChangeState(Monster::MonsterState::kHit);
+	}
 }
 
 bool Player::IsInvincibility()
@@ -1273,7 +1276,10 @@ void Player::ApplySkill()
 					damages.emplace_back(rand());
 				}
 				_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
-				monster->ChangeState(Monster::MonsterState::kHit);
+				if (!monster->IsBoss())
+				{
+					monster->ChangeState(Monster::MonsterState::kHit);
+				}
 				monster->SetPlayer(this);
 			}
 			return;

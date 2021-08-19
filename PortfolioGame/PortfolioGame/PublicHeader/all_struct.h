@@ -45,6 +45,7 @@ typedef struct {
 	uint8_t level;
 	uint8_t undead;
 	uint8_t body_attack;
+	bool boss;
 	uint16_t pad;
 	uint16_t mad;
 	uint16_t pdd;
