@@ -512,7 +512,6 @@ void Monster::UpdateGameObject(const float deltaTime)
 	{
 		_base_state_frame->SetThisFrame(_this_frame);
 	}
-	UpdateRect();
 	float movingVluae = 0;
 	if (!IsAlive())
 	{
@@ -590,7 +589,8 @@ void Monster::UpdateGameObject(const float deltaTime)
 			_info.x += totalMoveX;
 			_info.y += totalMoveY;
 		}
-		
+
+		UpdateRect();
 		if (auto changeHold = IsChangeFoothold() || MapManager::GetInstance()->FootholdAndRectCollision(this))
 		{
 			_info.x -= totalMoveX;

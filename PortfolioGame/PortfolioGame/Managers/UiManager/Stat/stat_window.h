@@ -27,6 +27,7 @@ private:
 	void BaseStatInfoRender(HDC hdc);
 private:
 	bool _show_background2;
+	KeyManager* _key_manager2;
 	std::shared_ptr<MyBitmap> _background2;
 	std::shared_ptr<UiButton> _ap_up_button[4];
 	std::shared_ptr<UiButton> _ap_up_auto_button;

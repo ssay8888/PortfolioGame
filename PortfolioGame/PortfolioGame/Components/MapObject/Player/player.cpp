@@ -374,9 +374,10 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 	if (keymanager->KeyPressing(KEY_B))
 	{
-		this->ChangeFrameState("dead");
-		_is_dead = true;
-		UiManager::GetInstance()->GetDeadMessage()->SetShow(true);
+		//this->ChangeFrameState("dead");
+		//_is_dead = true;
+		//UiManager::GetInstance()->GetDeadMessage()->SetShow(true);
+		EffectManager::GetInstance()->ShowEffect("Failure");
 	}
 
 	if (keymanager->KeyPressing(KEY_Z))

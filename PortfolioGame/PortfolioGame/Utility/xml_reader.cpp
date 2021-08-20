@@ -8,16 +8,27 @@
 #include "../Components/Base/game_object.h"
 #include "../Components/MapObject/ani_map_object.h"
 #include "../Components/MapObject/Item/item.h"
-#include "../Components/MapObject/Npc/npc.h"
 #include "../Components/MapObject/Monster/monster.h"
 #include "../Components/MapObject/Monster/AttackInfo/attack_info.h"
-#include "../Managers/ItemManager/item_manager.h"
-#include "../Managers/DropDataManager/drop_data_manager.h"
+#include "../Components/MapObject/Npc/npc.h"
 #include "../Managers/DropDataManager/drop_data_info.h"
+#include "../Managers/DropDataManager/drop_data_manager.h"
+#include "../Managers/EffectManager/effect_info.h"
+#include "../Managers/EffectManager/effect_manager.h"
+#include "../Managers/EffectManager/effect_parts.h"
+#include "../Managers/ItemManager/item_manager.h"
 #include "../Managers/MapManager/map_manager.h"
 #include "../Managers/MonsterMnager/monster_manager.h"
 #include "../Managers/MonsterMnager/monster_movement.h"
 #include "../Managers/MonsterMnager/monster_parts.h"
+#include "../Managers/NpcManager/npc_manager.h"
+#include "../Managers/QuestManager/quest_manager.h"
+#include "../Managers/QuestManager/Quest/quest_info.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_check.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_reward.h"
+#include "../Managers/QuestManager/Quest/SubInfo/quest_say.h"
+#include "../Managers/ShopManager/shop_item.h"
+#include "../Managers/ShopManager/shop_manager.h"
 #include "../Managers/SkillManager/skill_manager.h"
 #include "../Managers/SkillManager/Skill/skill.h"
 #include "../Managers/SkillManager/Skill/skill_effect_image.h"
@@ -27,16 +38,8 @@
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_manager.h"
 #include "../Managers/Skins/skin_parts.h"
-#include "../Managers/ShopManager/shop_item.h"
 #include "../Managers/StringManager/string_Info.h"
 #include "../Managers/StringManager/string_manager.h"
-#include "../Managers/NpcManager/npc_manager.h"
-#include "../Managers/QuestManager/quest_manager.h"
-#include "../Managers/QuestManager/Quest/quest_info.h"
-#include "../Managers/QuestManager/Quest/SubInfo/quest_say.h"
-#include "../Managers/QuestManager/Quest/SubInfo/quest_check.h"
-#include "../Managers/QuestManager/Quest/SubInfo/quest_reward.h"
-#include "../Managers/ShopManager/shop_manager.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -1242,6 +1245,52 @@ void XmlReader::LoadItemString(const std::string path, const std::string node_pa
 				}
 			}
 			StringManager::GetInstance()->InsertStringInfo(str_info);
+		}
+	}
+}
+
+void XmlReader::LoadEffectParts()
+{
+	pugi::xml_document doc;
+	const auto err = doc.load_file("Client\\Effect\\BasicEff.img.xml");
+
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir");
+		for (auto info_node : datas)
+		{
+			const std::shared_ptr<EffectInfo> effect_info = std::make_shared<EffectInfo>(EffectInfo());
+			effect_info->SetName(info_node.node().attribute("name").value());
+			for (auto canvas_node : info_node.node())
+			{
+				const std::shared_ptr<EffectParts> parts = std::make_shared<EffectParts>(EffectParts());
+
+				std::cout << canvas_node.attribute("name").value() << std::endl;
+
+				wchar_t path[150];
+				swprintf_s(path, 150, L"Client\\Effect\\BasicEff.img\\%s.%s.bmp",
+					StringTools::StringToWString(effect_info->GetName().c_str()).c_str(),
+					StringTools::StringToWString(canvas_node.attribute("name").value()).c_str());
+				std::shared_ptr<MyBitmap> bitmap = std::make_shared<MyBitmap>(MyBitmap());
+				bitmap->Insert_Bitmap(_hWnd, path);
+				parts->SetImage(bitmap);
+				for(auto canvas_info_node : canvas_node)
+				{
+					if (!strcmp(canvas_info_node.attribute("name").value(), "origin"))
+					{
+						parts->SetOrigin({
+							std::stoi(canvas_info_node.attribute("x").value()),
+						std::stoi(canvas_info_node.attribute("y").value()), });
+					}
+					else if (!strcmp(canvas_info_node.attribute("name").value(), "delay"))
+					{
+						parts->SetDelay(std::stoi(canvas_info_node.attribute("value").value()));
+					}
+				}
+				effect_info->InsertEffectParts(parts);
+			}
+			EffectManager::GetInstance()->InsertEffect(effect_info);
 		}
 	}
 }

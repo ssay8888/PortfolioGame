@@ -10,12 +10,19 @@
 #include "../../ScenManager/InGameScene/in_game_scene.h"
 #include "../../UiManager/ui_manager.h"
 
-StatWindow::StatWindow(): _show_background2(false)
+StatWindow::StatWindow(): _show_background2(false),
+                          _key_manager2(nullptr)
 {
 }
 
 StatWindow::~StatWindow()
 {
+
+	if (_key_manager2 != nullptr)
+	{
+		delete _key_manager2;
+	}
+
 }
 
 void StatWindow::StrUp()
@@ -88,10 +95,11 @@ void StatWindow::ReadyWindow()
 	_background2->Insert_Bitmap(_hWnd, L"Client\\Ui\\Stat.img\\Stat.backgrnd2.bmp");
 
 	_key_manager = new KeyManager();
+	_key_manager2 = new KeyManager();
 
 	for (int i = 0; i < 4; ++i)
 	{
-		auto button = std::make_shared<UiButton>(UiButton(_key_manager));
+		auto button = std::make_shared<UiButton>(UiButton(_key_manager2));
 		button->SetObjectPos({ 152, float(237 + (18 * i)) });
 		switch (i)
 		{
@@ -112,12 +120,12 @@ void StatWindow::ReadyWindow()
 		button->ReadyButton(L"Stat.img\\Stat.BtApUp");
 		_ap_up_button[i] = button;
 	}
-	auto button = std::make_shared<UiButton>(UiButton(_key_manager));
+	auto button = std::make_shared<UiButton>(UiButton(_key_manager2));
 	button->SetObjectPos({ 98, 187 });
 	button->ReadyButton(L"Stat.img\\Stat.BtAuto");
 	_ap_up_auto_button = button;
 
-	button = std::make_shared<UiButton>(UiButton(_key_manager));
+	button = std::make_shared<UiButton>(UiButton(_key_manager2));
 	button->SetObjectPos({ 123, 315 });
 	button->ReadyButton(L"Stat.img\\Stat.BtDetail");
 	button->SetCallBack(DetailBackGroundSlide);

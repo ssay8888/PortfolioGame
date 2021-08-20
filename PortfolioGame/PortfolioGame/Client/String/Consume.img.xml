@@ -2725,19 +2725,19 @@
         <string name="desc" value="메이플 다크메이트, 메이플 아수라 대거에 공격력 향상 옵션 추가.\n성공률:40%,물리공격력+3,LUK+2\n실패하면 30% 확률로 아이템이 파괴된다." />
     </imgdir>
     <imgdir name="2043700">
-        <string name="name" value="완드 마력 주문서 100%" />
+        <string name="name" value="마력 주문서 100%" />
         <string name="desc" value="완드에 마력 향상 옵션 추가.\n성공률:100%, 마법 공격력+1" />
     </imgdir>
     <imgdir name="2043701">
-        <string name="name" value="완드 마력 주문서 60%" />
+        <string name="name" value="마력 주문서 60%" />
         <string name="desc" value="완드에 마력 향상 옵션 추가.\n성공률:60%, 마법 공격력+2, INT+1" />
     </imgdir>
     <imgdir name="2043702">
-        <string name="name" value="완드 마력 주문서 10%" />
+        <string name="name" value="마력 주문서 10%" />
         <string name="desc" value="완드에 마력 향상 옵션 추가.\n성공률:10%, 마법 공격력+5, INT+3, 마법 방어력+1" />
     </imgdir>
     <imgdir name="2043703">
-        <string name="name" value="완드 마력 주문서 100%" />
+        <string name="name" value="마력 주문서 100%" />
         <string name="desc" value="완드에 마력 향상 옵션 추가.\n성공률:100%, 마법 공격력+5, INT+3, 마법 방어력+1" />
     </imgdir>
     <imgdir name="2043704">

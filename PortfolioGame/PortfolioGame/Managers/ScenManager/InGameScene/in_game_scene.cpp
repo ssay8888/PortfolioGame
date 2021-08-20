@@ -47,6 +47,7 @@ int InGameScene::ReadyScene()
 	ShopManager::GetInstance()->LoadShopData();
 	UiManager::GetInstance()->ReadyUiManager();
 	EffectManager::GetInstance()->LoadDamageNumber();
+	EffectManager::GetInstance()->LoadEffectParts();
 	StringManager::GetInstance()->LoadStringInfo();
 	QuestManager::GetInstance()->LoadQuest();
 	return 0;
@@ -55,21 +56,22 @@ int InGameScene::ReadyScene()
 void InGameScene::UpdateScene()
 {
 	MapManager::GetInstance()->UpdateGameObjectManager(0);
+	EffectManager::GetInstance()->UpdateEffect();
 	UiManager::GetInstance()->UpdateUiManager();
-
 	_mouse->DoUpdateObject(0);
 }
 
 void InGameScene::LateUpdateScene()
 {
 	MapManager::GetInstance()->LateUpdateGameObjectManager();
+	EffectManager::GetInstance()->LateUpdateEffect();
 }
 
 void InGameScene::RenderScene(HDC hdc)
 {
 	MapManager::GetInstance()->RenderGameObjectManager(hdc);
 	MapManager::GetInstance()->RenderFootHoldManager(hdc);
-
+	EffectManager::GetInstance()->RenderEffect(hdc);
 	UiManager::GetInstance()->RenderUiManager(hdc);
 	_mouse->DoRenderGameObject(hdc);
 

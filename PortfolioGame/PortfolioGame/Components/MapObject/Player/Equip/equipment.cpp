@@ -6,6 +6,7 @@
 #include "../../../../Managers/MapManager/map_manager.h"
 #include "../../Item/item.h"
 #include "../Inventory/eqp_inventory.h"
+#include "../../../../Managers/EffectManager/effect_manager.h"
 
 void Equipment::InsertEquipItem(const std::shared_ptr<SkinInfo>& skin_info)
 {
@@ -55,7 +56,11 @@ void Equipment::UseScrollItem(std::shared_ptr<SkinInfo> eqpi_tem, std::shared_pt
 				eqpi_tem->GetItemInfo().SetIncInt(eqpi_tem->GetItemInfo().GetIncInt() + scroll_item->GetIncInt());
 				eqpi_tem->GetItemInfo().SetIncMad(eqpi_tem->GetItemInfo().GetIncMad() + scroll_item->GetIncMad());
 				eqpi_tem->GetItemInfo().SetSucessTuc(eqpi_tem->GetItemInfo().GetSucessTuc() + 1);
-				std::cout << "주문서 성공 " << std::endl;
+				EffectManager::GetInstance()->ShowEffect("Success");
+			}
+			else
+			{
+				EffectManager::GetInstance()->ShowEffect("Failure");
 			}
 			eqpi_tem->GetItemInfo().SetTuc(eqpi_tem->GetItemInfo().GetTuc() - 1);
 		}

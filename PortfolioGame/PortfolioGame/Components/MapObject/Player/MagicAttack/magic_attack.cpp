@@ -231,11 +231,11 @@ void MagicAttack::RunBallImage(HDC hdc)
 		{
 			if (_player->GetFacingDirection())
 			{
-				_ball_pos.x += 25;
+				_ball_pos.x += 15;
 			}
 			else
 			{
-				_ball_pos.x -= 25;
+				_ball_pos.x -= 15;
 			}
 		}
 		if (_player->GetFacingDirection())

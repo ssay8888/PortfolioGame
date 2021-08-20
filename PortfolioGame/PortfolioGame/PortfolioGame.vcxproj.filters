@@ -403,6 +403,12 @@
     <ClInclude Include="Managers\UiManager\DeadMessage\dead_message.h">
       <Filter>Managers\UiManager\DeadMessage</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\EffectManager\effect_info.h">
+      <Filter>Managers\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\EffectManager\effect_parts.h">
+      <Filter>Managers\EffectManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -626,6 +632,12 @@
     </ClCompile>
     <ClCompile Include="Managers\UiManager\DeadMessage\dead_message.cpp">
       <Filter>Managers\UiManager\DeadMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\EffectManager\effect_info.cpp">
+      <Filter>Managers\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\EffectManager\effect_parts.cpp">
+      <Filter>Managers\EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
