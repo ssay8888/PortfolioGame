@@ -47,6 +47,7 @@ void Equipment::RemoveItem(ObjectType::EquipPosition pos)
 
 void Equipment::UseScrollItem(std::shared_ptr<SkinInfo> eqpi_tem, std::shared_ptr<Item> scroll_item)
 {
+	auto player = MapManager::GetInstance()->GetPlayer();
 	if (scroll_item != nullptr && eqpi_tem != nullptr)
 	{
 		if (eqpi_tem->GetItemInfo().GetTuc() > 0)
@@ -62,6 +63,8 @@ void Equipment::UseScrollItem(std::shared_ptr<SkinInfo> eqpi_tem, std::shared_pt
 			{
 				EffectManager::GetInstance()->ShowEffect("Failure");
 			}
+
+			player->RecalcEqpStat();
 			eqpi_tem->GetItemInfo().SetTuc(eqpi_tem->GetItemInfo().GetTuc() - 1);
 		}
 	}

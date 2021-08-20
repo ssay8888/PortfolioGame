@@ -297,15 +297,31 @@ void StatWindow::BaseStatInfoRender(HDC hdc)
 	StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 67, static_cast<int>(_info.y) + 208, str, 11, RGB(0, 0, 0), L"µ¸¿ò");
 	str.clear();
 	str.append(std::to_wstring(player->GetStr()));
+	if (player->GetEqpStr() > 0)
+	{
+		str.append(L" (+").append(std::to_wstring(player->GetEqpStr()).append(L")"));
+	}
 	StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 60, static_cast<int>(_info.y) + 237, str, 11, RGB(0, 0, 0), L"µ¸¿ò");
 	str.clear();
 	str.append(std::to_wstring(player->GetDex()));
+	if (player->GetEqpDex() > 0)
+	{
+		str.append(L" (+").append(std::to_wstring(player->GetEqpDex()).append(L")"));
+	}
 	StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 60, static_cast<int>(_info.y) + 255, str, 11, RGB(0, 0, 0), L"µ¸¿ò");
 	str.clear();
 	str.append(std::to_wstring(player->GetInt()));
+	if (player->GetEqpInt() > 0)
+	{
+		str.append(L" (+").append(std::to_wstring(player->GetEqpInt()).append(L")"));
+	}
 	StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 60, static_cast<int>(_info.y) + 273, str, 11, RGB(0, 0, 0), L"µ¸¿ò");
 	str.clear();
 	str.append(std::to_wstring(player->GetLuk()));
+	if (player->GetEqpLuk() > 0)
+	{
+		str.append(L" (+").append(std::to_wstring(player->GetEqpLuk()).append(L")"));
+	}
 	StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 60, static_cast<int>(_info.y) + 291, str, 11, RGB(0, 0, 0), L"µ¸¿ò");
 
 }

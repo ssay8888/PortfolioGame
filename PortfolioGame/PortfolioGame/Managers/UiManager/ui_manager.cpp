@@ -22,8 +22,10 @@ const std::wstring wbuttons[] = { L"BtMenu", L"BtShop", L"BtShort", L"EquipKey",
 
 UiManager::UiManager() = default;
 
-UiManager::~UiManager() = default;
-
+UiManager::~UiManager()
+{
+	delete _key_manager;
+}
 UiManager* UiManager::GetInstance()
 {
 	static UiManager instance;
@@ -104,11 +106,12 @@ void UiManager::ButtonUiLoad()
 	_status_bar = backgrnd;
 	_quick_slot = std::make_shared<QuickSlot>(QuickSlot());
 	_quick_slot->ReadyQuickSlot();
+	_key_manager = new KeyManager();
 	for (auto buttonName : wbuttons)
 	{
 		wchar_t path[256];
 		swprintf_s(path, 256, L"StatusBar\\%s", buttonName.c_str());
-		std::shared_ptr<UiButton> button(std::make_shared<UiButton>(UiButton(KeyManager::GetInstance())));
+		std::shared_ptr<UiButton> button(std::make_shared<UiButton>(UiButton(_key_manager)));
 		if (!wcscmp(buttonName.c_str(), L"BtShop"))
 		{
 			button->SetObjectPos({ 575, 565 });
@@ -123,10 +126,18 @@ void UiManager::ButtonUiLoad()
 		}
 		else if (!wcscmp(buttonName.c_str(), L"EquipKey"))
 		{
+			button->SetCallBack([this]()
+			{
+					this->GetEquipmentWindow()->SetShow(!this->GetEquipmentWindow()->IsShow());
+			});
 			button->SetObjectPos({ 618, 537 });
 		}
 		else if (!wcscmp(buttonName.c_str(), L"InvenKey"))
 		{
+			button->SetCallBack([this]()
+				{
+					this->GetInventoryWindow()->SetShow(!this->GetInventoryWindow()->IsShow());
+				});
 			button->SetObjectPos({ 648, 537 });
 		}
 		else if (!wcscmp(buttonName.c_str(), L"KeySet"))
@@ -143,10 +154,18 @@ void UiManager::ButtonUiLoad()
 		}
 		else if (!wcscmp(buttonName.c_str(), L"SkillKey"))
 		{
+			button->SetCallBack([this]()
+				{
+					this->GetSkillWindow()->SetShow(!this->GetSkillWindow()->IsShow());
+				});
 			button->SetObjectPos({ 708, 537 });
 		}
 		else if (!wcscmp(buttonName.c_str(), L"StatKey"))
 		{
+			button->SetCallBack([this]()
+				{
+					this->GetStatWindow()->SetShow(!this->GetStatWindow()->IsShow());
+				});
 			button->SetObjectPos({ 678, 537 });
 		}
 
@@ -219,7 +238,7 @@ void UiManager::StatusGageBarRender(HDC hdc)
 		_mp_bar->GetHeight());
 
 	const float expPercent =
-		static_cast<float>(player->GetPlayerInfo()->exp) / 10000 * 100.f;
+		static_cast<float>(player->GetPlayerInfo()->exp) / exp_table[player->GetLevel()] * 100.f;
 	const int expWidth = static_cast<int>(_mp_bar->GetWidth() * expPercent / 100);
 
 	text.clear();
@@ -274,6 +293,11 @@ void UiManager::StatusLevelRender(HDC hdc)
 std::shared_ptr<QuickSlot> UiManager::GetQuickSlot() const
 {
 	return _quick_slot;
+}
+
+std::shared_ptr<SkillWindow> UiManager::GetSkillWindow() const
+{
+	return _skill_window;
 }
 
 std::shared_ptr<InventoryWindow> UiManager::GetInventoryWindow() const

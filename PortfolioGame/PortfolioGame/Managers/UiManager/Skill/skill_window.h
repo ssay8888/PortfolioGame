@@ -39,6 +39,8 @@ public:
 	void SetInfo(Info info);
 	RECT GetRect() const;
 	Info GetInfo() const;
+	void SetShow(bool show);
+	bool IsShow() const;
 private:
 	void UpdateRect();
 private:

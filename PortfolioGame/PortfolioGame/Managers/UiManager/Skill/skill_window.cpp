@@ -429,6 +429,16 @@ Info SkillWindow::GetInfo() const
 	return _info;
 }
 
+void SkillWindow::SetShow(bool show)
+{
+	_show_window = show;
+}
+
+bool SkillWindow::IsShow() const
+{
+	return _show_window;
+}
+
 void SkillWindow::UpdateRect()
 {
 	_rect.left = static_cast<LONG>(_info.x);

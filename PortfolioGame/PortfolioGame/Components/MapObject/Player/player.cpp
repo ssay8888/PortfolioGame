@@ -51,8 +51,8 @@ Player::Player(uint8_t layer) :
                               _frame_revers(false),
                               _frame_state("stand1"),
                               _frame_tick(0),
-                              _player_info({51, 1000, 0, 432, 
-								  1000, 0, 534, 100, 100, 1000, 222,
+                              _player_info({1, 1000, 0, 432, 
+								  1000, 0, 534, 100, 100, 0, 222,
                               	13, 4, 4, 4,
                               	0, 0, 0, 0,
                               	0, 0, 0, 0,
@@ -1087,13 +1087,13 @@ void Player::UpdateAlertTick()
 
 void Player::AttackMonster(Monster* monster)
 {
-	//TODO: 데미지연산은 여기서..처리하도록하자
-	int32_t damage = rand();
+	int32_t damage = rand() % (GetMaxPower() - GetMinPower()) + GetMinPower();
 	monster->GainHp(-damage);
 	if (!monster->IsAlive())
 	{
-		GetPlayerInfo()->exp += monster->GetExp();
+		GainExp(monster->GetExp());
 	}
+	
 	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
 	if (!monster->IsBoss())
 	{
@@ -1199,6 +1199,14 @@ void Player::TakeDamage()
 		_take_damage_tick = GetTickCount64();
 		_alert_tick = GetTickCount64();
 		int damage = rand() % (*mosnters.begin())->GetPad() + ((*mosnters.begin())->GetPad() / 2);
+		if (this->GetEqpPdd() > 0)
+		{
+			damage -= rand() % this->GetEqpPdd();
+		}
+		if (damage < 0)
+		{
+			damage = 1;
+		}
 		_damage_handler->InsertTakeDamageEffect(this, damage, 1000);
 		this->GainHp(-damage);
 		if ((*mosnters.begin())->GetInfo().x > this->GetInfo().x)
@@ -1233,6 +1241,22 @@ EqpInventory* Player::GetEqpInventory()
 Equipment* Player::GetEquipment()
 {
 	return _equipment;
+}
+
+void Player::LevelUp()
+{
+	if (this->GetExp() >= exp_table[this->GetLevel()])
+	{
+		GainExp(-exp_table[this->GetLevel()]);
+		GainLevel(1);
+		GainAp(5);
+		GainSp(3);
+		GainMaxHp(50);
+		GainMaxMp(50);
+		SetHp(GetMaxHp());
+		SetMp(GetMaxMp());
+		EffectManager::GetInstance()->ShowEffect("LevelUp");
+	}
 }
 
 void Player::ApplySkill()
@@ -1766,6 +1790,7 @@ void Player::GainLevel(int16_t value)
 void Player::GainExp(int16_t value)
 {
 	_player_info.exp += value;
+	LevelUp();
 }
 
 void Player::GainEqpStr(int16_t value)

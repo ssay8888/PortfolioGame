@@ -136,6 +136,7 @@ public:
     EqpInventory* GetEqpInventory();
 
     Equipment* GetEquipment();
+    void LevelUp();
 private:
     void LoadCharacterFrame(std::string frameName, uint16_t frameCount = 3);
     void RenderCharacter(HDC hdc);

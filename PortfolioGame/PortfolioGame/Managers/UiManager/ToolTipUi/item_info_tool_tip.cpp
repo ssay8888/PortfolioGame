@@ -503,7 +503,7 @@ std::pair<int32_t, std::wstring> ItemInfoToolTip::SelectEquipInfo(const std::sha
 
 	if (item->GetItemInfo().GetIncMdd() > 0)
 	{
-		str.append(L"마법 방어력 +").append(std::to_wstring(item->GetItemInfo().GetIncMdd()));
+		str.append(L"마법 방어력 +").append(std::to_wstring(item->GetItemInfo().GetIncMdd())).append(L"\r\n");;
 		count++;
 	}
 

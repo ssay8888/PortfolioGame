@@ -1,4 +1,5 @@
 #pragma once
+class KeyManager;
 class DeadMessage;
 class NpcTalkWindow;
 class ShopWindow;
@@ -22,6 +23,7 @@ public:
 	void RenderUiManager(HDC hdc);
 
 	std::shared_ptr<QuickSlot> GetQuickSlot() const;
+	std::shared_ptr<SkillWindow> GetSkillWindow() const;
 	std::shared_ptr<InventoryWindow> GetInventoryWindow() const;
 	std::shared_ptr<EquipmentWindow> GetEquipmentWindow() const;
 	std::shared_ptr<StatWindow> GetStatWindow() const;
@@ -51,5 +53,6 @@ private:
 	std::shared_ptr<NpcTalkWindow> _npc_talk_window;
 	std::shared_ptr<ShopWindow> _shop_window;
 	std::shared_ptr<DeadMessage> _dead_message;
+	KeyManager* _key_manager;
 
 };
