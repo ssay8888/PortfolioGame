@@ -14,6 +14,7 @@ private:
 	void ReadyDamage(bool is_attack);
 private:
 	GameObject* _targetObject;
+	Info _info;
 	std::list<uint32_t> _damages;
 	uint32_t _delay;
 	uint64_t _tick;

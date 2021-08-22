@@ -26,6 +26,9 @@ public :
 	static void SellItemShop();
 	static void BuyItemShop();
 	void LoadShopData(int32_t shop_id);
+	void SetTextTick();
+	void AppendText(std::wstring str);
+	void ClearText();
 private:
 
 	void ReadyWindow() override;
@@ -45,6 +48,7 @@ private:
 	void ShopScrollDown(POINT mouse);
 	void RenderShopButton(HDC hdc);
 	void UpdateShopButton(POINT mouse);
+	void RenderText(HDC hdc);
 	void ResetShop();
 private:
 	ObjectType::InventoryTabState _this_tab;
@@ -62,5 +66,8 @@ private:
 	KeyManager* _buttonKeyManager;
 
 	std::vector<std::shared_ptr<ShopItem>> _shop_items;
+
+	std::wstring _log;
+	uint64_t _log_render_tick;
 };
 

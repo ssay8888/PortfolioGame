@@ -12,7 +12,8 @@ DamageInfo::DamageInfo(GameObject* target, uint32_t damage, const uint32_t delay
 	_damages(),
 	_delay(delay),
 	_tick(GetTickCount64()),
-	_is_alive(true)
+	_is_alive(true),
+	_info(_targetObject->GetInfo())
 {
 	_damages.emplace_back(damage);
 	ReadyDamage(is_attack);
@@ -23,7 +24,8 @@ DamageInfo::DamageInfo(GameObject* target, std::list<uint32_t> damage, const uin
 	_damages(std::move(damage)),
 	_delay(delay),
 	_tick(GetTickCount64()),
-	_is_alive(true)
+	_is_alive(true),
+	_info(_targetObject->GetInfo())
 {
 	ReadyDamage(is_attack);
 }
@@ -41,8 +43,8 @@ void DamageInfo::ReadyDamage(bool is_attack)
 	for (const auto damage : _damages)
 	{
 		POINT point =
-		{ static_cast<int>(_targetObject->GetInfo().x),
-		static_cast<int>(_targetObject->GetInfo().y - upY + (upY * i) )
+		{ static_cast<int>(_info.x),
+		static_cast<int>(_info.y - upY + (upY * i) )
 		};
 		auto temp_damage = damage;
 		std::list<std::shared_ptr<MyBitmap>> dam;
@@ -94,7 +96,7 @@ void DamageInfo::RenderDamage(HDC hdc)
 {
 	if (_is_alive)
 	{
-		for (auto damage_image : _damage_image)
+		for (auto& damage_image : _damage_image)
 		{
 			int totalWidth = 0;
 			int width = 0;
@@ -107,7 +109,7 @@ void DamageInfo::RenderDamage(HDC hdc)
 			{
 				damage->RenderBitmapImage(hdc,
 					static_cast<int>(damage_image.first.x - totalWidth + width + ScrollManager::GetScrollX()),
-					static_cast<int>(damage_image.first.y - _targetObject->GetInfo().cy + ScrollManager::GetScrollY()),
+					static_cast<int>(damage_image.first.y - _info.cy + ScrollManager::GetScrollY()),
 					damage->GetWidth(),
 					damage->GetHeight());
 				width += damage->GetWidth();

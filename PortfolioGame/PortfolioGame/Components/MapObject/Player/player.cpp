@@ -50,6 +50,8 @@
 
 Player::Player(uint8_t layer) :
                               GameObject(layer),
+	_swing_effect(nullptr),
+	_swing_effect_r(nullptr),
                               _this_frame_max_count(0),
                               _frame_revers(false),
                               _frame_state("stand1"),
@@ -117,6 +119,10 @@ int Player::ReadyGameObject()
 	auto pantsParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060002));
 	_eqp_inventory->AddItem(3, std::make_shared<SkinInfo>(SkinInfo(*pantsParts)));
 	RecalcEqpStat();
+	_swing_effect = std::make_shared<MyBitmap>(MyBitmap());
+	_swing_effect_r = std::make_shared<MyBitmap>(MyBitmap());
+	_swing_effect->Insert_Bitmap(_hWnd, L"Client\\Effect\\swingO2.bmp");
+	_swing_effect_r->Insert_Bitmap(_hWnd, L"Client\\Effect\\swingO2r.bmp");
     return 0;
 }
 
@@ -933,6 +939,27 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				if (rand() % 2)
 				{
+					if(GetFacingDirection())
+					{
+						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+						{
+							_swing_effect_r->RenderBitmapImage(hdc,
+								static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
+								static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+								_swing_effect_r->GetWidth(),
+								_swing_effect_r->GetHeight());
+						}
+					}else
+					{
+						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+						{
+							_swing_effect->RenderBitmapImage(hdc,
+								static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
+								static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+								_swing_effect->GetWidth(),
+								_swing_effect->GetHeight());
+						}
+					}
 					return;
 				}
 			}
@@ -952,6 +979,15 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(destination.x),
 					static_cast<int>(destination.y),
 					RGB(255, 0, 255));
+
+				if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+				{
+					_swing_effect_r->RenderBitmapImage(hdc,
+						static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
+						static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+						_swing_effect_r->GetWidth(),
+						_swing_effect_r->GetHeight());
+				}
 				/*Rectangle(hdc,
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + reduceX),
 					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)),
@@ -971,6 +1007,15 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(destination.x),
 					static_cast<int>(destination.y),
 					RGB(255, 0, 255));
+
+				if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+				{
+					_swing_effect->RenderBitmapImage(hdc,
+						static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
+						static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+						_swing_effect->GetWidth(),
+						_swing_effect->GetHeight());
+				}
 				/*Rectangle(hdc,
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)),
 					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)),
@@ -1140,7 +1185,7 @@ void Player::AttackMonster(Monster* monster)
 			UiManager::GetInstance()->GetMobGage()->SetMonster(monster);
 		}
 	}
-	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
+	_damage_handler->InsertAttackDamageEffect(monster, damage, 500);
 	if (!monster->IsBoss())
 	{
 		monster->ChangeState(Monster::MonsterState::kHit);
@@ -1437,7 +1482,7 @@ void Player::ApplySkill()
 							UiManager::GetInstance()->GetMobGage()->SetMonster(monster);
 						}
 					}
-					_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
+					_damage_handler->InsertAttackDamageEffect(monster, damages, 500);
 					monster->GainHp(-total_damage);
 					if (!monster->IsAlive())
 					{
@@ -1493,6 +1538,51 @@ void Player::RenderGameObject(HDC hdc)
 	UpdateRectGameObject();
 	RenderCharacter(hdc);
 	_damage_handler->ShowDamages(hdc);
+	for (auto data = _list_pickup.begin(); data != _list_pickup.end();)
+	{
+		auto icon = data->second->GetIconRaw();
+
+		float fX = this->GetInfo().x - data->first.x ;
+		float fY = this->GetInfo().y - data->first.y;
+		float fDist = sqrtf(fX * fX + fY * fY);
+
+
+		float angle = acosf(fX / fDist);
+		if (GetInfo().y >= data->first.y)
+			//m_fAngle *= -1.f; 
+			angle = 3.141592f * 2.f - angle;
+
+		float fDegree = angle * 180.f / 3.141592f;
+		float x = cosf(angle) * 8;
+		float y = sinf(angle) * 8;
+		if(fDist <= 5)
+		{
+			const auto inven_type = InventoryWindow::SearchItemTab(data->second->GetItemId());
+			if (data->second->GetItemId() < 9000000)
+			{
+				if (inven_type != ::ObjectType::kEnd)
+				{
+					_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), data->second);
+					data = _list_pickup.erase(data);
+					continue;;
+				}
+			}
+			else if (data->second->GetItemId() < 9000005)
+			{
+				GainMeso(data->second->GetQuantity());
+				data = _list_pickup.erase(data);
+				continue;
+			}
+		}
+		data->first.x += static_cast<int>(x);
+		data->first.y -= static_cast<int>(y);
+		icon->RenderBitmapImage(hdc,
+			data->first.x + static_cast<int>(ScrollManager::GetScrollX()),
+			data->first.y - icon->GetHeight() + static_cast<int>(ScrollManager::GetScrollY()),
+			icon->GetWidth(),
+			icon->GetHeight());
+		++data;
+	}
 	if (_attack_skill != nullptr)
 	{
 		_attack_skill->SkillRender(hdc);
@@ -1527,7 +1617,7 @@ void Player::LateUpdateGameObject()
 				}
 				if (_is_attacking)
 				{
-					if (_frame_nummber >= _frame_this->GetPartner()->GetSkinFrames()->size())
+					if (_frame_nummber == 3)
 					{
 						this->ChangeFrameState("alert");
 						auto mosnters = MapManager::GetInstance()->MonsterCollision(_melee_attack_hitbox, 1);
@@ -1984,7 +2074,7 @@ void Player::GainMaxHp(const int16_t value)
 
 void Player::GainMp(const int16_t value)
 {
-	if (_buffstat->CheckFlag(::ObjectType::BuffFlag::kinfinity))
+	if (value < 0 && _buffstat->CheckFlag(::ObjectType::BuffFlag::kinfinity))
 	{
 		return;
 	}

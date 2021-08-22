@@ -56,6 +56,8 @@ public:
 	void SetMaxMp(uint32_t maxmp);
 	uint32_t GetMaxMp() const;
 
+	std::shared_ptr<MonsterParts> GetThisFrame();
+
 	void SetPlayer(GameObject* player);
 	GameObject* GetPlayer() const;
 	void InsertAttackInfo(const std::string& key, AttackInfo* attack_info);
@@ -85,6 +87,7 @@ public:
 	void SetIsAttacking(bool g);
 	bool IsAttacking() const;
 	bool IsFake() const;
+
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;

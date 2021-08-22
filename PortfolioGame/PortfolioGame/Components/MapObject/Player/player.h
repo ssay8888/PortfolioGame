@@ -237,6 +237,7 @@ private:
     /// <summary>
     /// ±âÅ¸
     /// </summary>
-	
+    std::shared_ptr<MyBitmap> _swing_effect;
+    std::shared_ptr<MyBitmap> _swing_effect_r;
     std::list<std::pair<POINT, std::shared_ptr<Item>>> _list_pickup;
 };

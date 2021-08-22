@@ -241,6 +241,13 @@ uint32_t Monster::GetMaxMp() const
 	return _monster_info.max_mp;
 }
 
+std::shared_ptr<MonsterParts> Monster::GetThisFrame()
+{
+	const auto data = _this_frame[_base_state_frame->GetFrameNumber() % _this_frame.size()];
+	return data;
+}
+
+
 void Monster::SetPlayer(GameObject* player)
 {
 	_target = player;

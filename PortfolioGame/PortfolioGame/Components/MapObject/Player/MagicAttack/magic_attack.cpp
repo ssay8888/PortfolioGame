@@ -5,6 +5,7 @@
 
 #include "../player.h"
 #include "../../../../../Common/Managers/BitmapManager/my_bitmap.h"
+#include "../../../../Managers/MonsterMnager/monster_parts.h"
 #include "../../../../Managers/ScrollManager/scroll_manager.h"
 #include "../../../../Managers/SkillManager/Skill/skill.h"
 #include "../../../../Managers/SkillManager/Skill/skill_effect_image.h"
@@ -12,7 +13,7 @@
 
 MagicAttack::MagicAttack(Skill* skill, Player* player, std::list<Monster*> target) :
 	_skill(skill),
-	_targets(std::move(target)),
+	_targets(),
 	_player(player),
 	_ball_frame_number(0),
 	_ball_frame_delay(0),
@@ -27,6 +28,12 @@ MagicAttack::MagicAttack(Skill* skill, Player* player, std::list<Monster*> targe
 	_bitmap(nullptr),
 	_old_bitmap(nullptr)
 {
+	for (auto& monster : target)
+	{
+		auto copy = new Monster(*monster);
+		copy->DoReadyGame();
+		_targets.emplace_back(copy);
+	}
 }
 
 MagicAttack::~MagicAttack()
@@ -40,7 +47,7 @@ void MagicAttack::ReadyMagicAttack()
 {
 	const HDC hdc = GetDC(_hWnd);
 	_memDC = CreateCompatibleDC(hdc);
-	_bitmap = CreateCompatibleBitmap(hdc, 300, 300);
+	_bitmap = CreateCompatibleBitmap(hdc, 500, 500);
 	_old_bitmap = static_cast<HBITMAP>(SelectObject(_memDC, _bitmap));
 	ReleaseDC(_hWnd, hdc);
 }
@@ -72,6 +79,8 @@ void MagicAttack::MagicSkill()
 
 void MagicAttack::RunEffectImage(HDC hdc)
 {
+	if (_is_effect_frame_finished)
+		return;
 	const auto effects = _skill->GetSkillEffectImage();
 	if (effects.size() > _effect_frame_number)
 	{
@@ -144,6 +153,8 @@ void MagicAttack::RunEffectImage(HDC hdc)
 
 void MagicAttack::RunHitImage(HDC hdc)
 {
+	if (_is_hit_frame_finished)
+		return;
 	for (const auto& monster : _targets)
 	{
 		if (monster == nullptr)
@@ -158,7 +169,7 @@ void MagicAttack::RunHitImage(HDC hdc)
 
 			HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 			HBRUSH brushPrev = (HBRUSH)SelectObject(_memDC, brush);
-			Rectangle(_memDC, -10, -10, 310, 310);
+			Rectangle(_memDC, -10, -10, 500, 500);
 			SelectObject(_memDC, brushPrev);
 			DeleteObject(brush);
 			DeleteObject(brushPrev);
@@ -166,10 +177,9 @@ void MagicAttack::RunHitImage(HDC hdc)
 				0,
 				0,
 				image->GetWidth(), image->GetHeight());
-
 			GdiTransparentBlt(hdc,
-				static_cast<int>(monster->GetInfo().x - effect->GetOrigin().x + ScrollManager::GetScrollX()),
-				static_cast<int>(monster->GetInfo().y - effect->GetOrigin().y + ScrollManager::GetScrollY()),
+				static_cast<int>((monster->GetInfo().x - (monster->GetThisFrame()->GetOriginPos().x / 2)) - effect->GetOrigin().x + ScrollManager::GetScrollX()),
+				static_cast<int>((monster->GetRect().bottom) - effect->GetOrigin().y  + ScrollManager::GetScrollY()),
 				image->GetWidth(),
 				image->GetHeight(),
 				_memDC,
@@ -204,6 +214,8 @@ void MagicAttack::RunHitImage(HDC hdc)
 
 void MagicAttack::RunBallImage(HDC hdc)
 {
+	if (_is_ball_frame_finished)
+		return;
 	const auto effects = _skill->GetBallEffectImage();
 	if (effects.size() > _ball_frame_number)
 	{
@@ -289,7 +301,18 @@ void MagicAttack::RunBallImage(HDC hdc)
 void MagicAttack::ResetSkill(Skill* skill, Player* player, std::list<Monster*> target)
 {
 	_skill = skill;
-	_targets = std::move(target);
+	for (auto& monster : _targets)
+	{
+		delete monster;
+		monster = nullptr;
+	}
+	_targets.clear();
+	for (auto& monster : target)
+	{
+		auto copy = new Monster(*monster);
+		copy->DoReadyGame();
+		_targets.emplace_back(copy);
+	}
 	_player = player;
 	_is_ball_frame_finished = false;
 	_ball_frame_number = 0;

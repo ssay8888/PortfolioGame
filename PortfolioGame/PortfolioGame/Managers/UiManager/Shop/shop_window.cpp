@@ -154,6 +154,7 @@ void ShopWindow::RenderWinodw(HDC hdc)
 		RenderShopItems(hdc);
 		RenderMeso(hdc);
 		RenderShopButton(hdc);
+		RenderText(hdc);
 	}
 }
 
@@ -406,6 +407,14 @@ void ShopWindow::UpdateShopButton(POINT mouse)
 	_shop_exit_button->UpdateButton();
 }
 
+void ShopWindow::RenderText(HDC hdc)
+{
+	if (GetTickCount64() < _log_render_tick + 1000)
+	{
+		StringTools::CreateTextOut(hdc, 400, 100, _log, 24, RGB(0, 0, 0), L"돋움", TA_CENTER);
+	}
+}
+
 void ShopWindow::ResetShop()
 {
 	this->SetShow(false);
@@ -548,6 +557,7 @@ void ShopWindow::ExitShop()
 void ShopWindow::SellItemShop()
 {
 	auto shop = UiManager::GetInstance()->GetShopWindow();
+	auto string_manager = StringManager::GetInstance();
 	auto player = MapManager::GetInstance()->GetPlayer();
 	switch (shop->GetTab()) {
 	case ObjectType::kEqp:
@@ -558,6 +568,10 @@ void ShopWindow::SellItemShop()
 			player->GetEqpInventory()->ReMoveItem(item);
 			player->GainMeso(item->GetItemInfo().GetPrice());
 			shop->SetSelectEqp(nullptr);
+			shop->SetTextTick();
+			shop->ClearText();
+			shop->AppendText(string_manager->FindItemStringInfo(item->GetItemId()).GetName());
+			shop->AppendText(L"를 팔았습니다.");
 		}
 		break;
 	}
@@ -573,6 +587,10 @@ void ShopWindow::SellItemShop()
 			{
 				item->GainQuantity(-1);
 				player->GainMeso(item->GetPrice());
+				shop->SetTextTick();
+				shop->ClearText();
+				shop->AppendText(string_manager->FindItemStringInfo(item->GetItemId()).GetName());
+				shop->AppendText(L"를 팔았습니다.");
 			}
 			else
 			{
@@ -589,6 +607,7 @@ void ShopWindow::SellItemShop()
 void ShopWindow::BuyItemShop()
 {
 	auto shop = UiManager::GetInstance()->GetShopWindow();
+	auto string_manager = StringManager::GetInstance();
 	auto player = MapManager::GetInstance()->GetPlayer();
 
 	if (shop->GetSelectBuyItem() != nullptr)
@@ -599,6 +618,12 @@ void ShopWindow::BuyItemShop()
 			item->SetQuantity(shop->GetSelectBuyItem()->GetPrice());
 			player->GetInventory(ObjectType::kConsume)->AddItem(player->GetInventory(ObjectType::kConsume)->FindFreeSlot(), item);
 			player->GainMeso(-shop->GetSelectBuyItem()->GetMeso());
+			shop->SetTextTick();
+			shop->ClearText();
+			shop->AppendText(string_manager->FindItemStringInfo(item->GetItemId()).GetName());
+			shop->AppendText(L"를 ");
+			shop->AppendText(std::to_wstring(shop->GetSelectBuyItem()->GetPrice()));
+			shop->AppendText(L"개 구입했습니다.");
 		}
 	}
 
@@ -612,4 +637,19 @@ void ShopWindow::LoadShopData(int32_t shop_id)
 	{
 		_shop_items = shop;
 	}
+}
+
+void ShopWindow::SetTextTick()
+{
+	_log_render_tick = GetTickCount64();
+}
+
+void ShopWindow::AppendText(std::wstring str)
+{
+	_log.append(str);
+}
+
+void ShopWindow::ClearText()
+{
+	_log.clear();
 }

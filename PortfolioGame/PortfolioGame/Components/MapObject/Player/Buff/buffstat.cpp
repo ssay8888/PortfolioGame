@@ -16,7 +16,10 @@ void BuffStat::AddFlag(ObjectType::BuffFlag flag)
 
 void BuffStat::RemoveFlag(ObjectType::BuffFlag flag)
 {
-	_flag ^= static_cast<int>(flag);
+	if(CheckFlag(flag))
+	{
+		_flag ^= static_cast<int>(flag);
+	}
 }
 
 bool BuffStat::CheckFlag(ObjectType::BuffFlag flag) const
