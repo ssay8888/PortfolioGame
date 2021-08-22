@@ -1,6 +1,8 @@
 #pragma once
 #include "../../Base/game_object.h"
 
+class Item;
+class BuffStat;
 class Npc;
 class QuestInfo;
 class Equipment;
@@ -86,6 +88,7 @@ public:
     uint32_t GetMaxPower() const;
     int32_t GetMeso() const;
     std::string GetName() const;
+    BuffStat* GetBuffStat();
     std::shared_ptr<QuestInfo> FindClearQuest(int32_t npc_id);
     void InsertClearQuest(std::shared_ptr<QuestInfo> info);
     void RemoveClearQuest(std::shared_ptr<QuestInfo> info);
@@ -111,7 +114,7 @@ public:
     void GainLuk(int16_t value);
     void SetJob(int16_t value);
     void GainLevel(int16_t value);
-    void GainExp(int16_t value);
+    void GainExp(int32_t value, bool level_up = true);
     void GainEqpStr(int16_t value);
     void GainEqpDex(int16_t value);
     void GainEqpInt(int16_t value);
@@ -146,6 +149,8 @@ private:
 
     bool IsAlertStateTick();
     void UpdateAlertTick();
+    bool IsFlickerStateTick() const;
+    void UpdateFlickerTick();
     void AttackMonster(Monster* monster);
     void TakeDamage();
 
@@ -177,8 +182,14 @@ private:
     RECT _magic_attack_hitbox;
     bool _is_attacking;
     uint64_t _alert_tick;
+    uint64_t _flicker_tick;
 
     MagicAttack* _attack_skill;
+
+    /// <summary>
+    /// 버프관련
+    /// </summary>
+    BuffStat* _buffstat;
 
     
 
@@ -222,7 +233,10 @@ private:
     std::map<int32_t, std::shared_ptr<QuestInfo>> _clear_quest_list;
     std::map<int32_t, std::shared_ptr<QuestInfo>> _ing_quest_list;
     std::shared_ptr<QuestInfo> _select_npc;
+
     /// <summary>
     /// 기타
     /// </summary>
+	
+    std::list<std::pair<POINT, std::shared_ptr<Item>>> _list_pickup;
 };

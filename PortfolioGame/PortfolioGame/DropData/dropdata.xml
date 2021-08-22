@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <imgdir name="info">
     <imgdir name="100100">
-        <drop item="0" rate="10000" minprice="1" maxprice="50" />
-        <drop item="4000019" rate="10000" minprice="1" maxprice="1" />
+        <drop item="0" rate="5000" minprice="1" maxprice="50" />
+        <drop item="4000019" rate="5000" minprice="1" maxprice="1" />
     </imgdir>
     <imgdir name="100101">
-        <drop item="0" rate="10000" minprice="50" maxprice="100" />
-        <drop item="4000000" rate="10000" minprice="1" maxprice="1" />
+        <drop item="0" rate="5000" minprice="50" maxprice="100" />
+        <drop item="4000000" rate="5000" minprice="1" maxprice="1" />
     </imgdir>
     <imgdir name="1110100">
-        <drop item="0" rate="10000" minprice="100" maxprice="1000" />
-        <drop item="0" rate="10000" minprice="1000" maxprice="1500" />
-        <drop item="4000012" rate="10000" minprice="1" maxprice="1" />
+        <drop item="0" rate="5000" minprice="100" maxprice="1000" />
+        <drop item="0" rate="5000" minprice="1000" maxprice="1500" />
+        <drop item="4000012" rate="5000" minprice="1" maxprice="1" />
+    </imgdir>
+    <imgdir name="130100">
+        <drop item="0" rate="5000" minprice="0" maxprice="1000" />
+        <drop item="0" rate="5000" minprice="0" maxprice="1500" />
+        <drop item="4000003" rate="5000" minprice="1" maxprice="1" />
     </imgdir>
 </imgdir>

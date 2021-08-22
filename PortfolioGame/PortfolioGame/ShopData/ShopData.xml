@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <shop name="info">
-    <shop name="2101">
+    <shop name="2000">
         <shop item="2000000" price="1" meso="50" />
         <shop item="2000000" price="10" meso="490" />
         <shop item="2000001" price="1" meso="100" />
@@ -18,7 +18,7 @@
         <shop item="2043702" price="1" meso="0" />
         <shop item="2043703" price="1" meso="0" />
     </shop>
-    <shop name="2102">
+    <shop name="210211">
         <shop item="2000005" price="1" meso="50" />
         <shop item="2000006" price="10" meso="490" />
         <shop item="2000007" price="1" meso="100" />

@@ -3,6 +3,11 @@
 #include "../../Utility/xml_reader.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 
+NpcManager::NpcManager(): _quest_icon_tick(0),
+                          _quest_frame_number(0)
+{
+}
+
 void NpcManager::InsertNpc(std::string npc_path, std::shared_ptr<Npc> npc)
 {
 	_npcs.insert(std::make_pair(npc_path, npc));

@@ -1,0 +1,1200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<imgdir name="Skill.img">
+    <imgdir name="200">
+        <string name="bookName" value="마법사 입문서" />
+    </imgdir>
+    <imgdir name="2000000">
+        <string name="name" value="MP 회복력 향상" />
+        <string name="desc" value="[마스터 레벨 : 16]\n10초마다 더욱 많은 양의 MP를 회복할 수 있다. 캐릭터의 레벨이 높고 스킬 레벨이 높을수록 한 번에 회복되는 양이 많다." />
+        <string name="h1" value="현재 MP 일정량 추가 회복" />
+        <string name="h2" value="현재 MP 일정량 추가 회복" />
+        <string name="h3" value="현재 MP 일정량 추가 회복" />
+        <string name="h4" value="현재 MP 일정량 추가 회복" />
+        <string name="h5" value="현재 MP 일정량 추가 회복" />
+        <string name="h6" value="현재 MP 일정량 추가 회복" />
+        <string name="h7" value="현재 MP 일정량 추가 회복" />
+        <string name="h8" value="현재 MP 일정량 추가 회복" />
+        <string name="h9" value="현재 MP 일정량 추가 회복" />
+        <string name="h10" value="현재 MP 일정량 추가 회복" />
+        <string name="h11" value="현재 MP 일정량 추가 회복" />
+        <string name="h12" value="현재 MP 일정량 추가 회복" />
+        <string name="h13" value="현재 MP 일정량 추가 회복" />
+        <string name="h14" value="현재 MP 일정량 추가 회복" />
+        <string name="h15" value="현재 MP 일정량 추가 회복" />
+        <string name="h16" value="현재 MP 일정량 추가 회복" />
+    </imgdir>
+    <imgdir name="2000001">
+        <string name="name" value="MP 증가량 향상" />
+        <string name="desc" value="[마스터 레벨 : 10]\nLevel UP 할 때, Max MP에 AP를 사용할 때 Max MP의 증가량을 향상시킨다.\n필요 스킬 : #cMP 회복력 향상 5레벨 이상#" />
+        <string name="h1" value="MaxMP LevelUP시 2, AP 부여시 1 추가 향상" />
+        <string name="h2" value="MaxMP LevelUP시 4, AP 부여시 2 추가 향상" />
+        <string name="h3" value="MaxMP LevelUP시 6, AP 부여시 3 추가 향상" />
+        <string name="h4" value="MaxMP LevelUP시 8, AP 부여시 4 추가 향상" />
+        <string name="h5" value="MaxMP LevelUP시 10, AP 부여시 5 추가 향상" />
+        <string name="h6" value="MaxMP LevelUP시 12, AP 부여시 6 추가 향상" />
+        <string name="h7" value="MaxMP LevelUP시 14, AP 부여시 7 추가 향상" />
+        <string name="h8" value="MaxMP LevelUP시 16, AP 부여시 8 추가 향상" />
+        <string name="h9" value="MaxMP LevelUP시 18, AP 부여시 9 추가 향상" />
+        <string name="h10" value="MaxMP LevelUP시 20, AP 부여시 10 추가 향상" />
+    </imgdir>
+    <imgdir name="2001002">
+        <string name="name" value="매직 가드" />
+        <string name="desc" value="[마스터 레벨 : 20]\n일정 시간동안 받는 데미지의 일정 수치를 MP로 대신한다. 다만 MP가 0일 경우에는 그대로 HP를 소비하게 된다." />
+        <string name="h1" value="111초간 MP 6 소비하여 데미지의 11%를 MP로 대신함" />
+        <string name="h2" value="132초간 MP 6 소비하여 데미지의 14%를 MP로 대신함" />
+        <string name="h3" value="153초간 MP 6 소비하여 데미지의 17%를 MP로 대신함" />
+        <string name="h4" value="174초간 MP 6 소비하여 데미지의 20%를 MP로 대신함" />
+        <string name="h5" value="195초간 MP 6 소비하여 데미지의 23%를 MP로 대신함" />
+        <string name="h6" value="246초간 MP 8 소비하여 데미지의 30%를 MP로 대신함" />
+        <string name="h7" value="267초간 MP 8 소비하여 데미지의 33%를 MP로 대신함" />
+        <string name="h8" value="288초간 MP 8 소비하여 데미지의 36%를 MP로 대신함" />
+        <string name="h9" value="309초간 MP 8 소비하여 데미지의 39%를 MP로 대신함" />
+        <string name="h10" value="330초간 MP 8 소비하여 데미지의 42%를 MP로 대신함" />
+        <string name="h11" value="381초간 MP 10 소비하여 데미지의 49%를 MP로 대신함" />
+        <string name="h12" value="402초간 MP 10 소비하여 데미지의 52%를 MP로 대신함" />
+        <string name="h13" value="423초간 MP 10 소비하여 데미지의 55%를 MP로 대신함" />
+        <string name="h14" value="444초간 MP 10 소비하여 데미지의 58%를 MP로 대신함" />
+        <string name="h15" value="465초간 MP 10 소비하여 데미지의 61%를 MP로 대신함" />
+        <string name="h16" value="516초간 MP 12 소비하여 데미지의 68%를 MP로 대신함" />
+        <string name="h17" value="537초간 MP 12 소비하여 데미지의 71%를 MP로 대신함" />
+        <string name="h18" value="558초간 MP 12 소비하여 데미지의 74%를 MP로 대신함" />
+        <string name="h19" value="579초간 MP 12 소비하여 데미지의 77%를 MP로 대신함" />
+        <string name="h20" value="600초간 MP 12 소비하여 데미지의 80%를 MP로 대신함" />
+    </imgdir>
+    <imgdir name="2001003">
+        <string name="name" value="매직 아머" />
+        <string name="desc" value="[마스터 레벨 : 20]\n일정 시간 갑옷에 마력을 응집시켜 물리 방어력을 상승시킨다.\n필요 스킬 : #c매직 가드 3레벨 이상#" />
+        <string name="h1" value="54초간 MP 8 소비하여 물리 방어력 + 2" />
+        <string name="h2" value="68초간 MP 8 소비하여 물리 방어력 + 4" />
+        <string name="h3" value="82초간 MP 8 소비하여 물리 방어력 + 6" />
+        <string name="h4" value="96초간 MP 8 소비하여 물리 방어력 + 8" />
+        <string name="h5" value="110초간 MP 8 소비하여 물리 방어력 + 10" />
+        <string name="h6" value="144초간 MP 10 소비하여 물리 방어력 + 12" />
+        <string name="h7" value="158초간 MP 10 소비하여 물리 방어력 + 14" />
+        <string name="h8" value="172초간 MP 10 소비하여 물리 방어력 + 16" />
+        <string name="h9" value="186초간 MP 10 소비하여 물리 방어력 + 18" />
+        <string name="h10" value="200초간 MP 10 소비하여 물리 방어력 + 20" />
+        <string name="h11" value="244초간 MP 13 소비하여 물리 방어력 + 22" />
+        <string name="h12" value="258초간 MP 13 소비하여 물리 방어력 + 24" />
+        <string name="h13" value="272초간 MP 13 소비하여 물리 방어력 + 26" />
+        <string name="h14" value="286초간 MP 13 소비하여 물리 방어력 + 28" />
+        <string name="h15" value="300초간 MP 13 소비하여 물리 방어력 + 30" />
+        <string name="h16" value="344초간 MP 16 소비하여 물리 방어력 + 32" />
+        <string name="h17" value="358초간 MP 16 소비하여 물리 방어력 + 34" />
+        <string name="h18" value="372초간 MP 16 소비하여 물리 방어력 + 36" />
+        <string name="h19" value="386초간 MP 16 소비하여 물리 방어력 + 38" />
+        <string name="h20" value="400초간 MP 16 소비하여 물리 방어력 + 40" />
+    </imgdir>
+    <imgdir name="2001004">
+        <string name="name" value="에너지 볼트" />
+        <string name="desc" value="[마스터 레벨 : 20]\nMP를 소비하여 적 하나를 공격한다." />
+        <string name="h1" value="MP 6 소비, 기본 공격력 20, 숙련도 15%" />
+        <string name="h2" value="MP 6 소비, 기본 공격력 21, 숙련도 15%" />
+        <string name="h3" value="MP 6 소비, 기본 공격력 22, 숙련도 20%" />
+        <string name="h4" value="MP 6 소비, 기본 공격력 23, 숙련도 20%" />
+        <string name="h5" value="MP 7 소비, 기본 공격력 26, 숙련도 25%" />
+        <string name="h6" value="MP 7 소비, 기본 공격력 27, 숙련도 25%" />
+        <string name="h7" value="MP 7 소비, 기본 공격력 28, 숙련도 30%" />
+        <string name="h8" value="MP 8 소비, 기본 공격력 31, 숙련도 30%" />
+        <string name="h9" value="MP 8 소비, 기본 공격력 32, 숙련도 35%" />
+        <string name="h10" value="MP 9 소비, 기본 공격력 35, 숙련도 35%" />
+        <string name="h11" value="MP 9 소비, 기본 공격력 36, 숙련도 40%" />
+        <string name="h12" value="MP 10 소비, 기본 공격력 39, 숙련도 40%" />
+        <string name="h13" value="MP 10 소비, 기본 공격력 40, 숙련도 45%" />
+        <string name="h14" value="MP 11 소비, 기본 공격력 43, 숙련도 45%" />
+        <string name="h15" value="MP 11 소비, 기본 공격력 44, 숙련도 50%" />
+        <string name="h16" value="MP 12 소비, 기본 공격력 47, 숙련도 50%" />
+        <string name="h17" value="MP 12 소비, 기본 공격력 48, 숙련도 55%" />
+        <string name="h18" value="MP 13 소비, 기본 공격력 51, 숙련도 55%" />
+        <string name="h19" value="MP 13 소비, 기본 공격력 52, 숙련도 60%" />
+        <string name="h20" value="MP 14 소비, 기본 공격력 55, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="2001005">
+        <string name="name" value="매직 클로" />
+        <string name="desc" value="[마스터 레벨 : 20]\nMP를 소비하여 적 하나를 두 번 공격한다.\n필요 스킬 : #c에너지 볼트 1레벨 이상#" />
+        <string name="h1" value="MP 10 소비, 기본 공격력 11, 숙련도 15%" />
+        <string name="h2" value="MP 10 소비, 기본 공격력 12, 숙련도 15%" />
+        <string name="h3" value="MP 10 소비, 기본 공격력 13, 숙련도 20%" />
+        <string name="h4" value="MP 10 소비, 기본 공격력 14, 숙련도 20%" />
+        <string name="h5" value="MP 11 소비, 기본 공격력 16, 숙련도 25%" />
+        <string name="h6" value="MP 11 소비, 기본 공격력 17, 숙련도 25%" />
+        <string name="h7" value="MP 11 소비, 기본 공격력 18, 숙련도 30%" />
+        <string name="h8" value="MP 12 소비, 기본 공격력 20, 숙련도 30%" />
+        <string name="h9" value="MP 12 소비, 기본 공격력 21, 숙련도 35%" />
+        <string name="h10" value="MP 13 소비, 기본 공격력 23, 숙련도 35%" />
+        <string name="h11" value="MP 13 소비, 기본 공격력 24, 숙련도 40%" />
+        <string name="h12" value="MP 14 소비, 기본 공격력 26, 숙련도 40%" />
+        <string name="h13" value="MP 14 소비, 기본 공격력 27, 숙련도 45%" />
+        <string name="h14" value="MP 15 소비, 기본 공격력 29, 숙련도 45%" />
+        <string name="h15" value="MP 15 소비, 기본 공격력 30, 숙련도 50%" />
+        <string name="h16" value="MP 16 소비, 기본 공격력 32, 숙련도 50%" />
+        <string name="h17" value="MP 17 소비, 기본 공격력 34, 숙련도 55%" />
+        <string name="h18" value="MP 18 소비, 기본 공격력 36, 숙련도 55%" />
+        <string name="h19" value="MP 19 소비, 기본 공격력 38, 숙련도 60%" />
+        <string name="h20" value="MP 20 소비, 기본 공격력 40, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="220">
+        <string name="bookName" value="냉기, 번개 마법 가이드" />
+    </imgdir>
+    <imgdir name="2200000">
+        <string name="name" value="MP 이터" />
+        <string name="desc" value="[마스터 레벨 : 20]\n적에게 마법 공격을 가할 때마다 조금씩 적의 MP를 흡수한다. 다만 적의 MP 가 0 이라면 더 이상 흡수할 수 없다." />
+        <string name="h1" value="한 번 공격할 때 11%의 확률로 적의 최대 MP의 21%를 흡수." />
+        <string name="h2" value="한 번 공격할 때 12%의 확률로 적의 최대 MP의 22%를 흡수." />
+        <string name="h3" value="한 번 공격할 때 13%의 확률로 적의 최대 MP의 23%를 흡수." />
+        <string name="h4" value="한 번 공격할 때 14%의 확률로 적의 최대 MP의 24%를 흡수." />
+        <string name="h5" value="한 번 공격할 때 15%의 확률로 적의 최대 MP의 25%를 흡수." />
+        <string name="h6" value="한 번 공격할 때 16%의 확률로 적의 최대 MP의 26%를 흡수." />
+        <string name="h7" value="한 번 공격할 때 17%의 확률로 적의 최대 MP의 27%를 흡수." />
+        <string name="h8" value="한 번 공격할 때 18%의 확률로 적의 최대 MP의 28%를 흡수." />
+        <string name="h9" value="한 번 공격할 때 19%의 확률로 적의 최대 MP의 29%를 흡수." />
+        <string name="h10" value="한 번 공격할 때 20%의 확률로 적의 최대 MP의 30%를 흡수." />
+        <string name="h11" value="한 번 공격할 때 21%의 확률로 적의 최대 MP의 31%를 흡수." />
+        <string name="h12" value="한 번 공격할 때 22%의 확률로 적의 최대 MP의 32%를 흡수." />
+        <string name="h13" value="한 번 공격할 때 23%의 확률로 적의 최대 MP의 33%를 흡수." />
+        <string name="h14" value="한 번 공격할 때 24%의 확률로 적의 최대 MP의 34%를 흡수." />
+        <string name="h15" value="한 번 공격할 때 25%의 확률로 적의 최대 MP의 35%를 흡수." />
+        <string name="h16" value="한 번 공격할 때 26%의 확률로 적의 최대 MP의 36%를 흡수." />
+        <string name="h17" value="한 번 공격할 때 27%의 확률로 적의 최대 MP의 37%를 흡수." />
+        <string name="h18" value="한 번 공격할 때 28%의 확률로 적의 최대 MP의 38%를 흡수." />
+        <string name="h19" value="한 번 공격할 때 29%의 확률로 적의 최대 MP의 39%를 흡수." />
+        <string name="h20" value="한 번 공격할 때 30%의 확률로 적의 최대 MP의 40%를 흡수." />
+    </imgdir>
+    <imgdir name="2201001">
+        <string name="name" value="메디테이션" />
+        <string name="desc" value="[마스터 레벨 : 20]\n잠깐동안 명상하여 주위에 있는 파티 전원의 마력을 일시적으로 향상시킨다.\n필요 스킬 : #cMP 이터 3레벨 이상#" />
+        <string name="h1" value="MP 10 소비하여 10초간 파티원의 마력 1 향상." />
+        <string name="h2" value="MP 10 소비하여 20초간 파티원의 마력 2 향상." />
+        <string name="h3" value="MP 10 소비하여 30초간 파티원의 마력 3 향상." />
+        <string name="h4" value="MP 10 소비하여 40초간 파티원의 마력 4 향상." />
+        <string name="h5" value="MP 10 소비하여 50초간 파티원의 마력 5 향상." />
+        <string name="h6" value="MP 10 소비하여 60초간 파티원의 마력 6 향상." />
+        <string name="h7" value="MP 10 소비하여 70초간 파티원의 마력 7 향상." />
+        <string name="h8" value="MP 10 소비하여 80초간 파티원의 마력 8 향상." />
+        <string name="h9" value="MP 10 소비하여 90초간 파티원의 마력 9 향상." />
+        <string name="h10" value="MP 10 소비하여 100초간 파티원의 마력 10 향상." />
+        <string name="h11" value="MP 20 소비하여 110초간 파티원의 마력 11 향상." />
+        <string name="h12" value="MP 20 소비하여 120초간 파티원의 마력 12 향상." />
+        <string name="h13" value="MP 20 소비하여 130초간 파티원의 마력 13 향상." />
+        <string name="h14" value="MP 20 소비하여 140초간 파티원의 마력 14 향상." />
+        <string name="h15" value="MP 20 소비하여 150초간 파티원의 마력 15 향상." />
+        <string name="h16" value="MP 20 소비하여 160초간 파티원의 마력 16 향상." />
+        <string name="h17" value="MP 20 소비하여 170초간 파티원의 마력 17 향상." />
+        <string name="h18" value="MP 20 소비하여 180초간 파티원의 마력 18 향상." />
+        <string name="h19" value="MP 20 소비하여 190초간 파티원의 마력 19 향상." />
+        <string name="h20" value="MP 20 소비하여 200초간 파티원의 마력 20 향상." />
+    </imgdir>
+    <imgdir name="2201002">
+        <string name="name" value="텔레포트" />
+        <string name="desc" value="[마스터 레벨 : 20]\n상, 하, 좌, 우 방향키를 이용하여 같은 맵 상의 다른 위치로 일정 간격으로 이동할 수 있다." />
+        <string name="h1" value="MP 60 소비하여 텔레포트, 이동거리 130" />
+        <string name="h2" value="MP 57 소비하여 텔레포트, 이동거리 130" />
+        <string name="h3" value="MP 54 소비하여 텔레포트, 이동거리 130" />
+        <string name="h4" value="MP 51 소비하여 텔레포트, 이동거리 130" />
+        <string name="h5" value="MP 48 소비하여 텔레포트, 이동거리 130" />
+        <string name="h6" value="MP 45 소비하여 텔레포트, 이동거리 130" />
+        <string name="h7" value="MP 42 소비하여 텔레포트, 이동거리 130" />
+        <string name="h8" value="MP 39 소비하여 텔레포트, 이동거리 130" />
+        <string name="h9" value="MP 36 소비하여 텔레포트, 이동거리 130" />
+        <string name="h10" value="MP 33 소비하여 텔레포트, 이동거리 130" />
+        <string name="h11" value="MP 31 소비하여 텔레포트, 이동거리 132" />
+        <string name="h12" value="MP 29 소비하여 텔레포트, 이동거리 134" />
+        <string name="h13" value="MP 27 소비하여 텔레포트, 이동거리 136" />
+        <string name="h14" value="MP 25 소비하여 텔레포트, 이동거리 138" />
+        <string name="h15" value="MP 23 소비하여 텔레포트, 이동거리 140" />
+        <string name="h16" value="MP 21 소비하여 텔레포트, 이동거리 142" />
+        <string name="h17" value="MP 19 소비하여 텔레포트, 이동거리 144" />
+        <string name="h18" value="MP 17 소비하여 텔레포트, 이동거리 146" />
+        <string name="h19" value="MP 15 소비하여 텔레포트, 이동거리 148" />
+        <string name="h20" value="MP 13 소비하여 텔레포트, 이동거리 150" />
+    </imgdir>
+    <imgdir name="2201003">
+        <string name="name" value="슬로우" />
+        <string name="desc" value="[마스터 레벨 : 20]\n일정 시간동안 주위 적의 이동 속도를 낮춘다. 중복하여 사용할 수 없으며 한 번에 6마리 이상에게 사용할 수 없다.\n필요 스킬 : #c텔레포트 5레벨 이상#" />
+        <string name="h1" value="MP 8 소비하여 2초간 적의 이동속도 -2" />
+        <string name="h2" value="MP 8 소비하여 4초간 적의 이동속도 -4" />
+        <string name="h3" value="MP 8 소비하여 6초간 적의 이동속도 -6" />
+        <string name="h4" value="MP 8 소비하여 8초간 적의 이동속도 -8" />
+        <string name="h5" value="MP 8 소비하여 10초간 적의 이동속도 -10" />
+        <string name="h6" value="MP 8 소비하여 12초간 적의 이동속도 -12" />
+        <string name="h7" value="MP 8 소비하여 14초간 적의 이동속도 -14" />
+        <string name="h8" value="MP 8 소비하여 16초간 적의 이동속도 -16" />
+        <string name="h9" value="MP 8 소비하여 18초간 적의 이동속도 -18" />
+        <string name="h10" value="MP 8 소비하여 20초간 적의 이동속도 -20" />
+        <string name="h11" value="MP 16 소비하여 22초간 적의 이동속도 -22" />
+        <string name="h12" value="MP 16 소비하여 24초간 적의 이동속도 -24" />
+        <string name="h13" value="MP 16 소비하여 26초간 적의 이동속도 -26" />
+        <string name="h14" value="MP 16 소비하여 28초간 적의 이동속도 -28" />
+        <string name="h15" value="MP 16 소비하여 30초간 적의 이동속도 -30" />
+        <string name="h16" value="MP 16 소비하여 32초간 적의 이동속도 -32" />
+        <string name="h17" value="MP 16 소비하여 34초간 적의 이동속도 -34" />
+        <string name="h18" value="MP 16 소비하여 36초간 적의 이동속도 -36" />
+        <string name="h19" value="MP 16 소비하여 38초간 적의 이동속도 -38" />
+        <string name="h20" value="MP 16 소비하여 40초간 적의 이동속도 -40" />
+    </imgdir>
+    <imgdir name="2201004">
+        <string name="name" value="콜드 빔" />
+        <string name="desc" value="[마스터 레벨 : 30]\n날카로운 얼음 덩어리를 만들어 적 하나를 향해 쏜다. 명중한 적은 잠시 행동을 멈추게 된다. 불 속성의 적에게 큰 피해를 줄 수 있다." />
+        <string name="h1" value="MP 12 소비, 기본 공격력 13, 숙련도 15%" />
+        <string name="h2" value="MP 12 소비, 기본 공격력 16, 숙련도 15%" />
+        <string name="h3" value="MP 12 소비, 기본 공격력 19, 숙련도 15%" />
+        <string name="h4" value="MP 12 소비, 기본 공격력 22, 숙련도 20%" />
+        <string name="h5" value="MP 12 소비, 기본 공격력 25, 숙련도 20%" />
+        <string name="h6" value="MP 12 소비, 기본 공격력 28, 숙련도 20%" />
+        <string name="h7" value="MP 12 소비, 기본 공격력 31, 숙련도 25%" />
+        <string name="h8" value="MP 12 소비, 기본 공격력 34, 숙련도 25%" />
+        <string name="h9" value="MP 12 소비, 기본 공격력 37, 숙련도 25%" />
+        <string name="h10" value="MP 12 소비, 기본 공격력 40, 숙련도 30%" />
+        <string name="h11" value="MP 12 소비, 기본 공격력 43, 숙련도 30%" />
+        <string name="h12" value="MP 12 소비, 기본 공격력 46, 숙련도 30%" />
+        <string name="h13" value="MP 12 소비, 기본 공격력 49, 숙련도 35%" />
+        <string name="h14" value="MP 12 소비, 기본 공격력 52, 숙련도 35%" />
+        <string name="h15" value="MP 12 소비, 기본 공격력 55, 숙련도 35%" />
+        <string name="h16" value="MP 24 소비, 기본 공격력 58, 숙련도 40%" />
+        <string name="h17" value="MP 24 소비, 기본 공격력 61, 숙련도 40%" />
+        <string name="h18" value="MP 24 소비, 기본 공격력 64, 숙련도 40%" />
+        <string name="h19" value="MP 24 소비, 기본 공격력 67, 숙련도 45%" />
+        <string name="h20" value="MP 24 소비, 기본 공격력 70, 숙련도 45%" />
+        <string name="h21" value="MP 24 소비, 기본 공격력 73, 숙련도 45%" />
+        <string name="h22" value="MP 24 소비, 기본 공격력 76, 숙련도 50%" />
+        <string name="h23" value="MP 24 소비, 기본 공격력 79, 숙련도 50%" />
+        <string name="h24" value="MP 24 소비, 기본 공격력 82, 숙련도 50%" />
+        <string name="h25" value="MP 24 소비, 기본 공격력 85, 숙련도 55%" />
+        <string name="h26" value="MP 24 소비, 기본 공격력 88, 숙련도 55%" />
+        <string name="h27" value="MP 24 소비, 기본 공격력 91, 숙련도 55%" />
+        <string name="h28" value="MP 24 소비, 기본 공격력 94, 숙련도 60%" />
+        <string name="h29" value="MP 24 소비, 기본 공격력 97, 숙련도 60%" />
+        <string name="h30" value="MP 24 소비, 기본 공격력 100, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="2201005">
+        <string name="name" value="선더 볼트" />
+        <string name="desc" value="[마스터 레벨 : 30]\n술자 주변에 강력한 자기장을 만들어 주변의 적에게 번개 공격을 가한다. 일정 범위 내의 적을 모두 공격한다." />
+        <string name="h1" value="MP 20 소비, 기본 공격력 2, 숙련도 15%" />
+        <string name="h2" value="MP 20 소비, 기본 공격력 4, 숙련도 15%" />
+        <string name="h3" value="MP 20 소비, 기본 공격력 6, 숙련도 15%" />
+        <string name="h4" value="MP 20 소비, 기본 공격력 8, 숙련도 20%" />
+        <string name="h5" value="MP 20 소비, 기본 공격력 10, 숙련도 20%" />
+        <string name="h6" value="MP 20 소비, 기본 공격력 12, 숙련도 20%" />
+        <string name="h7" value="MP 20 소비, 기본 공격력 14, 숙련도 25%" />
+        <string name="h8" value="MP 20 소비, 기본 공격력 16, 숙련도 25%" />
+        <string name="h9" value="MP 20 소비, 기본 공격력 18, 숙련도 25%" />
+        <string name="h10" value="MP 20 소비, 기본 공격력 20, 숙련도 30%" />
+        <string name="h11" value="MP 20 소비, 기본 공격력 22, 숙련도 30%" />
+        <string name="h12" value="MP 20 소비, 기본 공격력 24, 숙련도 30%" />
+        <string name="h13" value="MP 20 소비, 기본 공격력 26, 숙련도 35%" />
+        <string name="h14" value="MP 20 소비, 기본 공격력 28, 숙련도 35%" />
+        <string name="h15" value="MP 20 소비, 기본 공격력 30, 숙련도 35%" />
+        <string name="h16" value="MP 40 소비, 기본 공격력 32, 숙련도 40%" />
+        <string name="h17" value="MP 40 소비, 기본 공격력 34, 숙련도 40%" />
+        <string name="h18" value="MP 40 소비, 기본 공격력 36, 숙련도 40%" />
+        <string name="h19" value="MP 40 소비, 기본 공격력 38, 숙련도 45%" />
+        <string name="h20" value="MP 40 소비, 기본 공격력 40, 숙련도 45%" />
+        <string name="h21" value="MP 40 소비, 기본 공격력 42, 숙련도 45%" />
+        <string name="h22" value="MP 40 소비, 기본 공격력 44, 숙련도 50%" />
+        <string name="h23" value="MP 40 소비, 기본 공격력 46, 숙련도 50%" />
+        <string name="h24" value="MP 40 소비, 기본 공격력 48, 숙련도 50%" />
+        <string name="h25" value="MP 40 소비, 기본 공격력 50, 숙련도 55%" />
+        <string name="h26" value="MP 40 소비, 기본 공격력 52, 숙련도 55%" />
+        <string name="h27" value="MP 40 소비, 기본 공격력 54, 숙련도 55%" />
+        <string name="h28" value="MP 40 소비, 기본 공격력 56, 숙련도 60%" />
+        <string name="h29" value="MP 40 소비, 기본 공격력 58, 숙련도 60%" />
+        <string name="h30" value="MP 40 소비, 기본 공격력 60, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="221">
+        <string name="bookName" value="상급 냉기, 번개 마법" />
+    </imgdir>
+    <imgdir name="2210000">
+        <string name="name" value="파셜 레지스턴스" />
+        <string name="desc" value="[마스터 레벨 : 20]\n적으로부터 받는 냉기, 번개 속성의 마법 공격에 대한 내성을 지니게 된다." />
+        <string name="h1" value="냉기, 번개 속성 마법 내성 23% 증가" />
+        <string name="h2" value="냉기, 번개 속성 마법 내성 26% 증가" />
+        <string name="h3" value="냉기, 번개 속성 마법 내성 29% 증가" />
+        <string name="h4" value="냉기, 번개 속성 마법 내성 32% 증가" />
+        <string name="h5" value="냉기, 번개 속성 마법 내성 35% 증가" />
+        <string name="h6" value="냉기, 번개 속성 마법 내성 38% 증가" />
+        <string name="h7" value="냉기, 번개 속성 마법 내성 41% 증가" />
+        <string name="h8" value="냉기, 번개 속성 마법 내성 44% 증가" />
+        <string name="h9" value="냉기, 번개 속성 마법 내성 47% 증가" />
+        <string name="h10" value="냉기, 번개 속성 마법 내성 50% 증가" />
+        <string name="h11" value="냉기, 번개 속성 마법 내성 52% 증가" />
+        <string name="h12" value="냉기, 번개 속성 마법 내성 54% 증가" />
+        <string name="h13" value="냉기, 번개 속성 마법 내성 56% 증가" />
+        <string name="h14" value="냉기, 번개 속성 마법 내성 58% 증가" />
+        <string name="h15" value="냉기, 번개 속성 마법 내성 60% 증가" />
+        <string name="h16" value="냉기, 번개 속성 마법 내성 62% 증가" />
+        <string name="h17" value="냉기, 번개 속성 마법 내성 64% 증가" />
+        <string name="h18" value="냉기, 번개 속성 마법 내성 66% 증가" />
+        <string name="h19" value="냉기, 번개 속성 마법 내성 68% 증가" />
+        <string name="h20" value="냉기, 번개 속성 마법 내성 70% 증가" />
+    </imgdir>
+    <imgdir name="2210001">
+        <string name="name" value="엘리먼트 엠플리피케이션" />
+        <string name="desc" value="[마스터 레벨 : 30]\n더 많은 MP를 소비하여 자신이 사용하는 모든 공격 마법을 증폭시킨다." />
+        <string name="h1" value="소비 MP 105% 증가, 공격 마법 데미지 107% 증가" />
+        <string name="h2" value="소비 MP 110% 증가, 공격 마법 데미지 109% 증가" />
+        <string name="h3" value="소비 MP 115% 증가, 공격 마법 데미지 111% 증가" />
+        <string name="h4" value="소비 MP 120% 증가, 공격 마법 데미지 113% 증가" />
+        <string name="h5" value="소비 MP 125% 증가, 공격 마법 데미지 114% 증가" />
+        <string name="h6" value="소비 MP 130% 증가, 공격 마법 데미지 115% 증가" />
+        <string name="h7" value="소비 MP 135% 증가, 공격 마법 데미지 117% 증가" />
+        <string name="h8" value="소비 MP 140% 증가, 공격 마법 데미지 119% 증가" />
+        <string name="h9" value="소비 MP 145% 증가, 공격 마법 데미지 121% 증가" />
+        <string name="h10" value="소비 MP 150% 증가, 공격 마법 데미지 123% 증가" />
+        <string name="h11" value="소비 MP 160% 증가, 공격 마법 데미지 125% 증가" />
+        <string name="h12" value="소비 MP 155% 증가, 공격 마법 데미지 127% 증가" />
+        <string name="h13" value="소비 MP 165% 증가, 공격 마법 데미지 129% 증가" />
+        <string name="h14" value="소비 MP 160% 증가, 공격 마법 데미지 131% 증가" />
+        <string name="h15" value="소비 MP 170% 증가, 공격 마법 데미지 133% 증가" />
+        <string name="h16" value="소비 MP 165% 증가, 공격 마법 데미지 135% 증가" />
+        <string name="h17" value="소비 MP 175% 증가, 공격 마법 데미지 137% 증가" />
+        <string name="h18" value="소비 MP 170% 증가, 공격 마법 데미지 138% 증가" />
+        <string name="h19" value="소비 MP 180% 증가, 공격 마법 데미지 139% 증가" />
+        <string name="h20" value="소비 MP 175% 증가, 공격 마법 데미지 140% 증가" />
+        <string name="h21" value="소비 MP 185% 증가, 공격 마법 데미지 141% 증가" />
+        <string name="h22" value="소비 MP 180% 증가, 공격 마법 데미지 142% 증가" />
+        <string name="h23" value="소비 MP 190% 증가, 공격 마법 데미지 143% 증가" />
+        <string name="h24" value="소비 MP 185% 증가, 공격 마법 데미지 144% 증가" />
+        <string name="h25" value="소비 MP 195% 증가, 공격 마법 데미지 145% 증가" />
+        <string name="h26" value="소비 MP 190% 증가, 공격 마법 데미지 146% 증가" />
+        <string name="h27" value="소비 MP 205% 증가, 공격 마법 데미지 147% 증가" />
+        <string name="h28" value="소비 MP 200% 증가, 공격 마법 데미지 148% 증가" />
+        <string name="h29" value="소비 MP 195% 증가, 공격 마법 데미지 149% 증가" />
+        <string name="h30" value="소비 MP 200% 증가, 공격 마법 데미지 150% 증가" />
+    </imgdir>
+    <imgdir name="2211002">
+        <string name="name" value="아이스 스트라이크" />
+        <string name="desc" value="[마스터 레벨 : 30]\n날카로운 얼음 덩어리를 만들어 여러 명의 적을 향해 날린다. 명중시 냉기 속성 외의 몬스터는 얼어붙게 되며 한 번에 6마리 이상은 공격할 수 없다" />
+        <string name="h1" value="MP 21 소비, 기본 공격력 32, 숙련도 15%, 공격범위 110%" />
+        <string name="h2" value="MP 22 소비, 기본 공격력 34, 숙련도 15%, 공격범위 110%" />
+        <string name="h3" value="MP 23 소비, 기본 공격력 36, 숙련도 15%, 공격범위 110%" />
+        <string name="h4" value="MP 24 소비, 기본 공격력 38, 숙련도 20%, 공격범위 120%" />
+        <string name="h5" value="MP 25 소비, 기본 공격력 40, 숙련도 20%, 공격범위 120%" />
+        <string name="h6" value="MP 26 소비, 기본 공격력 42, 숙련도 20%, 공격범위 120%" />
+        <string name="h7" value="MP 27 소비, 기본 공격력 44, 숙련도 25%, 공격범위 130%" />
+        <string name="h8" value="MP 28 소비, 기본 공격력 46, 숙련도 25%, 공격범위 130%" />
+        <string name="h9" value="MP 29 소비, 기본 공격력 48, 숙련도 25%, 공격범위 130%" />
+        <string name="h10" value="MP 30 소비, 기본 공격력 50, 숙련도 30%, 공격범위 140%" />
+        <string name="h11" value="MP 31 소비, 기본 공격력 52, 숙련도 30%, 공격범위 140%" />
+        <string name="h12" value="MP 32 소비, 기본 공격력 54, 숙련도 30%, 공격범위 140%" />
+        <string name="h13" value="MP 33 소비, 기본 공격력 56, 숙련도 35%, 공격범위 150%" />
+        <string name="h14" value="MP 34 소비, 기본 공격력 58, 숙련도 35%, 공격범위 150%" />
+        <string name="h15" value="MP 35 소비, 기본 공격력 60, 숙련도 35%, 공격범위 150%" />
+        <string name="h16" value="MP 36 소비, 기본 공격력 62, 숙련도 40%, 공격범위 160%" />
+        <string name="h17" value="MP 37 소비, 기본 공격력 64, 숙련도 40%, 공격범위 160%" />
+        <string name="h18" value="MP 38 소비, 기본 공격력 66, 숙련도 40%, 공격범위 160%" />
+        <string name="h19" value="MP 39 소비, 기본 공격력 68, 숙련도 45%, 공격범위 170%" />
+        <string name="h20" value="MP 40 소비, 기본 공격력 70, 숙련도 45%, 공격범위 170%" />
+        <string name="h21" value="MP 41 소비, 기본 공격력 72, 숙련도 45%, 공격범위 170%" />
+        <string name="h22" value="MP 42 소비, 기본 공격력 74, 숙련도 50%, 공격범위 180%" />
+        <string name="h23" value="MP 43 소비, 기본 공격력 76, 숙련도 50%, 공격범위 180%" />
+        <string name="h24" value="MP 44 소비, 기본 공격력 78, 숙련도 50%, 공격범위 180%" />
+        <string name="h25" value="MP 45 소비, 기본 공격력 80, 숙련도 55%, 공격범위 190%" />
+        <string name="h26" value="MP 46 소비, 기본 공격력 82, 숙련도 55%, 공격범위 190%" />
+        <string name="h27" value="MP 47 소비, 기본 공격력 84, 숙련도 55%, 공격범위 190%" />
+        <string name="h28" value="MP 48 소비, 기본 공격력 86, 숙련도 60%, 공격범위 200%" />
+        <string name="h29" value="MP 49 소비, 기본 공격력 88, 숙련도 60%, 공격범위 200%" />
+        <string name="h30" value="MP 50 소비, 기본 공격력 90, 숙련도 60%, 공격범위 200%" />
+    </imgdir>
+    <imgdir name="2211003">
+        <string name="name" value="썬더 스피어" />
+        <string name="desc" value="[마스터 레벨 : 30]\n번개의 힘을 모아 창을 만들어 적 하나를 공격한다. 몬스터는 번개 속성 공격을 받게 된다." />
+        <string name="h1" value="MP 10 소비, 기본 공격력 80, 숙련도 15%" />
+        <string name="h2" value="MP 10 소비, 기본 공격력 90, 숙련도 15%" />
+        <string name="h3" value="MP 11 소비, 기본 공격력 95, 숙련도 15%" />
+        <string name="h4" value="MP 11 소비, 기본 공격력 100, 숙련도 20%" />
+        <string name="h5" value="MP 12 소비, 기본 공격력 104, 숙련도 20%" />
+        <string name="h6" value="MP 12 소비, 기본 공격력 108, 숙련도 20%" />
+        <string name="h7" value="MP 13 소비, 기본 공격력 111, 숙련도 25%" />
+        <string name="h8" value="MP 13 소비, 기본 공격력 115, 숙련도 25%" />
+        <string name="h9" value="MP 14 소비, 기본 공격력 118, 숙련도 25%" />
+        <string name="h10" value="MP 14 소비, 기본 공격력 121, 숙련도 30%" />
+        <string name="h11" value="MP 15 소비, 기본 공격력 124 숙련도 30%" />
+        <string name="h12" value="MP 15 소비, 기본 공격력 127, 숙련도 30%" />
+        <string name="h13" value="MP 16 소비, 기본 공격력 130, 숙련도 35%" />
+        <string name="h14" value="MP 16 소비, 기본 공격력 133, 숙련도 35%" />
+        <string name="h15" value="MP 17 소비, 기본 공격력 135, 숙련도 35%" />
+        <string name="h16" value="MP 17 소비, 기본 공격력 138, 숙련도 40%" />
+        <string name="h17" value="MP 18 소비, 기본 공격력 141, 숙련도 40%" />
+        <string name="h18" value="MP 18 소비, 기본 공격력 143, 숙련도 40%" />
+        <string name="h19" value="MP 19 소비, 기본 공격력 145, 숙련도 45%" />
+        <string name="h20" value="MP 19 소비, 기본 공격력 148, 숙련도 45%" />
+        <string name="h21" value="MP 20 소비, 기본 공격력 150, 숙련도 45%" />
+        <string name="h22" value="MP 20 소비, 기본 공격력 153, 숙련도 50%" />
+        <string name="h23" value="MP 21 소비, 기본 공격력 155, 숙련도 50%" />
+        <string name="h24" value="MP 21 소비, 기본 공격력 157, 숙련도 50%" />
+        <string name="h25" value="MP 22 소비, 기본 공격력 159, 숙련도 55%" />
+        <string name="h26" value="MP 22 소비, 기본 공격력 162, 숙련도 55%" />
+        <string name="h27" value="MP 23 소비, 기본 공격력 164, 숙련도 55%" />
+        <string name="h28" value="MP 23 소비, 기본 공격력 166, 숙련도 60%" />
+        <string name="h29" value="MP 24 소비, 기본 공격력 168, 숙련도 60%" />
+        <string name="h30" value="MP 24 소비, 기본 공격력 170, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="2211004">
+        <string name="name" value="씰" />
+        <string name="desc" value="[마스터 레벨 : 20]\n일정 시간동안 주변에 있는 적 다수를 봉인 상태로 만든다. 봉인 상태가 된 몬스터는 스킬을 쓸 수 없게 되며 보스 몬스터에게는 통하지 않는다.\n필요 스킬 : #c엘리먼트 엠플리피케이션 3레벨 이상#" />
+        <string name="h1" value="MP 12 소비, 10초간 38% 확률로 봉인 상태" />
+        <string name="h2" value="MP 12 소비, 11초간 41% 확률로 봉인 상태" />
+        <string name="h3" value="MP 12 소비, 11초간 44% 확률로 봉인 상태" />
+        <string name="h4" value="MP 12 소비, 12초간 47% 확률로 봉인 상태" />
+        <string name="h5" value="MP 12 소비, 12초간 50% 확률로 봉인 상태" />
+        <string name="h6" value="MP 18 소비, 13초간 53% 확률로 봉인 상태" />
+        <string name="h7" value="MP 18 소비, 13초간 56% 확률로 봉인 상태" />
+        <string name="h8" value="MP 18 소비, 14초간 59% 확률로 봉인 상태" />
+        <string name="h9" value="MP 18 소비, 14초간 62% 확률로 봉인 상태" />
+        <string name="h10" value="MP 18 소비, 15초간 65% 확률로 봉인 상태" />
+        <string name="h11" value="MP 24 소비, 15초간 68% 확률로 봉인 상태" />
+        <string name="h12" value="MP 24 소비, 16초간 71% 확률로 봉인 상태" />
+        <string name="h13" value="MP 24 소비, 16초간 74% 확률로 봉인 상태" />
+        <string name="h14" value="MP 24 소비, 17초간 77% 확률로 봉인 상태" />
+        <string name="h15" value="MP 24 소비, 17초간 80% 확률로 봉인 상태" />
+        <string name="h16" value="MP 30 소비, 18초간 83% 확률로 봉인 상태" />
+        <string name="h17" value="MP 30 소비, 18초간 86% 확률로 봉인 상태" />
+        <string name="h18" value="MP 30 소비, 19초간 89% 확률로 봉인 상태" />
+        <string name="h19" value="MP 30 소비, 19초간 92% 확률로 봉인 상태" />
+        <string name="h20" value="MP 30 소비, 20초간 95% 확률로 봉인 상태" />
+    </imgdir>
+    <imgdir name="2211005">
+        <string name="name" value="매직 부스터" />
+        <string name="desc" value="[마스터 레벨 : 20]\n많은 양의 HP와 MP를 소비하여 마법 공격 속도를 향상시킨다.\n필요 스킬 : #c엘리먼트 엠플리피케이션 3레벨 이상#" />
+        <string name="h1" value="HP 58, MP 53 소비하여 10초간 마법 공격 속도 1단계 향상" />
+        <string name="h2" value="HP 56, MP 51 소비하여 20초간 마법 공격 속도 1단계 향상" />
+        <string name="h3" value="HP 54, MP 49 소비하여 30초간 마법 공격 속도 1단계 향상" />
+        <string name="h4" value="HP 52, MP 47 소비하여 40초간 마법 공격 속도 1단계 향상" />
+        <string name="h5" value="HP 50, MP 45 소비하여 50초간 마법 공격 속도 1단계 향상" />
+        <string name="h6" value="HP 48, MP 43 소비하여 60초간 마법 공격 속도 1단계 향상" />
+        <string name="h7" value="HP 46, MP 41 소비하여 70초간 마법 공격 속도 1단계 향상" />
+        <string name="h8" value="HP 44, MP 39 소비하여 80초간 마법 공격 속도 1단계 향상" />
+        <string name="h9" value="HP 42, MP 37 소비하여 90초간 마법 공격 속도 1단계 향상" />
+        <string name="h10" value="HP 40, MP 35 소비하여 100초간 마법 공격 속도 1단계 향상" />
+        <string name="h11" value="HP 39, MP 34 소비하여 110초간 마법 공격 속도 2단계 향상" />
+        <string name="h12" value="HP 38, MP 33 소비하여 120초간 마법 공격 속도 2단계 향상" />
+        <string name="h13" value="HP 37, MP 32 소비하여 130초간 마법 공격 속도 2단계 향상" />
+        <string name="h14" value="HP 36, MP 31 소비하여 140초간 마법 공격 속도 2단계 향상" />
+        <string name="h15" value="HP 35, MP 30 소비하여 150초간 마법 공격 속도 2단계 향상" />
+        <string name="h16" value="HP 34, MP 29 소비하여 160초간 마법 공격 속도 2단계 향상" />
+        <string name="h17" value="HP 33, MP 28 소비하여 170초간 마법 공격 속도 2단계 향상" />
+        <string name="h18" value="HP 32, MP 27 소비하여 180초간 마법 공격 속도 2단계 향상" />
+        <string name="h19" value="HP 31, MP 26 소비하여 190초간 마법 공격 속도 2단계 향상" />
+        <string name="h20" value="HP 30, MP 25 소비하여 200초간 마법 공격 속도 2단계 향상" />
+    </imgdir>
+    <imgdir name="2211006">
+        <string name="name" value="매직 컴포지션" />
+        <string name="desc" value="[마스터 레벨 : 30]\n냉기와 번개 속성을 혼합한 마법으로 적 하나를 공격한다. 냉기나 번개가 약점인 몬스터에게 큰 데미지를 줄 수 있으며 일정 확률로 적은 결빙된다." />
+        <string name="h1" value="MP 14 소비, 기본 공격력 80, 숙련도 15%, 1초간 결빙" />
+        <string name="h2" value="MP 14 소비, 기본 공격력 84, 숙련도 15%, 1초간 결빙" />
+        <string name="h3" value="MP 14 소비, 기본 공격력 87, 숙련도 15%, 1초간 결빙" />
+        <string name="h4" value="MP 14 소비, 기본 공격력 90, 숙련도 20%, 1초간 결빙" />
+        <string name="h5" value="MP 14 소비, 기본 공격력 93, 숙련도 20%, 1초간 결빙" />
+        <string name="h6" value="MP 14 소비, 기본 공격력 96, 숙련도 20%, 1초간 결빙" />
+        <string name="h7" value="MP 14 소비, 기본 공격력 98, 숙련도 25%, 1초간 결빙" />
+        <string name="h8" value="MP 14 소비, 기본 공격력 100, 숙련도 25%, 1초간 결빙" />
+        <string name="h9" value="MP 14 소비, 기본 공격력 102, 숙련도 25%, 1초간 결빙" />
+        <string name="h10" value="MP 14 소비, 기본 공격력 104, 숙련도 30%, 1초간 결빙" />
+        <string name="h11" value="MP 18 소비, 기본 공격력 106, 숙련도 30%, 1초간 결빙" />
+        <string name="h12" value="MP 18 소비, 기본 공격력 108, 숙련도 30%, 1초간 결빙" />
+        <string name="h13" value="MP 18 소비, 기본 공격력 110, 숙련도 35%, 1초간 결빙" />
+        <string name="h14" value="MP 18 소비, 기본 공격력 112, 숙련도 35%, 1초간 결빙" />
+        <string name="h15" value="MP 18 소비, 기본 공격력 114, 숙련도 35%, 1초간 결빙" />
+        <string name="h16" value="MP 18 소비, 기본 공격력 116, 숙련도 40%, 2초간 결빙" />
+        <string name="h17" value="MP 18 소비, 기본 공격력 118, 숙련도 40%, 2초간 결빙" />
+        <string name="h18" value="MP 18 소비, 기본 공격력 120, 숙련도 40%, 2초간 결빙" />
+        <string name="h19" value="MP 18 소비, 기본 공격력 122, 숙련도 45%, 2초간 결빙" />
+        <string name="h20" value="MP 18 소비, 기본 공격력 124, 숙련도 45%, 2초간 결빙" />
+        <string name="h21" value="MP 22 소비, 기본 공격력 126, 숙련도 45%, 2초간 결빙" />
+        <string name="h22" value="MP 22 소비, 기본 공격력 128, 숙련도 50%, 2초간 결빙" />
+        <string name="h23" value="MP 22 소비, 기본 공격력 130, 숙련도 50%, 2초간 결빙" />
+        <string name="h24" value="MP 22 소비, 기본 공격력 132, 숙련도 50%, 2초간 결빙" />
+        <string name="h25" value="MP 22 소비, 기본 공격력 134, 숙련도 55%, 2초간 결빙" />
+        <string name="h26" value="MP 22 소비, 기본 공격력 136, 숙련도 55%, 2초간 결빙" />
+        <string name="h27" value="MP 22 소비, 기본 공격력 137, 숙련도 55%, 2초간 결빙" />
+        <string name="h28" value="MP 22 소비, 기본 공격력 138, 숙련도 60%, 2초간 결빙" />
+        <string name="h29" value="MP 22 소비, 기본 공격력 139, 숙련도 60%, 2초간 결빙" />
+        <string name="h30" value="MP 22 소비, 기본 공격력 140, 숙련도 60%, 2초간 결빙" />
+    </imgdir>
+    <imgdir name="222">
+        <string name="bookName" value="최상급 냉기, 번개 마법" />
+    </imgdir>
+    <imgdir name="2221000">
+        <string name="name" value="메이플 용사" />
+        <string name="desc" value="일정 시간 동안 파티원의 모든 스탯을 일정 퍼센트 올려 준다." />
+        <string name="h1" value="MP 10 소비하여 30초간 모든 스탯 1% 향상" />
+        <string name="h2" value="MP 10 소비하여 60초간 모든 스탯 1% 향상" />
+        <string name="h3" value="MP 10 소비하여 90초간 모든 스탯 2% 향상" />
+        <string name="h4" value="MP 10 소비하여 120초간 모든 스탯 2% 향상" />
+        <string name="h5" value="MP 10 소비하여 150초간 모든 스탯 3% 향상" />
+        <string name="h6" value="MP 20 소비하여 180초간 모든 스탯 3% 향상" />
+        <string name="h7" value="MP 20 소비하여 210초간 모든 스탯 4% 향상" />
+        <string name="h8" value="MP 20 소비하여 240초간 모든 스탯 4% 향상" />
+        <string name="h9" value="MP 20 소비하여 270초간 모든 스탯 5% 향상" />
+        <string name="h10" value="MP 20 소비하여 300초간 모든 스탯 5% 향상" />
+        <string name="h11" value="MP 30 소비하여 330초간 모든 스탯 6% 향상" />
+        <string name="h12" value="MP 30 소비하여 360초간 모든 스탯 6% 향상" />
+        <string name="h13" value="MP 30 소비하여 390초간 모든 스탯 7% 향상" />
+        <string name="h14" value="MP 30 소비하여 420초간 모든 스탯 7% 향상" />
+        <string name="h15" value="MP 30 소비하여 450초간 모든 스탯 8% 향상" />
+        <string name="h16" value="MP 40 소비하여 480초간 모든 스탯 8% 향상" />
+        <string name="h17" value="MP 40 소비하여 510초간 모든 스탯 9% 향상" />
+        <string name="h18" value="MP 40 소비하여 540초간 모든 스탯 9% 향상" />
+        <string name="h19" value="MP 40 소비하여 570초간 모든 스탯 10% 향상" />
+        <string name="h20" value="MP 40 소비하여 600초간 모든 스탯 10% 향상" />
+        <string name="h21" value="MP 50 소비하여 630초간 모든 스탯 11% 향상" />
+        <string name="h22" value="MP 50 소비하여 660초간 모든 스탯 11% 향상" />
+        <string name="h23" value="MP 50 소비하여 690초간 모든 스탯 12% 향상" />
+        <string name="h24" value="MP 50 소비하여 720초간 모든 스탯 12% 향상" />
+        <string name="h25" value="MP 50 소비하여 750초간 모든 스탯 13% 향상" />
+        <string name="h26" value="MP 60 소비하여 780초간 모든 스탯 13% 향상" />
+        <string name="h27" value="MP 60 소비하여 810초간 모든 스탯 14% 향상" />
+        <string name="h28" value="MP 60 소비하여 840초간 모든 스탯 14% 향상" />
+        <string name="h29" value="MP 60 소비하여 870초간 모든 스탯 15% 향상" />
+        <string name="h30" value="MP 60 소비하여 900초간 모든 스탯 15% 향상" />
+    </imgdir>
+    <imgdir name="2221001">
+        <string name="name" value="빅뱅" />
+        <string name="desc" value="일정 시간 동안 주위의 작은 입자의 힘을 모아 한번에 강력한 폭발을 일으킨다." />
+        <string name="h1" value="MP 25 소비, 최대 공격력 160, 숙련도 35%" />
+        <string name="h2" value="MP 25 소비, 최대 공격력 170, 숙련도 35%" />
+        <string name="h3" value="MP 25 소비, 최대 공격력 180, 숙련도 35%" />
+        <string name="h4" value="MP 25 소비, 최대 공격력 190, 숙련도 40%" />
+        <string name="h5" value="MP 25 소비, 최대 공격력 200, 숙련도 40%" />
+        <string name="h6" value="MP 25 소비, 최대 공격력 210, 숙련도 40%" />
+        <string name="h7" value="MP 25 소비, 최대 공격력 220, 숙련도 45%" />
+        <string name="h8" value="MP 25 소비, 최대 공격력 230, 숙련도 45%" />
+        <string name="h9" value="MP 25 소비, 최대 공격력 240, 숙련도 45%" />
+        <string name="h10" value="MP 25 소비, 최대 공격력 250, 숙련도 50%" />
+        <string name="h11" value="MP 40 소비, 최대 공격력 260, 숙련도 50%" />
+        <string name="h12" value="MP 40 소비, 최대 공격력 270, 숙련도 50%" />
+        <string name="h13" value="MP 40 소비, 최대 공격력 280, 숙련도 55%" />
+        <string name="h14" value="MP 40 소비, 최대 공격력 290, 숙련도 55%" />
+        <string name="h15" value="MP 40 소비, 최대 공격력 300, 숙련도 55%" />
+        <string name="h16" value="MP 40 소비, 최대 공격력 310, 숙련도 60%" />
+        <string name="h17" value="MP 40 소비, 최대 공격력 320, 숙련도 60%" />
+        <string name="h18" value="MP 40 소비, 최대 공격력 330, 숙련도 60%" />
+        <string name="h19" value="MP 40 소비, 최대 공격력 340, 숙련도 65%" />
+        <string name="h20" value="MP 40 소비, 최대 공격력 350, 숙련도 65%" />
+        <string name="h21" value="MP 55 소비, 최대 공격력 360, 숙련도 65%" />
+        <string name="h22" value="MP 55 소비, 최대 공격력 370, 숙련도 70%" />
+        <string name="h23" value="MP 55 소비, 최대 공격력 380, 숙련도 70%" />
+        <string name="h24" value="MP 55 소비, 최대 공격력 390, 숙련도 70%" />
+        <string name="h25" value="MP 55 소비, 최대 공격력 400, 숙련도 75%" />
+        <string name="h26" value="MP 54 소비, 최대 공격력 410, 숙련도 75%" />
+        <string name="h27" value="MP 53 소비, 최대 공격력 420, 숙련도 75%" />
+        <string name="h28" value="MP 52 소비, 최대 공격력 430, 숙련도 80%" />
+        <string name="h29" value="MP 51 소비, 최대 공격력 440, 숙련도 80%" />
+        <string name="h30" value="MP 50 소비, 최대 공격력 450, 숙련도 80%" />
+    </imgdir>
+    <imgdir name="2221002">
+        <string name="name" value="마나 리플렉션" />
+        <string name="desc" value="내면의 힘으로 마나의 흐름을 바꿔 적에게 그 힘을 돌려준다. 한 번에 적의 최대 체력의 20%이상 돌려주지 못한다." />
+        <string name="h1" value="MP 26 소비, 10초간 31%의 확률로 마법데미지의 55%를 적에게 돌려줌." />
+        <string name="h2" value="MP 27 소비, 20초간 32%의 확률로 마법데미지의 60%를 적에게 돌려줌." />
+        <string name="h3" value="MP 28 소비, 30초간 33%의 확률로 마법데미지의 65%를 적에게 돌려줌." />
+        <string name="h4" value="MP 29 소비, 40초간 34%의 확률로 마법데미지의 70%를 적에게 돌려줌." />
+        <string name="h5" value="MP 30 소비, 50초간 35%의 확률로 마법데미지의 75%를 적에게 돌려줌." />
+        <string name="h6" value="MP 31 소비, 60초간 36%의 확률로 마법데미지의 80%를 적에게 돌려줌." />
+        <string name="h7" value="MP 32 소비, 70초간 37%의 확률로 마법데미지의 85%를 적에게 돌려줌." />
+        <string name="h8" value="MP 33 소비, 80초간 38%의 확률로 마법데미지의 90%를 적에게 돌려줌." />
+        <string name="h9" value="MP 34 소비, 90초간 39%의 확률로 마법데미지의 95%를 적에게 돌려줌." />
+        <string name="h10" value="MP 35 소비, 100초간 40%의 확률로 마법데미지의 100%를 적에게 돌려줌." />
+        <string name="h11" value="MP 36 소비, 110초간 41%의 확률로 마법데미지의 105%를 적에게 돌려줌." />
+        <string name="h12" value="MP 37 소비, 120초간 42%의 확률로 마법데미지의 110%를 적에게 돌려줌." />
+        <string name="h13" value="MP 38 소비, 130초간 43%의 확률로 마법데미지의 115%를 적에게 돌려줌." />
+        <string name="h14" value="MP 39 소비, 140초간 44%의 확률로 마법데미지의 120%를 적에게 돌려줌." />
+        <string name="h15" value="MP 40 소비, 150초간 45%의 확률로 마법데미지의 125%를 적에게 돌려줌." />
+        <string name="h16" value="MP 41 소비, 160초간 46%의 확률로 마법데미지의 130%를 적에게 돌려줌." />
+        <string name="h17" value="MP 42 소비, 170초간 47%의 확률로 마법데미지의 135%를 적에게 돌려줌." />
+        <string name="h18" value="MP 43 소비, 180초간 48%의 확률로 마법데미지의 140%를 적에게 돌려줌." />
+        <string name="h19" value="MP 44 소비, 190초간 49%의 확률로 마법데미지의 145%를 적에게 돌려줌." />
+        <string name="h20" value="MP 45 소비, 200초간 50%의 확률로 마법데미지의 150%를 적에게 돌려줌." />
+        <string name="h21" value="MP 46 소비, 205초간 51%의 확률로 마법데미지의 155%를 적에게 돌려줌." />
+        <string name="h22" value="MP 47 소비, 210초간 52%의 확률로 마법데미지의 160%를 적에게 돌려줌." />
+        <string name="h23" value="MP 48 소비, 215초간 53%의 확률로 마법데미지의 165%를 적에게 돌려줌." />
+        <string name="h24" value="MP 49 소비, 220초간 54%의 확률로 마법데미지의 170%를 적에게 돌려줌." />
+        <string name="h25" value="MP 50 소비, 225초간 55%의 확률로 마법데미지의 175%를 적에게 돌려줌." />
+        <string name="h26" value="MP 49 소비, 230초간 56%의 확률로 마법데미지의 180%를 적에게 돌려줌." />
+        <string name="h27" value="MP 48 소비, 235초간 57%의 확률로 마법데미지의 185%를 적에게 돌려줌." />
+        <string name="h28" value="MP 47 소비, 240초간 58%의 확률로 마법데미지의 190%를 적에게 돌려줌." />
+        <string name="h29" value="MP 46 소비, 245초간 59%의 확률로 마법데미지의 195%를 적에게 돌려줌." />
+        <string name="h30" value="MP 45 소비, 250초간 60%의 확률로 마법데미지의 200%를 적에게 돌려줌." />
+    </imgdir>
+    <imgdir name="2221003">
+        <string name="name" value="아이스 데몬" />
+        <string name="desc" value="아이스 데몬의 얼음 조각으로 적을 공격하여 지속적으로 데미지를 준다. 아이스 데몬에 걸린 적은 불속성 공격에 약점을 보인다." />
+        <string name="h1" value="MP 15 소비, 기본 공격력 62, 숙련도 15%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h2" value="MP 15 소비, 기본 공격력 64, 숙련도 15%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h3" value="MP 15 소비, 기본 공격력 66, 숙련도 15%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h4" value="MP 15 소비, 기본 공격력 68, 숙련도 20%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h5" value="MP 15 소비, 기본 공격력 70, 숙련도 20%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h6" value="MP 15 소비, 기본 공격력 72, 숙련도 20%, 지속시간 10초, 2명 공격 가능" />
+        <string name="h7" value="MP 18 소비, 기본 공격력 74, 숙련도 25%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h8" value="MP 18 소비, 기본 공격력 76, 숙련도 25%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h9" value="MP 18 소비, 기본 공격력 78, 숙련도 25%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h10" value="MP 18 소비, 기본 공격력 80, 숙련도 30%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h11" value="MP 18 소비, 기본 공격력 82, 숙련도 30%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h12" value="MP 18 소비, 기본 공격력 84, 숙련도 30%, 지속시간 10초, 3명 공격 가능" />
+        <string name="h13" value="MP 21 소비, 기본 공격력 86, 숙련도 35%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h14" value="MP 21 소비, 기본 공격력 88, 숙련도 35%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h15" value="MP 21 소비, 기본 공격력 90, 숙련도 35%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h16" value="MP 21 소비, 기본 공격력 92, 숙련도 40%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h17" value="MP 21 소비, 기본 공격력 94, 숙련도 40%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h18" value="MP 21 소비, 기본 공격력 96, 숙련도 40%, 지속시간 10초, 4명 공격 가능" />
+        <string name="h19" value="MP 31 소비, 기본 공격력 98, 숙련도 45%, 지속시간 15초, 5명 공격 가능" />
+        <string name="h20" value="MP 31 소비, 기본 공격력 100, 숙련도 45%, 지속시간 15초, 5명 공격 가능" />
+        <string name="h21" value="MP 31 소비, 기본 공격력 102, 숙련도 45%, 지속시간 15초, 5명 공격 가능" />
+        <string name="h23" value="MP 31 소비, 기본 공격력 106, 숙련도 50%, 지속시간 15초, 5명 공격 가능" />
+        <string name="h24" value="MP 31 소비, 기본 공격력 108, 숙련도 50%, 지속시간 15초, 5명 공격 가능" />
+        <string name="h25" value="MP 34 소비, 기본 공격력 110, 숙련도 55%, 지속시간 15초, 6명 공격 가능" />
+        <string name="h26" value="MP 34 소비, 기본 공격력 112, 숙련도 55%, 지속시간 15초, 6명 공격 가능" />
+        <string name="h27" value="MP 34 소비, 기본 공격력 114, 숙련도 55%, 지속시간 15초, 6명 공격 가능" />
+        <string name="h28" value="MP 34 소비, 기본 공격력 116, 숙련도 60%, 지속시간 15초, 6명 공격 가능" />
+        <string name="h29" value="MP 34 소비, 기본 공격력 118, 숙련도 60%, 지속시간 15초, 6명 공격 가능" />
+        <string name="h30" value="MP 34 소비, 기본 공격력 120, 숙련도 60%, 지속시간 15초, 6명 공격 가능" />
+    </imgdir>
+    <imgdir name="2221004">
+        <string name="name" value="인피니티" />
+        <string name="desc" value="일정 시간 동안 주위의 마력을 응집하여 마나를 소모하지 않는다. \n#c재사용 대기시간 : 10분#" />
+        <string name="h1" value="11초 동안 마나를 소모하지 않음" />
+        <string name="h2" value="12초 동안 마나를 소모하지 않음" />
+        <string name="h3" value="13초 동안 마나를 소모하지 않음" />
+        <string name="h4" value="14초 동안 마나를 소모하지 않음" />
+        <string name="h5" value="15초 동안 마나를 소모하지 않음" />
+        <string name="h6" value="16초 동안 마나를 소모하지 않음" />
+        <string name="h7" value="17초 동안 마나를 소모하지 않음" />
+        <string name="h8" value="18초 동안 마나를 소모하지 않음" />
+        <string name="h9" value="19초 동안 마나를 소모하지 않음" />
+        <string name="h10" value="20초 동안 마나를 소모하지 않음" />
+        <string name="h11" value="21초 동안 마나를 소모하지 않음" />
+        <string name="h12" value="22초 동안 마나를 소모하지 않음" />
+        <string name="h13" value="23초 동안 마나를 소모하지 않음" />
+        <string name="h14" value="24초 동안 마나를 소모하지 않음" />
+        <string name="h15" value="25초 동안 마나를 소모하지 않음" />
+        <string name="h16" value="26초 동안 마나를 소모하지 않음" />
+        <string name="h17" value="27초 동안 마나를 소모하지 않음" />
+        <string name="h18" value="28초 동안 마나를 소모하지 않음" />
+        <string name="h19" value="29초 동안 마나를 소모하지 않음" />
+        <string name="h20" value="30초 동안 마나를 소모하지 않음" />
+        <string name="h21" value="31초 동안 마나를 소모하지 않음" />
+        <string name="h22" value="32초 동안 마나를 소모하지 않음" />
+        <string name="h23" value="33초 동안 마나를 소모하지 않음" />
+        <string name="h24" value="34초 동안 마나를 소모하지 않음" />
+        <string name="h25" value="35초 동안 마나를 소모하지 않음" />
+        <string name="h26" value="36초 동안 마나를 소모하지 않음" />
+        <string name="h27" value="37초 동안 마나를 소모하지 않음" />
+        <string name="h28" value="38초 동안 마나를 소모하지 않음" />
+        <string name="h29" value="39초 동안 마나를 소모하지 않음" />
+        <string name="h30" value="40초 동안 마나를 소모하지 않음" />
+    </imgdir>
+    <imgdir name="2221005">
+        <string name="name" value="이프리트" />
+        <string name="desc" value="일정 시간 동안 불 속성을 지닌 이프리트를 소환한다. 최대 3마리의 적을 공격한다.\n필요 스킬 : #c아이스 데몬 5레벨 이상#" />
+        <string name="h1" value="MP 13 소비, 기본 공격력 183, 지속시간 15초" />
+        <string name="h2" value="MP 16 소비, 기본 공격력 186, 지속시간 20초" />
+        <string name="h3" value="MP 19 소비, 기본 공격력 189, 지속시간 25초" />
+        <string name="h4" value="MP 22 소비, 기본 공격력 192, 지속시간 30초" />
+        <string name="h5" value="MP 25 소비, 기본 공격력 195, 지속시간 35초" />
+        <string name="h6" value="MP 28 소비, 기본 공격력 198, 지속시간 40초" />
+        <string name="h7" value="MP 31 소비, 기본 공격력 201, 지속시간 45초" />
+        <string name="h8" value="MP 34 소비, 기본 공격력 204, 지속시간 50초" />
+        <string name="h9" value="MP 37 소비, 기본 공격력 207, 지속시간 55초" />
+        <string name="h10" value="MP 40 소비, 기본 공격력 210, 지속시간 60초" />
+        <string name="h11" value="MP 43 소비, 기본 공격력 214, 지속시간 65초" />
+        <string name="h12" value="MP 46 소비, 기본 공격력 218, 지속시간 70초" />
+        <string name="h13" value="MP 49 소비, 기본 공격력 222, 지속시간 75초" />
+        <string name="h14" value="MP 52 소비, 기본 공격력 226, 지속시간 80초" />
+        <string name="h15" value="MP 55 소비, 기본 공격력 230, 지속시간 85초" />
+        <string name="h16" value="MP 58 소비, 기본 공격력 234, 지속시간 90초" />
+        <string name="h17" value="MP 61 소비, 기본 공격력 238, 지속시간 95초" />
+        <string name="h18" value="MP 64 소비, 기본 공격력 242, 지속시간 100초" />
+        <string name="h19" value="MP 67 소비, 기본 공격력 246, 지속시간 105초" />
+        <string name="h20" value="MP 70 소비, 기본 공격력 250, 지속시간 110초" />
+        <string name="h21" value="MP 73 소비, 기본 공격력 255, 지속시간 115초" />
+        <string name="h22" value="MP 76 소비, 기본 공격력 260, 지속시간 120초" />
+        <string name="h23" value="MP 79 소비, 기본 공격력 265, 지속시간 125초" />
+        <string name="h24" value="MP 82 소비, 기본 공격력 270, 지속시간 130초" />
+        <string name="h25" value="MP 85 소비, 기본 공격력 275, 지속시간 135초" />
+        <string name="h26" value="MP 88 소비, 기본 공격력 280, 지속시간 140초" />
+        <string name="h27" value="MP 91 소비, 기본 공격력 285, 지속시간 145초" />
+        <string name="h28" value="MP 94 소비, 기본 공격력 290, 지속시간 150초" />
+        <string name="h29" value="MP 97 소비, 기본 공격력 295, 지속시간 155초" />
+        <string name="h30" value="MP 100 소비, 기본 공격력 300, 지속시간 160초" />
+    </imgdir>
+    <imgdir name="2221006">
+        <string name="name" value="체인 라이트닝" />
+        <string name="desc" value="고압의 전류를 사용하여 하나의 적에게 전기 속성의 공격을 한다. 체인 라이트닝에 맞은 적의 주위에 다른 적이 있으면 추가로 데미지를 입는다." />
+        <string name="h1" value="MP 16 소비, 기본 공격력 104, 숙련도 15%, 최대 2명에게 데미지를 줌" />
+        <string name="h2" value="MP 16 소비, 기본 공격력 108, 숙련도 15%, 최대 2명에게 데미지를 줌" />
+        <string name="h3" value="MP 16 소비, 기본 공격력 112, 숙련도 15%, 최대 2명에게 데미지를 줌" />
+        <string name="h4" value="MP 16 소비, 기본 공격력 116, 숙련도 20%, 최대 2명에게 데미지를 줌" />
+        <string name="h5" value="MP 16 소비, 기본 공격력 120, 숙련도 20%, 최대 2명에게 데미지를 줌" />
+        <string name="h6" value="MP 16 소비, 기본 공격력 124, 숙련도 20%, 최대 2명에게 데미지를 줌" />
+        <string name="h7" value="MP 16 소비, 기본 공격력 128, 숙련도 25%, 최대 3명에게 데미지를 줌" />
+        <string name="h8" value="MP 16 소비, 기본 공격력 132, 숙련도 25%, 최대 3명에게 데미지를 줌" />
+        <string name="h9" value="MP 16 소비, 기본 공격력 136, 숙련도 25%, 최대 3명에게 데미지를 줌" />
+        <string name="h10" value="MP 16 소비, 기본 공격력 140, 숙련도 30%, 최대 3명에게 데미지를 줌" />
+        <string name="h11" value="MP 24 소비, 기본 공격력 144, 숙련도 30%, 최대 3명에게 데미지를 줌" />
+        <string name="h12" value="MP 24 소비, 기본 공격력 148, 숙련도 30%, 최대 3명에게 데미지를 줌" />
+        <string name="h13" value="MP 24 소비, 기본 공격력 152, 숙련도 35%, 최대 4명에게 데미지를 줌" />
+        <string name="h14" value="MP 24 소비, 기본 공격력 156, 숙련도 35%, 최대 4명에게 데미지를 줌" />
+        <string name="h15" value="MP 24 소비, 기본 공격력 160, 숙련도 35%, 최대 4명에게 데미지를 줌" />
+        <string name="h16" value="MP 24 소비, 기본 공격력 164, 숙련도 40%, 최대 4명에게 데미지를 줌" />
+        <string name="h17" value="MP 24 소비, 기본 공격력 168, 숙련도 40%, 최대 4명에게 데미지를 줌" />
+        <string name="h18" value="MP 24 소비, 기본 공격력 172, 숙련도 40%, 최대 4명에게 데미지를 줌" />
+        <string name="h19" value="MP 24 소비, 기본 공격력 176, 숙련도 45%, 최대 5명에게 데미지를 줌" />
+        <string name="h20" value="MP 24 소비, 기본 공격력 180, 숙련도 45%, 최대 5명에게 데미지를 줌" />
+        <string name="h21" value="MP 30 소비, 기본 공격력 183, 숙련도 45%, 최대 5명에게 데미지를 줌" />
+        <string name="h22" value="MP 30 소비, 기본 공격력 186, 숙련도 50%, 최대 5명에게 데미지를 줌" />
+        <string name="h23" value="MP 30 소비, 기본 공격력 189, 숙련도 50%, 최대 5명에게 데미지를 줌" />
+        <string name="h24" value="MP 30 소비, 기본 공격력 192, 숙련도 50%, 최대 5명에게 데미지를 줌" />
+        <string name="h25" value="MP 30 소비, 기본 공격력 195, 숙련도 55%, 최대 6명에게 데미지를 줌" />
+        <string name="h26" value="MP 29 소비, 기본 공격력 198, 숙련도 55%, 최대 6명에게 데미지를 줌" />
+        <string name="h27" value="MP 28 소비, 기본 공격력 201, 숙련도 55%, 최대 6명에게 데미지를 줌" />
+        <string name="h28" value="MP 27 소비, 기본 공격력 204, 숙련도 60%, 최대 6명에게 데미지를 줌" />
+        <string name="h29" value="MP 26 소비, 기본 공격력 207, 숙련도 60%, 최대 6명에게 데미지를 줌" />
+        <string name="h30" value="MP 25 소비, 기본 공격력 210, 숙련도 60%, 최대 6명에게 데미지를 줌" />
+    </imgdir>
+    <imgdir name="2221007">
+        <string name="name" value="블리자드" />
+        <string name="desc" value="하늘에서 얼음창이 떨어져 15마리 이하의 다수의 적에게 강력한 얼음 속성의 데미지를 준다." />
+        <string name="h1" value="MP 1500 소비, 기본 공격력 330" />
+        <string name="h2" value="MP 1600 소비, 기본 공격력 340" />
+        <string name="h3" value="MP 1700 소비, 기본 공격력 350" />
+        <string name="h4" value="MP 1800 소비, 기본 공격력 360" />
+        <string name="h5" value="MP 1900 소비, 기본 공격력 370" />
+        <string name="h6" value="MP 2000 소비, 기본 공격력 380" />
+        <string name="h7" value="MP 2100 소비, 기본 공격력 390" />
+        <string name="h8" value="MP 2200 소비, 기본 공격력 400" />
+        <string name="h9" value="MP 2300 소비, 기본 공격력 410" />
+        <string name="h10" value="MP 2400 소비, 기본 공격력 420" />
+        <string name="h11" value="MP 2500 소비, 기본 공격력 430" />
+        <string name="h12" value="MP 2600 소비, 기본 공격력 440" />
+        <string name="h13" value="MP 2700 소비, 기본 공격력 450" />
+        <string name="h14" value="MP 2800 소비, 기본 공격력 460" />
+        <string name="h15" value="MP 2900 소비, 기본 공격력 470" />
+        <string name="h16" value="MP 3000 소비, 기본 공격력 480" />
+        <string name="h17" value="MP 3100 소비, 기본 공격력 490" />
+        <string name="h18" value="MP 3200 소비, 기본 공격력 500" />
+        <string name="h19" value="MP 3300 소비, 기본 공격력 510" />
+        <string name="h20" value="MP 3400 소비, 기본 공격력 520" />
+        <string name="h21" value="MP 3350 소비, 기본 공격력 530" />
+        <string name="h22" value="MP 3300 소비, 기본 공격력 540" />
+        <string name="h23" value="MP 3250 소비, 기본 공격력 550" />
+        <string name="h24" value="MP 3200 소비, 기본 공격력 560" />
+        <string name="h25" value="MP 3150 소비, 기본 공격력 570" />
+        <string name="h26" value="MP 3100 소비, 기본 공격력 580" />
+        <string name="h27" value="MP 3050 소비, 기본 공격력 585" />
+        <string name="h28" value="MP 3000 소비, 기본 공격력 590" />
+        <string name="h29" value="MP 2950 소비, 기본 공격력 595" />
+        <string name="h30" value="MP 2900 소비, 기본 공격력 600" />
+    </imgdir>
+    <imgdir name="2221008">
+        <string name="name" value="용사의 의지" />
+        <string name="desc" value="특정 상태 이상에서 벗어날 수 있다. 레벨이 올라감에 따라 재사용 대기시간이 단축된다." />
+        <string name="h1" value="MP 30 소비하여 유혹 상태 이상 해제, 재사용 대기시간 10분" />
+        <string name="h2" value="MP 30 소비하여 유혹 상태 이상 해제, 재사용 대기시간 9분" />
+        <string name="h3" value="MP 30 소비하여 유혹 상태 이상 해제, 재사용 대기시간 8분" />
+        <string name="h4" value="MP 30 소비하여 유혹 상태 이상 해제, 재사용 대기시간 7분" />
+        <string name="h5" value="MP 30 소비하여 유혹 상태 이상 해제, 재사용 대기시간 6분" />
+    </imgdir>
+    <imgdir name="800">
+        <string name="bookName" value="매니저 스킬북" />
+    </imgdir>
+    <imgdir name="8001000">
+        <string name="name" value="매크로 테스트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n매크로로 의심되는 캐릭터를 대상으로 거짓말 탐지기를 실행한다." />
+        <string name="h1" value="딱 걸렸어!" />
+    </imgdir>
+    <imgdir name="8001001">
+        <string name="name" value="텔레포트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n상, 하, 좌, 우 방향키를 이용하여 같은 맵 상의 다른 위치로 일정 간격으로 이동할 수 있다." />
+        <string name="h1" value="텔레포트, 이동거리 150" />
+    </imgdir>
+    <imgdir name="900">
+        <string name="bookName" value="운영자 스킬북" />
+    </imgdir>
+    <imgdir name="9001000">
+        <string name="name" value="힐 + 디스펠" />
+        <string name="desc" value="[마스터 레벨 : 1]\n적의 마법효과를 무효화 하고 자신을 포함한 주변 캐릭터의 상태이상을 치료하고 HP를 회복시킨다." />
+        <string name="h1" value="주변 캐릭터의 상태이상 무효화 및 HP 회복" />
+    </imgdir>
+    <imgdir name="9001001">
+        <string name="name" value="헤이스트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n15분 간 주변 캐릭터의 이동속도와 점프력을 증가시켜 준다." />
+        <string name="h1" value="30분간 이동속도 40, 점프력 20 향상" />
+    </imgdir>
+    <imgdir name="9001002">
+        <string name="name" value="홀리 심볼" />
+        <string name="desc" value="[마스터 레벨 : 1]\n15분 간 주변 캐릭터가 몬스터를 사냥할 때 더 많은 경험치를 얻을 수 있게 된다." />
+        <string name="h1" value="30분간 획득 경험치 150%" />
+    </imgdir>
+    <imgdir name="9001003">
+        <string name="name" value="블레스" />
+        <string name="desc" value="[마스터 레벨 : 1]\n15분 간 주변 캐릭터의 각종 능력치를 대폭 올려준다." />
+        <string name="h1" value="30분간 공격력, 마력 + 20, 나머지 능력치 + 100" />
+    </imgdir>
+    <imgdir name="9001004">
+        <string name="name" value="숨기" />
+        <string name="desc" value="[마스터 레벨 : 1]\n다른 캐릭터에게 보이지 않게 몸을 숨길 수 있다. 숨기 상태에서 스킬을 다시 쓰면 풀린다." />
+        <string name="h1" value="보이지 않는 상태가 됨" />
+    </imgdir>
+    <imgdir name="9001005">
+        <string name="name" value="부활" />
+        <string name="desc" value="[마스터 레벨 : 1]\n주변의 캐릭터중 죽은 캐릭터를 살린다." />
+        <string name="h1" value="캐릭터를 살림" />
+    </imgdir>
+    <imgdir name="9001006">
+        <string name="name" value="슈퍼 드래곤로어" />
+        <string name="desc" value="[마스터 레벨 : 1]\n거대한 용의 포효로 15마리 이하 다수의 적을 아작낸다." />
+        <string name="h1" value="데미지 1000%, 공격범위 화면전체" />
+    </imgdir>
+    <imgdir name="9001007">
+        <string name="name" value="텔레포트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n상, 하, 좌, 우 방향키를 이용하여 같은 맵 상의 다른 위치로 일정 간격으로 이동할 수 있다." />
+        <string name="h1" value="텔레포트, 이동거리 150" />
+    </imgdir>
+    <imgdir name="9001008">
+        <string name="name" value="하이퍼 바디" />
+        <string name="desc" value="[마스터 레벨 : 1]\n15분간 Max HP, Max MP의 양이 증가한다." />
+        <string name="h1" value="Max HP, Max MP 60% 증가" />
+    </imgdir>
+    <imgdir name="9001009">
+        <string name="name" value="매크로 테스트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n매크로로 의심되는 캐릭터를 대상으로 거짓말 탐지기를 실행한다." />
+        <string name="h1" value="딱 걸렸어!" />
+    </imgdir>
+    <imgdir name="2000">
+        <string name="bookName" value="레전드의 기술" />
+    </imgdir>
+    <imgdir name="20001000">
+        <string name="name" value="달팽이 세마리" />
+        <string name="desc" value="[마스터 레벨 : 3]\n달팽이 껍질을 던져 원거리의 적을 공격한다. " />
+        <string name="h1" value="MP 3 소비하여 데미지 10" />
+        <string name="h2" value="MP 5 소비하여 데미지 25" />
+        <string name="h3" value="MP 7 소비하여 데미지 40" />
+    </imgdir>
+    <imgdir name="20001001">
+        <string name="name" value="회복" />
+        <string name="desc" value="[마스터 레벨 : 3]\n자신의 HP를 30초간 지속적으로 회복시킨다. \n#c재사용 대기시간 : 2분#" />
+        <string name="h1" value="MP 5 소비하여 30초간 HP 24 회복" />
+        <string name="h2" value="MP 10 소비하여 30초간 HP 48 회복" />
+        <string name="h3" value="MP 15 소비하여 30초간 HP 72 회복" />
+    </imgdir>
+    <imgdir name="20001002">
+        <string name="name" value="민첩한 몸놀림" />
+        <string name="desc" value="[마스터 레벨 : 3]\n순간적으로 빠르게 이동한다. \n#c재사용 대기시간 : 1분#" />
+        <string name="h1" value="MP 4 소비하여 4초간 이동속도 10 향상" />
+        <string name="h2" value="MP 7 소비하여 8초간 이동속도 15 향상" />
+        <string name="h3" value="MP 10 소비하여 12초간 이동속도 20 향상" />
+    </imgdir>
+    <imgdir name="20001003">
+        <string name="name" value="장인의 혼" />
+        <string name="desc" value="[마스터 레벨 : 1]\n장인의 혼을 빌어 착용할 수 없는 아이템에도 주문서를 사용할 수 있다." />
+    </imgdir>
+    <imgdir name="20001004">
+        <string name="name" value="몬스터 라이딩" />
+        <string name="desc" value="[마스터 레벨 : 1]\n길들인 몬스터를 타고 이동할 수 있다." />
+    </imgdir>
+    <imgdir name="20001005">
+        <string name="name" value="영웅의 메아리" />
+        <string name="desc" value="[마스터 레벨 : 1]\n주변 모든 유저의 물리공격력과 마법공격력을 증가시킨다. \n#c재사용 대기시간 : 2시간#" />
+        <string name="h1" value="MP 30 소비하여 40분간 물리공격력,마법공격력 4% 향상" />
+    </imgdir>
+    <imgdir name="20001006">
+        <string name="name" value="테스트" />
+        <string name="desc" value="테스트" />
+        <string name="h1" value="테스트" />
+    </imgdir>
+    <imgdir name="20001007">
+        <string name="name" value="메이커" />
+        <string name="desc" value="[마스터 레벨 : 3]\n연금술을 이용해 아이템을 제작할 수 있다. 자신의 캐릭터 레벨에 따라 제작할 수 있는 아이템이 달라 진다." />
+        <string name="h1" value="75 레벨 이하 아이템 제작 가능" />
+        <string name="h2" value="105 레벨 이하 아이템 제작 가능" />
+        <string name="h3" value="135 레벨 이하 아이템 제작 가능" />
+    </imgdir>
+    <imgdir name="20001009">
+        <string name="name" value="죽간천격" />
+        <string name="desc" value="대나무를 사용한 공격을 한다" />
+        <string name="h1" value="보스 몬스터의 체력 30% 감소" />
+    </imgdir>
+    <imgdir name="20001010">
+        <string name="name" value="금강불괴" />
+        <string name="desc" value="일정 시간동안 무적 상태가 된다." />
+        <string name="h1" value="30초간 무적" />
+    </imgdir>
+    <imgdir name="20001011">
+        <string name="name" value="지화천폭" />
+        <string name="desc" value="일정 시간동안 데미지가 증가 한다." />
+        <string name="h1" value="30초간 데미지 100% 증가" />
+    </imgdir>
+    <imgdir name="20000012">
+        <string name="name" value="정령의 축복" />
+        <string name="desc" value="[마스터 레벨 : 20]\n다른 캐릭터를 레벨 10이상 육성하면 스킬포인트 1이 상승한다." />
+        <string name="h1" value="물리 공격력 1, 마법 공격력 2, 명중률, 회피율 1 상승" />
+        <string name="h2" value="물리 공격력 2, 마법 공격력 4, 명중률, 회피율 2 상승" />
+        <string name="h3" value="물리 공격력 3, 마법 공격력 6, 명중률, 회피율 3 상승" />
+        <string name="h4" value="물리 공격력 4, 마법 공격력 8, 명중률, 회피율 4 상승" />
+        <string name="h5" value="물리 공격력 5, 마법 공격력 10, 명중률, 회피율 5 상승" />
+        <string name="h6" value="물리 공격력 6, 마법 공격력 12, 명중률, 회피율 6 상승" />
+        <string name="h7" value="물리 공격력 7, 마법 공격력 14, 명중률, 회피율 7 상승" />
+        <string name="h8" value="물리 공격력 8, 마법 공격력 16, 명중률, 회피율 8 상승" />
+        <string name="h9" value="물리 공격력 9, 마법 공격력 18, 명중률, 회피율 9 상승" />
+        <string name="h10" value="물리 공격력 10, 마법 공격력 20, 명중률, 회피율 10 상승" />
+        <string name="h11" value="물리 공격력 11, 마법 공격력 22, 명중률, 회피율 11 상승" />
+        <string name="h12" value="물리 공격력 12, 마법 공격력 24, 명중률, 회피율 12 상승" />
+        <string name="h13" value="물리 공격력 13, 마법 공격력 26, 명중률, 회피율 13 상승" />
+        <string name="h14" value="물리 공격력 14, 마법 공격력 28, 명중률, 회피율 14 상승" />
+        <string name="h15" value="물리 공격력 15, 마법 공격력 30, 명중률, 회피율 15 상승" />
+        <string name="h16" value="물리 공격력 16, 마법 공격력 32, 명중률, 회피율 16 상승" />
+        <string name="h17" value="물리 공격력 17, 마법 공격력 34, 명중률, 회피율 17 상승" />
+        <string name="h18" value="물리 공격력 18, 마법 공격력 36, 명중률, 회피율 18 상승" />
+        <string name="h19" value="물리 공격력 19, 마법 공격력 38, 명중률, 회피율 19 상승" />
+        <string name="h20" value="물리 공격력 20, 마법 공격력 40, 명중률, 회피율 20 상승" />
+    </imgdir>
+    <imgdir name="20001013">
+        <string name="name" value="도우미" />
+        <string name="desc" value="일정 시간동안 데미지가 증가 한다." />
+        <string name="h1" value="도우미" />
+    </imgdir>
+    <imgdir name="20000014">
+        <string name="name" value="튜토리얼 스킬" />
+        <string name="desc" value="튜토리얼 스킬" />
+    </imgdir>
+    <imgdir name="20000015">
+        <string name="name" value="튜토리얼 스킬" />
+        <string name="desc" value="튜토리얼 스킬" />
+    </imgdir>
+    <imgdir name="20000016">
+        <string name="name" value="튜토리얼 스킬" />
+        <string name="desc" value="튜토리얼 스킬" />
+    </imgdir>
+    <imgdir name="20000017">
+        <string name="name" value="튜토리얼 스킬" />
+        <string name="desc" value="튜토리얼 스킬" />
+    </imgdir>
+    <imgdir name="20000018">
+        <string name="name" value="튜토리얼 스킬" />
+        <string name="desc" value="튜토리얼 스킬" />
+    </imgdir>
+    <imgdir name="20001019">
+        <string name="name" value="예티 라이더" />
+        <string name="desc" value="[마스터 레벨 : 1]\n예티를 타고 이동할 수 있다.\n#c유효기간 : 2009년 9월 7일 00시#" />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 120, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001020">
+        <string name="name" value="파라오의 분노" />
+        <string name="desc" value="[마스터 레벨 : 1]\n파라오의 분노를  이용한 공격을 한다." />
+        <string name="h1" value="피라미드 내부의 모든 몬스터를 일격에 없앰" />
+    </imgdir>
+    <imgdir name="20001022">
+        <string name="name" value="예티 라이더" />
+        <string name="desc" value="[마스터 레벨 : 1]\n예티를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 120, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001023">
+        <string name="name" value="마녀의 빗자루" />
+        <string name="desc" value="[마스터 레벨 : 1]\n빗자루를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 120, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001025">
+        <string name="name" value="돌격! 목마" />
+        <string name="desc" value="[마스터 레벨 : 1]\n목마를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 120, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001026">
+        <string name="name" value="플라잉" />
+        <string name="desc" value="[마스터 레벨 : 1]\n용족의 신비한 힘을 사용해 하늘을 난다. 단, 추락시 받는 낙하 데미지가 매우 크다.\n발동할 때 MP 90소모하며 플라잉 상태 유지시 초당 3의 MP 소모" />
+        <string name="h1" value="MP 90 소모하여 플라잉 스킬 사용. 1초당 3의 MP 소모" />
+    </imgdir>
+    <imgdir name="20001027">
+        <string name="name" value="크로코" />
+        <string name="desc" value="[마스터 레벨 : 1]\n크로코를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001028">
+        <string name="name" value="네이키드 바이크" />
+        <string name="desc" value="[마스터 레벨 : 1]\n네이키드 바이크를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001029">
+        <string name="name" value="핑크 스쿠터" />
+        <string name="desc" value="[마스터 레벨 : 1]\n핑크 스쿠터를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001030">
+        <string name="name" value="근두운" />
+        <string name="desc" value="[마스터 레벨 : 1]\n근두운을 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001031">
+        <string name="name" value="발록" />
+        <string name="desc" value="[마스터 레벨 : 1]\n발록을 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001032">
+        <string name="name" value="미스트 발록" />
+        <string name="desc" value="[마스터 레벨 : 1]\n미스트 발록을 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001033">
+        <string name="name" value="경주용 카트" />
+        <string name="desc" value="[마스터 레벨 : 1]\n경주용 카트를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20001034">
+        <string name="name" value="ZD 타이거" />
+        <string name="desc" value="[마스터 레벨 : 1]\nZD 타이거를 타고 이동할 수 있다." />
+        <string name="h1" value="MP 10 소비, 물리, 마법 방어력 10 증가, 이동속도 140, 점프력 120" />
+    </imgdir>
+    <imgdir name="20009000">
+        <string name="name" value="돼지의 약점" />
+        <string name="desc" value="[마스터 레벨 : 1]\n 돼지에게 150% 데미지를 준다." />
+    </imgdir>
+    <imgdir name="20009001">
+        <string name="name" value="스텀프의 약점" />
+        <string name="desc" value="[마스터 레벨 : 1]\n 스텀프에게 150% 데미지를 준다." />
+    </imgdir>
+    <imgdir name="20009002">
+        <string name="name" value="슬라임의 약점" />
+        <string name="desc" value="[마스터 레벨 : 1]\n 슬라임에게 150% 데미지를 준다." />
+    </imgdir>
+    <imgdir name="2200">
+        <string name="bookName" value="마스터1차" />
+    </imgdir>
+    <imgdir name="22000000">
+        <string name="name" value="드래곤 소울" />
+        <string name="desc" value="[마스터 레벨 : 20]\n드래곤의 영혼을 강화시켜 마력을 향상시킨다.\n필요 스킬 : #c매직 미사일 10레벨 이상#" />
+        <string name="h1" value="마력 1 향상" />
+        <string name="h2" value="마력 2 향상" />
+        <string name="h3" value="마력 3 향상" />
+        <string name="h4" value="마력 4 향상" />
+        <string name="h5" value="마력 5 향상" />
+        <string name="h6" value="마력 6 향상" />
+        <string name="h7" value="마력 7 향상" />
+        <string name="h8" value="마력 8 향상" />
+        <string name="h9" value="마력 9 향상" />
+        <string name="h10" value="마력 10 향상" />
+        <string name="h11" value="마력 11 향상" />
+        <string name="h12" value="마력 12 향상" />
+        <string name="h13" value="마력 13 향상" />
+        <string name="h14" value="마력 14 향상" />
+        <string name="h15" value="마력 15 향상" />
+        <string name="h16" value="마력 16 향상" />
+        <string name="h17" value="마력 17 향상" />
+        <string name="h18" value="마력 18 향상" />
+        <string name="h19" value="마력 19 향상" />
+        <string name="h20" value="마력 20 향상" />
+    </imgdir>
+    <imgdir name="22001001">
+        <string name="name" value="매직 미사일" />
+        <string name="desc" value="[마스터 레벨 : 20]\nMP를 소비하여 원거리의 적을 두 번 공격한다." />
+        <string name="h1" value="MP 10 소비, 기본 공격력 11, 숙련도 15%" />
+        <string name="h2" value="MP 10 소비, 기본 공격력 13, 숙련도 15%" />
+        <string name="h3" value="MP 10 소비, 기본 공격력 14, 숙련도 20%" />
+        <string name="h4" value="MP 10 소비, 기본 공격력 16, 숙련도 20%" />
+        <string name="h5" value="MP 12 소비, 기본 공격력 17, 숙련도 25%" />
+        <string name="h6" value="MP 12 소비, 기본 공격력 19, 숙련도 25%" />
+        <string name="h7" value="MP 12 소비, 기본 공격력 20, 숙련도 30%" />
+        <string name="h8" value="MP 12 소비, 기본 공격력 22, 숙련도 30%" />
+        <string name="h9" value="MP 14 소비, 기본 공격력 23, 숙련도 35%" />
+        <string name="h10" value="MP 14 소비, 기본 공격력 25, 숙련도 35%" />
+        <string name="h11" value="MP 14 소비, 기본 공격력 26, 숙련도 40%" />
+        <string name="h12" value="MP 14 소비, 기본 공격력 28, 숙련도 40%" />
+        <string name="h13" value="MP 16 소비, 기본 공격력 29, 숙련도 45%" />
+        <string name="h14" value="MP 16 소비, 기본 공격력 31, 숙련도 45%" />
+        <string name="h15" value="MP 16 소비, 기본 공격력 32, 숙련도 50%" />
+        <string name="h16" value="MP 16 소비, 기본 공격력 34, 숙련도 50%" />
+        <string name="h17" value="MP 18 소비, 기본 공격력 35, 숙련도 55%" />
+        <string name="h18" value="MP 18 소비, 기본 공격력 37, 숙련도 55%" />
+        <string name="h19" value="MP 18 소비, 기본 공격력 38, 숙련도 60%" />
+        <string name="h20" value="MP 18 소비, 기본 공격력 40, 숙련도 60%" />
+    </imgdir>
+    <imgdir name="2210">
+        <string name="bookName" value="마스터2차" />
+    </imgdir>
+    <imgdir name="22101000">
+        <string name="name" value="파이어 서클" />
+        <string name="desc" value="[마스터 레벨 : 20]\nMP를 소비하여 다수의 적에게 불속성 공격을 한다." />
+        <string name="h1" value="MP 12소비, 기본 공격력 36, 숙련도 15%, 최대 3마리 공격 " />
+        <string name="h2" value="MP 12소비, 기본 공격력 38, 숙련도 15%, 최대 3마리 공격 " />
+        <string name="h3" value="MP 12소비, 기본 공격력 38, 숙련도 20%, 최대 3마리 공격 " />
+        <string name="h4" value="MP 12소비, 기본 공격력 39, 숙련도 20%, 최대 3마리 공격 " />
+        <string name="h5" value="MP 14소비, 기본 공격력 40, 숙련도 25%, 최대 3마리 공격 " />
+        <string name="h6" value="MP 14소비, 기본 공격력 41, 숙련도 25%, 최대 3마리 공격 " />
+        <string name="h7" value="MP 14소비, 기본 공격력 42, 숙련도 30%, 최대 3마리 공격 " />
+        <string name="h8" value="MP 14소비, 기본 공격력 43, 숙련도 30%, 최대 3마리 공격 " />
+        <string name="h9" value="MP 16소비, 기본 공격력 44, 숙련도 35%, 최대 3마리 공격 " />
+        <string name="h10" value="MP 16소비, 기본 공격력 45, 숙련도 35%, 최대 3마리 공격 " />
+        <string name="h11" value="MP 16소비, 기본 공격력 46, 숙련도 40%, 최대 4마리 공격 " />
+        <string name="h12" value="MP 16소비, 기본 공격력 47, 숙련도 40%, 최대 4마리 공격 " />
+        <string name="h13" value="MP 18소비, 기본 공격력 48, 숙련도 45%, 최대 4마리 공격 " />
+        <string name="h14" value="MP 18소비, 기본 공격력 49, 숙련도 45%, 최대 4마리 공격 " />
+        <string name="h15" value="MP 18소비, 기본 공격력 50, 숙련도 50%, 최대 4마리 공격 " />
+        <string name="h16" value="MP 18소비, 기본 공격력 51, 숙련도 50%, 최대 4마리 공격 " />
+        <string name="h17" value="MP 20소비, 기본 공격력 52, 숙련도 55%, 최대 4마리 공격 " />
+        <string name="h18" value="MP 20소비, 기본 공격력 53, 숙련도 55%, 최대 4마리 공격 " />
+        <string name="h19" value="MP 20소비, 기본 공격력 54, 숙련도 60%, 최대 4마리 공격 " />
+        <string name="h20" value="MP 20소비, 기본 공격력 55, 숙련도 60%, 최대 4마리 공격 " />
+    </imgdir>
+    <imgdir name="22101001">
+        <string name="name" value="텔레포트" />
+        <string name="desc" value="[마스터 레벨 : 20]\n상, 하, 좌, 우 방향키를 이용하여 같은 맵 상의 다른 위치로 일정 간격으로 이동할 수 있다." />
+        <string name="h1" value="MP 34 소비, 이동거리 131" />
+        <string name="h2" value="MP 33 소비, 이동거리 132" />
+        <string name="h3" value="MP 32 소비, 이동거리 133" />
+        <string name="h4" value="MP 31 소비, 이동거리 134" />
+        <string name="h5" value="MP 30 소비, 이동거리 135" />
+        <string name="h6" value="MP 29 소비, 이동거리 136" />
+        <string name="h7" value="MP 28 소비, 이동거리 137" />
+        <string name="h8" value="MP 27 소비, 이동거리 138" />
+        <string name="h9" value="MP 26 소비, 이동거리 139" />
+        <string name="h10" value="MP 25 소비, 이동거리 140" />
+        <string name="h11" value="MP 24 소비, 이동거리 141" />
+        <string name="h12" value="MP 23 소비, 이동거리 142" />
+        <string name="h13" value="MP 22 소비, 이동거리 143" />
+        <string name="h14" value="MP 21 소비, 이동거리 144" />
+        <string name="h15" value="MP 20 소비, 이동거리 145" />
+        <string name="h16" value="MP 19 소비, 이동거리 146" />
+        <string name="h17" value="MP 18 소비, 이동거리 147" />
+        <string name="h18" value="MP 17 소비, 이동거리 148" />
+        <string name="h19" value="MP 16 소비, 이동거리 149" />
+        <string name="h20" value="MP 15 소비, 이동거리 150" />
+    </imgdir>
+    <imgdir name="9000">
+        <string name="bookName" value="addition" />
+    </imgdir>
+    <imgdir name="90000000">
+        <string name="name" value="즉사" />
+        <string name="desc" value="" />
+        <string name="h1" value="즉사" />
+    </imgdir>
+    <imgdir name="90001001">
+        <string name="name" value="기절" />
+        <string name="desc" value="" />
+        <string name="h1" value="원킬" />
+    </imgdir>
+    <imgdir name="90001002">
+        <string name="name" value="슬로우" />
+        <string name="desc" value="" />
+        <string name="h1" value="슬로우" />
+    </imgdir>
+    <imgdir name="90001003">
+        <string name="name" value="독" />
+        <string name="desc" value="" />
+        <string name="h1" value="독" />
+    </imgdir>
+    <imgdir name="90001004">
+        <string name="name" value="암흑" />
+        <string name="desc" value="" />
+        <string name="h1" value="암흑" />
+        <string name="h2" value="암흑" />
+    </imgdir>
+    <imgdir name="90001005">
+        <string name="name" value="봉인" />
+        <string name="desc" value="" />
+        <string name="h1" value="봉인" />
+    </imgdir>
+    <imgdir name="90001006">
+        <string name="name" value="결빙" />
+        <string name="desc" value="" />
+        <string name="h1" value="결빙" />
+        <string name="h2" value="결빙" />
+    </imgdir>
+</imgdir>

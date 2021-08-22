@@ -84,6 +84,7 @@ public:
 
 	void SetIsAttacking(bool g);
 	bool IsAttacking() const;
+	bool IsFake() const;
 private:
 	virtual int ReadyGameObject() override;
 	virtual void UpdateGameObject(const float deltaTime) override;
@@ -94,7 +95,7 @@ private:
 	
 	void IsJumping();
 	bool IsChangeFoothold();
-
+	void SetFake();
 	
 private:
 	MonsterInfo _monster_info;
@@ -110,6 +111,8 @@ private:
 	bool _facing_direction;
 	bool _is_alive;
 	std::string _state_string;
+	bool _is_fake;
+	uint64_t _fake_tick;
 
 	//Á×À½ °ü·Ã
 	uint64_t _die_wait_tick;

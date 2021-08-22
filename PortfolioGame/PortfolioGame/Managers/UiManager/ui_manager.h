@@ -1,4 +1,5 @@
 #pragma once
+class MobGage;
 class KeyManager;
 class DeadMessage;
 class NpcTalkWindow;
@@ -30,6 +31,7 @@ public:
 	std::shared_ptr<NpcTalkWindow> GetNpcTalkWindow() const;
 	std::shared_ptr<ShopWindow> GetShopWindow() const;
 	std::shared_ptr<DeadMessage> GetDeadMessage() const;
+	std::shared_ptr<MobGage> GetMobGage() const;
 private:
 	void ButtonUiLoad();
 	void PlayerInfoUiLoad();
@@ -53,6 +55,8 @@ private:
 	std::shared_ptr<NpcTalkWindow> _npc_talk_window;
 	std::shared_ptr<ShopWindow> _shop_window;
 	std::shared_ptr<DeadMessage> _dead_message;
+	std::shared_ptr<MobGage> _mob_gage;
+
 	KeyManager* _key_manager;
 
 };

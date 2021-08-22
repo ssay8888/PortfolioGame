@@ -195,7 +195,12 @@ void MapInstance::RespawnMonster()
 				}
 				if (!check)
 				{
+					if (spawn_mob->IsBoss())
+					{
+						return;
+					}
 					auto redy = new Monster(*spawn_mob);
+					redy->SetLayer(spawn_mob->GetLayer());
 					redy->DoReadyGame();
 					_list_game_object[i].emplace_back(redy);
 				}

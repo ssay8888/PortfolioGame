@@ -36,6 +36,8 @@ public:
 	void ScrollBarDownClick(POINT mouse) const;
 	bool InMouserSkillWindow() const;
 
+	Skill* PointCollisionSkill(POINT pos);
+
 	void SetInfo(Info info);
 	RECT GetRect() const;
 	Info GetInfo() const;

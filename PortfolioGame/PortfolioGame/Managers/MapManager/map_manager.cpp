@@ -20,10 +20,14 @@
 
 #include "../../Components/MapObject/Item/item.h"
 #include "../NpcManager/npc_manager.h"
+#include "../UiManager/ui_manager.h"
+#include "../UiManager/MobGage/mob_gage.h"
 
 MapManager::MapManager() :
 	_map_player(nullptr),
-	_now_map(nullptr)
+	_now_map(nullptr),
+	_is_change_map(false),
+	_change_map_tick(0)
 {
 }
 
@@ -120,11 +124,13 @@ void MapManager::LoadMapData(uint32_t mapid)
 					monsterCopy->SetInfo(obj->GetInfo());
 					monsterCopy->SetSpawnPoint(obj->GetInfo());
 					monsterCopy->DoReadyGame();
+					monsterCopy->SetLayer(obj->GetLayer());
 					map->AddGameObject(monsterCopy);
 
 					monsterCopy = new Monster((*monster));
-					monsterCopy->SetInfo(obj->GetInfo());
 					monsterCopy->SetSpawnPoint(obj->GetInfo());
+					monsterCopy->SetInfo(obj->GetInfo());
+					monsterCopy->SetLayer(obj->GetLayer());
 					map->AddMonsterObject(monsterCopy);
 					delete obj;
 				}
@@ -189,14 +195,24 @@ void MapManager::LoadMapData(uint32_t mapid)
 	CloseHandle(hFile);
 	if (mapid == 0)
 	{ 
-		Info info1{ 285, 500, 87, 182 };
-		auto portal1 = new Portal({ 285, 400 }, 1, info1);
+		Info info1{ 950, 480, 87, 182 };
+		auto portal1 = new Portal({ 135, 300 }, 1, info1);
 		map->AddPortal(portal1);
 	}
 	else if (mapid == 1)
 	{
-		Info info2{ 285, 400, 87, 182 };
-		auto portal2 = new Portal({ 285, 500 }, 0, info2);
+		Info info2{ 135, 270, 87, 182 };
+		auto portal2 = new Portal({ 950, 460 }, 0, info2);
+		map->AddPortal(portal2);
+
+		Info info3{ 1100, 615, 87, 182 };
+		auto portal3 = new Portal({ 100, 400 }, 2, info3);
+		map->AddPortal(portal3);
+	}
+	else if (mapid == 2)
+	{
+		Info info2{ 100, 340, 87, 182 };
+		auto portal2 = new Portal({ 1100, 615 }, 1, info2);
 		map->AddPortal(portal2);
 	}
 
@@ -238,6 +254,7 @@ void MapManager::UpdateGameObjectManager(const float deltaTime)
 			{
 				if ((*iter))
 				{
+					UiManager::GetInstance()->GetMobGage()->UpdateMobGate();
 					delete (*iter);
 					(*iter) = nullptr;
 				}
@@ -290,13 +307,13 @@ void MapManager::RenderGameObjectManager(HDC hdc)
 		}
 	}
 
+	UiManager::GetInstance()->GetMobGage()->RenderMobGage(hdc);
 	for (auto& data : now_map->GetPortalList())
 	{
 		data->RenderPortal(hdc);
 	}
 
 	now_map->RenderDropItems(hdc);
-
 
 }
 
@@ -309,6 +326,23 @@ void MapManager::RenderFootHoldManager(HDC hDC)
 	for (auto iter = GetNowMap()->GetRopeLadderList().begin(); iter != GetNowMap()->GetRopeLadderList().end(); ++iter)
 	{
 		(*iter)->RenderFootHold(hDC);
+	}
+
+	if (_is_change_map)
+	{
+		if (GetTickCount64() < _change_map_tick + 1000)
+		{
+			HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
+			HBRUSH brushPrev = (HBRUSH)SelectObject(hDC, brush);
+			Rectangle(hDC, -10, -10, WindowCX + 10, WindowCY + 10);
+			SelectObject(hDC, brushPrev);
+			DeleteObject(brush);
+			DeleteObject(brushPrev);
+		}
+		else
+		{
+			_is_change_map = false;
+		}
 	}
 }
 
@@ -687,7 +721,14 @@ void MapManager::ChangeMap(int32_t next_map, ObjectPos pos)
 		map->second->SetPlayer(_map_player);
 		_now_map = map->second;
 		_map_player->SetInfo({pos.x, pos.y, _map_player->GetInfo().cx, _map_player->GetInfo().cy});
+		_is_change_map = true;
+		_change_map_tick = GetTickCount64();
 	}
+}
+
+bool MapManager::IsChangeMap() const
+{
+	return _is_change_map;
 }
 
 void MapManager::MapObjectImageLoad()
@@ -723,6 +764,10 @@ std::list<Monster*> MapManager::MonsterCollision(RECT rect, uint32_t count)
 			{
 				if (!data->IsAlive())
 					continue;
+
+				if (data->IsFake())
+					continue;
+
 				RECT dist = data->GetRect();
 				if (IntersectRect(&rc, &rect, &dist))
 				{

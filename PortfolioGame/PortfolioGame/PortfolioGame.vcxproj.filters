@@ -161,6 +161,15 @@
     <Filter Include="Managers\UiManager\DeadMessage">
       <UniqueIdentifier>{5e62f8da-82fe-46fc-9cc5-31d95d2c360f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\MapObject\Player\Buff">
+      <UniqueIdentifier>{7bf30ead-213d-4c62-8f83-87b53d2d0184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SkillManager\BuffUi">
+      <UniqueIdentifier>{43f5441e-5301-41e6-a89b-5b85845e191e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\UiManager\MobGage">
+      <UniqueIdentifier>{6aad6758-c51f-4267-8d81-4aa1a1a66282}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -409,6 +418,18 @@
     <ClInclude Include="Managers\EffectManager\effect_parts.h">
       <Filter>Managers\EffectManager</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\Buff\buffstat.h">
+      <Filter>Components\MapObject\Player\Buff</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SkillManager\BuffUi\buff_ui.h">
+      <Filter>Managers\SkillManager\BuffUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\StringManager\skill_string_info.h">
+      <Filter>Managers\StringManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UiManager\MobGage\mob_gage.h">
+      <Filter>Managers\UiManager\MobGage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -638,6 +659,18 @@
     </ClCompile>
     <ClCompile Include="Managers\EffectManager\effect_parts.cpp">
       <Filter>Managers\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\Buff\buffstat.cpp">
+      <Filter>Components\MapObject\Player\Buff</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SkillManager\BuffUi\buff_ui.cpp">
+      <Filter>Managers\SkillManager\BuffUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\StringManager\skill_string_info.cpp">
+      <Filter>Managers\StringManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UiManager\MobGage\mob_gage.cpp">
+      <Filter>Managers\UiManager\MobGage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

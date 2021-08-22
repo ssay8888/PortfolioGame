@@ -4,7 +4,7 @@ class Npc;
 
 class NpcManager
 {
-	NpcManager() = default;
+	NpcManager();
 	~NpcManager() = default;
 public:
 	static NpcManager* GetInstance()

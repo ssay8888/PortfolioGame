@@ -1,24 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <quest name="Info">
-    <quest name="2103">
+    <quest name="2101">
         <quest name="say">
-            <quest name="0" value="다음으로 넘겨볼까요" type="0"/>
-            <quest name="1" value="또다음은요?" type="0"/>
-            <quest name="2" value="수락할래요?" type="2"/>
+            <quest name="0" value="용사님 바쁘신가요?" type="0"/>
+            <quest name="1" value="달팽이들의 껍질이 필요해요." type="0"/>
+            <quest name="2" value="달팽이들을 처치해서 파란 달팽이의 껍질 5개와 달팽이의 껍질 5개를 가져와 주세요." type="2"/>
         </quest>
         <quest name="success">
-            <quest name="0" value="보상을 획득했어요~!" type="1"/>
+            <quest name="0" value="다 모아오셨군요 감사합니다. \n\n\n보상)\n경험치 : 500경험치 \n메소 : 50,000메소 \n파워엘릭서 50개" type="1"/>
         </quest>
         <quest name="ing">
-            <quest name="0" value="재료를 모아와요." type="1"/>
+            <quest name="0" value="아직 파란 달팽이의 껍질 5개와 달팽이의 껍질 5개를 모으지 못하신 거 같은데요??" type="1"/>
         </quest>
         <quest name="check">
             <quest item="4000000" price="5" />
+            <quest item="4000019" price="5" />
         </quest>
         <quest name="reward">
             <quest name="exp" item="0" value="500" />
-            <quest name="meso" item="0" value="5000000" />
-            <quest name="item" item="2000001" value="50" />
+            <quest name="meso" item="0" value="50000" />
+            <quest name="item" item="2000005" value="50" />
+        </quest>
+    </quest>
+    <quest name="2006">
+        <quest name="say">
+            <quest name="0" value="이봐 자네 바쁜가??" type="0"/>
+            <quest name="1" value="아래의 몬스터들을 잡아 나뭇가지 5개와 초록버섯의 갓 10개를 가지고와보게나." type="2"/>
+        </quest>
+        <quest name="success">
+            <quest name="0" value="보기보다 대단하군. \n\n\n보상)\n경험치 : 50,000,000경험치 \n메소 : 50,000,000메소 \n황진일주갑주 획득\n흑진일주 바지 획득\n레드아이젠 획득\n아크스태프 획득\n" type="1"/>
+        </quest>
+        <quest name="ing">
+            <quest name="0" value="나뭇가지 5개와 초록버섯의 갓 10개를 모아오라니깐?" type="1"/>
+        </quest>
+        <quest name="check">
+            <quest item="4000003" price="5" />
+            <quest item="4000012" price="10" />
+        </quest>
+        <quest name="reward">
+            <quest name="exp" item="0" value="50000000" />
+            <quest name="meso" item="0" value="50000000" />
+            <quest name="item" item="1040000" value="1" />
+            <quest name="item" item="1060000" value="1" />
+            <quest name="item" item="1072168" value="1" />
+            <quest name="item" item="1382001" value="1" />
         </quest>
     </quest>
 </quest>

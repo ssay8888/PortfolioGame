@@ -1,4 +1,5 @@
 #pragma once
+class Skill;
 class SkinInfo;
 class Item;
 
@@ -16,11 +17,17 @@ private:
 	void AlphaBlueScreenItemInfo(HDC hdc) const;
 	void AlphaItemWhiteMiniScreen(HDC hdc) const;
 	void SelectItemRender(HDC hdc, std::shared_ptr<Item> item) const;
-
-
+	/// <summary>
+	/// ¿Â∫Ò≈€ ≈¯∆¡
+	/// </summary>
 	void AlphaBlueScreenEquipIcon(HDC hdc) const;
 	void AlphaEquipWhiteMiniScreen(HDC hdc) const;
 	void SelectEquipRedner(HDC hdc, std::shared_ptr<SkinInfo> item) const;
+
+	/// <summary>
+	/// Ω∫≈≥≈¯∆¡
+	/// </summary>
+	void SelectSkillRender(HDC hdc, Skill* skill) const;
 
 	void AlphaBlueScreenEquipInfo(HDC hdc, std::shared_ptr<SkinInfo> item) const;
 	std::pair<int32_t, std::wstring> SelectEquipInfo(std::shared_ptr<SkinInfo> item) const;

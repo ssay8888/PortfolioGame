@@ -54,6 +54,7 @@ public:
 	void LoadShop();
 	//스트링 메소드
 	void LoadItemString(std::string path, const std::string node_path);
+	void LoadSkillString();
 
 	//이펙트메소드
 	void LoadEffectParts();

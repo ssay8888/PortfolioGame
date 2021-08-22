@@ -16,6 +16,9 @@
 #include "../../../Components/MapObject/Player/Inventory/inventory.h"
 #include "../../ItemManager/item_manager.h"
 #include "../../QuestManager/Quest/SubInfo/quest_reward.h"
+#include "../../Skins/skin_manager.h"
+#include "../../../Components/MapObject/Player/Inventory/eqp_inventory.h"
+#include "../../Skins/skin_info.h"
 
 NpcTalkWindow::NpcTalkWindow(): _this_npc(nullptr),
                                 _talk_type(),
@@ -95,6 +98,45 @@ void NpcTalkWindow::OkNpcTalk()
 			player->RemoveIngQuest(quest_info);
 			player->InsertClearQuest(quest_info);
 		}
+
+		auto quest_check = quest_info->GetCheck();
+		if (!quest_check.empty())
+		{
+			bool isCmpleted = true;
+			for (auto check : quest_check)
+			{
+				auto inven = player->GetInventory(::ObjectType::InventoryTabState::kEtc);
+				auto total_item_quantity = inven->TotalQuantity(check->GetItemId());
+				if (total_item_quantity > check->GetPrice())
+				{
+					int price = check->GetPrice();
+					for (int i = 0; i < 96; ++i)
+					{
+						auto item = inven->GetItem()[i];
+						if (item != nullptr)
+						{
+							if (item->GetItemId() == check->GetItemId())
+							{
+								if (item->GetQuantity() >= price)
+								{
+									item->GainQuantity(-price);
+									price = 0;
+								}
+								else
+								{
+									price -= item->GetQuantity();
+									item->SetQuantity(0);
+								}
+							}
+						}
+						if (price <= 0)
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
 		for(auto reward : quest_info->GetReward())
 		{
 			auto inven = player->GetInventory(ObjectType::InventoryTabState::kConsume);
@@ -108,9 +150,18 @@ void NpcTalkWindow::OkNpcTalk()
 			}
 			else if (!strcmp(reward->GetRewardType().c_str(), "item"))
 			{
-				auto item = ItemManager::GetInstance()->FindCopyItem(reward->GetItemId());
-				item->SetQuantity(reward->GetValue());
-				inven->AddItem(inven->FindFreeSlot(), item);
+				if (reward->GetItemId() >= 2000000)
+				{
+					auto item = ItemManager::GetInstance()->FindCopyItem(reward->GetItemId());
+					item->SetQuantity(reward->GetValue());
+					inven->AddItem(inven->FindFreeSlot(), item);
+				}
+				else
+				{
+
+					auto item = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(reward->GetItemId()));
+					player->GetEqpInventory()->AddItem(player->GetEqpInventory()->FindFreeSlot(), std::make_shared<SkinInfo>(SkinInfo(*item)));
+				}
 			}
 		}
 	}
@@ -264,8 +315,14 @@ void NpcTalkWindow::RenderWinodw(HDC hdc)
 				next_button->RenderButtonUi(hdc);
 				if (quest_info != nullptr)
 				{
-					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 153, static_cast<int>(_info.y) + 27,
-						str, 11, RGB(0, 0, 0));
+					RECT rc;
+					rc.left = static_cast<int>(_info.x) + 153;
+					rc.top = static_cast<int>(_info.y) + 27;
+					rc.right = rc.left + 348;
+					rc.bottom = rc.top + 120;
+					StringTools::CreateDrawText(hdc, rc, str, 11, RGB(0, 0, 0));
+					/*StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 153, static_cast<int>(_info.y) + 27,
+						str, 11, RGB(0, 0, 0));*/
 				}
 				button.second->SetState(UiButton::ButtonState::kNormal);
 			}
@@ -286,8 +343,12 @@ void NpcTalkWindow::RenderWinodw(HDC hdc)
 				next_button->RenderButtonUi(hdc);
 				if (quest_info != nullptr)
 				{
-					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 153, static_cast<int>(_info.y) + 27,
-						str, 11, RGB(0, 0, 0));
+					RECT rc;
+					rc.left = static_cast<int>(_info.x) + 153;
+					rc.top = static_cast<int>(_info.y) + 27;
+					rc.right = rc.left + 348;
+					rc.bottom = rc.top + 120;
+					StringTools::CreateDrawText(hdc, rc, str, 11, RGB(0, 0, 0));
 				}
 				button.second->SetState(UiButton::ButtonState::kNormal);
 			}
@@ -309,8 +370,12 @@ void NpcTalkWindow::RenderWinodw(HDC hdc)
 				next_button->RenderButtonUi(hdc);
 				if (quest_info != nullptr)
 				{
-					StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 153, static_cast<int>(_info.y) + 27,
-						str, 11, RGB(0, 0, 0));
+					RECT rc;
+					rc.left = static_cast<int>(_info.x) + 153;
+					rc.top = static_cast<int>(_info.y) + 27;
+					rc.right = rc.left + 348;
+					rc.bottom = rc.top + 120;
+					StringTools::CreateDrawText(hdc, rc, str, 11, RGB(0, 0, 0));
 				}
 				button.second->SetState(UiButton::ButtonState::kNormal);
 			}

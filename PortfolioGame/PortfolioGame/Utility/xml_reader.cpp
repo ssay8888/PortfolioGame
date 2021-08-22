@@ -40,6 +40,7 @@
 #include "../Managers/Skins/skin_parts.h"
 #include "../Managers/StringManager/string_Info.h"
 #include "../Managers/StringManager/string_manager.h"
+#include "../Managers/StringManager/skill_string_info.h"
 
 using namespace pugi;
 SkinFrame* XmlReader::FindCanvas(std::string type, xml_node node, int32_t size)
@@ -1126,9 +1127,9 @@ void XmlReader::LoadQuest()
 	if (err.status == status_ok)
 	{
 		auto datas = doc.select_nodes("quest/quest");
-		std::shared_ptr<QuestInfo> quest_info = std::make_shared<QuestInfo>(QuestInfo());
 		for (auto npcid_node: datas)
 		{
+			std::shared_ptr<QuestInfo> quest_info = std::make_shared<QuestInfo>(QuestInfo());
 			quest_info->SetNpcId(std::stoi(npcid_node.node().attribute("name").value()));
 			for (auto info_node : npcid_node.node())
 			{
@@ -1249,6 +1250,45 @@ void XmlReader::LoadItemString(const std::string path, const std::string node_pa
 	}
 }
 
+void XmlReader::LoadSkillString()
+{
+	pugi::xml_document doc;
+	const auto err = doc.load_file("Client\\String\\Skill.img.xml");
+
+	if (err.status == status_ok)
+	{
+		auto datas = doc.select_nodes("imgdir/imgdir");
+		for (auto item_id_node : datas)
+		{
+			SkillStringInfo skill_string_info;
+			skill_string_info.SetSkillId(std::stoi(item_id_node.node().attribute("name").value()));
+			for (auto info_node : item_id_node.node())
+			{
+				if (!strcmp(info_node.attribute("name").value(), "name"))
+				{
+					std::cout << info_node.attribute("value").value() << std::endl;
+					skill_string_info.SetName(StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "desc"))
+				{
+					skill_string_info.SetDesc(StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+				else if (!strcmp(info_node.attribute("name").value(), "bookName"))
+				{
+					//skill_string_info.SetDesc(StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+				else
+				{
+					std::wstring str(StringTools::StringToWString(info_node.attribute("name").value()));
+					StringTools::ReplaceAll(str, L"h");
+					skill_string_info.InsertInfoString(std::stoi(str), StringTools::StringToWString(info_node.attribute("value").value()));
+				}
+			}
+			StringManager::GetInstance()->InsertSkillStringInfo(skill_string_info);
+		}
+	}
+}
+
 void XmlReader::LoadEffectParts()
 {
 	pugi::xml_document doc;
@@ -1265,8 +1305,6 @@ void XmlReader::LoadEffectParts()
 			for (auto canvas_node : info_node.node())
 			{
 				const std::shared_ptr<EffectParts> parts = std::make_shared<EffectParts>(EffectParts());
-
-				std::cout << canvas_node.attribute("name").value() << std::endl;
 
 				wchar_t path[150];
 				swprintf_s(path, 150, L"Client\\Effect\\BasicEff.img\\%s.%s.bmp",

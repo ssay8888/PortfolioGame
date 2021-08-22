@@ -12,7 +12,7 @@ Inventory::~Inventory()
 
 void Inventory::AddItem(int32_t slot, std::shared_ptr<Item> item)
 {
-	if (slot >= inventory_slot_max)
+	if (slot >= inventory_slot_max || slot == -1)
 	{
 		return;
 	}

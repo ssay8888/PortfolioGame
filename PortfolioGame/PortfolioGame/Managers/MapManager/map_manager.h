@@ -54,6 +54,7 @@ public:
 	Player* GetPlayer();
 
 	void ChangeMap(int32_t next_map, ObjectPos pos);
+	bool IsChangeMap() const;
 
 private:
 	Player* _map_player;
@@ -64,6 +65,9 @@ private:
 	std::map<std::string, MyBitmap*> _listObjBitmap;
 	std::map<std::string, AniMapObject*> _listAniObject;
 	std::map<uint32_t, std::shared_ptr<MapInstance>> _listMap;
+
+	bool _is_change_map;
+	uint64_t _change_map_tick;
 
 
 };

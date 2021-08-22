@@ -34,7 +34,7 @@
 #include "Inventory/eqp_inventory.h"
 #include "Inventory/inventory.h"
 #include "MagicAttack/magic_attack.h"
-
+#include "Buff/buffstat.h"
 
 #include <time.h>
 
@@ -43,6 +43,9 @@
 #include "../../../Managers/ShopManager/shop_manager.h"
 #include "../../../Managers/UiManager/DeadMessage/dead_message.h"
 #include "../../../Managers/UiManager/Shop/shop_window.h"
+#include "../../../Managers/SkillManager/skill_manager.h"
+#include "../../../Managers/UiManager/MobGage/mob_gage.h"
+#include "../../../Utility/game_constants.h"
 
 
 Player::Player(uint8_t layer) :
@@ -59,7 +62,8 @@ Player::Player(uint8_t layer) :
                               	0, 0,0,"무야호"}),
                               _now_foothold(nullptr),
                               _next_foothold(nullptr),
-                              _is_first_foothold(false)
+                              _is_first_foothold(false),
+							  _buffstat(nullptr)
 {
 	Player::ReadyGameObject();
 }
@@ -79,8 +83,8 @@ Player::~Player()
 
 int Player::ReadyGameObject()
 {
-	_info.x = 100.f;
-	_info.y = 100.f;
+	_info.x = 50.f;
+	_info.y = 50.f;
 	_info.cx = 42;
 	_info.cy = 64;
 	_speed = 5.f;
@@ -102,6 +106,16 @@ int Player::ReadyGameObject()
 	}
 	_eqp_inventory = new EqpInventory();
 	_equipment = new Equipment();
+	_buffstat = new BuffStat();
+
+	auto shoesParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072001));
+	_eqp_inventory->AddItem(0, std::make_shared<SkinInfo>(SkinInfo(*shoesParts)));
+	auto itemParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1302000));
+	_eqp_inventory->AddItem(1, std::make_shared<SkinInfo>(SkinInfo(*itemParts)));
+	auto coatParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1040002));
+	_eqp_inventory->AddItem(2, std::make_shared<SkinInfo>(SkinInfo(*coatParts)));
+	auto pantsParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1060002));
+	_eqp_inventory->AddItem(3, std::make_shared<SkinInfo>(SkinInfo(*pantsParts)));
 	RecalcEqpStat();
     return 0;
 }
@@ -114,7 +128,8 @@ void Player::UpdateGameObject(const float deltaTime)
 	float outY = 0;
 	FootHold* tempHold;
 	_damage_handler->UpdateDamages();
-	if (_is_dead)
+	ScrollMove();
+	if (_is_dead || MapManager::GetInstance()->IsChangeMap())
 	{
 		this->ChangeFrameState("dead");
 		return;
@@ -371,6 +386,7 @@ void Player::UpdateGameObject(const float deltaTime)
 		}
 		Player::TryMeleeAttack();
 		UpdateAlertTick();
+		//UpdateFlickerTick();
 	}
 	if (keymanager->KeyPressing(KEY_B))
 	{
@@ -406,16 +422,18 @@ void Player::UpdateGameObject(const float deltaTime)
 				{
 					if (inven_type != ::ObjectType::kEnd)
 					{
-						_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), drop->second);
+						_list_pickup.emplace_back(*drop);
+						//_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), drop->second);
 						drop = drop_list.erase(drop);
 						continue;;
 					}
 				}
 				else if (drop->second->GetItemId() < 9000005)
 				{
-					GainMeso(drop->second->GetQuantity());
+					_list_pickup.emplace_back(*drop);
+					//GainMeso(drop->second->GetQuantity());
 					drop = drop_list.erase(drop);
-					continue;;
+					continue;
 				}
 			}
 			++drop;
@@ -516,7 +534,6 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 		}
 	}
-	ScrollMove();
 }
 
 void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
@@ -912,6 +929,13 @@ void Player::RenderCharacter(HDC hdc)
 			auto footOriginY = lastBody.first->GetOrigin().y + (lastBody.second.y - minY);
 			float reduceX= _info.x - (_rect.right - footOriginX);
 			float reduceY= _info.y - (_rect.bottom - footOriginY);
+			if (IsFlickerStateTick())
+			{
+				if (rand() % 2)
+				{
+					return;
+				}
+			}
 			if (GetFacingDirection())
 			{
 				auto reversOriginX = (std::abs(lastBody.first->GetOrigin().x - destination.x)) + ((lastBody.second.x - minX) * -1);
@@ -953,7 +977,7 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)) + 10,
 					static_cast<int>(_rect.top + ScrollManager::GetScrollY() + (발오리진y)) + 10);*/
 			}
-			std::wstring str;
+			//std::wstring str;
 			//str.append(L"X: ").append(std::to_wstring(_info.x)).append(L"  Y : ").append(std::to_wstring(_info.y));
 			///TextOut(hdc, static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
 			//	static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()), str.c_str(), static_cast<int>(str.size()));
@@ -1073,7 +1097,7 @@ void Player::TryMeleeAttack()
 bool Player::IsAlertStateTick()
 {
 	auto tick = GetTickCount64();
-	if (tick < _alert_tick + 5000) 
+	if (tick < _alert_tick + 4000)
 	{
 		return true;
 	}
@@ -1085,6 +1109,21 @@ void Player::UpdateAlertTick()
 	_alert_tick = GetTickCount64();
 }
 
+bool Player::IsFlickerStateTick() const
+{
+	auto tick = GetTickCount64();
+	if (tick < _flicker_tick + 3000)
+	{
+		return true;
+	}
+	return false;
+}
+
+void Player::UpdateFlickerTick()
+{
+	_flicker_tick = GetTickCount64();
+}
+
 void Player::AttackMonster(Monster* monster)
 {
 	int32_t damage = rand() % (GetMaxPower() - GetMinPower()) + GetMinPower();
@@ -1093,7 +1132,14 @@ void Player::AttackMonster(Monster* monster)
 	{
 		GainExp(monster->GetExp());
 	}
-	
+
+	if (monster->GetMonsterId() == 8800000)
+	{
+		if (!monster->IsFake())
+		{
+			UiManager::GetInstance()->GetMobGage()->SetMonster(monster);
+		}
+	}
 	_damage_handler->InsertAttackDamageEffect(monster, damage, 1000);
 	if (!monster->IsBoss())
 	{
@@ -1180,6 +1226,10 @@ void Player::RecalcEqpStat()
 		}
 	}
 
+	if (_buffstat->CheckFlag(::ObjectType::BuffFlag::kMeditation))
+	{
+		this->GainEqpMad(20);
+	}
 	uint32_t min_power = 0;
 	min_power += 3 * this->GetTotalStr();
 	min_power += 5 * this->GetEqpPad();
@@ -1207,6 +1257,12 @@ void Player::TakeDamage()
 		{
 			damage = 1;
 		}
+		if (damage > 1 && _buffstat->CheckFlag(::ObjectType::BuffFlag::kMagicGuard))
+		{
+			int32_t loss_mp_value = damage * 80 / 100;
+			damage -= loss_mp_value;
+			this->GainMp(loss_mp_value);
+		}
 		_damage_handler->InsertTakeDamageEffect(this, damage, 1000);
 		this->GainHp(-damage);
 		if ((*mosnters.begin())->GetInfo().x > this->GetInfo().x)
@@ -1217,7 +1273,7 @@ void Player::TakeDamage()
 		{
 			SettingPushKnockBack(true);
 		}
-		
+		UpdateFlickerTick();
 	}
 
 }
@@ -1245,9 +1301,9 @@ Equipment* Player::GetEquipment()
 
 void Player::LevelUp()
 {
-	if (this->GetExp() >= exp_table[this->GetLevel()])
+	while (this->GetExp() >= exp_table[this->GetLevel()])
 	{
-		GainExp(-exp_table[this->GetLevel()]);
+		GainExp(-exp_table[this->GetLevel()], false);
 		GainLevel(1);
 		GainAp(5);
 		GainSp(3);
@@ -1304,6 +1360,11 @@ void Player::ApplySkill()
 		{
 			auto skill_info = attack_skill->GetSkillInfo()[attack_skill->GetSkillInfo().size() - 1];
 
+			if (skill_info->GetMpCon() > this->GetMp())
+			{
+				return;
+			}
+			this->GainMp(-skill_info->GetMpCon());
 			RECT rect{
 				static_cast<long>(_info.x) - std::abs(skill_info->GetRect().left),
 				static_cast<long>(_info.y) - std::abs(skill_info->GetRect().top),
@@ -1341,23 +1402,58 @@ void Player::ApplySkill()
 			{
 				_attack_skill->ResetSkill(attack_skill, this, mosnters);
 			}
-			this->ChangeFrameState("swingO2");
-			UpdateAlertTick();
-			_is_attacking = true;
-			for (auto& monster : mosnters)
+			switch (attack_skill->GetSkillId())
 			{
-				std::list<uint32_t> damages;
-				for (int i = 0; i < skill_info->GetAttackCount(); ++i)
-				{
-					damages.emplace_back(rand());
-				}
-				_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
-				if (!monster->IsBoss())
-				{
-					monster->ChangeState(Monster::MonsterState::kHit);
-				}
-				monster->SetPlayer(this);
+			case 2001002:
+			case 2201001:
+			case 2221004:
+			{
+				_buffstat->AddFlag(GameConstants::SkillToBuffStat(attack_skill->GetSkillId()));
+				SkillManager::GetInstance()->InsertBuffSkill(attack_skill->GetSkillId());
+				RecalcEqpStat();
+				break;
 			}
+			default:
+			{
+				this->ChangeFrameState("swingO2");
+				UpdateAlertTick();
+				int minMadDamage = (this->GetTotalMad() + skill_info->GetMad()) * 5;
+				int maxMadDamage = (this->GetTotalMad() + skill_info->GetMad()) * 15;
+
+				for (auto& monster : mosnters)
+				{
+					std::list<uint32_t> damages;
+					int32_t total_damage = 0;
+					for (int i = 0; i < skill_info->GetAttackCount(); ++i)
+					{
+						int damage = rand() % (maxMadDamage - minMadDamage) + minMadDamage;
+						total_damage += damage;
+						damages.emplace_back(damage);
+					}
+					if (monster->GetMonsterId() == 8800000)
+					{
+						if (!monster->IsFake())
+						{
+							UiManager::GetInstance()->GetMobGage()->SetMonster(monster);
+						}
+					}
+					_damage_handler->InsertAttackDamageEffect(monster, damages, 1000);
+					monster->GainHp(-total_damage);
+					if (!monster->IsAlive())
+					{
+						GainExp(monster->GetExp());
+					}
+
+					if (!monster->IsBoss())
+					{
+						monster->ChangeState(Monster::MonsterState::kHit);
+					}
+					monster->SetPlayer(this);
+				}
+				break;
+			}
+			}
+			_is_attacking = true;
 			return;
 		}
 		const auto use_item = quick_slot->GetItem(key_board);
@@ -1737,6 +1833,11 @@ std::string Player::GetName() const
 	return _player_info.name;
 }
 
+BuffStat* Player::GetBuffStat()
+{
+	return _buffstat;
+}
+
 std::shared_ptr<QuestInfo> Player::FindClearQuest(int32_t npc_id)
 {
 	auto data = _clear_quest_list.find(npc_id);
@@ -1787,10 +1888,13 @@ void Player::GainLevel(int16_t value)
 	_player_info.level += value;
 }
 
-void Player::GainExp(int16_t value)
+void Player::GainExp(int32_t value, bool level_up)
 {
 	_player_info.exp += value;
-	LevelUp();
+	if (level_up)
+	{
+		LevelUp();
+	}
 }
 
 void Player::GainEqpStr(int16_t value)
@@ -1880,6 +1984,10 @@ void Player::GainMaxHp(const int16_t value)
 
 void Player::GainMp(const int16_t value)
 {
+	if (_buffstat->CheckFlag(::ObjectType::BuffFlag::kinfinity))
+	{
+		return;
+	}
 	_player_info.mp += value;
 	if (_player_info.mp >= _player_info.max_mp)
 	{

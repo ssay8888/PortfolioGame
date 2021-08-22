@@ -595,7 +595,6 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 							if (item != nullptr)
 							{
 								player->GetEquipment()->UseScrollItem(item, _select_item);
-								std::cout << item->GetItemId() << std::endl;
 								_select_item = nullptr;
 								_is_select_item = false;
 								_select_eqp_item = nullptr;

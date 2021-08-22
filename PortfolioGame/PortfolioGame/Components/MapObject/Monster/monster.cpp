@@ -14,9 +14,13 @@
 #include "../Player/Damage/damage_handler.h"
 #include "AttackInfo/attack_info.h"
 #include "../../../Managers/DropDataManager/drop_data_manager.h"
+#include "../../../Managers/MapManager/Map/map_instance.h"
+#include "../Player/Buff/buffstat.h"
 
 Monster::Monster() :
 	GameObject(0),
+	_fake_tick(0),
+	_is_fake(false),
 	_monster_info({}),
 	_now_foothold(nullptr),
 	_monster_state(MonsterState::kStand),
@@ -379,6 +383,39 @@ bool Monster::IsChangeFoothold()
 	return false;
 }
 
+void Monster::SetFake()
+{
+	if (_monster_id != 8800000)
+	{
+		return;
+	}
+	if (GetTickCount64() > _fake_tick + 1000)
+	{
+		bool check = false;
+		for (int i = 0; i < MaxLayer; ++i)
+		{
+			auto list = MapManager::GetInstance()->GetNowMap()->InMapMonsterObjectList(i);
+			for (auto mob : (*list))
+			{
+				if (mob->GetMonsterId() >= 8800003 && mob->GetMonsterId() <= 8800010)
+				{
+					check = true;
+				}
+			}
+		}
+		if (check)
+		{
+			_is_fake = true;
+
+		}
+		else
+		{
+			_is_fake = false;
+		}
+		_fake_tick = GetTickCount64();
+	}
+}
+
 void Monster::AttackApply(const std::string key)
 {
 	if (_target == nullptr)
@@ -399,11 +436,6 @@ void Monster::AttackApply(const std::string key)
 
 	auto bool1 = tick > static_cast<uint64_t>(attack_info->GetAttackAfterTick()) + attack_info->GetAttackAfter();
 	auto bool2 = attack_info->GetAttackAfterTick() > 1;
-	if(bool1 && bool2 && _is_attack)
-	{
-	std::cout << key << bool1 << " / " << bool2 << std::endl;
-		
-	}
 
 	if (!player->IsDead())
 	{
@@ -429,6 +461,13 @@ void Monster::AttackApply(const std::string key)
 					player->SetInvincibility();
 					player->SettingPushKnockBack(true);
 					int damage = rand() %  this->GetPad() + (this->GetPad() / 2);
+
+					if (damage > 1 && player->GetBuffStat()->CheckFlag(::ObjectType::BuffFlag::kMagicGuard))
+					{
+						int32_t loss_mp_value = damage * 80 / 100;
+						damage -= loss_mp_value;
+						this->GainMp(loss_mp_value);
+					}
 					player->GainHp(-damage);
 					player->GetDamageHandler()->InsertTakeDamageEffect(player, damage, 1000);
 				}
@@ -450,6 +489,12 @@ void Monster::AttackApply(const std::string key)
 						player->SetInvincibility();
 						player->SettingPushKnockBack(true);
 						int damage = rand() % this->GetPad() + (this->GetPad() / 2);
+						if (damage > 1 && player->GetBuffStat()->CheckFlag(::ObjectType::BuffFlag::kMagicGuard))
+						{
+							int32_t loss_mp_value = damage * 80 / 100;
+							damage -= loss_mp_value;
+							this->GainMp(loss_mp_value);
+						}
 						player->GainHp(-damage);
 						player->GetDamageHandler()->InsertTakeDamageEffect(player, damage, 1000);
 						int a = 0;
@@ -484,6 +529,11 @@ bool Monster::IsAttacking() const
 	return _is_attack;
 }
 
+bool Monster::IsFake() const
+{
+	return _is_fake;
+}
+
 void Monster::SetAttackTick()
 {
 	_attack_tick = GetTickCount64();
@@ -512,6 +562,7 @@ void Monster::UpdateGameObject(const float deltaTime)
 	{
 		_base_state_frame->SetThisFrame(_this_frame);
 	}
+	SetFake();
 	float movingVluae = 0;
 	if (!IsAlive())
 	{
@@ -658,8 +709,8 @@ void Monster::RenderGameObject(HDC hdc)
 			image->GetWidth(),
 			image->GetHeight(), 
 			hdc,
-			static_cast<int>(_rect.left + ScrollManager::GetScrollX()),
-			static_cast<int>(_rect.bottom - image->GetHeight() + ScrollManager::GetScrollY()), SRCCOPY);
+			static_cast<int>((_info.x - data->GetOriginPos().x) + ScrollManager::GetScrollX()),
+			static_cast<int>(_info.y - (data->GetOriginPos().y) + ScrollManager::GetScrollY()), SRCCOPY);
 
 		GdiTransparentBlt(_memDC2,
 			0,

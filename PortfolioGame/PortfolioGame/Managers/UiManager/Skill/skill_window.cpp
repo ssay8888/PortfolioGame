@@ -16,6 +16,8 @@
 #include "../../UiManager/ui_manager.h"
 #include "../../../Utility/game_constants.h"
 #include "../QuickSlot/quick_slot.h"
+#include "../../StringManager/string_manager.h"
+#include "../../StringManager/skill_string_info.h"
 
 SkillWindow::SkillWindow() :
                            _info({ 0,0, 175, 289 }),
@@ -139,6 +141,16 @@ void SkillWindow::RenderSkillList(const HDC hdc)
 				static_cast<int>(_info.x) + 6,
 				static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
 				icon->GetWidth(), icon->GetHeight());
+			auto string_manager = StringManager::GetInstance();
+			auto skill_name = string_manager->FindSkillStringInfo(skill_icon->GetSkillId()).GetName();
+			if (skill_name.size() > 9)
+			{
+				skill_name = skill_name.substr(0, 7);
+				skill_name.append(L"...");
+			}
+			StringTools::CreateTextOut(hdc, static_cast<int>(_info.x) + 44,
+				static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + 2,
+				skill_name.c_str(), 11, RGB(0, 0, 0));
 		}
 
 		paddingsize += _skill_ui_distance;
@@ -445,4 +457,26 @@ void SkillWindow::UpdateRect()
 	_rect.top = static_cast<LONG>(_info.y);
 	_rect.right = static_cast<LONG>(_info.x + _info.cx);
 	_rect.bottom = static_cast<LONG>(_info.y + _info.cy);
+}
+
+Skill* SkillWindow::PointCollisionSkill(POINT pos)
+{
+	auto paddingsize = 99;
+
+	for (const auto& skill_icon : _show_skill_list)
+	{
+		const auto icon = skill_icon->GetIconImage();
+		RECT icon_rect{ static_cast<int>(_info.x + 6),
+			static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()),
+					static_cast<int>(_info.x + 6) + skill_icon->GetIconImage()->GetWidth(),
+			static_cast<int>(_info.y + paddingsize + _scroll->GetScrollY()) + skill_icon->GetIconImage()->GetHeight() };
+
+		if (PtInRect(&icon_rect, pos))
+		{
+			return skill_icon;
+		}
+
+		paddingsize += _skill_ui_distance;
+	}
+	return nullptr;
 }

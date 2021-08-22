@@ -18,6 +18,10 @@ AiMovement::AiMovement(float speed) :
 float AiMovement::Moveing()
 {
 	bool is_check_attack = false;
+	if(_partner->IsFake())
+	{
+		return 0;
+	}
 	if (_partner->GetPlayer() != nullptr && !_partner->GetAttackInfo().empty())
 	{
 		if (!_partner->IsAttacking())

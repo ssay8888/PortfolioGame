@@ -13,6 +13,7 @@
 #include "../../../Components/MapObject/Player/player.h"
 #include "../../NpcManager/npc_manager.h"
 #include "../../ShopManager/shop_manager.h"
+#include "../../SkillManager/skill_manager.h"
 
 GameMouse* InGameScene::_mouse = nullptr;
 
@@ -31,7 +32,7 @@ int InGameScene::ReadyScene()
 	SkinManager::GetInstance()->LoadSkin();
 	auto object_manager = MapManager::GetInstance();
 	object_manager->ReadyMapManager();
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		object_manager->LoadMapData(i);
 	}
@@ -57,6 +58,7 @@ void InGameScene::UpdateScene()
 {
 	MapManager::GetInstance()->UpdateGameObjectManager(0);
 	EffectManager::GetInstance()->UpdateEffect();
+	SkillManager::GetInstance()->UpdateBuff();
 	UiManager::GetInstance()->UpdateUiManager();
 	_mouse->DoUpdateObject(0);
 }
@@ -72,6 +74,7 @@ void InGameScene::RenderScene(HDC hdc)
 	MapManager::GetInstance()->RenderGameObjectManager(hdc);
 	MapManager::GetInstance()->RenderFootHoldManager(hdc);
 	EffectManager::GetInstance()->RenderEffect(hdc);
+	SkillManager::GetInstance()->RenderBuff(hdc);
 	UiManager::GetInstance()->RenderUiManager(hdc);
 	_mouse->DoRenderGameObject(hdc);
 

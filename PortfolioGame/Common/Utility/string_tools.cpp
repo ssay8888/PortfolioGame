@@ -23,7 +23,7 @@ const std::wstring StringTools::StringToWString(const char* buffer)
 	mbstowcs_s(&cn, wc, cSize, buffer, cSize);
 	std::wstring wcc(wc);
 
-	if(wcc.find(L"\\n") != std::wstring::npos)
+	while(wcc.find(L"\\n") != std::wstring::npos)
 	{
 		wcc.replace(wcc.find(L"\\n"), 2, L"\n");
 	}

@@ -14,6 +14,7 @@
 #include "Stat/stat_window.h"
 #include "ToolTipUi/item_info_tool_tip.h"
 #include "DeadMessage/dead_message.h"
+#include "MobGage/mob_gage.h"
 
 const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "StatKey", "InvenKey",
 						  "KeySet", "QuickSlot", "QuickSlotD", "SkillKey" };
@@ -51,6 +52,8 @@ void UiManager::ReadyUiManager()
 	_shop_window->DoReadyWindow();
 	_dead_message = std::make_shared<DeadMessage>(DeadMessage());
 	_dead_message->DoReadyWindow();
+	_mob_gage = std::make_shared<MobGage>(MobGage());
+	_mob_gage->ReadyMobGate();
 }
 
 void UiManager::UpdateUiManager()
@@ -328,4 +331,9 @@ std::shared_ptr<ShopWindow> UiManager::GetShopWindow() const
 std::shared_ptr<DeadMessage> UiManager::GetDeadMessage() const
 {
 	return _dead_message;
+}
+
+std::shared_ptr<MobGage> UiManager::GetMobGage() const
+{
+	return _mob_gage;
 }

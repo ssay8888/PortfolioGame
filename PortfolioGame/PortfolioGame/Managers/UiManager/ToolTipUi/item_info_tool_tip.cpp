@@ -7,10 +7,14 @@
 #include "../ui_manager.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Components/MapObject/Item/item.h"
+#include "../../SkillManager/Skill/skill.h"
 #include "../../Skins/skin_info.h"
 #include "../../StringManager/string_manager.h"
 #include "../../StringManager/string_Info.h"
 #include "../Equip/equipment_window.h"
+#include "../Skill/skill_window.h"
+#include "../../SkillManager/Skill/skill.h"
+#include "../../StringManager/skill_string_info.h"
 
 ItemInfoToolTip::ItemInfoToolTip() : count(1)
 {
@@ -71,6 +75,16 @@ void ItemInfoToolTip::BaseToolToolTipRender(HDC hdc)
 			AlphaEquipWhiteMiniScreen(hdc);
 			SelectEquipRedner(hdc, item);
 			AlphaBlueScreenEquipInfo(hdc, item);
+		}
+	}
+	if (ui_manager->GetSkillWindow()->IsShow())
+	{
+		auto skill = ui_manager->GetSkillWindow()->PointCollisionSkill(mouse->GetPoint());
+		if (skill != nullptr)
+		{
+			AlphaBlueScreenItemInfo(hdc);
+			AlphaItemWhiteMiniScreen(hdc);
+			SelectSkillRender(hdc, skill);
 		}
 	}
 }
@@ -390,6 +404,37 @@ void ItemInfoToolTip::SelectEquipRedner(HDC hdc, const std::shared_ptr<SkinInfo>
 		SelectObject(hdc, hOldPen);
 		DeleteObject(hPen);
 	}
+}
+
+void ItemInfoToolTip::SelectSkillRender(HDC hdc, Skill* skill) const
+{
+
+	const auto mouse = InGameScene::GetMouse();
+	const auto ui_manager = UiManager::GetInstance()->GetEquipmentWindow();
+	if (skill != nullptr)
+	{
+		skill->GetIconImage()->RenderBitmapImage(hdc,
+			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + 28,
+			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 45, 40, 40);
+		auto string_info = StringManager::GetInstance()->FindSkillStringInfo(skill->GetSkillId());
+
+		StringTools::CreateTextOut(hdc,
+			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + (290 >> 1),
+			static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 10,
+			string_info.GetName(), 14, RGB(255, 255, 255), L"µ¸¿ò", TA_CENTER, true);
+
+		auto desc = string_info.GetDesc();
+
+		RECT rc{ static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + 92,
+				static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 38,
+			static_cast<int>(mouse->GetInfo().x) + mouse->GetInfo().cx + 92 + 198,
+				static_cast<int>(mouse->GetInfo().y) + mouse->GetInfo().cy + 38 + 115 };
+
+		StringTools::CreateDrawText(hdc,
+			rc,
+			desc, 11, RGB(255, 255, 255), L"µ¸¿ò");
+	}
+
 }
 
 void ItemInfoToolTip::AlphaBlueScreenEquipInfo(HDC hdc, const std::shared_ptr<SkinInfo> item) const
