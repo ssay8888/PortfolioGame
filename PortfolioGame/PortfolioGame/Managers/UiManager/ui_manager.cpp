@@ -21,7 +21,9 @@ const std::string buttons[] = { "BtMenu", "BtShop", "BtShort", "EquipKey", "Stat
 const std::wstring wbuttons[] = { L"BtMenu", L"BtShop", L"BtShort", L"EquipKey", L"StatKey", L"InvenKey",
 						  L"KeySet", L"QuickSlot", L"QuickSlotD", L"SkillKey" };
 
-UiManager::UiManager() = default;
+UiManager::UiManager(): _key_manager(nullptr)
+{
+}
 
 UiManager::~UiManager()
 {

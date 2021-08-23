@@ -72,7 +72,7 @@ Player::Player(uint8_t layer) :
 
 Player::~Player()
 {
-	for (int i = 0; i < ::ObjectType::InventoryTabState::kEnd; ++i)
+	for (int i = 0; i < static_cast<int>(::ObjectType::InventoryTabState::kEnd); ++i)
 	{
 		delete _inventory[i];
 	}
@@ -102,7 +102,7 @@ int Player::ReadyGameObject()
 	ReleaseDC(_hWnd, hDC);
 
 	srand(int(time(NULL)));
-	for (int i = 0; i < ::ObjectType::InventoryTabState::kEnd; ++i)
+	for (int i = 0; i < static_cast<int>(::ObjectType::InventoryTabState::kEnd); ++i)
 	{
 		_inventory[i] = new Inventory();
 	}
@@ -426,7 +426,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 				if (drop->second->GetItemId() < 9000000)
 				{
-					if (inven_type != ::ObjectType::kEnd)
+					if (inven_type != ::ObjectType::InventoryTabState::kEnd)
 					{
 						_list_pickup.emplace_back(*drop);
 						//_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), drop->second);
@@ -476,32 +476,32 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(2000000 + i);
 			item->SetQuantity(rand() % 100);
-			_inventory[::ObjectType::kConsume]->AddItem(i, item);
+			_inventory[static_cast<int>(::ObjectType::InventoryTabState::kConsume)]->AddItem(i, item);
 		}
 		for (int i = 0; i < 3; ++i)
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(2001000 + i);
 			item->SetQuantity(rand() % 100);
-			_inventory[::ObjectType::kConsume]->AddItem(i + 24, item);
+			_inventory[static_cast<int>(::ObjectType::InventoryTabState::kConsume)]->AddItem(i + 24, item);
 		}
 		for (int i = 0; i < 25; ++i)
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(2001500 + i);
 			item->SetQuantity(rand() % 100);
-			_inventory[::ObjectType::kConsume]->AddItem(i + 24 + 3, item);
+			_inventory[static_cast<int>(::ObjectType::InventoryTabState::kConsume)]->AddItem(i + 24 + 3, item);
 		}
 		for (int i = 0; i < 12; ++i)
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(2002000 + i);
 			item->SetQuantity(rand() % 100);
-			_inventory[::ObjectType::kConsume]->AddItem(i + 24 + 3 + 25, item);
+			_inventory[static_cast<int>(::ObjectType::InventoryTabState::kConsume)]->AddItem(i + 24 + 3 + 25, item);
 		}
 
 		for (int i = 0; i < 96; ++i)
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(4000000 + i);
 			item->SetQuantity(rand() % 100);
-			_inventory[::ObjectType::kEtc]->AddItem(i, item);
+			_inventory[static_cast<int>(::ObjectType::InventoryTabState::kEtc)]->AddItem(i, item);
 		}
 		auto shoesParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(1072001));
 		_eqp_inventory->AddItem(0, std::make_shared<SkinInfo>(SkinInfo(*shoesParts)));
@@ -1331,7 +1331,7 @@ void Player::SettingPushKnockBack(bool fancing)
 
 Inventory* Player::GetInventory(::ObjectType::InventoryTabState type)
 {
-	return _inventory[type];
+	return _inventory[static_cast<int>(type)];
 }
 
 EqpInventory* Player::GetEqpInventory()
@@ -1560,9 +1560,9 @@ void Player::RenderGameObject(HDC hdc)
 			const auto inven_type = InventoryWindow::SearchItemTab(data->second->GetItemId());
 			if (data->second->GetItemId() < 9000000)
 			{
-				if (inven_type != ::ObjectType::kEnd)
+				if (inven_type != ::ObjectType::InventoryTabState::kEnd)
 				{
-					_inventory[inven_type]->AddItem(_inventory[inven_type]->FindFreeSlot(), data->second);
+					_inventory[static_cast<int>(inven_type)]->AddItem(_inventory[static_cast<int>(inven_type)]->FindFreeSlot(), data->second);
 					data = _list_pickup.erase(data);
 					continue;;
 				}

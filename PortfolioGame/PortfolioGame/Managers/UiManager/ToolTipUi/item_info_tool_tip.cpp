@@ -44,7 +44,7 @@ void ItemInfoToolTip::BaseToolToolTipRender(HDC hdc)
 	const auto ui_manager = UiManager::GetInstance();
 	if (ui_manager->GetInventoryWindow()->IsShow())
 	{
-		if (ui_manager->GetInventoryWindow()->GetTab() != ObjectType::kEqp)
+		if (ui_manager->GetInventoryWindow()->GetTab() != ObjectType::InventoryTabState::kEqp)
 		{
 			auto item = ui_manager->GetInventoryWindow()->PointCollisionItem(mouse->GetPoint());
 			if (item != nullptr)

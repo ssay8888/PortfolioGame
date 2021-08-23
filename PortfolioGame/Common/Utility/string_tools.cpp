@@ -30,12 +30,12 @@ const std::wstring StringTools::StringToWString(const char* buffer)
 	return wcc;
 }
 
-const std::string StringTools::WStringToString(const wchar_t* buffer)
+std::string StringTools::WStringToString(const wchar_t* buffer)
 {
-	std::wstring wstr = buffer;
+	std::wstring wstr(buffer);
 	std::string str;
 	str.assign(wstr.begin(), wstr.end());
-	return str.c_str();
+	return str;
 }
 
 uint16_t StringTools::FindOverlapCount(std::string text, std::string mod)

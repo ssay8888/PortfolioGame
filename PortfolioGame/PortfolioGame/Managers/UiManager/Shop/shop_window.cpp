@@ -560,7 +560,7 @@ void ShopWindow::SellItemShop()
 	auto string_manager = StringManager::GetInstance();
 	auto player = MapManager::GetInstance()->GetPlayer();
 	switch (shop->GetTab()) {
-	case ObjectType::kEqp:
+	case ObjectType::InventoryTabState::kEqp:
 	{
 		auto item = shop->GetSelectEqp();
 		if (item != nullptr)
@@ -575,10 +575,10 @@ void ShopWindow::SellItemShop()
 		}
 		break;
 	}
-	case ObjectType::kConsume:
-	case ObjectType::kInstall: 
-	case ObjectType::kEtc: 
-	case ObjectType::kCash:
+	case ObjectType::InventoryTabState::kConsume:
+	case ObjectType::InventoryTabState::kInstall: 
+	case ObjectType::InventoryTabState::kEtc: 
+	case ObjectType::InventoryTabState::kCash:
 	{
 		auto item = shop->GetSelectItem();
 		if (item != nullptr)
@@ -599,7 +599,7 @@ void ShopWindow::SellItemShop()
 		}
 	}
 		break;
-	case ObjectType::kEnd: break;
+	case ObjectType::InventoryTabState::kEnd: break;
 	default: ;
 	}
 }
@@ -616,7 +616,7 @@ void ShopWindow::BuyItemShop()
 		{
 			auto item = ItemManager::GetInstance()->FindCopyItem(shop->GetSelectBuyItem()->GetItemId());
 			item->SetQuantity(shop->GetSelectBuyItem()->GetPrice());
-			player->GetInventory(ObjectType::kConsume)->AddItem(player->GetInventory(ObjectType::kConsume)->FindFreeSlot(), item);
+			player->GetInventory(ObjectType::InventoryTabState::kConsume)->AddItem(player->GetInventory(ObjectType::InventoryTabState::kConsume)->FindFreeSlot(), item);
 			player->GainMeso(-shop->GetSelectBuyItem()->GetMeso());
 			shop->SetTextTick();
 			shop->ClearText();

@@ -1,10 +1,6 @@
 #pragma once
 #include "../Base/base_window.h"
 
-namespace ObjectType
-{
-	enum class NpcTalkType;
-}
 
 class Npc;
 class UiButton;
@@ -19,7 +15,6 @@ public:
 
 	void SetNpc(Npc*);
 	Npc* GetNpc() const;
-
 	void SetTalkType(ObjectType::NpcTalkType type);
 	ObjectType::NpcTalkType GetTalkType() const;
 

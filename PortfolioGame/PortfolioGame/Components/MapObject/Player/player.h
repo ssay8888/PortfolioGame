@@ -220,7 +220,7 @@ private:
     /// <summary>
     /// 인벤토리관련
     /// </summary>
-    Inventory* _inventory[::ObjectType::InventoryTabState::kEnd];
+    Inventory* _inventory[static_cast<int>(::ObjectType::InventoryTabState::kEnd)];
     EqpInventory* _eqp_inventory;
     Equipment* _equipment;
     uint64_t _use_item_tick;

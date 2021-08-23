@@ -272,7 +272,7 @@ void InventoryWindow::UpdateWindow()
 
 	auto player = MapManager::GetInstance()->GetPlayer();
 
-	for (int i = 0; i < ObjectType::InventoryTabState::kEnd; ++i)
+	for (int i = 0; i < static_cast<int>(ObjectType::InventoryTabState::kEnd); ++i)
 	{
 		auto inventory = player->GetInventory(static_cast<ObjectType::InventoryTabState>(i));
 		auto item_list = inventory->GetItem();
