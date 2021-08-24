@@ -232,6 +232,7 @@
     <ClInclude Include="Managers\UiManager\ui_button.h" />
     <ClInclude Include="Managers\UiManager\ui_manager.h" />
     <ClInclude Include="Managers\UiManager\ui_tab_button.h" />
+    <ClInclude Include="Network\client_session.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="portfolio_game.h" />
     <ClInclude Include="PublicHeader\all_enum.h" />
@@ -547,6 +548,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Network\client_session.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -573,6 +578,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{6274a430-237d-437d-8d94-22b7541a931e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerLibrary\ServerLibrary.vcxproj">
+      <Project>{03723698-84c2-4466-98d6-022ea30bc74f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

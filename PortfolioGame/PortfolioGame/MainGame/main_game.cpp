@@ -1,22 +1,23 @@
 #include "../pch.h"
 #include "main_game.h"
+#include <algorithm>
+#include <fstream>
 #include "../Components/MapObject/Player/player.h"
-#include "../Managers/Skins/skin_info.h"
+#include "../Managers/ItemManager/item_manager.h"
+#include "../Managers/KeyManaer/key_manager.h"
+#include "../Managers/MapManager/map_manager.h"
+#include "../Managers/MonsterMnager/monster_manager.h"
+#include "../Managers/NpcManager/npc_manager.h"
+#include "../Managers/NpcManager/npc_manager.h"
+#include "../Managers/ScenManager/scene_manager.h"
+#include "../Managers/ScrollManager/scroll_manager.h"
+#include "../Managers/SkillManager/skill_manager.h"
 #include "../Managers/Skins/skin_frame.h"
+#include "../Managers/Skins/skin_info.h"
 #include "../Managers/Skins/skin_item.h"
 #include "../Managers/Skins/skin_manager.h"
 #include "../Utility/xml_reader.h"
-#include "../Managers/KeyManaer/key_manager.h"
-#include "../Managers/MapManager/map_manager.h"
-#include "../Managers/ScrollManager/scroll_manager.h"
-#include "../Managers/ScenManager/scene_manager.h"
-#include "../Managers/MonsterMnager/monster_manager.h"
-#include "../Managers/SkillManager/skill_manager.h"
-#include "../Managers/ItemManager/item_manager.h"
-#include "../Managers/NpcManager/npc_manager.h"
-#include <fstream>
-#include <algorithm>
-#include "../Managers/NpcManager/npc_manager.h"
+#include "../Network/client_session.h"
 MainGame::MainGame(HDC hdc) :
 	_hdc(hdc),
 	_hdc_buffer(nullptr),
@@ -53,6 +54,7 @@ void MainGame::ReadeyGame()
 	MapManager::GetInstance()->AniObjectImageLoad();
 	ItemManager::GetInstance()->LoadItem();
 	SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kLoading);
+
 }
 
 void MainGame::UpdateGame()

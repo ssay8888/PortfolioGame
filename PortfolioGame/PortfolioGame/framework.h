@@ -19,3 +19,8 @@
 #include <algorithm>
 #include <io.h>
 #include <unordered_map>
+#pragma warning (push)
+#pragma warning (disable: 26812 6255 6387 26812 6031 6258 6001 26451 26495 26498 6386)
+#include <boost/asio.hpp>
+#pragma warning (pop)
+#include <iostream>

@@ -2,6 +2,8 @@
 #include "portfolio_game.h"
 #include "MainGame/main_game.h"
 
+#include "Network/client_session.h"
+
 #define MAX_LOADSTRING 100
 
 #ifdef UNICODE
@@ -15,6 +17,7 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 HWND _hWnd;
 bool _isWindowsActive;
+ClientSession* _client_session = nullptr;
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -49,6 +52,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     maingame.ReadeyGame();
     ULONGLONG dwOldTime = GetTickCount64();
+
+    boost::asio::io_service io_service;
+
+    auto endpoint = boost::asio::ip::tcp::endpoint(
+        boost::asio::ip::address::from_string("127.0.0.1"),
+        1000);
+
+    _client_session = new ClientSession(io_service);
+    _client_session->Connect(endpoint);
+    boost::asio::io_service::work work(io_service);
+    std::thread clientWorkThread([&] {
+        boost::system::error_code ec;
+        io_service.run(ec);
+        });
+    clientWorkThread.detach();
     while (WM_QUIT != msg.message)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -67,7 +85,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			dwOldTime = GetTickCount64();
 		}
     }
-
+    delete _client_session;
     return (int) msg.wParam;
 }
 

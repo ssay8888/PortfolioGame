@@ -1266,7 +1266,6 @@ void XmlReader::LoadSkillString()
 			{
 				if (!strcmp(info_node.attribute("name").value(), "name"))
 				{
-					std::cout << info_node.attribute("value").value() << std::endl;
 					skill_string_info.SetName(StringTools::StringToWString(info_node.attribute("value").value()));
 				}
 				else if (!strcmp(info_node.attribute("name").value(), "desc"))

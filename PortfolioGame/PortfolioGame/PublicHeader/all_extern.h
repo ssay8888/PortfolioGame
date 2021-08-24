@@ -1,10 +1,12 @@
 #pragma once
 
+class ClientSession;
 extern HWND _hWnd;
 const LONG WindowCX = 800;
 const LONG WindowCY = 600;
 const uint8_t MaxLayer = 7;
 extern bool _isWindowsActive;
+extern ClientSession* _client_session;
 const int32_t inventory_slot_max = 96;
 
 

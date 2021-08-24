@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Network\out_packet.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\in_packet.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Opcode\recv.h">
+      <Filter>Network\Opcode</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Opcode\send.h">
+      <Filter>Network\Opcode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Network\in_packet.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\out_packet.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Network">
+      <UniqueIdentifier>{939feeb7-7016-4fe8-bd40-fa1c26e98bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Opcode">
+      <UniqueIdentifier>{ec851e85-9c77-401c-9da9-6ab8c58c4f8b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

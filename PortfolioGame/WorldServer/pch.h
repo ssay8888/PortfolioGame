@@ -8,14 +8,15 @@
 #define PCH_H
 
 // 여기에 미리 컴파일하려는 헤더 추가
-#include "framework.h"
-#include "PublicHeader/all_extern.h"
-#include "PublicHeader/all_struct.h"
-#include "PublicHeader/all_enum.h"
-#include "../Common/Utility/string_tools.h"
+
+#pragma warning (push)
+#pragma warning (disable: 26812 6255 6387 26812 6031 6258 6001 26451 26495 26498 6386)
+#include <boost/asio.hpp>
+#pragma warning (pop)
+#include <iostream>
+#include <queue>
 #include "../ServerLibrary/Network/out_packet.h"
 #include "../ServerLibrary/Network/in_packet.h"
 #include "../ServerLibrary/Network/Opcode/recv.h"
 #include "../ServerLibrary/Network/Opcode/send.h"
-
 #endif //PCH_H

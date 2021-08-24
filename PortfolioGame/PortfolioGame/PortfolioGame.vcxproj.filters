@@ -170,6 +170,12 @@
     <Filter Include="Managers\UiManager\MobGage">
       <UniqueIdentifier>{6aad6758-c51f-4267-8d81-4aa1a1a66282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{677d4a4c-7b04-413c-b00a-6e2568914d77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\PacketHandlerManager">
+      <UniqueIdentifier>{56fe518c-eac5-46d6-86e7-a0a6c1f1364e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -430,6 +436,9 @@
     <ClInclude Include="Managers\UiManager\MobGage\mob_gage.h">
       <Filter>Managers\UiManager\MobGage</Filter>
     </ClInclude>
+    <ClInclude Include="Network\client_session.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -671,6 +680,9 @@
     </ClCompile>
     <ClCompile Include="Managers\UiManager\MobGage\mob_gage.cpp">
       <Filter>Managers\UiManager\MobGage</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\client_session.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
