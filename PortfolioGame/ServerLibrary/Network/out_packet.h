@@ -11,7 +11,7 @@ public:
 
 	unsigned char* GetPacket() const;
 	uint32_t GetPacketSize() const; 
-  void Encode1(char value);
+	void Encode1(char value);
 	void Encode2(short value);
 	void Encode4(int value);
 	void Encode8(long long value);

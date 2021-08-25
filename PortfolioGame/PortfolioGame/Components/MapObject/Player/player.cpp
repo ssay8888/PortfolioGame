@@ -45,27 +45,32 @@
 #include "../../../Managers/UiManager/Shop/shop_window.h"
 #include "../../../Managers/SkillManager/skill_manager.h"
 #include "../../../Managers/UiManager/MobGage/mob_gage.h"
+
+#include "../../../Network/client_session.h"
+
 #include "../../../Utility/game_constants.h"
 
 
-Player::Player(uint8_t layer) :
-                              GameObject(layer),
+Player::Player(bool dummy, uint8_t layer) :
+	GameObject(layer),
+	_is_dummy(dummy),
 	_swing_effect(nullptr),
 	_swing_effect_r(nullptr),
-                              _this_frame_max_count(0),
-                              _frame_revers(false),
-                              _frame_state("stand1"),
-                              _frame_tick(0),
-                              _player_info({1, 1000, 0, 432, 
-								  1000, 0, 534, 100, 100, 0, 222,
-                              	13, 4, 4, 4,
-                              	0, 0, 0, 0,
-                              	0, 0, 0, 0,
-                              	0, 0,0,"公具龋"}),
-                              _now_foothold(nullptr),
-                              _next_foothold(nullptr),
-                              _is_first_foothold(false),
-							  _buffstat(nullptr)
+	_this_frame_max_count(0),
+	_frame_revers(false),
+	_frame_state("stand1"),
+	_frame_tick(0),
+	_send_move_packet_tick(0),
+	_player_info({ 1, 1000, 0, 432,
+		1000, 0, 534, 100, 100, 0, 222,
+	  13, 4, 4, 4,
+	  0, 0, 0, 0,
+	  0, 0, 0, 0,
+	  0, 0,0,"公具龋" }),
+	_now_foothold(nullptr),
+	_next_foothold(nullptr),
+	_is_first_foothold(false),
+	_buffstat(nullptr)
 {
 	Player::ReadyGameObject();
 }
@@ -93,8 +98,8 @@ int Player::ReadyGameObject()
 	LoadCharacterFrame("stand1");
 
 	HDC hDC = GetDC(_hWnd);
-	ScrollManager::SetScrollX(1024/2);
-	ScrollManager::SetScrollY(768/2);
+	ScrollManager::SetScrollX(1024 / 2);
+	ScrollManager::SetScrollY(768 / 2);
 	_damage_handler = new DamageHandler();
 	_memDC = CreateCompatibleDC(hDC);
 	_bitmap = CreateCompatibleBitmap(hDC, 1024, 768);
@@ -123,7 +128,7 @@ int Player::ReadyGameObject()
 	_swing_effect_r = std::make_shared<MyBitmap>(MyBitmap());
 	_swing_effect->Insert_Bitmap(_hWnd, L"Client\\Effect\\swingO2.bmp");
 	_swing_effect_r->Insert_Bitmap(_hWnd, L"Client\\Effect\\swingO2r.bmp");
-    return 0;
+	return 0;
 }
 
 void Player::UpdateGameObject(const float deltaTime)
@@ -134,12 +139,16 @@ void Player::UpdateGameObject(const float deltaTime)
 	float outY = 0;
 	FootHold* tempHold;
 	_damage_handler->UpdateDamages();
-	ScrollMove();
+	if (_is_dummy)
+	{
+		return;
+	}
 	if (_is_dead || MapManager::GetInstance()->IsChangeMap())
 	{
 		this->ChangeFrameState("dead");
 		return;
 	}
+	ScrollMove();
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
 	const bool finished_attack_frame = (_attack_skill != nullptr ? _attack_skill->IsFinishedFrame() : true);
 	if (finished_attack_frame && !_is_fly && !_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
@@ -294,10 +303,10 @@ void Player::UpdateGameObject(const float deltaTime)
 				_is_fly = false;
 			}
 		}
-		else 
+		else
 		{
 			Portal* outPortal = nullptr;
-			
+
 			if (MapManager::GetInstance()->PortalCollsition(this, &outPortal))
 			{
 				if (GetTickCount64() > _portal_tick + 1000)
@@ -309,7 +318,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			_is_rope = false;
 		}
 	}
-	if (!_is_rope &&  !_is_prone && finished_attack_frame)
+	if (!_is_rope && !_is_prone && finished_attack_frame)
 	{
 		ApplySkill();
 	}
@@ -382,7 +391,7 @@ void Player::UpdateGameObject(const float deltaTime)
 
 	if (!_is_attacking && !_is_rope && keymanager->KeyPressing(KEY_A))
 	{
-		if (_is_prone) 
+		if (_is_prone)
 		{
 			this->ChangeFrameState("proneStab");
 		}
@@ -449,7 +458,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	{
 		auto pos = InGameScene::GetMouse()->GetPoint();
 		auto npc_list = MapManager::GetInstance()->NpcCollision(pos);
-		
+
 		if (!npc_list.empty())
 		{
 			auto npc_talk = UiManager::GetInstance()->GetNpcTalkWindow();
@@ -551,38 +560,38 @@ void Player::LoadCharacterFrame(std::string frameName, uint16_t frameCount)
 	//std::vector<SkinItem*> headList;
 	//for (; maxSize < 100; maxSize++)
 	//{
-		std::vector<SkinItem*> tempList;
-		snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skin_id + 2000, frameName.c_str(), maxSize);
-		snprintf(headStr, 100, "000%05d.img/%s/%d", _skin_id + 12000, frameName.c_str(), maxSize);
-		auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 2000));
-		auto headSkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 12000));
-		auto hiarParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(30000));
-		auto faceParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(20000));
-		if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
-		{
-			_skin_frames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
-			_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
-			if (!strcmp(frameName.c_str(), "dead"))
-			{
-				int a = 1;
-				_head_skin_frames.erase(frameName);
-				_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem("front") });
-			}
-			//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
-			//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
-		}
+	std::vector<SkinItem*> tempList;
+	snprintf(bodyStr, 100, "000%05d.img/%s/%d", _skin_id + 2000, frameName.c_str(), maxSize);
+	snprintf(headStr, 100, "000%05d.img/%s/%d", _skin_id + 12000, frameName.c_str(), maxSize);
+	auto bodySkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 2000));
+	auto headSkinInfo = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(_skin_id + 12000));
+	auto hiarParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(30000));
+	auto faceParts = SkinManager::GetInstance()->GetBodySkinInfo(std::to_string(20000));
+	if (bodySkinInfo != nullptr && headSkinInfo != nullptr)
+	{
+		_skin_frames.insert({ frameName, bodySkinInfo->FindBodySkinItem(frameName) });
+		_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem(frameName) });
 		if (!strcmp(frameName.c_str(), "dead"))
 		{
-			_skin_frames.erase(std::to_string(30000));
-			_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem("default") });
+			int a = 1;
+			_head_skin_frames.erase(frameName);
+			_head_skin_frames.insert({ frameName, headSkinInfo->FindHeadSkinItem("front") });
 		}
-		else 
-		{
-			_skin_frames.erase(std::to_string(30000));
-			_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem(frameName) });
-		}
-		_skin_frames.erase(std::to_string(20000));
-		_skin_frames.insert({ std::to_string(20000), faceParts->FindBodySkinItem("default") });
+		//bodyList.push_back(bodySkinInfo->FindBodySkinItem(frameName));
+		//headList.push_back(headSkinInfo->FindHeadSkinItem(frameName));
+	}
+	if (!strcmp(frameName.c_str(), "dead"))
+	{
+		_skin_frames.erase(std::to_string(30000));
+		_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem("default") });
+	}
+	else
+	{
+		_skin_frames.erase(std::to_string(30000));
+		_skin_frames.insert({ std::to_string(30000), hiarParts->FindBodySkinItem(frameName) });
+	}
+	_skin_frames.erase(std::to_string(20000));
+	_skin_frames.insert({ std::to_string(20000), faceParts->FindBodySkinItem("default") });
 	//}
 }
 
@@ -594,7 +603,7 @@ void Player::RenderCharacter(HDC hdc)
 	auto headFrameIter = _head_skin_frames.find(_frame_state.c_str());
 	auto hairFrameIter = _skin_frames.find(std::to_string(30000));
 	auto faceFrameItre = _skin_frames.find(std::to_string(20000));
-	if (bodyFrameIter != _skin_frames.end() 
+	if (bodyFrameIter != _skin_frames.end()
 		&& headFrameIter != _head_skin_frames.end())
 	{
 
@@ -628,7 +637,7 @@ void Player::RenderCharacter(HDC hdc)
 			for (auto& data : GetEquipment()->GetEquipItems())
 			{
 				auto item = data.second->FindBodySkinItem(_frame_state);
-				if(item != nullptr)
+				if (item != nullptr)
 				{
 					auto itemFrames = item->FindFrame(std::to_string(_frame_nummber % _this_frame_max_count));
 					auto itemParts = itemFrames->GetParts();
@@ -759,13 +768,13 @@ void Player::RenderCharacter(HDC hdc)
 				if (childAnchorPoint->first != anchorPointEntry.first)
 				{
 					bool check = false;
-					for (auto item : list) 
+					for (auto item : list)
 					{
 						if (item.first == childAnchorPoint->first) {
 							check = true;
 						}
 					}
-					if (!check) 
+					if (!check)
 					{
 						list.push_back({ childAnchorPoint->first,
 							{ fromAnchorPoint.x + childAnchorPoint->second.x,
@@ -802,7 +811,7 @@ void Player::RenderCharacter(HDC hdc)
 				fromAnchorPoint = { anchorPoint.x - vectorFromPoint.x, anchorPoint.y - vectorFromPoint.y };
 			}
 			std::unordered_map<std::string, ObjectPos> maplist;
-			for (auto begin = positionedFrame->GetMaps()->begin();  begin != positionedFrame->GetMaps()->end(); ++begin)
+			for (auto begin = positionedFrame->GetMaps()->begin(); begin != positionedFrame->GetMaps()->end(); ++begin)
 			{
 				for (auto item : list) {
 
@@ -817,7 +826,7 @@ void Player::RenderCharacter(HDC hdc)
 			{
 				vectorFromPoint = maplist.begin()->second;
 			}
-			
+
 
 			auto partOrigin = positionedFrame->GetOrigin();
 			auto tempPos = ObjectPos{ fromAnchorPoint.x - partOrigin.x, fromAnchorPoint.y - partOrigin.y };
@@ -847,7 +856,7 @@ void Player::RenderCharacter(HDC hdc)
 		auto maxYPair = std::max_element(positionedFramesList.begin(),
 			positionedFramesList.end(),
 			[](const std::pair<SkinParts*, ObjectPos>& lhs, const std::pair<SkinParts*, ObjectPos>& rhs) {
-				return lhs.second.y + lhs.first->GetBitmap()->GetHeight()  < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
+				return lhs.second.y + lhs.first->GetBitmap()->GetHeight() < rhs.second.y + rhs.first->GetBitmap()->GetHeight();
 			});
 
 		auto maxY = maxYPair->second.y + maxYPair->first->GetBitmap()->GetHeight();
@@ -928,18 +937,18 @@ void Player::RenderCharacter(HDC hdc)
 				static_cast<int>(std::floor(_rect.top + ScrollManager::GetScrollY())),
 				static_cast<int>(std::floor(_rect.right + ScrollManager::GetScrollX())),
 				static_cast<int>(std::floor(_rect.bottom + ScrollManager::GetScrollY())));*/
-			
+
 			UpdateRectGameObject();
 
 			auto footOriginX = lastBody.first->GetOrigin().x + (lastBody.second.x - minX);
 			auto footOriginY = lastBody.first->GetOrigin().y + (lastBody.second.y - minY);
-			float reduceX= _info.x - (_rect.right - footOriginX);
-			float reduceY= _info.y - (_rect.bottom - footOriginY);
+			float reduceX = _info.x - (_rect.right - footOriginX);
+			float reduceY = _info.y - (_rect.bottom - footOriginY);
 			if (IsFlickerStateTick())
 			{
 				if (rand() % 2)
 				{
-					if(GetFacingDirection())
+					if (GetFacingDirection())
 					{
 						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
 						{
@@ -949,7 +958,8 @@ void Player::RenderCharacter(HDC hdc)
 								_swing_effect_r->GetWidth(),
 								_swing_effect_r->GetHeight());
 						}
-					}else
+					}
+					else
 					{
 						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
 						{
@@ -997,7 +1007,7 @@ void Player::RenderCharacter(HDC hdc)
 			else
 			{
 				GdiTransparentBlt(hdc,
-					static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()) ,
+					static_cast<int>(_rect.left - reduceX + ScrollManager::GetScrollX()),
 					static_cast<int>(_info.y - reduceY + ScrollManager::GetScrollY()),
 					static_cast<int>(destination.x),
 					static_cast<int>(destination.y),
@@ -1032,7 +1042,7 @@ void Player::RenderCharacter(HDC hdc)
 
 void Player::IsJumping()
 {
-	if(_is_rope) 
+	if (_is_rope)
 	{
 		float outY = 0;
 		_is_first_foothold = true;
@@ -1041,7 +1051,7 @@ void Player::IsJumping()
 		return;
 	}
 	if (GetTickCount64() < _knockback_tick + _knockback_time)
-	{ 
+	{
 		return;
 	}
 	float outY = 0;
@@ -1079,7 +1089,6 @@ void Player::IsJumping()
 						_is_attacking = false;
 					}
 				}
-				//ScrollManager::SetScrollY(-_info.y + (768 / 2));
 			}
 			else
 			{
@@ -1089,33 +1098,14 @@ void Player::IsJumping()
 				}
 				_is_fly = true;
 				_info.y += speed;
-				//ScrollManager::GainScrollY(-speed);
 			}
 		}
 		else
 		{
 			_is_fly = false;
 			_info.y = outY;
-			//ScrollManager::SetScrollY(-_info.y + (768 / 2));
 		}
 	}
-	//float fY = 0.f;
-	//bool bIsColl = MapManager::GetInstance()->FootholdCollision(this, &fY);
-
-	//if (_isJump)
-	//{
-	//	_accel += 0.20f;
-	//	_info.y -= _jumpPower * _accel - _gravity * _accel * _accel * 0.5f;
-	//	int i = 0;
-	//	if (bIsColl && _info.y >= fY)
-	//	{
-	//		_isJump = false;
-	//		_accel = 0.f;
-	//		_info.y = fY;
-	//	}
-	//}
-	//else if (bIsColl)
-	//	_info.y = fY;
 }
 
 void Player::TryMeleeAttack()
@@ -1133,8 +1123,8 @@ void Player::TryMeleeAttack()
 		_melee_attack_hitbox = {
 			static_cast<int>(_info.x + -73),
 			static_cast<int>(_info.y + -50),
-			static_cast<int>(_info.x +  5),
-			static_cast<int>(_info.y +  17) };
+			static_cast<int>(_info.x + 5),
+			static_cast<int>(_info.y + 17) };
 	}
 	_is_attacking = true;
 }
@@ -1283,6 +1273,11 @@ void Player::RecalcEqpStat()
 	max_power += 6 * this->GetTotalStr();
 	max_power += 10 * this->GetEqpPad();
 	this->GainMaxPower(max_power);
+}
+
+bool Player::IsDummy() const
+{
+	return _is_dummy;
 }
 
 void Player::TakeDamage()
@@ -1542,7 +1537,7 @@ void Player::RenderGameObject(HDC hdc)
 	{
 		auto icon = data->second->GetIconRaw();
 
-		float fX = this->GetInfo().x - data->first.x ;
+		float fX = this->GetInfo().x - data->first.x;
 		float fY = this->GetInfo().y - data->first.y;
 		float fDist = sqrtf(fX * fX + fY * fY);
 
@@ -1555,7 +1550,7 @@ void Player::RenderGameObject(HDC hdc)
 		float fDegree = angle * 180.f / 3.141592f;
 		float x = cosf(angle) * 8;
 		float y = sinf(angle) * 8;
-		if(fDist <= 5)
+		if (fDist <= 5)
 		{
 			const auto inven_type = InventoryWindow::SearchItemTab(data->second->GetItemId());
 			if (data->second->GetItemId() < 9000000)
@@ -1591,7 +1586,12 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
+
 	Player::IsJumping();
+	if (_is_dummy)
+	{
+		return;
+	}
 
 	uint64_t tick = GetTickCount64();
 	if (_frame_this != nullptr)
@@ -1637,6 +1637,15 @@ void Player::LateUpdateGameObject()
 			_frame_tick = tick;
 		}
 	}
+  if (GetTickCount64() > _send_move_packet_tick + 50)
+  {
+	  OutPacket* out_packet = new OutPacket();
+	  out_packet->Encode1(static_cast<int>(::opcode::ClientSend::kMovePlayer));
+	  out_packet->Encode4(static_cast<int>(_info.x));
+	  out_packet->Encode4(static_cast<int>(_info.y));
+	  _client_session->SendPacket(out_packet);
+	  _send_move_packet_tick = GetTickCount64();
+  }
 }
 
 void Player::ScrollMove()
@@ -2042,6 +2051,20 @@ void Player::GainMeso(uint32_t value)
 	_player_info.meso += value;
 }
 
+void Player::SetName(std::string name)
+{
+	_player_info.name = name;
+}
+
+int32_t Player::GetObjectId() const
+{
+	return _object_id;
+}
+void Player::SetObjectId(int32_t id)
+{
+	_object_id = id;
+}
+
 DamageHandler* Player::GetDamageHandler() const
 {
 	return _damage_handler;
@@ -2050,7 +2073,7 @@ DamageHandler* Player::GetDamageHandler() const
 void Player::GainHp(const int16_t value)
 {
 	_player_info.hp += value;
-	if (_player_info.hp  >= _player_info.max_hp)
+	if (_player_info.hp >= _player_info.max_hp)
 	{
 		_player_info.hp = _player_info.max_hp;
 	}

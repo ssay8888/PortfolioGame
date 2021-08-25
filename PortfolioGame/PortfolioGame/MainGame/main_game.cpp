@@ -44,10 +44,10 @@ void MainGame::ReadeyGame()
 	_old_bitmap = (HBITMAP)SelectObject(_hdc_buffer, _bitmap);
 
 	auto object_manager = MapManager::GetInstance();
-	auto object = new Player();
+	auto object = new Player(false);
 	this->SetPlayer(object);
 	object_manager->SetPlayer(object);
-
+	_client_session->SetPlayer(object);
 	SkillManager::GetInstance()->LoadSkillData();
 	MonsterManager::GetInstance()->LoadMonster();
 	NpcManager::GetInstance()->LoadNpc();

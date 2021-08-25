@@ -176,6 +176,9 @@
     <Filter Include="Network\PacketHandlerManager">
       <UniqueIdentifier>{56fe518c-eac5-46d6-86e7-a0a6c1f1364e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network\PacketHandlers">
+      <UniqueIdentifier>{7963be18-965f-43bb-99c6-abd0d4fd70ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -439,6 +442,24 @@
     <ClInclude Include="Network\client_session.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="Network\PacketHandlerManager\client_packet_handler_manager.h">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlerManager\client_packet_handler.h">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlers\login_packet_handler.h">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlers\character_info_packet_handler.h">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlers\spawn_player_packet_handelr.h">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlers\move_player_packet_handler.h">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -683,6 +704,21 @@
     </ClCompile>
     <ClCompile Include="Network\client_session.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlerManager\client_packet_handler_manager.cpp">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\login_packet_handler.cpp">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\character_info_packet_handler.cpp">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\spawn_player_packet_handelr.cpp">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\move_player_packet_handler.cpp">
+      <Filter>Network\PacketHandlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

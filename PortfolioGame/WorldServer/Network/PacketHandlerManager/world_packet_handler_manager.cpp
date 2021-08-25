@@ -1,7 +1,7 @@
 #include "../../pch.h"
 #include "world_packet_handler_manager.h"
 #include "../../PacketHandlers/login_handler.h"
-
+#include "../../PacketHandlers/move_player_handler.h"
 std::map<::opcode::ServerRecv, std::shared_ptr<PacketHandler>> WorldPacketHandlerManager::_handlers;
 
 WorldPacketHandlerManager::WorldPacketHandlerManager() {}
@@ -19,13 +19,14 @@ std::shared_ptr<PacketHandler> WorldPacketHandlerManager::GetHandler(const opcod
 
 WorldPacketHandlerManager* WorldPacketHandlerManager::GetInstance()
 {
-	WorldPacketHandlerManager instance;
+	static WorldPacketHandlerManager instance;
 	return &instance;
 }
 
 void WorldPacketHandlerManager::LoadHandlers()
 {
-	RegisterHandler(opcode::ServerRecv::kLoginResponse,	std::make_shared<LoginHandler>());
+	RegisterHandler(opcode::ServerRecv::kLoginRequest, std::make_shared<LoginHandler>());
+	RegisterHandler(opcode::ServerRecv::kMovePlayer, std::make_shared<MovePlayerHandler>());
 
 	std::cout << "Packet Handler Load Count: " << _handlers.size() << std::endl;
 	

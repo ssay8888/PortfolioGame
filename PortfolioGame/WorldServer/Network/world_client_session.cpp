@@ -3,9 +3,9 @@
 
 #include "world_server.h"
 
-WorldClientSession::WorldClientSession(boost::asio::io_service& server_service): _socket_id(0),
-                                                                                 _socket(server_service) {
-}
+WorldClientSession::WorldClientSession(boost::asio::io_service& server_service): _socket_id(),
+                                                                                 _socket(server_service),
+                                                                                 _status() {}
 
 WorldClientSession::~WorldClientSession()
 {
@@ -45,16 +45,14 @@ void WorldClientSession::ProcessPacket(const std::error_code& error_code, std::s
 		OnDisconnect();
 		return;
 	}
-	InPacket* in_packet = new InPacket(buffer, nPacketLen);
-	WorldServer::GetInstance()->InsertWorkPacket(this, in_packet);
+	std::shared_ptr<InPacket> in_packet = std::make_shared<InPacket>(buffer, nPacketLen);
+	WorldServer::GetInstance()->InsertWorkPacket(GetThis(), in_packet);
 	WaitRecvPacket();
 }
 
 void WorldClientSession::OnSendPacketFinished(const std::error_code& ec,
-  std::size_t bytes_transferred, OutPacket* out_packet)
+  std::size_t bytes_transferred, std::shared_ptr<OutPacket> out_packet)
 {
-	delete out_packet;
-	out_packet = nullptr;
 }
 
 void WorldClientSession::WaitRecvPacket() noexcept
@@ -70,20 +68,25 @@ void WorldClientSession::WaitRecvPacket() noexcept
 
 void WorldClientSession::OnDisconnect()
 {
-	_socket.close();
-	_socket_disconnected_callback(this);
+  if (_status != ServerStatus::kClose)
+  {
+	  _status = ServerStatus::kClose;
+	  _socket.close();
+	  _socket_disconnected_callback(GetThis());
+	  _this = nullptr;
+  }
 }
 
 void WorldClientSession::Init()
 {
 	const boost::asio::ip::tcp::no_delay option(true);
 	_socket.set_option(option);
-
-
+	_socket_id = rand();
+	_status = ServerStatus::kConnect;
 	this->WaitRecvPacket();
 }
 
-void WorldClientSession::SendPacket(OutPacket* out_packet)
+void WorldClientSession::SendPacket(std::shared_ptr<OutPacket> out_packet, bool is_broad_cast)
 {
 	std::lock_guard<std::mutex> lock(_mtx_lock);
 
@@ -100,22 +103,46 @@ void WorldClientSession::SendPacket(OutPacket* out_packet)
 	auto asd = buffer - packet_size;
 	*reinterpret_cast<decltype(packet_size)*>(buffer - OutPacket::kPacketHeaderSize) = packet_size - OutPacket::kPacketHeaderSize;
 
-  boost::asio::async_write(_socket,
-                           boost::asio::buffer(buffer - OutPacket::kPacketHeaderSize, out_packet->GetPacketSize()),
-                           std::bind(&WorldClientSession::OnSendPacketFinished,
-                                     this,
-                                     std::placeholders::_1,
-                                     std::placeholders::_2,
-							                       out_packet));
+  if (is_broad_cast)
+  {
+	  WorldServer::GetInstance()->BroadCastMessage(out_packet, GetThis());
+  }
+  else
+  {
+	  boost::asio::async_write(_socket,
+		  boost::asio::buffer(buffer - OutPacket::kPacketHeaderSize, out_packet->GetPacketSize()),
+		  std::bind(&WorldClientSession::OnSendPacketFinished,
+			  this,
+			  std::placeholders::_1,
+			  std::placeholders::_2,
+			  out_packet));
+  }
 }
-
 uint64_t WorldClientSession::GetSocketId() const
 {
 	return _socket_id;
 }
 
 void WorldClientSession::SetSocketDisconnectedCallBack(
-  const std::function<void(WorldClientSession*)>& callback)
+  const std::function<void(std::shared_ptr<WorldClientSession>)>& callback)
 {
 	_socket_disconnected_callback = callback;
+}
+
+void WorldClientSession::SetCharacter(const std::shared_ptr<Character> character)
+{
+	_character = character;
+}
+std::shared_ptr<Character> WorldClientSession::GetCharacter() const
+{
+	return _character;
+}
+
+std::shared_ptr<WorldClientSession> WorldClientSession::GetThis()
+{
+	return _this;
+}
+void WorldClientSession::SetThis(std::shared_ptr<WorldClientSession> ptr)
+{
+	_this = ptr;
 }

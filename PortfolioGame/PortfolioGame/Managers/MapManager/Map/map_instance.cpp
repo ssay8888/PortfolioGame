@@ -172,6 +172,20 @@ void MapInstance::SetPlayer(Player* player)
 	_player = player;
 }
 
+Player* MapInstance::FindPlayer(int32_t id)
+{
+	auto player = _player_list.find(id);
+  if (player != _player_list.end())
+  {
+	  return player->second;
+  }
+  return nullptr;
+}
+void MapInstance::InsertPlayer(Player* player)
+{
+	_player_list.insert(std::make_pair(player->GetObjectId(), player));
+}
+
 void MapInstance::RespawnMonster()
 {
 

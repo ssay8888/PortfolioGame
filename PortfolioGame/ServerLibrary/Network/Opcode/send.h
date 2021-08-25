@@ -1,6 +1,6 @@
 #pragma once
 namespace opcode
 {
-	enum class ClientSend { kLoginRequest };
-	enum class ServerSend { kSpawnPlayer };
+	enum class ClientSend { kLoginRequest, kMovePlayer };
+	enum class ServerSend { kLoginResponse, kCharacterInfo, kSpawnPlayer, kMovePlayer };
 }

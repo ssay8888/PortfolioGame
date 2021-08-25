@@ -20,7 +20,7 @@ class Player :
     public GameObject
 {
 public:
-    Player(uint8_t layer = 6);
+    Player(bool dummy = true, uint8_t layer = 6);
     ~Player();
 
 
@@ -126,11 +126,15 @@ public:
     void GainMinPower(uint32_t value);
     void GainMaxPower(uint32_t value);
     void GainMeso(uint32_t value);
+    void SetName(std::string name);
+    int32_t GetObjectId() const;
+    void SetObjectId(int32_t id);
 
     bool IsInvincibility();
     void SetInvincibility();
     void ResetEqpStat();
     void RecalcEqpStat();
+    bool IsDummy() const;
 
     DamageHandler* GetDamageHandler() const;
     void SettingPushKnockBack(bool fancing);
@@ -156,6 +160,8 @@ private:
 
     void ApplySkill();
 private:
+
+    int32_t _object_id;
     uint16_t _skin_id;
     uint16_t _frame_nummber;
     size_t _this_frame_max_count;
@@ -165,6 +171,7 @@ private:
     bool _is_fly;
     bool _is_rope;
     bool _is_dead;
+    bool _is_dummy;
     uint16_t _jump_count;
     uint8_t _facing_direction;
     SkinFrame* _frame_this;
@@ -240,4 +247,6 @@ private:
     std::shared_ptr<MyBitmap> _swing_effect;
     std::shared_ptr<MyBitmap> _swing_effect_r;
     std::list<std::pair<POINT, std::shared_ptr<Item>>> _list_pickup;
+
+    uint64_t _send_move_packet_tick;
 };

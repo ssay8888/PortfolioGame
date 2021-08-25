@@ -20,15 +20,16 @@ public:
 		return _acceptor;
 	}
 	
-	void HandleAcceptor(WorldClientSession* connected_socket,
+	void HandleAcceptor(std::shared_ptr<WorldClientSession> connected_socket,
 		const std::error_code& error_code);
 
   void AsyncStartAcceptor();
-  void OnSocketDisconnected(WorldClientSession* socket);
-	virtual void OnNotifySocketDisconnected(WorldClientSession* socket);
+  void OnSocketDisconnected(std::shared_ptr<WorldClientSession> socket);
+	virtual void OnNotifySocketDisconnected(std::shared_ptr<WorldClientSession> socket);
 	void RunWorkThead();
-	void InsertWorkPacket(WorldClientSession* session, InPacket* in_packet);
-
+	void InsertWorkPacket(std::shared_ptr<WorldClientSession> session, std::shared_ptr<InPacket> in_packet);
+	void BroadCastMessage(std::shared_ptr<OutPacket> out_packet, std::shared_ptr<WorldClientSession> session);
+	static std::map<int64_t, std::shared_ptr<WorldClientSession>>& GetSessionList();
 public:
 	boost::asio::io_service& GetIoService();
 
@@ -36,6 +37,7 @@ public:
 private:
 	boost::asio::io_service _io_service;
 	boost::asio::ip::tcp::acceptor* _acceptor;
-	static std::map<int64_t, WorldClientSession*> _session_list;
-	std::queue<std::pair<WorldClientSession*, InPacket*>> _work_packet_list;
+	static std::map<int64_t, std::shared_ptr<WorldClientSession>> _session_list;
+	std::queue<std::pair<std::shared_ptr<WorldClientSession>, std::shared_ptr<InPacket>>> _work_packet_list;
+	std::mutex _mtx_lock;
 };

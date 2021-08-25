@@ -14,6 +14,7 @@ void ConnectionAcceptorThread()
 
 int main()
 {
+	srand(time(NULL));
 	WorldPacketHandlerManager::GetInstance()->LoadHandlers();
 	auto* loginSocket = WorldServer::GetInstance();
 	loginSocket->RunWorkThead();

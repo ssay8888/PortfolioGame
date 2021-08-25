@@ -233,6 +233,12 @@
     <ClInclude Include="Managers\UiManager\ui_manager.h" />
     <ClInclude Include="Managers\UiManager\ui_tab_button.h" />
     <ClInclude Include="Network\client_session.h" />
+    <ClInclude Include="Network\PacketHandlerManager\client_packet_handler.h" />
+    <ClInclude Include="Network\PacketHandlerManager\client_packet_handler_manager.h" />
+    <ClInclude Include="Network\PacketHandlers\character_info_packet_handler.h" />
+    <ClInclude Include="Network\PacketHandlers\login_packet_handler.h" />
+    <ClInclude Include="Network\PacketHandlers\move_player_packet_handler.h" />
+    <ClInclude Include="Network\PacketHandlers\spawn_player_packet_handelr.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="portfolio_game.h" />
     <ClInclude Include="PublicHeader\all_enum.h" />
@@ -551,6 +557,23 @@
     <ClCompile Include="Network\client_session.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlerManager\client_packet_handler_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\character_info_packet_handler.cpp" />
+    <ClCompile Include="Network\PacketHandlers\login_packet_handler.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\move_player_packet_handler.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\spawn_player_packet_handelr.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

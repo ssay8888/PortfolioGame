@@ -15,6 +15,18 @@
     <ClCompile Include="PacketHandlers\login_handler.cpp">
       <Filter>PacketHandlers</Filter>
     </ClCompile>
+    <ClCompile Include="Field\Character\character.cpp">
+      <Filter>Field\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Field\Map\map_factory.cpp">
+      <Filter>Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Field\Map\map.cpp">
+      <Filter>Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketHandlers\move_player_handler.cpp">
+      <Filter>PacketHandlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -33,6 +45,18 @@
     <ClInclude Include="Network\PacketHandlerManager\packet_handler.h">
       <Filter>Network\PacketHandlerManager</Filter>
     </ClInclude>
+    <ClInclude Include="Field\Character\character.h">
+      <Filter>Field\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Field\Map\map_factory.h">
+      <Filter>Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Field\Map\map.h">
+      <Filter>Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHandlers\move_player_handler.h">
+      <Filter>PacketHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Network">
@@ -43,6 +67,15 @@
     </Filter>
     <Filter Include="PacketHandlers">
       <UniqueIdentifier>{7340f217-4dcf-4151-848f-a4aa2f5265a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Field">
+      <UniqueIdentifier>{277e22a3-29fe-4569-b255-5f59debb219b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Field\Character">
+      <UniqueIdentifier>{05748d02-f519-4a8f-8581-81a0690ee4af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Field\Map">
+      <UniqueIdentifier>{8dcb2ba9-f728-46aa-8420-b8662004ad9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

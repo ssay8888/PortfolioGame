@@ -30,13 +30,13 @@ void LoginUiScene::UpdateScene()
 
     KeyManager::GetInstance()->KeyUpdate();
 
-    if (KeyManager::GetInstance()->KeyPressing(KEY_LBUTTON))
+    if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
     {
         RECT rc1{ 100, 100, 150, 150 };
         RECT rc2{ 100, 150, 150, 200 };
         if (PtInRect(&rc1, mouse))
         {
-            //SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kInGame);
+           // SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kInGame);
             OutPacket* out_packet = new OutPacket();
             out_packet->Encode1(static_cast<char>(::opcode::ClientSend::kLoginRequest));
             out_packet->Encode1(0);

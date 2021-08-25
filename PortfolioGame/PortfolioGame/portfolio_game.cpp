@@ -3,6 +3,7 @@
 #include "MainGame/main_game.h"
 
 #include "Network/client_session.h"
+#include "Network/PacketHandlerManager/client_packet_handler_manager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -50,15 +51,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg{0};
     MainGame maingame(GetDC(_hWnd));
 
-    maingame.ReadeyGame();
     ULONGLONG dwOldTime = GetTickCount64();
 
+    ClientPacketHandlerManager::GetInstance()->LoadHandlers();
     boost::asio::io_service io_service;
-
     auto endpoint = boost::asio::ip::tcp::endpoint(
         boost::asio::ip::address::from_string("127.0.0.1"),
         1000);
-
     _client_session = new ClientSession(io_service);
     _client_session->Connect(endpoint);
     boost::asio::io_service::work work(io_service);
@@ -67,6 +66,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         io_service.run(ec);
         });
     clientWorkThread.detach();
+    maingame.ReadeyGame();
     while (WM_QUIT != msg.message)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -77,8 +77,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
-		if (dwOldTime + 14 < GetTickCount64())
+		if (dwOldTime + 5 < GetTickCount64())
 		{
+			_client_session->RunWorkThead();
 			maingame.UpdateGame();
 			maingame.RenderGame();
 			maingame.LateUpdateGame();

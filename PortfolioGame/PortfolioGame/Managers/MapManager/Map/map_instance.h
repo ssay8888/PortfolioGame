@@ -37,6 +37,9 @@ public:
 	Player* GetPlayer();
 	void SetPlayer(Player* player);
 
+	Player* FindPlayer(int32_t id);
+	void InsertPlayer(Player* player);
+
 	void RespawnMonster();
 	bool IsRespawnTick();
 private:
@@ -49,6 +52,7 @@ private:
 	ObjectPos _map_size;
 	std::list<Portal*> _list_portal;
 	Player* _player;
+	std::map<int32_t, Player*> _player_list;
 
 	uint64_t _respawn_tick;
 };
