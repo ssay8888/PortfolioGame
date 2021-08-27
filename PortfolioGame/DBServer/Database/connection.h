@@ -12,6 +12,6 @@ public:
 private:
 	void ThrowException();
 private:
-	SQLHDBC _connection_handle{};
+	SQLHDBC _connection_handle;
 };
 

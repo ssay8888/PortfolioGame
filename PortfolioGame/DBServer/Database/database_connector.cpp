@@ -17,7 +17,7 @@ void DatabaseConnector::SetData(const char* db_name, const char* id, const char*
 
 void DatabaseConnector::Init()
 {
-	if (SQLAllocHandle(SQL_HANDLE_ENV, nullptr, &_environment_handle) != SQL_SUCCESS)
+	if (SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &_environment_handle) != SQL_SUCCESS)
 	{
 		throw std::logic_error("Exception) SQL Enviroment handle allocation Fail...");
 	}
@@ -51,7 +51,7 @@ SQLCHAR* DatabaseConnector::GetPw()
 {
 	return _pw;
 }
-SQLHENV DatabaseConnector::GetEnvironmentHandle() const
+SQLHENV& DatabaseConnector::GetEnvironmentHandle()
 {
 	return _environment_handle;
 }

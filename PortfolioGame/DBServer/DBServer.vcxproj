@@ -160,7 +160,8 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Database\result_set.cpp" />
-    <ClCompile Include="DBServer.cpp" />
+    <ClCompile Include="db_server.cpp" />
+    <ClCompile Include="start.cpp" />
     <ClCompile Include="Network\database_client_session.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
@@ -185,6 +186,7 @@
     <ClInclude Include="Database\database_connector.h" />
     <ClInclude Include="Database\prepared_statement.h" />
     <ClInclude Include="Database\result_set.h" />
+    <ClInclude Include="db_server.h" />
     <ClInclude Include="Network\database_client_session.h" />
     <ClInclude Include="Network\database_server.h" />
     <ClInclude Include="Network\PacketHandlerManager\database_packet_handler_manager.h" />

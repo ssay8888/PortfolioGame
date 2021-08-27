@@ -16,7 +16,7 @@ public:
 	SQLCHAR* GetDataSourceName();
 	SQLCHAR* GetId();
 	SQLCHAR* GetPw();
-	SQLHENV GetEnvironmentHandle() const;
+	SQLHENV& GetEnvironmentHandle();
 private:
 	SQLCHAR _data_source_name[128];
 	SQLCHAR _id[64];

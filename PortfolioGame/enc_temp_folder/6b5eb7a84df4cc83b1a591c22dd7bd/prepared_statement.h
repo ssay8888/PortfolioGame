@@ -22,7 +22,7 @@ public:
 	void Close();
 
 	// this method will delegate 'SQLCloseCursor' to ResultSet's destructor
-	std::shared_ptr<ResultSet> Execute();
+	ResultSet* Execute();
 	void		ExecuteUpdate();
 	SQLHSTMT GetStatementHandle();
 private:

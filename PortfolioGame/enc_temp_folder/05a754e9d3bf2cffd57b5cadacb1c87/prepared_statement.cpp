@@ -81,12 +81,12 @@ void PreparedStatement::Close() {
 	SQLCloseCursor(_statement_handle);
 }
 
-std::shared_ptr<ResultSet> PreparedStatement::Execute() {
+ResultSet* PreparedStatement::Execute() {
 	_ret = SQLExecute(_statement_handle);
 	if (_ret != SQL_SUCCESS) {
 		ThrowException();
 	}
-	return std::make_shared<ResultSet>(*this);
+	return new ResultSet(*this);
 }
 
 void PreparedStatement::ExecuteUpdate() {

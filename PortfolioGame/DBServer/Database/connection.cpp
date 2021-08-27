@@ -5,7 +5,8 @@
 #include <sql.h>
 
 Connection::Connection(DatabaseConnector& connector) {
-	if (SQLAllocHandle(SQL_HANDLE_DBC, connector.GetEnvironmentHandle(), &_connection_handle) != SQL_SUCCESS) {
+	auto& asd = connector.GetEnvironmentHandle();
+	if (SQLAllocHandle(SQL_HANDLE_DBC, asd, &_connection_handle) != SQL_SUCCESS) {
 		throw std::logic_error("Exception) SQL Connection handle allocation Fail...");
 	}
 
