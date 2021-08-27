@@ -153,8 +153,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="Network\in_packet.h" />
-    <ClInclude Include="Network\Opcode\recv.h" />
-    <ClInclude Include="Network\Opcode\send.h" />
+    <ClInclude Include="Network\Opcode\packet_opcode.h" />
     <ClInclude Include="Network\out_packet.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

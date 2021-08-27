@@ -9,7 +9,6 @@ extern bool _isWindowsActive;
 extern ClientSession* _client_session;
 const int32_t inventory_slot_max = 96;
 
-
 const int32_t exp_table[255]
 {
 	0, 15, 34, 57, 92, 135, 372, 560, 840, 1242, 1716, 2360,

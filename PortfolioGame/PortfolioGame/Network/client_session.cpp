@@ -110,7 +110,7 @@ void ClientSession::RunWorkThead()
 	if (!_work_packet_list.empty())
 	{
 		auto packet = _work_packet_list.front();
-		auto opcode = static_cast<::opcode::ClientRecv>(packet->Decode1());
+		auto opcode = static_cast<::opcode::ServerOpcode>(packet->Decode1());
 		auto handler = ClientPacketHandlerManager::GetInstance()->GetHandler(opcode);
 
 		if (handler != nullptr)

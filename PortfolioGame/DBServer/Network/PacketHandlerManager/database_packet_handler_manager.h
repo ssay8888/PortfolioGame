@@ -10,10 +10,10 @@ public:
 
 public:
 	void LoadHandlers();
-	void RegisterHandler(::opcode::ServerRecv, std::shared_ptr<PacketHandler>);
-	std::shared_ptr<PacketHandler> GetHandler(const ::opcode::ServerRecv&);
+	void RegisterHandler(::opcode::ServerOpcode, std::shared_ptr<PacketHandler>);
+	std::shared_ptr<PacketHandler> GetHandler(const ::opcode::ServerOpcode&);
 
 private:
-	static std::map<::opcode::ServerRecv, std::shared_ptr<PacketHandler>> _handlers;
+	static std::map<::opcode::ServerOpcode, std::shared_ptr<PacketHandler>> _handlers;
 };
 

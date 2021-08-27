@@ -1,13 +1,13 @@
 #include "../../pch.h"
 #include "database_packet_handler_manager.h"
 
-std::map<::opcode::ServerRecv, std::shared_ptr<PacketHandler>> DatabasePacketHandlerManager::_handlers;
+std::map<::opcode::ServerOpcode, std::shared_ptr<PacketHandler>> DatabasePacketHandlerManager::_handlers;
 
 DatabasePacketHandlerManager::DatabasePacketHandlerManager() {}
 
 DatabasePacketHandlerManager::~DatabasePacketHandlerManager() {}
 
-std::shared_ptr<PacketHandler> DatabasePacketHandlerManager::GetHandler(const opcode::ServerRecv& opcode)
+std::shared_ptr<PacketHandler> DatabasePacketHandlerManager::GetHandler(const opcode::ServerOpcode& opcode)
 {
 	const auto handler = _handlers.find(opcode);
 
@@ -28,7 +28,7 @@ void DatabasePacketHandlerManager::LoadHandlers()
 
 }
 
-void DatabasePacketHandlerManager::RegisterHandler(opcode::ServerRecv opcode, std::shared_ptr<PacketHandler> handler)
+void DatabasePacketHandlerManager::RegisterHandler(opcode::ServerOpcode opcode, std::shared_ptr<PacketHandler> handler)
 {
 	_handlers.insert(std::make_pair(opcode, handler));
 }

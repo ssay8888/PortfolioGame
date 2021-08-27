@@ -18,6 +18,5 @@
 #include <thread>
 #include "../ServerLibrary/Network/out_packet.h"
 #include "../ServerLibrary/Network/in_packet.h"
-#include "../ServerLibrary/Network/Opcode/recv.h"
-#include "../ServerLibrary/Network/Opcode/send.h"
+#include "../ServerLibrary/Network/Opcode/packet_opcode.h"
 #endif //PCH_H

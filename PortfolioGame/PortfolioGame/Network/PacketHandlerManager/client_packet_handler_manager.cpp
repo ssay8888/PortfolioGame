@@ -5,13 +5,13 @@
 #include "../PacketHandlers/spawn_player_packet_handelr.h"
 #include "../PacketHandlers/move_player_packet_handler.h"
 #include "../PacketHandlers/remove_character_packet_handler.h"
-std::map<::opcode::ClientRecv, std::shared_ptr<ClientPacketHandler>> ClientPacketHandlerManager::_handlers;
+std::map<::opcode::ServerOpcode, std::shared_ptr<ClientPacketHandler>> ClientPacketHandlerManager::_handlers;
 
 ClientPacketHandlerManager::ClientPacketHandlerManager() = default;
 
 ClientPacketHandlerManager::~ClientPacketHandlerManager() = default;
 
-std::shared_ptr<ClientPacketHandler> ClientPacketHandlerManager::GetHandler(const opcode::ClientRecv& opcode)
+std::shared_ptr<ClientPacketHandler> ClientPacketHandlerManager::GetHandler(const opcode::ServerOpcode & opcode)
 {
 	const auto handler = _handlers.find(opcode);
 
@@ -28,17 +28,17 @@ ClientPacketHandlerManager* ClientPacketHandlerManager::GetInstance()
 
 void ClientPacketHandlerManager::LoadHandlers() const
 {
-	RegisterHandler(opcode::ClientRecv::kLoginResponse, std::make_shared<LoginPacketHandler>());
-	RegisterHandler(opcode::ClientRecv::kCharacterInfo, std::make_shared<CharacterInfoPacketHandler>());
-	RegisterHandler(opcode::ClientRecv::kSpawnPlayer, std::make_shared<SpawnPlayerPacketHandler>());
-	RegisterHandler(opcode::ClientRecv::kMovePlayer, std::make_shared<MovePlayerPacketHandler>());
-	RegisterHandler(opcode::ClientRecv::kRemoveCharacter, std::make_shared<RemoveCharacterPacketHandler>());
+	RegisterHandler(opcode::ServerOpcode::kLoginResponse, std::make_shared<LoginPacketHandler>());
+	RegisterHandler(opcode::ServerOpcode::kCharacterInfo, std::make_shared<CharacterInfoPacketHandler>());
+	RegisterHandler(opcode::ServerOpcode::kSpawnPlayer, std::make_shared<SpawnPlayerPacketHandler>());
+	RegisterHandler(opcode::ServerOpcode::kMovePlayer, std::make_shared<MovePlayerPacketHandler>());
+	RegisterHandler(opcode::ServerOpcode::kRemoveCharacter, std::make_shared<RemoveCharacterPacketHandler>());
 
 	std::cout << "Packet Handler Load Count: " << _handlers.size() << std::endl;
 
 }
 
-void ClientPacketHandlerManager::RegisterHandler(opcode::ClientRecv opcode, std::shared_ptr<ClientPacketHandler> handler)
+void ClientPacketHandlerManager::RegisterHandler(opcode::ServerOpcode opcode, std::shared_ptr<ClientPacketHandler> handler)
 {
 	_handlers.insert(std::make_pair(opcode, handler));
 }

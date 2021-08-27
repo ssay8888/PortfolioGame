@@ -1,5 +1,4 @@
 ﻿#include "pch.h"
-#include <iostream>
 #include "db_server.h"
 
 int main()

@@ -9,10 +9,7 @@
     <ClInclude Include="Network\in_packet.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="Network\Opcode\recv.h">
-      <Filter>Network\Opcode</Filter>
-    </ClInclude>
-    <ClInclude Include="Network\Opcode\send.h">
+    <ClInclude Include="Network\Opcode\packet_opcode.h">
       <Filter>Network\Opcode</Filter>
     </ClInclude>
   </ItemGroup>

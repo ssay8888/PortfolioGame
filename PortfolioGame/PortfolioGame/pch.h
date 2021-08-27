@@ -9,13 +9,12 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
+#include "PublicHeader/all_enum.h"
 #include "PublicHeader/all_extern.h"
 #include "PublicHeader/all_struct.h"
-#include "PublicHeader/all_enum.h"
 #include "../Common/Utility/string_tools.h"
 #include "../ServerLibrary/Network/out_packet.h"
 #include "../ServerLibrary/Network/in_packet.h"
-#include "../ServerLibrary/Network/Opcode/recv.h"
-#include "../ServerLibrary/Network/Opcode/send.h"
+#include "../ServerLibrary/Network/Opcode/packet_opcode.h"
 
 #endif //PCH_H

@@ -38,14 +38,14 @@ void LoginUiScene::UpdateScene()
         {
            // SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kInGame);
             OutPacket* out_packet = new OutPacket();
-            out_packet->Encode1(static_cast<char>(::opcode::ClientSend::kLoginRequest));
+            out_packet->Encode1(static_cast<char>(::opcode::ClientOpcode::kLoginRequest));
             out_packet->Encode1(0);
             _client_session->SendPacket(out_packet);
         } else if (PtInRect(&rc2, mouse))
         {
             //SceneManager::GetInstance()->SceneChange(SceneManager::SceneState::kInGame);
             OutPacket* out_packet = new OutPacket();
-            out_packet->Encode1(static_cast<char>(::opcode::ClientSend::kLoginRequest));
+            out_packet->Encode1(static_cast<char>(::opcode::ClientOpcode::kLoginRequest));
             out_packet->Encode1(1);
             _client_session->SendPacket(out_packet);
         }

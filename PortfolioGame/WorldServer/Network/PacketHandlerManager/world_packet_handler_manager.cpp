@@ -2,13 +2,13 @@
 #include "world_packet_handler_manager.h"
 #include "../../PacketHandlers/login_handler.h"
 #include "../../PacketHandlers/move_player_handler.h"
-std::map<::opcode::ServerRecv, std::shared_ptr<PacketHandler>> WorldPacketHandlerManager::_handlers;
+std::map<::opcode::ClientOpcode, std::shared_ptr<PacketHandler>> WorldPacketHandlerManager::_handlers;
 
 WorldPacketHandlerManager::WorldPacketHandlerManager() {}
 
 WorldPacketHandlerManager::~WorldPacketHandlerManager() {}
 
-std::shared_ptr<PacketHandler> WorldPacketHandlerManager::GetHandler(const opcode::ServerRecv& opcode)
+std::shared_ptr<PacketHandler> WorldPacketHandlerManager::GetHandler(const opcode::ClientOpcode& opcode)
 {
 	const auto handler = _handlers.find(opcode);
 
@@ -25,14 +25,14 @@ WorldPacketHandlerManager* WorldPacketHandlerManager::GetInstance()
 
 void WorldPacketHandlerManager::LoadHandlers()
 {
-	RegisterHandler(opcode::ServerRecv::kLoginRequest, std::make_shared<LoginHandler>());
-	RegisterHandler(opcode::ServerRecv::kMovePlayer, std::make_shared<MovePlayerHandler>());
+	RegisterHandler(opcode::ClientOpcode::kLoginRequest, std::make_shared<LoginHandler>());
+	RegisterHandler(opcode::ClientOpcode::kMovePlayer, std::make_shared<MovePlayerHandler>());
 
 	std::cout << "Packet Handler Load Count: " << _handlers.size() << std::endl;
 	
 }
 
-void WorldPacketHandlerManager::RegisterHandler(opcode::ServerRecv opcode, std::shared_ptr<PacketHandler> handler)
+void WorldPacketHandlerManager::RegisterHandler(opcode::ClientOpcode opcode, std::shared_ptr<PacketHandler> handler)
 {
 	_handlers.insert(std::make_pair(opcode, handler));
 }

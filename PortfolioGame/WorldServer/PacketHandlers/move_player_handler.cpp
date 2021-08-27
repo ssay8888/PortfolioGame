@@ -47,7 +47,7 @@ HandlePacket(std::shared_ptr<WorldClientSession> socket, std::shared_ptr<InPacke
 std::shared_ptr<OutPacket> MovePlayerHandler::CreateMovePlayerPacket(std::shared_ptr<WorldClientSession> socket, std::list<std::shared_ptr<MoveParseRecv>> list) const
 {
 	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
-	out_packet->Encode1(static_cast<int>(::opcode::ServerSend::kMovePlayer));
+	out_packet->Encode1(static_cast<int>(::opcode::ServerOpcode::kMovePlayer));
 	out_packet->Encode4(socket->GetCharacter()->GetId());
 	out_packet->Encode4(static_cast<int>(list.size()));
 

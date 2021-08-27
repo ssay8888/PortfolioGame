@@ -35,7 +35,7 @@ void LoginHandler::HandlePacket(std::shared_ptr<WorldClientSession> scoket, std:
 std::shared_ptr<OutPacket> LoginHandler::CreateLoginResponsePacket(std::shared_ptr<Character> character) const
 {
 	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
-	out_packet->Encode1(static_cast<char>(::opcode::ServerSend::kLoginResponse));
+	out_packet->Encode1(static_cast<char>(::opcode::ServerOpcode::kLoginResponse));
 	out_packet->Encode4(character->GetId());
 	return out_packet;
 }
@@ -43,7 +43,7 @@ std::shared_ptr<OutPacket> LoginHandler::CreateLoginResponsePacket(std::shared_p
 std::shared_ptr<OutPacket> LoginHandler::CreateCharacterInfoPacket(const std::shared_ptr<Character> character) const
 {
 	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
-	out_packet->Encode1(static_cast<char>(::opcode::ServerSend::kCharacterInfo));
+	out_packet->Encode1(static_cast<char>(::opcode::ServerOpcode::kCharacterInfo));
 	if (character->GetId() == 0)
 	{
 		out_packet->EncodeStr("»Ñ¿¡¿¨");
@@ -59,7 +59,7 @@ std::shared_ptr<OutPacket> LoginHandler::CreateSpawnPlayerPacket(
 	const std::shared_ptr<Character> character) const
 {
 	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
-	out_packet->Encode1(static_cast<char>(::opcode::ServerSend::kSpawnPlayer));
+	out_packet->Encode1(static_cast<char>(::opcode::ServerOpcode::kSpawnPlayer));
 	out_packet->Encode4(character->GetId());
 	return out_packet;
 }

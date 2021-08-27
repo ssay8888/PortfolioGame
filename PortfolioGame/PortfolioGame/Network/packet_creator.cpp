@@ -6,7 +6,7 @@ OutPacket* PacketCreator::CreatorMovePlayer(std::list<std::shared_ptr<MoveParse>
 {
 	OutPacket* out_packet = new OutPacket();
 
-	out_packet->Encode1(static_cast<int>(::opcode::ClientSend::kMovePlayer));
+	out_packet->Encode1(static_cast<int>(::opcode::ClientOpcode::kMovePlayer));
 	out_packet->Encode4(static_cast<int>(list_move.size()));
   for (auto& move : list_move)
   {

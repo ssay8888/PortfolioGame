@@ -67,7 +67,7 @@ void DatabaseServer::RunWorkThead()
 					_work_packet_list.pop();
 					if (packet.second)
 					{
-						auto opcode = static_cast<::opcode::ServerRecv>(packet.second->Decode1());
+						auto opcode = static_cast<::opcode::ServerOpcode>(packet.second->Decode1());
 						auto handler = DatabasePacketHandlerManager::GetInstance()->GetHandler(opcode);
 
 						if (handler != nullptr)

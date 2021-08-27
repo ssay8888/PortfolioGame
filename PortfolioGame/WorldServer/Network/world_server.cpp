@@ -71,7 +71,7 @@ void WorldServer::RunWorkThead()
 					_work_packet_list.pop();
 				  if (packet.second)
 				  {
-					  auto opcode = static_cast<::opcode::ServerRecv>(packet.second->Decode1());
+					  auto opcode = static_cast<::opcode::ClientOpcode>(packet.second->Decode1());
 					  auto handler = WorldPacketHandlerManager::GetInstance()->GetHandler(opcode);
 
 					  if (handler != nullptr)
@@ -113,7 +113,7 @@ std::shared_ptr<OutPacket> WorldServer::DisconnectCharacter(
 	std::shared_ptr<WorldClientSession> socket) const
 {
 	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
-	out_packet->Encode1(static_cast<int>(::opcode::ServerSend::kRemoveCharacter));
+	out_packet->Encode1(static_cast<int>(::opcode::ServerOpcode::kRemoveCharacter));
 	out_packet->Encode4(socket->GetCharacter()->GetId());
 	return out_packet;
 }

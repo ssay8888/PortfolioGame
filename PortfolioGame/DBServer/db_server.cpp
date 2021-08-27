@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "db_server.h"
-
+#include "Database/database_connector.h"
 #include "Database/connection.h"
 #include "Database/prepared_statement.h"
 #include "Database/result_set.h"
-
+#include "Network/database_server.h"
 #include "Network/PacketHandlerManager/database_packet_handler_manager.h"
 
 void DbServer::ConnectionAcceptorThread() {
