@@ -15,7 +15,6 @@
 #pragma warning (pop)
 #include <iostream>
 #include <queue>
-#include <thread>
 #include "../ServerLibrary/Network/out_packet.h"
 #include "../ServerLibrary/Network/in_packet.h"
 #include "../ServerLibrary/Network/Opcode/recv.h"

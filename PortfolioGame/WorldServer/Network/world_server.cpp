@@ -3,6 +3,8 @@
 #include "world_client_session.h"
 #include "../../ServerLibrary/Network/out_packet.h"
 
+#include "../Field/Character/character.h"
+
 #include "PacketHandlerManager/world_packet_handler_manager.h"
 #include "PacketHandlerManager/packet_handler.h"
 
@@ -53,7 +55,7 @@ void WorldServer::OnSocketDisconnected(std::shared_ptr<WorldClientSession>  sock
 
 void WorldServer::OnNotifySocketDisconnected(std::shared_ptr<WorldClientSession> socket)
 {
-
+	WorldServer::GetInstance()->BroadCastMessage(DisconnectCharacter(socket), socket);
 }
 
 void WorldServer::RunWorkThead()
@@ -105,6 +107,15 @@ void WorldServer::BroadCastMessage(std::shared_ptr<OutPacket> out_packet, std::s
 std::map<int64_t, std::shared_ptr<WorldClientSession> >& WorldServer::GetSessionList()
 {
 	return _session_list;
+}
+
+std::shared_ptr<OutPacket> WorldServer::DisconnectCharacter(
+	std::shared_ptr<WorldClientSession> socket) const
+{
+	std::shared_ptr<OutPacket> out_packet = std::make_shared<OutPacket>();
+	out_packet->Encode1(static_cast<int>(::opcode::ServerSend::kRemoveCharacter));
+	out_packet->Encode4(socket->GetCharacter()->GetId());
+	return out_packet;
 }
 
 boost::asio::io_service& WorldServer::GetIoService()

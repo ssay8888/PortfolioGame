@@ -173,6 +173,7 @@
     <ClInclude Include="Components\MapObject\Player\Inventory\eqp_inventory.h" />
     <ClInclude Include="Components\MapObject\Player\Inventory\inventory.h" />
     <ClInclude Include="Components\MapObject\Player\MagicAttack\magic_attack.h" />
+    <ClInclude Include="Components\MapObject\Player\MoveParse\move_parse.h" />
     <ClInclude Include="Components\MapObject\Player\player.h" />
     <ClInclude Include="Components\MapObject\portal.h" />
     <ClInclude Include="framework.h" />
@@ -238,7 +239,9 @@
     <ClInclude Include="Network\PacketHandlers\character_info_packet_handler.h" />
     <ClInclude Include="Network\PacketHandlers\login_packet_handler.h" />
     <ClInclude Include="Network\PacketHandlers\move_player_packet_handler.h" />
+    <ClInclude Include="Network\PacketHandlers\remove_character_packet_handler.h" />
     <ClInclude Include="Network\PacketHandlers\spawn_player_packet_handelr.h" />
+    <ClInclude Include="Network\packet_creator.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="portfolio_game.h" />
     <ClInclude Include="PublicHeader\all_enum.h" />
@@ -319,6 +322,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Components\MapObject\Player\MagicAttack\magic_attack.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\MoveParse\move_parse.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -571,9 +578,17 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\remove_character_packet_handler.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Network\PacketHandlers\spawn_player_packet_handelr.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\packet_creator.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

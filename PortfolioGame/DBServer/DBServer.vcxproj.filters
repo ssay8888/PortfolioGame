@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DBServer.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Network\database_server.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\database_client_session.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlerManager\database_packet_handler_manager.cpp">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\database_connector.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\connection.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\prepared_statement.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\result_set.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Network\database_server.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\database_client_session.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlerManager\database_packet_handler_manager.h">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlerManager\PacketHandler.h">
+      <Filter>Network\PacketHandlerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\database_connector.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\connection.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\prepared_statement.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\result_set.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Network">
+      <UniqueIdentifier>{1d50b2d6-96be-4e27-9424-aa9c46a70514}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\PacketHandlerManager">
+      <UniqueIdentifier>{bc0a4c24-50e0-48cb-a79d-eaafcb61ed01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketHandlers">
+      <UniqueIdentifier>{97bde3c7-8da7-4227-a86f-a7ed878b9b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{2324bc18-e597-4986-9cd2-ecfca0be84ee}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -179,6 +179,9 @@
     <Filter Include="Network\PacketHandlers">
       <UniqueIdentifier>{7963be18-965f-43bb-99c6-abd0d4fd70ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\MapObject\Player\MoveParse">
+      <UniqueIdentifier>{5a6979e6-d74f-4a82-8c41-6fffa844ef3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -460,6 +463,15 @@
     <ClInclude Include="Network\PacketHandlers\move_player_packet_handler.h">
       <Filter>Network\PacketHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="Network\packet_creator.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MapObject\Player\MoveParse\move_parse.h">
+      <Filter>Components\MapObject\Player\MoveParse</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\PacketHandlers\remove_character_packet_handler.h">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -718,6 +730,15 @@
       <Filter>Network\PacketHandlers</Filter>
     </ClCompile>
     <ClCompile Include="Network\PacketHandlers\move_player_packet_handler.cpp">
+      <Filter>Network\PacketHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\packet_creator.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MapObject\Player\MoveParse\move_parse.cpp">
+      <Filter>Components\MapObject\Player\MoveParse</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlers\remove_character_packet_handler.cpp">
       <Filter>Network\PacketHandlers</Filter>
     </ClCompile>
   </ItemGroup>

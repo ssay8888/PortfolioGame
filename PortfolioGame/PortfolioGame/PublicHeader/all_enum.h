@@ -18,4 +18,6 @@ namespace ObjectType
 		kinfinity = 0x4,
 	};
 
+	enum class PlayerMotion { kStand, kWalk, kJump, kRope, kLadder, kProne };
+
 }

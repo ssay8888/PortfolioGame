@@ -39,6 +39,7 @@ public:
 
 	Player* FindPlayer(int32_t id);
 	void InsertPlayer(Player* player);
+	void RemovePlayer(int32_t id);
 
 	void RespawnMonster();
 	bool IsRespawnTick();

@@ -1,6 +1,8 @@
 #include "../../../pch.h"
 #include "player.h"
+#include <time.h>
 #include "../foot_hold.h"
+#include "../../game_mouse.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Components/MapObject/Monster/monster.h"
@@ -9,7 +11,12 @@
 #include "../../../Managers/KeyManaer/key_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../Managers/MapManager/Map/map_instance.h"
+#include "../../../Managers/QuestManager/quest_manager.h"
+#include "../../../Managers/QuestManager/Quest/quest_info.h"
+#include "../../../Managers/ScenManager/InGameScene/in_game_scene.h"
 #include "../../../Managers/ScrollManager/scroll_manager.h"
+#include "../../../Managers/ShopManager/shop_manager.h"
+#include "../../../Managers/SkillManager/skill_manager.h"
 #include "../../../Managers/SkillManager/Skill/skill.h"
 #include "../../../Managers/SkillManager/Skill/skill_info.h"
 #include "../../../Managers/Skins/skin_frame.h"
@@ -19,34 +26,24 @@
 #include "../../../Managers/Skins/skin_parts.h"
 #include "../../../Managers/UiManager/ui_manager.h"
 #include "../../../Managers/UiManager/DeadMessage/dead_message.h"
+#include "../../../Managers/UiManager/DeadMessage/dead_message.h"
 #include "../../../Managers/UiManager/Inventory/inventory_window.h"
-#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../../Managers/UiManager/MobGage/mob_gage.h"
 #include "../../../Managers/UiManager/NpcTalk/npc_talk_window.h"
-#include "../../../Managers/QuestManager/quest_manager.h"
-#include "../Npc/npc.h"
-
-#include "../../../Managers/ScenManager/InGameScene/in_game_scene.h"
-
+#include "../../../Managers/UiManager/QuickSlot/quick_slot.h"
+#include "../../../Managers/UiManager/Shop/shop_window.h"
 #include "../../MapObject/portal.h"
 #include "../Item/item.h"
+#include "../Npc/npc.h"
+#include "Buff/buffstat.h"
 #include "Damage/damage_handler.h"
 #include "Equip/equipment.h"
 #include "Inventory/eqp_inventory.h"
 #include "Inventory/inventory.h"
 #include "MagicAttack/magic_attack.h"
-#include "Buff/buffstat.h"
-
-#include <time.h>
-
-#include "../../game_mouse.h"
-#include "../../../Managers/QuestManager/Quest/quest_info.h"
-#include "../../../Managers/ShopManager/shop_manager.h"
-#include "../../../Managers/UiManager/DeadMessage/dead_message.h"
-#include "../../../Managers/UiManager/Shop/shop_window.h"
-#include "../../../Managers/SkillManager/skill_manager.h"
-#include "../../../Managers/UiManager/MobGage/mob_gage.h"
-
+#include "MoveParse/move_parse.h"
 #include "../../../Network/client_session.h"
+#include "../../../Network/packet_creator.h"
 
 #include "../../../Utility/game_constants.h"
 
@@ -86,6 +83,59 @@ Player::~Player()
 	SelectObject(_memDC, _old_bitmap);
 	DeleteObject(_bitmap);
 	DeleteDC(_memDC);
+}
+
+void Player::UpdateDummyObject()
+{
+	if (!_list_move_parse.empty())
+	{
+		auto move = _list_move_parse.front();
+		_list_move_parse.pop_front();
+
+		SetFacingDirection(move->GetFacingDirection());
+		switch (move->GetMotion()) {
+			case ::ObjectType::PlayerMotion::kStand:
+				this->ChangeFrameState("stand1");
+				_is_prone = false;
+				_is_rope = false;
+				break;
+			case ::ObjectType::PlayerMotion::kWalk:
+				this->ChangeFrameState("walk1");
+				_is_prone = false;
+				_is_rope = false;
+				break;
+			case ::ObjectType::PlayerMotion::kJump:
+				this->ChangeFrameState("jump");
+				_is_prone = false;
+				_is_rope = false;
+				break;
+			case ::ObjectType::PlayerMotion::kRope:
+				this->ChangeFrameState("rope");
+				_is_prone = false;
+				_is_rope = true;
+				break;
+			case ::ObjectType::PlayerMotion::kLadder:
+				this->ChangeFrameState("ladder");
+				_is_prone = false;
+				_is_rope = true;
+				break;
+			case ::ObjectType::PlayerMotion::kProne:
+				this->ChangeFrameState("prone");
+				_is_prone = true;
+				_is_rope = false;
+				break;
+			default: ;
+		}
+		_info.x = static_cast<float>(move->GetX());
+		_info.y = static_cast<float>(move->GetY());
+	}
+	else
+	{
+		if (!_is_prone && !_is_rope && (strcmp(GetFrameState(), "walk1") && strcmp(GetFrameState(), "jump")))
+		{
+			this->ChangeFrameState("stand1");
+		}
+	}
 }
 
 int Player::ReadyGameObject()
@@ -141,6 +191,7 @@ void Player::UpdateGameObject(const float deltaTime)
 	_damage_handler->UpdateDamages();
 	if (_is_dummy)
 	{
+		UpdateDummyObject();
 		return;
 	}
 	if (_is_dead || MapManager::GetInstance()->IsChangeMap())
@@ -163,16 +214,25 @@ void Player::UpdateGameObject(const float deltaTime)
 				switch (outHold->GetState())
 				{
 				case FootHold::HoldState::kLadder:
+				{
+					auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kLadder);
+					_list_move_parse.emplace_back(move_parse);
 					this->ChangeFrameState("ladder");
 					break;
+				}
 				case FootHold::HoldState::kRope:
+				{
+					auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kRope);
+					_list_move_parse.emplace_back(move_parse);
 					this->ChangeFrameState("rope");
 					break;
+				}
 				default:
 					break;
 				}
 				_is_rope = true;
 				_info.x = outX;
+
 			}
 			_info.y += GetSpeed();
 			if (CollisionManager::LineAndRectCollsition(MapManager::GetInstance()->GetNowMap()->GetFootHoldList(), this))
@@ -197,6 +257,21 @@ void Player::UpdateGameObject(const float deltaTime)
 				_info.y -= GetSpeed();
 				totalMoveY += GetSpeed();
 			}
+			switch (outHold->GetState()) {
+				case FootHold::HoldState::kRope:
+				{
+					auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kRope);
+					_list_move_parse.emplace_back(move_parse);
+					break;
+				}
+				case FootHold::HoldState::kLadder:
+				{
+					auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kLadder);
+					_list_move_parse.emplace_back(move_parse);
+					break;
+				}
+				default: ;
+			}
 		}
 		else
 		{
@@ -210,6 +285,8 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->ChangeFrameState("prone");
 			_is_prone = true;
+			auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kProne);
+			_list_move_parse.emplace_back(move_parse);
 		}
 	}
 
@@ -219,6 +296,8 @@ void Player::UpdateGameObject(const float deltaTime)
 		{
 			this->ChangeFrameState("stand1");
 			_is_prone = false;
+			auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kStand);
+			_list_move_parse.emplace_back(move_parse);
 		}
 	}
 	if (finished_attack_frame && !_is_prone)
@@ -274,12 +353,12 @@ void Player::UpdateGameObject(const float deltaTime)
 	}
 
 
+	FootHold* out_rope_hold = nullptr;
 	if (finished_attack_frame && !_is_prone && keymanager->KeyPressing(KEY_UP))
 	{
 		auto rope = MapManager::GetInstance()->GetNowMap()->GetRopeLadderList();
 		float outX = 0;
-		FootHold* outHold = nullptr;
-		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &outHold);
+		bool isRope = MapManager::GetInstance()->LadderRopeCollsition(this, &outX, &out_rope_hold);
 
 
 		if (isRope)
@@ -288,7 +367,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			totalMoveY -= GetSpeed();
 			if (!_is_rope)
 			{
-				switch (outHold->GetState())
+				switch (out_rope_hold->GetState())
 				{
 				case FootHold::HoldState::kLadder:
 					this->ChangeFrameState("ladder");
@@ -347,7 +426,11 @@ void Player::UpdateGameObject(const float deltaTime)
 	{
 		_knockback_tick = 0;
 	}
-
+	if (!_is_rope && !_is_prone && (keymanager->KeyUp(KEY_LEFT) || keymanager->KeyUp(KEY_RIGHT)))
+	{
+		auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kStand);
+		_list_move_parse.emplace_back(move_parse);
+	}
 	if (totalMoveX != 0 || totalMoveY != 0)
 	{
 		if (totalMoveX < 0 && knockbackMoveX == 0)
@@ -363,9 +446,54 @@ void Player::UpdateGameObject(const float deltaTime)
 			this->ChangeFrameState("walk1");
 		}
 
-		float outY = 0;
 		_info.x += totalMoveX;
 		_info.y += totalMoveY;
+		std::shared_ptr<MoveParse> move_parse = nullptr;
+		if (_is_rope)
+		{
+		  if (out_rope_hold  != nullptr)
+		  {
+			  switch (out_rope_hold->GetState())
+			  {
+			  case FootHold::HoldState::kLadder:
+			  {
+				  move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kLadder);
+				  break;
+			  }
+			  case FootHold::HoldState::kRope:
+			  {
+				  move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kRope);
+				  break;
+			  }
+			  default:
+				  break;
+			  }
+		  }
+		}
+		else if (!_is_jump && !_is_fly)
+		{
+			move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kWalk);
+		}
+		if (move_parse != nullptr)
+		{
+			_list_move_parse.emplace_back(move_parse);
+		}
+
+		/*
+			if (totalMoveX != 0 && totalMoveY == 0 && GetTickCount64() > _send_move_packet_tick + 50)
+			{
+				_client_session->SendPacket(PacketCreator::CreatorMovePlayer(this, this->GetFacingDirection(), ::ObjectType::PlayerMotion::kWalk));
+				_send_move_packet_tick = GetTickCount64();
+				std::cout << "x로만 움직임!" << std::endl;
+			}
+
+		if (_is_jump)
+		{
+			_client_session->SendPacket(PacketCreator::CreatorMovePlayer(this, this->GetFacingDirection(), ::ObjectType::PlayerMotion::kJump));
+			_send_move_packet_tick = GetTickCount64();
+			std::cout << "점프로 움직임!" << std::endl;
+		}*/
+
 		UpdateRectGameObject();
 		if (MapManager::GetInstance()->FootholdAndRectCollision(this))
 		{
@@ -387,7 +515,6 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 		}
 	}
-
 
 	if (!_is_attacking && !_is_rope && keymanager->KeyPressing(KEY_A))
 	{
@@ -1065,6 +1192,10 @@ void Player::IsJumping()
 		if (_jump_count < count)
 		{
 			_info.y -= speed;
+			
+			auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kJump);
+			_list_move_parse.emplace_back(move_parse);
+
 			//ScrollManager::GainScrollY(speed, true);
 		}
 		else
@@ -1081,6 +1212,11 @@ void Player::IsJumping()
 			if (_info.y - outY <= speed && _info.y - outY >= -speed)
 			{
 				_info.y = outY;
+				if (_is_fly)
+				{
+					auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kStand);
+					_list_move_parse.emplace_back(move_parse);
+				}
 				_is_fly = false;
 				if (_is_attacking)
 				{
@@ -1098,6 +1234,8 @@ void Player::IsJumping()
 				}
 				_is_fly = true;
 				_info.y += speed;
+				auto move_parse = std::make_shared<MoveParse>(this, ::ObjectType::PlayerMotion::kJump);
+				_list_move_parse.emplace_back(move_parse);
 			}
 		}
 		else
@@ -1355,6 +1493,11 @@ void Player::LevelUp()
 	}
 }
 
+void Player::InsertMoveParse(std::shared_ptr<MoveParse> move)
+{
+	_list_move_parse.emplace_back(move);
+}
+
 void Player::ApplySkill()
 {
 	const auto key_manager = KeyManager::GetInstance();
@@ -1586,11 +1729,16 @@ void Player::RenderGameObject(HDC hdc)
 
 void Player::LateUpdateGameObject()
 {
-
-	Player::IsJumping();
-	if (_is_dummy)
+	if (!_is_dummy)
 	{
-		return;
+		Player::IsJumping();
+
+		if (!_list_move_parse.empty() && GetTickCount64() > _send_move_packet_tick + 36)
+		{
+			_client_session->SendPacket(PacketCreator::CreatorMovePlayer(_list_move_parse));
+			_list_move_parse.clear();
+			_send_move_packet_tick = GetTickCount64();
+		}
 	}
 
 	uint64_t tick = GetTickCount64();
@@ -1637,15 +1785,8 @@ void Player::LateUpdateGameObject()
 			_frame_tick = tick;
 		}
 	}
-  if (GetTickCount64() > _send_move_packet_tick + 50)
-  {
-	  OutPacket* out_packet = new OutPacket();
-	  out_packet->Encode1(static_cast<int>(::opcode::ClientSend::kMovePlayer));
-	  out_packet->Encode4(static_cast<int>(_info.x));
-	  out_packet->Encode4(static_cast<int>(_info.y));
-	  _client_session->SendPacket(out_packet);
-	  _send_move_packet_tick = GetTickCount64();
-  }
+
+
 }
 
 void Player::ScrollMove()

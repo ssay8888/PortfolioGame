@@ -67,6 +67,7 @@ void ClientSession::PacketBodyReceive(const std::error_code& error_code, const s
 void ClientSession::ProcessPacket(const std::error_code& error_code, const size_t bytes_transferred,
   uint8_t* buffer, int32_t packet_len) noexcept
 {
+	std::lock_guard<std::mutex> lock(_mtx_lock);
 	InPacket* in_packet =  new InPacket(buffer, packet_len);
 	_work_packet_list.push(in_packet);
 	PacketHeaderReceive();
@@ -80,7 +81,7 @@ void ClientSession::OnSendPacketFinished(const std::error_code& ec, std::size_t 
 
 void ClientSession::SendPacket(OutPacket* out_packet)
 {
-		std::lock_guard<std::mutex> lock(_mtx_lock);
+	std::lock_guard<std::mutex> lock(_mtx_lock);
 
 	if (!_socket.is_open())
 	{
@@ -105,6 +106,7 @@ void ClientSession::SendPacket(OutPacket* out_packet)
 
 void ClientSession::RunWorkThead()
 {
+	std::lock_guard<std::mutex> lock(_mtx_lock);
 	if (!_work_packet_list.empty())
 	{
 		auto packet = _work_packet_list.front();

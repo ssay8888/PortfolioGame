@@ -27,6 +27,9 @@
     <ClCompile Include="PacketHandlers\move_player_handler.cpp">
       <Filter>PacketHandlers</Filter>
     </ClCompile>
+    <ClCompile Include="Field\Character\MoveParse\move_parse_recv.cpp">
+      <Filter>Field\Character\MoveParse</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -57,6 +60,9 @@
     <ClInclude Include="PacketHandlers\move_player_handler.h">
       <Filter>PacketHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="Field\Character\MoveParse\move_parse_recv.h">
+      <Filter>Field\Character\MoveParse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Network">
@@ -76,6 +82,9 @@
     </Filter>
     <Filter Include="Field\Map">
       <UniqueIdentifier>{8dcb2ba9-f728-46aa-8420-b8662004ad9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Field\Character\MoveParse">
+      <UniqueIdentifier>{cbb4a978-917c-4b33-825a-8ef5a858091b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

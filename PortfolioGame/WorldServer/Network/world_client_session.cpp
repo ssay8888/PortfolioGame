@@ -17,6 +17,56 @@ boost::asio::ip::tcp::socket& WorldClientSession::GetSocket()
 	return _socket;
 }
 
+void WorldClientSession::Connect(boost::asio::ip::tcp::endpoint endpoint)
+{
+	_socket.async_connect(endpoint, std::bind(&WorldClientSession::HandleConnect, this, std::placeholders::_1));
+}
+
+void WorldClientSession::HandleConnect(const boost::system::error_code& error_code)
+{
+	if (!error_code)
+	{
+		const boost::asio::ip::tcp::no_delay option(true);
+		_socket.set_option(option);
+		std::cout << "서버연결 성공" << std::endl;
+		PacketHeaderReceive();
+	}
+	else
+	{
+	}
+}
+
+void WorldClientSession::PacketHeaderReceive() noexcept {
+	auto packet_header = new uint8_t[4];
+	ZeroMemory(packet_header, 4);
+	boost::asio::async_read(_socket,
+		boost::asio::buffer(packet_header, 4),
+		std::bind(&WorldClientSession::PacketBodyReceive, this,
+			std::placeholders::_1,
+			std::placeholders::_2, packet_header));
+}
+
+void WorldClientSession::PacketBodyReceive(const std::error_code& error_code, const size_t bytes_transferred, uint8_t* buffer) noexcept
+{
+	if (!error_code)
+	{
+		int packet_size = *reinterpret_cast<int*>(buffer);
+		delete buffer;
+		auto packet_body = new uint8_t[packet_size];
+		ZeroMemory(packet_body, packet_size);
+
+		boost::asio::async_read(_socket,
+			boost::asio::buffer(packet_body, packet_size),
+			std::bind(&WorldClientSession::ProcessPacket, this,
+				std::placeholders::_1,
+				std::placeholders::_2, packet_body, packet_size));
+		return;
+	}
+
+	std::cout << "서버와 연결이 끊어짐." << std::endl;
+}
+
+
 void WorldClientSession::SessionHandleRecv(const std::error_code& error_code,
 	const size_t bytes_transferred, uint8_t* buffer)
 {

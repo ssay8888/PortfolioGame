@@ -4,6 +4,7 @@
 #include "../PacketHandlers/character_info_packet_handler.h"
 #include "../PacketHandlers/spawn_player_packet_handelr.h"
 #include "../PacketHandlers/move_player_packet_handler.h"
+#include "../PacketHandlers/remove_character_packet_handler.h"
 std::map<::opcode::ClientRecv, std::shared_ptr<ClientPacketHandler>> ClientPacketHandlerManager::_handlers;
 
 ClientPacketHandlerManager::ClientPacketHandlerManager() = default;
@@ -31,6 +32,7 @@ void ClientPacketHandlerManager::LoadHandlers() const
 	RegisterHandler(opcode::ClientRecv::kCharacterInfo, std::make_shared<CharacterInfoPacketHandler>());
 	RegisterHandler(opcode::ClientRecv::kSpawnPlayer, std::make_shared<SpawnPlayerPacketHandler>());
 	RegisterHandler(opcode::ClientRecv::kMovePlayer, std::make_shared<MovePlayerPacketHandler>());
+	RegisterHandler(opcode::ClientRecv::kRemoveCharacter, std::make_shared<RemoveCharacterPacketHandler>());
 
 	std::cout << "Packet Handler Load Count: " << _handlers.size() << std::endl;
 

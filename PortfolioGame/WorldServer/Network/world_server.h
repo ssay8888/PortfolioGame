@@ -30,6 +30,8 @@ public:
 	void InsertWorkPacket(std::shared_ptr<WorldClientSession> session, std::shared_ptr<InPacket> in_packet);
 	void BroadCastMessage(std::shared_ptr<OutPacket> out_packet, std::shared_ptr<WorldClientSession> session);
 	static std::map<int64_t, std::shared_ptr<WorldClientSession>>& GetSessionList();
+
+	std::shared_ptr<OutPacket> DisconnectCharacter(std::shared_ptr<WorldClientSession> socket) const;
 public:
 	boost::asio::io_service& GetIoService();
 

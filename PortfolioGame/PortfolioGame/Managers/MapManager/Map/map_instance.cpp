@@ -186,6 +186,29 @@ void MapInstance::InsertPlayer(Player* player)
 	_player_list.insert(std::make_pair(player->GetObjectId(), player));
 }
 
+void MapInstance::RemovePlayer(int32_t id)
+{
+	auto data = _player_list.find(id);
+  if (data != _player_list.end())
+  {
+	  auto& list = _list_game_object[data->second->GetLayer()];
+	  for (auto begin = list.begin(); begin != list.end();)
+	  {
+		  auto player = static_cast<Player*>(*begin);
+		  if(player != nullptr)
+		  {
+			  if (player->GetObjectId() == id)
+			  {
+				  begin = list.erase(begin);
+				  continue;
+			  }
+		  }
+		  ++begin;
+	  }
+  	_player_list.erase(data);
+  }
+}
+
 void MapInstance::RespawnMonster()
 {
 

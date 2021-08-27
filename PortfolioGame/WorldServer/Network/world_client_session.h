@@ -10,6 +10,10 @@ public:
 	WorldClientSession(boost::asio::io_service& server_service);
 	virtual ~WorldClientSession();
 
+  void HandleConnect(const boost::system::error_code& error_code);
+  void PacketHeaderReceive() noexcept;
+  void PacketBodyReceive(const std::error_code& error_code, size_t bytes_transferred,
+                         uint8_t* buffer) noexcept;
 	virtual void SessionHandleRecv(const std::error_code& error_code, const size_t bytes_transferred, uint8_t* buffer);
 	void ProcessPacket(const std::error_code& error_code, std::size_t bytes_transferred, uint8_t* buffer, int nPacketLen);
 	void OnSendPacketFinished(const std::error_code& ec, std::size_t bytes_transferred, std::shared_ptr<OutPacket> out_packet);
@@ -19,7 +23,8 @@ public:
 	void SendPacket(std::shared_ptr<OutPacket> out_packet, bool is_broad_cast = false);
 public:
 	boost::asio::ip::tcp::socket& GetSocket();
-	uint64_t GetSocketId() const;
+  void Connect(boost::asio::ip::tcp::endpoint endpoint);
+  uint64_t GetSocketId() const;
 	void SetSocketDisconnectedCallBack(const std::function<void(std::shared_ptr<WorldClientSession>)>& callback);
 	void SetCharacter(std::shared_ptr<Character> character);
 	std::shared_ptr<Character> GetCharacter() const;

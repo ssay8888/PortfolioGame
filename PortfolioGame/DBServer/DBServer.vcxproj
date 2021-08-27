@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c0008628-bc70-41bb-9ecc-9dfc71309538}</ProjectGuid>
-    <RootNamespace>WorldServer</RootNamespace>
+    <ProjectGuid>{fd93cf16-43c2-4793-b50d-3e4f9ad6420a}</ProjectGuid>
+    <RootNamespace>DBServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -86,7 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SQL_NOUNICODEMAP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -118,7 +118,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SQL_NOUNICODEMAP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -147,41 +147,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Field\Character\character.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Field\Character\MoveParse\move_parse_recv.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Field\Map\map.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Field\Map\map_factory.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Network\PacketHandlerManager\world_packet_handler_manager.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Network\world_client_session.cpp">
+    <ClCompile Include="Database\connection.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Network\world_server.cpp">
+    <ClCompile Include="Database\database_connector.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="PacketHandlers\login_handler.cpp">
+    <ClCompile Include="Database\prepared_statement.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="PacketHandlers\move_player_handler.cpp">
+    <ClCompile Include="Database\result_set.cpp" />
+    <ClCompile Include="DBServer.cpp" />
+    <ClCompile Include="Network\database_client_session.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\database_server.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Network\PacketHandlerManager\database_packet_handler_manager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -189,19 +179,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="WorldServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Field\Character\character.h" />
-    <ClInclude Include="Field\Character\MoveParse\move_parse_recv.h" />
-    <ClInclude Include="Field\Map\map.h" />
-    <ClInclude Include="Field\Map\map_factory.h" />
-    <ClInclude Include="Network\PacketHandlerManager\packet_handler.h" />
-    <ClInclude Include="Network\PacketHandlerManager\world_packet_handler_manager.h" />
-    <ClInclude Include="Network\world_client_session.h" />
-    <ClInclude Include="Network\world_server.h" />
-    <ClInclude Include="PacketHandlers\login_handler.h" />
-    <ClInclude Include="PacketHandlers\move_player_handler.h" />
+    <ClInclude Include="Database\connection.h" />
+    <ClInclude Include="Database\database_connector.h" />
+    <ClInclude Include="Database\prepared_statement.h" />
+    <ClInclude Include="Database\result_set.h" />
+    <ClInclude Include="Network\database_client_session.h" />
+    <ClInclude Include="Network\database_server.h" />
+    <ClInclude Include="Network\PacketHandlerManager\database_packet_handler_manager.h" />
+    <ClInclude Include="Network\PacketHandlerManager\PacketHandler.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -16,8 +16,10 @@ public:
 	void Encode4(int value);
 	void Encode8(long long value);
 	void EncodeStr(const std::string& str);
+	void ExtendSize();
 private:
 	uint8_t* _buffer;
 	uint32_t _packet_size;
+	uint32_t _buffer_size;
 };
 

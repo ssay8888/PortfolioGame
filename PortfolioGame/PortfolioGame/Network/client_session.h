@@ -28,5 +28,6 @@ private:
 	std::mutex _mtx_lock;
 
 	std::queue<InPacket*> _work_packet_list;
+
 };
 

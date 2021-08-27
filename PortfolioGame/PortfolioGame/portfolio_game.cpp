@@ -62,8 +62,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _client_session->Connect(endpoint);
     boost::asio::io_service::work work(io_service);
     std::thread clientWorkThread([&] {
-        boost::system::error_code ec;
-        io_service.run(ec);
+        //while(true)
+        ///{
+            boost::system::error_code ec;
+            io_service.run(ec);
+        //}
         });
     clientWorkThread.detach();
     maingame.ReadeyGame();
