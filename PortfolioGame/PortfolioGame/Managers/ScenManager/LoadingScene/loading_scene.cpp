@@ -3,6 +3,7 @@
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../KeyManaer/key_manager.h"
 #include "../../ScenManager/scene_manager.h"
+#include "../../SoundManager/sound_manager.h"
 
 LoadingScene::LoadingScene() :
 	_logoFrameCount(0),
@@ -21,6 +22,7 @@ LoadingScene::~LoadingScene()
 
 int LoadingScene::ReadyScene()
 {
+	SoundManager::GetInstance()->Initialize();
 	const int size = 256;
 	wchar_t path[size];
 	for (int i = 0; i < 60; i++)
@@ -39,6 +41,7 @@ int LoadingScene::ReadyScene()
 	RECT rc{ 0, 0, static_cast<LONG>(_WindowCX), static_cast<LONG>(_WindowCY) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	SetWindowPos(_hWnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, 0);
+	SoundManager::GetInstance()->PlaySound(L"NxLogo.mp3", SoundManager::kBgm);
 	return 0;
 }
 

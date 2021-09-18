@@ -182,6 +182,9 @@
     <Filter Include="Components\MapObject\Player\MoveParse">
       <UniqueIdentifier>{5a6979e6-d74f-4a82-8c41-6fffa844ef3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\SoundManager">
+      <UniqueIdentifier>{4c899348-33e6-4a6a-85d9-5ed977736d0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame\main_game.h">
@@ -472,6 +475,9 @@
     <ClInclude Include="Network\PacketHandlers\remove_character_packet_handler.h">
       <Filter>Network\PacketHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\SoundManager\sound_manager.h">
+      <Filter>Managers\SoundManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame\main_game.cpp">
@@ -740,6 +746,9 @@
     </ClCompile>
     <ClCompile Include="Network\PacketHandlers\remove_character_packet_handler.cpp">
       <Filter>Network\PacketHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SoundManager\sound_manager.cpp">
+      <Filter>Managers\SoundManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

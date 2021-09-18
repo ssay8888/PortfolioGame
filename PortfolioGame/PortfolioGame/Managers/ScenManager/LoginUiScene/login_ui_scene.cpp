@@ -4,6 +4,7 @@
 #include "../../../Network/client_session.h"
 #include "../../KeyManaer/key_manager.h"
 #include "../../ScenManager/scene_manager.h"
+#include "../../SoundManager/sound_manager.h"
 LoginUiScene::LoginUiScene():
     _loginUiImage(nullptr)
 {
@@ -19,6 +20,7 @@ int LoginUiScene::ReadyScene()
     _loginUiImage = new MyBitmap();
     _loginUiImage->Insert_Bitmap(_hWnd, L"Client\\Ui\\Login.bmp");
 
+    SoundManager::GetInstance()->PlayBGM(L"Title.mp3");
     return 0;
 }
 
@@ -32,7 +34,7 @@ void LoginUiScene::UpdateScene()
 
     if (KeyManager::GetInstance()->KeyDown(KEY_LBUTTON))
     {
-        RECT rc1{ 100, 100, 150, 150 };
+        RECT rc1{ 454, 282, 504, 328 };
         RECT rc2{ 100, 150, 150, 200 };
         if (PtInRect(&rc1, mouse))
         {
@@ -59,8 +61,8 @@ void LoginUiScene::LateUpdateScene()
 void LoginUiScene::RenderScene(HDC hdc)
 {
     _loginUiImage->RenderBitmapImage(hdc, 0, 0, _loginUiImage->GetWidth(), _loginUiImage->GetHeight());
-    Rectangle(hdc, 100, 100, 150, 150);
-    Rectangle(hdc, 100, 150, 150, 200);
+    //Rectangle(hdc, 100, 100, 150, 150);
+    //Rectangle(hdc, 454, 282, 504, 328);
 }
 
 void LoginUiScene::ReleaseScene()

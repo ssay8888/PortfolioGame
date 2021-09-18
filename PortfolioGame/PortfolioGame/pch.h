@@ -17,4 +17,7 @@
 #include "../ServerLibrary/Network/in_packet.h"
 #include "../ServerLibrary/Network/Opcode/packet_opcode.h"
 
+#include "fmod.h"
+#pragma comment(lib, "fmodex64_vc.lib")
+
 #endif //PCH_H

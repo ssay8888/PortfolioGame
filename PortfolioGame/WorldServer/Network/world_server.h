@@ -23,8 +23,8 @@ public:
 	void HandleAcceptor(std::shared_ptr<WorldClientSession> connected_socket,
 		const std::error_code& error_code);
 
-  void AsyncStartAcceptor();
-  void OnSocketDisconnected(std::shared_ptr<WorldClientSession> socket);
+	void AsyncStartAcceptor();
+	void OnSocketDisconnected(std::shared_ptr<WorldClientSession> socket);
 	virtual void OnNotifySocketDisconnected(std::shared_ptr<WorldClientSession> socket);
 	void RunWorkThead();
 	void InsertWorkPacket(std::shared_ptr<WorldClientSession> session, std::shared_ptr<InPacket> in_packet);

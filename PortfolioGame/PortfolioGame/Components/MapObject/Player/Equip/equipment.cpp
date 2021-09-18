@@ -7,6 +7,7 @@
 #include "../../Item/item.h"
 #include "../Inventory/eqp_inventory.h"
 #include "../../../../Managers/EffectManager/effect_manager.h"
+#include "../../../../Managers/SoundManager/sound_manager.h"
 
 void Equipment::InsertEquipItem(const std::shared_ptr<SkinInfo>& skin_info)
 {
@@ -58,10 +59,14 @@ void Equipment::UseScrollItem(std::shared_ptr<SkinInfo> eqpi_tem, std::shared_pt
 				eqpi_tem->GetItemInfo().SetIncMad(eqpi_tem->GetItemInfo().GetIncMad() + scroll_item->GetIncMad());
 				eqpi_tem->GetItemInfo().SetSucessTuc(eqpi_tem->GetItemInfo().GetSucessTuc() + 1);
 				EffectManager::GetInstance()->ShowEffect("Success");
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kEnchant);
+				SoundManager::GetInstance()->PlaySound(L"EnchantSuccess.mp3", SoundManager::CHANNELID::kEnchant);
 			}
 			else
 			{
 				EffectManager::GetInstance()->ShowEffect("Failure");
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kEnchant);
+				SoundManager::GetInstance()->PlaySound(L"EnchantFailure.mp3", SoundManager::CHANNELID::kEnchant);
 			}
 
 			player->RecalcEqpStat();

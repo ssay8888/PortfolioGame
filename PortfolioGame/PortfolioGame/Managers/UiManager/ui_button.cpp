@@ -4,6 +4,7 @@
 #include "../KeyManaer/key_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../ScenManager/InGameScene/in_game_scene.h"
+#include "../SoundManager/sound_manager.h"
 
 UiButton::UiButton(KeyManager* key) :
 	_normalImage(nullptr),
@@ -71,14 +72,24 @@ void UiButton::UpdateButton()
 	}
 	if (PtInRect(&_rect, gameMouse->GetPoint()))
 	{
+		if (_state != ButtonState::kMouseOver && _state != ButtonState::kPressed)
+		{
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"BtMouseOver.mp3", SoundManager::CHANNELID::kUi);
+		}
 		_state = ButtonState::kMouseOver;
 		if (_key_manager->KeyDown(KEY_LBUTTON))
 		{
 			_state = ButtonState::kPressed;
-			if (_call_back != nullptr)
-			{
-				_call_back();
-			}
+		}
+		else if (_key_manager->KeyUp(KEY_LBUTTON))
+		{
+				if (_call_back != nullptr)
+				{
+					_call_back();
+				}
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+				SoundManager::GetInstance()->PlaySound(L"BtMouseClick.mp3", SoundManager::CHANNELID::kUi);
 		}
 		else if (_key_manager->KeyPressing(KEY_LBUTTON))
 		{

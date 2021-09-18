@@ -19,6 +19,7 @@
 #include "../../Skins/skin_manager.h"
 #include "../../../Components/MapObject/Player/Inventory/eqp_inventory.h"
 #include "../../Skins/skin_info.h"
+#include "../../SoundManager/sound_manager.h"
 
 NpcTalkWindow::NpcTalkWindow(): _this_npc(nullptr),
                                 _talk_type(),
@@ -97,6 +98,8 @@ void NpcTalkWindow::OkNpcTalk()
 		{
 			player->RemoveIngQuest(quest_info);
 			player->InsertClearQuest(quest_info);
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"QuestClear.mp3", SoundManager::CHANNELID::kUi);
 		}
 
 		auto quest_check = quest_info->GetCheck();

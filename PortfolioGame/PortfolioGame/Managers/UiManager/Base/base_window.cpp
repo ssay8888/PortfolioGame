@@ -2,6 +2,7 @@
 #include "base_window.h"
 #include "../../KeyManaer/key_manager.h"
 #include "../../ScenManager/InGameScene/in_game_scene.h"
+#include "../../SoundManager/sound_manager.h"
 #include "../../../Components/game_mouse.h"
 #include "../../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../ui_tab_button.h"
@@ -64,6 +65,15 @@ void BaseWindow::BaseUiRender(HDC hdc)
 void BaseWindow::SetShow(const bool show)
 {
 	_show = show;
+	if (_show)
+	{
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+		SoundManager::GetInstance()->PlaySound(L"MenuUp.mp3", SoundManager::CHANNELID::kUi);
+	}else
+	{
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+		SoundManager::GetInstance()->PlaySound(L"MenuDown.mp3", SoundManager::CHANNELID::kUi);
+	}
 }
 
 bool BaseWindow::IsShow() const

@@ -16,6 +16,7 @@
 #include "../../../Managers/DropDataManager/drop_data_manager.h"
 #include "../../../Managers/MapManager/Map/map_instance.h"
 #include "../Player/Buff/buffstat.h"
+#include "../../../Managers/SoundManager/sound_manager.h"
 
 Monster::Monster() :
 	GameObject(0),
@@ -203,6 +204,10 @@ void Monster::GainHp(const int32_t hp)
 	if (0 > _monster_info.hp)
 	{
 		_is_alive = false;
+		wchar_t skill_sound[128];
+		swprintf_s(skill_sound, 128, L"%07d.Die.mp3", _monster_id);
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kSkillHit);
+		SoundManager::GetInstance()->PlaySound(skill_sound, SoundManager::CHANNELID::kSkillHit);
 	}
 }
 
@@ -982,6 +987,7 @@ void Monster::ChangeState(MonsterState state)
 			_this_frame = _movement->FindMovement("move");
 			break;
 		case Monster::MonsterState::kHit:
+		{
 			_this_frame = _movement->FindMovement("hit1");
 			if (_attack_info.find(_state_string) != _attack_info.end())
 			{
@@ -989,24 +995,49 @@ void Monster::ChangeState(MonsterState state)
 				_attack_info.find(_state_string)->second->ResetAreaFrame();
 			}
 			break;
+		}
 		case Monster::MonsterState::kAttack1:
+		{
 			_this_frame = _movement->FindMovement("attack1");
 			_state_string.clear();
 			_state_string.append("attack1");
+			wchar_t sound[128];
+			swprintf_s(sound, 128, L"%07d.Attack1.mp3", _monster_id);
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonster);
+			SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonster);
 			break;
+		}
 		case Monster::MonsterState::kAttack2:
+		{
 			_this_frame = _movement->FindMovement("attack2");
 			_state_string.clear();
 			_state_string.append("attack2");
+			wchar_t sound[128];
+			swprintf_s(sound, 128, L"%07d.Attack2.mp3", _monster_id);
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonster);
+			SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonster);
 			break;
+		}
 		case Monster::MonsterState::kAttack3:
+		{
 			_this_frame = _movement->FindMovement("attack3");
 			_state_string.clear();
 			_state_string.append("attack3");
+			wchar_t sound[128];
+			swprintf_s(sound, 128, L"%07d.Attack3.mp3", _monster_id);
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonster);
+			SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonster);
 			break;
+		}
 		case Monster::MonsterState::kDie:
+		{
 			_this_frame = _movement->FindMovement("die1");
+			wchar_t sound[128];
+			swprintf_s(sound, 128, L"%07d.Die.mp3", _monster_id);
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonster);
+			SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonster);
 			break;
+		}
 		default:
 			break;
 		}

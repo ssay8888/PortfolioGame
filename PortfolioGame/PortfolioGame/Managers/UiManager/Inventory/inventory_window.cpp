@@ -17,6 +17,7 @@
 #include "../../ScenManager/InGameScene/in_game_scene.h"
 #include "../QuickSlot/quick_slot.h"
 #include "../UiScroll/ui_scroll.h"
+#include "../../SoundManager/sound_manager.h"
 
 InventoryWindow::InventoryWindow() : _this_tab(),
 _select_position(-1),
@@ -33,6 +34,11 @@ InventoryWindow::~InventoryWindow()
 
 void InventoryWindow::SetTab(const ObjectType::InventoryTabState tab)
 {
+  if (_this_tab != tab)
+  {
+	  _scroll->SetScrollX(0);
+	  _scroll->SetScrollY(0);
+  }
 	_this_tab = tab;
 }
 
@@ -300,12 +306,12 @@ void InventoryWindow::UpdateWindow()
 			SelectTab(mouse);
 			SetTab(FindTab());
 			SelectItem(mouse);
+			ScrollBarUp(mouse);
+			ScrollBarDown(mouse);
 		}
 		if (_key_manager->KeyPressing(KEY_LBUTTON))
 		{
 			TitleBarMove(mouse);
-			ScrollBarUp(mouse);
-			ScrollBarDown(mouse);
 		}
 
 		if (_key_manager->KeyDown(KEY_RBUTTON))
@@ -402,6 +408,8 @@ void InventoryWindow::SelectItem(POINT mouse)
 							_is_select_item = true;
 							_select_eqp_item = item_list[i];
 							_select_position = i;
+							SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+							SoundManager::GetInstance()->PlaySound(L"DragStart.mp3", SoundManager::CHANNELID::kUi);
 						}
 					}
 				}
@@ -441,6 +449,8 @@ void InventoryWindow::SelectItem(POINT mouse)
 						_is_select_item = true;
 						_select_item = item_list[i];
 						_select_position = i;
+						SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+						SoundManager::GetInstance()->PlaySound(L"DragStart.mp3", SoundManager::CHANNELID::kUi);
 					}
 				}
 			}
@@ -536,6 +546,8 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 		_is_select_item = false;
 		_select_eqp_item = nullptr;
 		_select_position = -1;
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+		SoundManager::GetInstance()->PlaySound(L"DragEnd.mp3", SoundManager::CHANNELID::kUi);
 		return;
 	}
 	if (_this_tab == ObjectType::InventoryTabState::kConsume)
@@ -599,6 +611,8 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 								_is_select_item = false;
 								_select_eqp_item = nullptr;
 								_select_position = -1;
+								SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+								SoundManager::GetInstance()->PlaySound(L"DragEnd.mp3", SoundManager::CHANNELID::kUi);
 								return;
 							}
 						}
@@ -656,6 +670,11 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 		_select_item = nullptr;
 		_is_select_item = false;
 		_select_eqp_item = nullptr;
+		if (_select_position != -1)
+		{
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"DragEnd.mp3", SoundManager::CHANNELID::kUi);
+		}
 		_select_position = -1;
 		return;
 	}
@@ -708,6 +727,11 @@ void InventoryWindow::CancelSelectItem(POINT mouse)
 	_select_item = nullptr;
 	_is_select_item = false;
 	_select_eqp_item = nullptr;
+	if (_select_position != -1)
+	{
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+		SoundManager::GetInstance()->PlaySound(L"DragEnd.mp3", SoundManager::CHANNELID::kUi);
+	}
 	_select_position = -1;
 }
 

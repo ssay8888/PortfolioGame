@@ -32,7 +32,7 @@ void DbServerConnect()
 
 int main()
 {
-	srand(time(NULL));
+	srand(static_cast<uint32_t>(time(NULL)));
 	WorldPacketHandlerManager::GetInstance()->LoadHandlers();
 
 	DbServerConnect();

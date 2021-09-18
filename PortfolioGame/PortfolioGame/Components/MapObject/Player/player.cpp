@@ -9,6 +9,7 @@
 #include "../../../Managers/EffectManager/effect_manager.h"
 #include "../../../Managers/ItemManager/item_manager.h"
 #include "../../../Managers/KeyManaer/key_manager.h"
+#include "../../../Managers/SoundManager/sound_manager.h"
 #include "../../../Managers/MapManager/map_manager.h"
 #include "../../../Managers/MapManager/Map/map_instance.h"
 #include "../../../Managers/QuestManager/quest_manager.h"
@@ -194,12 +195,12 @@ void Player::UpdateGameObject(const float deltaTime)
 		UpdateDummyObject();
 		return;
 	}
+	ScrollMove();
 	if (_is_dead || MapManager::GetInstance()->IsChangeMap())
 	{
 		this->ChangeFrameState("dead");
 		return;
 	}
-	ScrollMove();
 	bool isFoothold = MapManager::GetInstance()->FootholdYCollision(this, &outY, &tempHold);
 	const bool finished_attack_frame = (_attack_skill != nullptr ? _attack_skill->IsFinishedFrame() : true);
 	if (finished_attack_frame && !_is_fly && !_is_jump && !_is_prone && keymanager->KeyPressing(KEY_DOWN))
@@ -312,6 +313,8 @@ void Player::UpdateGameObject(const float deltaTime)
 					this->ChangeFrameState("jump");
 					_is_jump = true;
 					totalMoveX -= GetSpeed();
+					SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPlayer);
+					SoundManager::GetInstance()->PlaySound(L"Jump.mp3", SoundManager::CHANNELID::kPlayer);
 				}
 			}
 			else
@@ -330,6 +333,9 @@ void Player::UpdateGameObject(const float deltaTime)
 				{
 					_is_rope = false;
 					this->ChangeFrameState("jump");
+
+					SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPlayer);
+					SoundManager::GetInstance()->PlaySound(L"Jump.mp3", SoundManager::CHANNELID::kPlayer);
 					_is_jump = true;
 					totalMoveX += GetSpeed();
 				}
@@ -348,6 +354,8 @@ void Player::UpdateGameObject(const float deltaTime)
 			{
 				this->ChangeFrameState("jump");
 				_is_jump = true;
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPlayer);
+				SoundManager::GetInstance()->PlaySound(L"Jump.mp3", SoundManager::CHANNELID::kPlayer);
 			}
 		}
 	}
@@ -525,6 +533,8 @@ void Player::UpdateGameObject(const float deltaTime)
 		else
 		{
 			this->ChangeFrameState("swingO2");
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPlayer);
+			SoundManager::GetInstance()->PlaySound(L"swordL.Attack.mp3", SoundManager::CHANNELID::kPlayer);
 		}
 		Player::TryMeleeAttack();
 		UpdateAlertTick();
@@ -560,6 +570,8 @@ void Player::UpdateGameObject(const float deltaTime)
 			{
 				const auto inven_type = InventoryWindow::SearchItemTab(drop->second->GetItemId());
 
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+				SoundManager::GetInstance()->PlaySound(L"PickUpItem.mp3", SoundManager::CHANNELID::kUi);
 				if (drop->second->GetItemId() < 9000000)
 				{
 					if (inven_type != ::ObjectType::InventoryTabState::kEnd)
@@ -605,6 +617,13 @@ void Player::UpdateGameObject(const float deltaTime)
 			}
 		}
 
+	}
+	if (keymanager->KeyDown(KEY_F1))
+	{
+		wchar_t sound[128];
+		swprintf_s(sound, 128, L"%07d.Damage.mp3", 100100);
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonsterHit);
+		SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonsterHit);
 	}
 	if (keymanager->KeyPressing(KEY_F1))
 	{
@@ -659,6 +678,7 @@ void Player::UpdateGameObject(const float deltaTime)
 			_eqp_inventory->AddItem(7 + i, std::make_shared<SkinInfo>(SkinInfo(*pantsParts2)));
 		}
 		auto item = ItemManager::GetInstance()->FindCopyItem(9000000);
+		item->SetQuantity(rand() % 50);
 		POINT ps = { static_cast<int>(_info.x), static_cast<int>(_rect.bottom) };
 		auto data = std::make_pair(ps, item);
 		MapManager::GetInstance()->GetNowMap()->AddDropItem(data);
@@ -1077,24 +1097,30 @@ void Player::RenderCharacter(HDC hdc)
 				{
 					if (GetFacingDirection())
 					{
-						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+						if (_attack_skill == nullptr || _attack_skill->IsFinishedFrame())
 						{
-							_swing_effect_r->RenderBitmapImage(hdc,
-								static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
-								static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
-								_swing_effect_r->GetWidth(),
-								_swing_effect_r->GetHeight());
+							if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+							{
+								_swing_effect_r->RenderBitmapImage(hdc,
+									static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
+									static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+									_swing_effect_r->GetWidth(),
+									_swing_effect_r->GetHeight());
+							}
 						}
 					}
 					else
 					{
-						if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+						if (_attack_skill == nullptr || _attack_skill->IsFinishedFrame())
 						{
-							_swing_effect->RenderBitmapImage(hdc,
-								static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
-								static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
-								_swing_effect->GetWidth(),
-								_swing_effect->GetHeight());
+							if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+							{
+								_swing_effect->RenderBitmapImage(hdc,
+									static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
+									static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+									_swing_effect->GetWidth(),
+									_swing_effect->GetHeight());
+							}
 						}
 					}
 					return;
@@ -1117,13 +1143,16 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(destination.y),
 					RGB(255, 0, 255));
 
-				if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+				if (_attack_skill == nullptr || _attack_skill->IsFinishedFrame())
 				{
-					_swing_effect_r->RenderBitmapImage(hdc,
-						static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
-						static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
-						_swing_effect_r->GetWidth(),
-						_swing_effect_r->GetHeight());
+					if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+					{
+						_swing_effect_r->RenderBitmapImage(hdc,
+							static_cast<int>(_info.x - 8 + ScrollManager::GetScrollX()),
+							static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+							_swing_effect_r->GetWidth(),
+							_swing_effect_r->GetHeight());
+					}
 				}
 				/*Rectangle(hdc,
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + reduceX),
@@ -1145,13 +1174,16 @@ void Player::RenderCharacter(HDC hdc)
 					static_cast<int>(destination.y),
 					RGB(255, 0, 255));
 
-				if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+				if (_attack_skill == nullptr || _attack_skill->IsFinishedFrame())
 				{
-					_swing_effect->RenderBitmapImage(hdc,
-						static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
-						static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
-						_swing_effect->GetWidth(),
-						_swing_effect->GetHeight());
+					if (!strcmp(GetFrameState(), "swingO2") && _frame_nummber == 2)
+					{
+						_swing_effect->RenderBitmapImage(hdc,
+							static_cast<int>(_info.x - 80 + ScrollManager::GetScrollX()),
+							static_cast<int>(_info.y - 40 + ScrollManager::GetScrollY()),
+							_swing_effect->GetWidth(),
+							_swing_effect->GetHeight());
+					}
 				}
 				/*Rectangle(hdc,
 					static_cast<int>(_rect.left + ScrollManager::GetScrollX() + (발오리진x)),
@@ -1490,6 +1522,8 @@ void Player::LevelUp()
 		SetHp(GetMaxHp());
 		SetMp(GetMaxMp());
 		EffectManager::GetInstance()->ShowEffect("LevelUp");
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kLevelUp);
+		SoundManager::GetInstance()->PlaySound(L"LevelUp.mp3", SoundManager::CHANNELID::kLevelUp);
 	}
 }
 
@@ -1585,6 +1619,14 @@ void Player::ApplySkill()
 			{
 				_attack_skill->ResetSkill(attack_skill, this, mosnters);
 			}
+
+			{
+				wchar_t skill_sound[128];
+				swprintf_s(skill_sound, 128, L"%07d.Use.mp3", attack_skill->GetSkillId());
+				SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kSkillUse);
+				SoundManager::GetInstance()->PlaySound(skill_sound, SoundManager::CHANNELID::kSkillUse);
+			}
+
 			switch (attack_skill->GetSkillId())
 			{
 			case 2001002:
@@ -1622,6 +1664,17 @@ void Player::ApplySkill()
 					}
 					_damage_handler->InsertAttackDamageEffect(monster, damages, 500);
 					monster->GainHp(-total_damage);
+					{
+						wchar_t sound[128];
+						swprintf_s(sound, 128, L"%07d.Damage.mp3", monster->GetMonsterId());
+						SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kMonsterHit);
+						SoundManager::GetInstance()->PlaySound(sound, SoundManager::CHANNELID::kMonsterHit);
+						wchar_t skill_sound[128];
+						swprintf_s(skill_sound, 128, L"%07d.Hit.mp3", attack_skill->GetSkillId());
+						SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kSkillHit);
+						SoundManager::GetInstance()->PlaySound(skill_sound, SoundManager::CHANNELID::kSkillHit);
+					}
+
 					if (!monster->IsAlive())
 					{
 						GainExp(monster->GetExp());
@@ -1665,6 +1718,8 @@ void Player::ApplySkill()
 					this->GainMp(this->GetMaxMp() * spec.second / 100);
 				}
 			}
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPlayer);
+			SoundManager::GetInstance()->PlaySound(L"UseItem.mp3", SoundManager::CHANNELID::kPlayer);
 			use_item->GainQuantity(-1);
 			_use_item_tick = GetTickCount64();
 		}
@@ -1674,7 +1729,6 @@ void Player::ApplySkill()
 void Player::RenderGameObject(HDC hdc)
 {
 	UpdateRectGameObject();
-	RenderCharacter(hdc);
 	_damage_handler->ShowDamages(hdc);
 	for (auto data = _list_pickup.begin(); data != _list_pickup.end();)
 	{
@@ -1725,6 +1779,7 @@ void Player::RenderGameObject(HDC hdc)
 	{
 		_attack_skill->SkillRender(hdc);
 	}
+	RenderCharacter(hdc);
 }
 
 void Player::LateUpdateGameObject()

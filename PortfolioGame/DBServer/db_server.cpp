@@ -27,7 +27,7 @@ void DbServer::DbInit()
 
 void DbServer::Init()
 {
-	srand(time(NULL));
+	srand(static_cast<uint32_t>(time(NULL)));
 	DbInit();
 	SelectTest();
 	DatabasePacketHandlerManager::GetInstance()->LoadHandlers();

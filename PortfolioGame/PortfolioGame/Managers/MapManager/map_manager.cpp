@@ -11,6 +11,7 @@
 #include "../../Components/MapObject/Npc/npc.h"
 #include "../../Managers/MonsterMnager/monster_manager.h"
 #include "../../Managers/DropDataManager/drop_data_manager.h"
+#include "../../Managers/SoundManager/sound_manager.h"
 #include "../../../Common/Managers/BitmapManager/my_bitmap.h"
 #include "../../../Common/Managers/CollisionManager/Collision_Manager.h"
 #include "../../../Common/Utility/file_manager.h"
@@ -723,6 +724,20 @@ void MapManager::ChangeMap(int32_t next_map, ObjectPos pos)
 		_map_player->SetInfo({pos.x, pos.y, _map_player->GetInfo().cx, _map_player->GetInfo().cy});
 		_is_change_map = true;
 		_change_map_tick = GetTickCount64();
+		SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kPortal);
+		SoundManager::GetInstance()->PlaySound(L"Portal.mp3", SoundManager::CHANNELID::kPortal);
+		switch(next_map)
+		{
+		case 0:
+		case 1:
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kBgm);
+			SoundManager::GetInstance()->PlayBGM(L"FloralLife.mp3");
+			break;
+		case 2:
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kBgm);
+			SoundManager::GetInstance()->PlayBGM(L"WelcomeToTheHell.mp3");
+			break;
+		}
 	}
 }
 

@@ -18,6 +18,7 @@
 #include "../QuickSlot/quick_slot.h"
 #include "../../StringManager/string_manager.h"
 #include "../../StringManager/skill_string_info.h"
+#include "../../SoundManager/sound_manager.h"
 
 SkillWindow::SkillWindow() :
                            _info({ 0,0, 175, 289 }),
@@ -78,6 +79,16 @@ void SkillWindow::UpdateWindow()
 	if (_key_manager->KeyDown(KEY_K))
 	{
 		_show_window = !_show_window;
+		if (_show_window)
+		{
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"MenuUp.mp3", SoundManager::CHANNELID::kUi);
+		}
+		else
+		{
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"MenuDown.mp3", SoundManager::CHANNELID::kUi);
+		}
 	}
 	if (_show_window)
 	{
@@ -344,6 +355,8 @@ void SkillWindow::SelectSkillIcon(const POINT mouse)
 		if (PtInRect(&icon_rect, mouse))
 		{
 			_select_skill = skill_icon;
+			SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+			SoundManager::GetInstance()->PlaySound(L"DragStart.mp3", SoundManager::CHANNELID::kUi);
 		}
 
 		paddingsize += _skill_ui_distance;
@@ -373,6 +386,9 @@ void SkillWindow::DropSkillIcon(POINT mouse)
 				{
 					auto quick_slot = 	UiManager::GetInstance()->GetQuickSlot();
 					quick_slot->ChangeSlotSkill(static_cast<QuickSlot::KeyBoard>(totalNum), _select_skill);
+
+					SoundManager::GetInstance()->StopSound(SoundManager::CHANNELID::kUi);
+					SoundManager::GetInstance()->PlaySound(L"DragEnd.mp3", SoundManager::CHANNELID::kUi);
 				}
 				++totalNum;
 			}

@@ -9,7 +9,7 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-#include "Network/Opcode/send.h"
+#include "Network/Opcode/packet_opcode.h"
 #include <map>
 #include <memory>
 #include <iostream>

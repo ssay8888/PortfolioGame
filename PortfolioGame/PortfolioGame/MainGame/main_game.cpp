@@ -98,7 +98,7 @@ void MainGame::RenderGame()
 		_iFPS = 0;
 		_dwFPSTime = GetTickCount64();
 	}
-	TextOut(_hdc_buffer, 0, 0, _szFPS, lstrlen(_szFPS));
+	//TextOut(_hdc_buffer, 0, 0, _szFPS, lstrlen(_szFPS));
 	BitBlt(_hdc, 0, 0, WindowCX, WindowCY, _hdc_buffer, 0, 0, SRCCOPY);
 }
 
